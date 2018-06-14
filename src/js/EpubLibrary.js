@@ -479,16 +479,14 @@ Helpers){
         });
     };
 
+
     var handleFileSelect = function(evt){
         $('#add-epub-dialog').modal('hide');
-                
-        if (evt.target.files.length > 1) {
-            importZippedEpubs(evt.target.files, 0);
-            return;
-        }
 
-        var file = evt.target.files[0];
-        importZippedEpub(file);
+	var file = evt.target.files[0];
+
+	var eventPayload = {epub: file};
+	$(window).triggerHandler('readepub', eventPayload);
     }
 
     var handleDirSelect = function(evt){
