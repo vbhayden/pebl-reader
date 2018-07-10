@@ -902,7 +902,8 @@ BookmarkData){
 
         // Set handlers for click events
         $(".icon-annotations").on("click", function () {
-            readium.reader.plugins.highlights.addSelectionHighlight(Math.floor((Math.random()*1000000)), "test-highlight");
+            var s = readium.reader.plugins.highlights.addSelectionHighlight(Math.floor((Math.random()*1000000)), "test-highlight");
+	    console.log(s);
         });
 
         var isWithinForbiddenNavKeysArea = function()

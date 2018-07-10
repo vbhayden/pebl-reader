@@ -20,6 +20,10 @@
         &&
         npm run dist:cloudReader:copy:fonts
         &&
+	npm run
+            build:scripts:single:CHROMEAPPWORKER
+            --readium-js-viewer:RJS_UGLY=no
+	&&
         npm run dist:cloudReader:css
         &&
         npm run dist:cloudReader:js

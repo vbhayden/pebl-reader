@@ -32,7 +32,7 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
 
     LibraryManager.prototype = {
 
-       _getFullUrl : function(packageUrl, relativeUrl){
+	_getFullUrl : function(packageUrl, relativeUrl){
             if (!relativeUrl){
                 return null;
             }
@@ -57,10 +57,10 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
             }
 
             var self = this;
-        
+            
             var indexUrl = moduleConfig.epubLibraryPath
-                        ? StorageManager.getPathUrl(moduleConfig.epubLibraryPath)
-                        : StorageManager.getPathUrl('/epub_library.json');
+                ? StorageManager.getPathUrl(moduleConfig.epubLibraryPath)
+                : StorageManager.getPathUrl('epub_library.json');
 
             var dataFail = function() {
                 console.error("Ebook library fail: " + indexUrl);
@@ -82,18 +82,36 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
                 self.libraryData = data;
                 success(data);
             };
+	    
+	    var checkExternal = function (extraData) {
+		if (indexUrl.substr(0, 5) == "db://")
+		    indexUrl = "./" + indexUrl.substr(5);
+		if (/\.json$/.test(indexUrl)) {
+                    
+                    $.getJSON(indexUrl, function(data){
+			if (extraData != null)
+			    for (var i = 0; i < extraData.length; i++)
+				data.push(extraData[i]);			
+			dataSuccess(data);
+                    }).fail(function(){
+			if (extraData!=null)
+			    dataSuccess(extraData);
+			else
+			    dataFail();
+                    });
+		} else {
+                    EpubLibraryOPDS.tryParse(indexUrl, dataSuccess, dataFail, extraData);
+		}
+	    };
+	    
+	    if (indexUrl.substr(0, 5) == "db://") {
+		StorageManager.getFile(indexUrl,
+				       checkExternal,
+				       function (x) { console.log(x); });	
 
-            if (/\.json$/.test(indexUrl)) {
-                
-                $.getJSON(indexUrl, function(data){
-                    dataSuccess(data);
-                }).fail(function(){
-                    dataFail();
-                });
-            } else {
-                EpubLibraryOPDS.tryParse(indexUrl, dataSuccess, dataFail);
-            }
-        },
+	    } else
+		checkExternal();
+	},
 
         deleteEpubWithId : function(id, success, error){
             WorkerProxy.deleteEpub(id, this.libraryData, {
@@ -105,7 +123,7 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
             var self = this;
 
             $.get(packageUrl, function(data){
-    
+		
                 if(typeof(data) === "string" ) {
                     var parser = new window.DOMParser;
                     data = parser.parseFromString(data, 'text/xml');
@@ -116,7 +134,7 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
                 jsonObj.rootDir = rootDir;
                 jsonObj.rootUrl = rootUrl;
                 jsonObj.noCoverBackground = noCoverBackground;
-    
+		
                 success(jsonObj);
 
             }).fail(error);
@@ -140,7 +158,7 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
             var rawFiles = options.files,
                 files = {};
             for (var i = 0; i < rawFiles.length; i++){
-                 var path = rawFiles[i].webkitRelativePath
+                var path = rawFiles[i].webkitRelativePath
                 // don't capture paths that contain . at the beginning of a file or dir.
                 // These are hidden files. I don't think chrome will ever reference
                 // a file using double dot "/.." so this should be safe

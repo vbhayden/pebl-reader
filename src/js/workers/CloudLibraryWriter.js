@@ -19,8 +19,9 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
         },
 
         _saveLibraryIndex : function(success, error){
-            var blob = new Blob([JSON.stringify(this.libraryData)]);
-            StorageManager.saveFile('/epub_library.json', blob, success, error);
+            //var blob = new Blob([JSON.stringify(this.libraryData)]);
+	    // var blob = JSON.stringify(this.libraryData);
+            StorageManager.saveBookshelf('db://epub_library.json', this.libraryData, success, error);
         },
         _saveEpubToIndex : function(options, epubObj){
             this.libraryData.push(epubObj);
@@ -31,60 +32,65 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
 
         _addEpub : function(options, packageObj, packagePath, encryptionData){
             // create a random root folder name
-            var rootDirName = this.rootDirName || (new Date().getTime() + '' + Math.floor(Math.random() * 1000)),
-                self = this,
-                fileLoader = this.fileLoader;
+	    var fileLoader = this.fileLoader;
+	    var blob = fileLoader.getZipBlob();
+            var rootDirName = blob.name; 
+            var self = this;
 
-            var errorHandler = function(msg, err) {
+	    
+	    var errorHandler = function(msg, err) {
                 if (err.original.code == 7)
                 {
-                    // This is an InvalidStateError. It indicates that we ran out of memory.
-                    // Chrome has 500MB limit on the blobs you can create. It's also
-                    // possible that this indicates an actual invalid state. If you made
-                    // changes to the code and are getting this error all the time then
-                    // it's possible you screwed something up.
-                    if (self.callbacks.continueImport && fileLoader.isZipFile()) {
+		    // This is an InvalidStateError. It indicates that we ran out of memory.
+		    // Chrome has 500MB limit on the blobs you can create. It's also
+		    // possible that this indicates an actual invalid state. If you made
+		    // changes to the code and are getting this error all the time then
+		    // it's possible you screwed something up.
+		    if (self.callbacks.continueImport && fileLoader.isZipFile()) {
                         self.callbacks.continueImport(fileLoader.getZipBlob(), count, rootDirName);
                         return;
-                    }
+		    }
                 }
                 options.error(msg, err);
-            }
+	    }
 
-            var commitEpubToLibrary = function(){
+	    var commitEpubToLibrary = function(){
 
                 var epubObj = {
-                    id: packageObj.id,
-                    rootDir : rootDirName,
-                    packagePath : packagePath,
-                    title: packageObj.title,
-                    author: packageObj.author,
-                    rootUrl : StorageManager.getPathUrl(rootDirName)
+		    id: packageObj.id,
+		    rootDir : rootDirName,
+		    packagePath : packagePath,
+		    title: packageObj.title,
+		    author: packageObj.author,
+		    rootUrl : StorageManager.getPathUrl(rootDirName)
                 }
                 if (packageObj.coverHref){
-                    epubObj.coverPath = packageObj.coverHref;
-                    epubObj.coverHref = StorageManager.getPathUrl(rootDirName + '/' + self._getFullUrl(packagePath, packageObj.coverHref));
+		    epubObj.coverPath = packageObj.coverHref;
+		    epubObj.coverHref = StorageManager.getPathUrl(rootDirName + "/" + self._getFullUrl(packagePath, packageObj.coverHref));
                 }
+
                 self._saveEpubToIndex(options, epubObj);
-            };
+	    };
+	    
+	    StorageManager.saveFile("db://" + rootDirName, blob, commitEpubToLibrary, function (x) { console.log(x); });
 
-            var contentTransformer = new ContentTransformer(encryptionData);
+            //var contentTransformer = new ContentTransformer(encryptionData);
 
-            var startAtIndex = this.startAtIndex || 0;
-            var count = startAtIndex;
-            var max = fileLoader.loadAllFiles(['META-INF/encryption.xml'], startAtIndex, function(continueCallback, name, file){
-                var callback = function(name, transformedContent){
-                    var path = rootDirName + '/' + name;
-                    StorageManager.saveFile(path, transformedContent, function(){
-                        options.progress(Math.round(100 * (++count/max)), Messages.PROGRESS_WRITING, count + " of " + max + ' (' + name + ')');
-                        if (continueCallback) continueCallback();
-                        if (count == max) commitEpubToLibrary();
-                    }, errorHandler);
-                }
+            // var startAtIndex = this.startAtIndex || 0;
+            // var count = startAtIndex;
+            // var max = fileLoader.loadAllFiles(['META-INF/encryption.xml'], startAtIndex, function(continueCallback, name, file){
+            //     var callback = function(name, transformedContent){
+            //         var path = rootDirName + '/' + name;
+            //         StorageManager.saveFile(path, transformedContent, function(){
+            //             options.progress(Math.round(100 * (++count/max)), Messages.PROGRESS_WRITING, count + " of " + max + ' (' + name + ')');
+            //             if (continueCallback) continueCallback();
+            //             if (count == max) commitEpubToLibrary();
+            //         }, errorHandler);
+            //     }
 
-                contentTransformer.transformContent(name, file, callback.bind(null, name));
-            });
-
+            //     contentTransformer.transformContent(name, file, callback.bind(null, name));
+            // });
+	    
         },
 
         _replaceEpub : function(toReplace, packageObj, packagePath){
@@ -220,7 +226,6 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
             });
 
             fileLoader.init(this._addEpubToLibrary.bind(this, fileLoader));
-
         },
         continueImportZip : function(blob, index, rootDirName, callbacks) {
             this.callbacks = callbacks;
@@ -247,21 +252,21 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
         importUrl : function(url, callbacks){
             // I don't want jquery in the worker so go old school
             var xhr = new XMLHttpRequest();
-                self = this,
-                error = function(){callbacks.error(Messages.ERROR_AJAX);};
+            self = this,
+            error = function(){callbacks.error(Messages.ERROR_AJAX);};
 
             xhr.open('GET', url, true);
             xhr.responseType = 'blob';
 
             xhr.onload = function(e) {
-              if (this.status == 200) {
-                // Note: .response instead of .responseText
-                var blob = new Blob([this.response], {type: 'application/epub'});
-                self.importZip(blob, callbacks);
-              }
-              else{
-                error();
-              }
+		if (this.status == 200) {
+                    // Note: .response instead of .responseText
+                    var blob = new Blob([this.response], {type: 'application/epub'});
+                    self.importZip(blob, callbacks);
+		}
+		else{
+                    error();
+		}
             };
             xhr.onerror = error;
 
@@ -272,100 +277,100 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
     var writer = new LibraryWriter(),
         overwriteContinue, overwriteSideBySide, findPackageResponse, parsePackageResponse;
 
-       onmessage = function(evt){
-            var data = evt.data,
-                msg = data.msg;
+    onmessage = function(evt){
+        var data = evt.data,
+            msg = data.msg;
 
-            var success = function(){
-                postMessage({msg: Messages.SUCCESS, libraryItems: writer.libraryData});
+        var success = function(){
+            postMessage({msg: Messages.SUCCESS, libraryItems: writer.libraryData});
+        }
+        var progress = function(percent, type, data){
+            postMessage({msg: Messages.PROGRESS, percent: percent, progressType: type, progressData: data});
+        }
+        var error = function(errorCode, data){
+            postMessage({msg: Messages.ERROR, errorMsg: errorCode, errorData: data});
+        }
+        var continueImport = function(buf, index, rootDirName) {
+            postMessage({msg: Messages.CONTINUE_IMPORT_ZIP, buf: buf, index: index, rootDirName: rootDirName, libraryItems: writer.libraryData});
+        }
+        var overwrite = function(item, kontinue, sidebyside){
+            postMessage({msg: Messages.OVERWRITE, item: item});
+            overwriteContinue = function(){
+                overwriteContinue = null;
+                overwriteSideBySide = null;
+                kontinue();
             }
-            var progress = function(percent, type, data){
-                postMessage({msg: Messages.PROGRESS, percent: percent, progressType: type, progressData: data});
+            overwriteSideBySide = function(){
+                overwriteContinue = null;
+                overwriteSideBySide = null;
+                sidebyside();
             }
-            var error = function(errorCode, data){
-                postMessage({msg: Messages.ERROR, errorMsg: errorCode, errorData: data});
-            }
-            var continueImport = function(buf, index, rootDirName) {
-                postMessage({msg: Messages.CONTINUE_IMPORT_ZIP, buf: buf, index: index, rootDirName: rootDirName, libraryItems: writer.libraryData});
-            }
-            var overwrite = function(item, kontinue, sidebyside){
-                postMessage({msg: Messages.OVERWRITE, item: item});
-                overwriteContinue = function(){
-                    overwriteContinue = null;
-                    overwriteSideBySide = null;
-                    kontinue();
+        }
+
+        switch(msg){
+        case Messages.IMPORT_ZIP :
+            writer.libraryData = data.libraryItems;
+            var buf = data.buf;
+            StorageManager.initStorage(function(){
+                writer.importZip(buf, {success: success, progress: progress, error: error, overwrite: overwrite, continueImport: continueImport});
+            }, error);
+            break;
+        case Messages.CONTINUE_IMPORT_ZIP :
+            writer.libraryData = data.libraryItems;
+            var buf = data.buf,
+                index = data.index,
+                rootDirName = data.rootDirName;
+            StorageManager.initStorage(function(){
+                writer.continueImportZip(buf, index, rootDirName, {success: success, progress: progress, error: error, overwrite: overwrite, continueImport: continueImport});
+            }, error);
+            break;
+        case Messages.DELETE_EPUB:
+            writer.libraryData = data.libraryItems;
+            var id = data.id;
+            StorageManager.initStorage(function(){
+                writer.deleteEpubWithId(id, success, error);
+            }, error);
+            break;
+        case Messages.IMPORT_DIR:
+            writer.libraryData = data.libraryItems;
+            var files = data.files;
+            StorageManager.initStorage(function(){
+                writer.importFileList(files, {success: success, progress: progress, error: error, overwrite: overwrite});
+            }, error);
+            break;
+        case Messages.IMPORT_URL:
+            writer.libraryData = data.libraryItems;
+            var url = data.url;
+            StorageManager.initStorage(function(){
+                writer.importUrl(url, {success: success, progress: progress, error: error, overwrite: overwrite});
+            }, error);
+            break;
+        case Messages.MIGRATE :
+            StorageManager.initStorage(function(){
+                var wrapProgress = function(percent, data){
+                    progress(percent, Messages.PROGRESS_MIGRATING, data);
                 }
-                overwriteSideBySide = function(){
-                    overwriteContinue = null;
-                    overwriteSideBySide = null;
-                    sidebyside();
-                }
-            }
+                StorageManager.migrateLegacyBooks(success, error, wrapProgress);
+            }, error);
+        case Messages.OVERWRITE_CONTINUE :
+            overwriteContinue && overwriteContinue(data);
+            break;
+        case Messages.OVERWRITE_SIDE_BY_SIDE:
+            overwriteSideBySide && overwriteSideBySide(data);
+            break;
+        case Messages.FIND_PACKAGE_RESPONSE :
+            findPackageResponse && findPackageResponse(data);
+            break;
+        case Messages.PARSE_PACKAGE_RESPONSE :
+            parsePackageResponse && parsePackageResponse(data);
+            break;
+        }
 
-            switch(msg){
-                case Messages.IMPORT_ZIP :
-                    writer.libraryData = data.libraryItems;
-                    var buf = data.buf;
-                    StorageManager.initStorage(function(){
-                        writer.importZip(buf, {success: success, progress: progress, error: error, overwrite: overwrite, continueImport: continueImport});
-                    }, error);
-                    break;
-                case Messages.CONTINUE_IMPORT_ZIP :
-                    writer.libraryData = data.libraryItems;
-                    var buf = data.buf,
-                        index = data.index,
-                        rootDirName = data.rootDirName;
-                    StorageManager.initStorage(function(){
-                        writer.continueImportZip(buf, index, rootDirName, {success: success, progress: progress, error: error, overwrite: overwrite, continueImport: continueImport});
-                    }, error);
-                    break;
-                case Messages.DELETE_EPUB:
-                    writer.libraryData = data.libraryItems;
-                    var id = data.id;
-                    StorageManager.initStorage(function(){
-                        writer.deleteEpubWithId(id, success, error);
-                    }, error);
-                    break;
-                case Messages.IMPORT_DIR:
-                    writer.libraryData = data.libraryItems;
-                    var files = data.files;
-                    StorageManager.initStorage(function(){
-                        writer.importFileList(files, {success: success, progress: progress, error: error, overwrite: overwrite});
-                    }, error);
-                    break;
-                case Messages.IMPORT_URL:
-                    writer.libraryData = data.libraryItems;
-                    var url = data.url;
-                    StorageManager.initStorage(function(){
-                        writer.importUrl(url, {success: success, progress: progress, error: error, overwrite: overwrite});
-                    }, error);
-                    break;
-                case Messages.MIGRATE :
-                    StorageManager.initStorage(function(){
-                        var wrapProgress = function(percent, data){
-                            progress(percent, Messages.PROGRESS_MIGRATING, data);
-                        }
-                        StorageManager.migrateLegacyBooks(success, error, wrapProgress);
-                    }, error);
-                case Messages.OVERWRITE_CONTINUE :
-                    overwriteContinue && overwriteContinue(data);
-                    break;
-                case Messages.OVERWRITE_SIDE_BY_SIDE:
-                    overwriteSideBySide && overwriteSideBySide(data);
-                    break;
-                case Messages.FIND_PACKAGE_RESPONSE :
-                    findPackageResponse && findPackageResponse(data);
-                    break;
-                case Messages.PARSE_PACKAGE_RESPONSE :
-                    parsePackageResponse && parsePackageResponse(data);
-                    break;
-            }
+    };
 
-        };
+    setTimeout(function(){
+        postMessage({msg: Messages.READY});
+    }, 30);
 
-        setTimeout(function(){
-            postMessage({msg: Messages.READY});
-        }, 30);
-
-        return writer;
+    return writer;
 });

@@ -251,6 +251,9 @@ URI){
         });
 
         if (json.length) {
+	    if (extraData != null)
+		for (var i = 0; i < extraData.length; i++)
+		    json.push(extraData[i]);
             dataSuccess(json);
         } else {
             dataFail();
@@ -258,7 +261,7 @@ URI){
     };
     
     return {
-        tryParse: function(opdsURL, dataSuccess, dataFail) {
+        tryParse: function(opdsURL, dataSuccess, dataFail, extraData) {
             
             if (opdsURL.indexOf("opds://") == 0) {
                 opdsURL = opdsURL.replace("opds://", "http://");
@@ -268,7 +271,7 @@ URI){
             
             $.get(opdsURL, function(data){
                 try {
-                    processOPDS(opdsURL, data, dataSuccess, dataFail);
+                    processOPDS(opdsURL, data, dataSuccess, dataFail, extraData);
                 } catch(err) {
                     console.error(err);
                     dataFail();

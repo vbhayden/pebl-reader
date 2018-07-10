@@ -84,7 +84,7 @@ require.config({
             process._RJS_rootDir(3) + '/src/js/storage/Settings',
 
         'StorageManager':
-            process._RJS_rootDir(3) + '/src/js/storage/StaticStorageManager',
+            process._RJS_rootDir(3) + '/src/js/storage/IndexedDBStorageManager',
 
         'Analytics':
             process._RJS_rootDir(3) + '/src/js/analytics/Analytics'

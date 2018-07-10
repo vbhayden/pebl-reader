@@ -282,7 +282,13 @@ Helpers){
         var embedded = urlParams['embedded'];
             
         var ebookURL = $(this).attr('data-book');
-        if (ebookURL) {
+	
+	if (ebookURL && ebookURL.substr(0, 5) == "db://") {
+	    StorageManager.getFile(ebookURL, function (data) {		
+		var eventPayload = {embedded: embedded, epub: data, epubs: libraryURL};
+		$(window).triggerHandler('readepub', eventPayload);
+	    });
+	} else if (ebookURL) {
             var eventPayload = {embedded: embedded, epub: ebookURL, epubs: libraryURL};
             $(window).triggerHandler('readepub', eventPayload);
         }
@@ -483,10 +489,13 @@ Helpers){
     var handleFileSelect = function(evt){
         $('#add-epub-dialog').modal('hide');
 
-	var file = evt.target.files[0];
-
-	var eventPayload = {epub: file};
-	$(window).triggerHandler('readepub', eventPayload);
+        if (evt.target.files.length > 1) {
+            importZippedEpubs(evt.target.files, 0);
+            return;
+        }
+ 
+        var file = evt.target.files[0];
+	importZippedEpub(file);
     }
 
     var handleDirSelect = function(evt){
