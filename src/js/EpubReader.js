@@ -183,7 +183,7 @@ BookmarkData){
     
                 wasFixed = readium.reader.isCurrentViewFixedLayout();
                 var metadata = options.metadata;
-    
+		
                 setBookTitle(metadata.title);
 
                 $("#left-page-btn").unbind("click");

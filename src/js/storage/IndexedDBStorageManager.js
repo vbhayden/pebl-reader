@@ -5,8 +5,6 @@ define([], function(){
     var IDBKR = IDBKeyRange // || webkitIDBKeyRange || msIDBKeyRange;
 
     var db;
-    
-    var IndexedDBInterop = (function (readyCallback) {})();
 
     var getBook = function(id, success, error) {
 	var request = db.transaction(["books"], "readonly").objectStore("books").get(id);
@@ -42,7 +40,7 @@ define([], function(){
     var saveBook = function(id, book, success, error) {
 	var data = {
 	    id : id,
-	    content : new Blob([book], { type : "application/epub+zip" })
+	    content : book
 	}
 	var request = db.transaction(["books"], "readwrite").objectStore("books").put(cleanRecord(data));
 	request.onerror = function (e) {

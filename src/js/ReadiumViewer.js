@@ -1,4 +1,4 @@
-define(['jquery', './EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 'URIjs'], function($, EpubLibrary, EpubReader, Helpers, URI){
+define(['jquery', './EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 'URIjs', 'StorageManager'], function($, EpubLibrary, EpubReader, Helpers, URI, StorageManager){
 
     var _initialLoad = true; // replaces pushState() with replaceState() at first load 
     var initialLoad = function(){
@@ -8,13 +8,24 @@ define(['jquery', './EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 
         var ebookURL = urlParams['epub'];
         var libraryURL = urlParams['epubs'];
         var embedded = urlParams['embedded'];
-         
-         // we use triggerHandler() so that the pushState logic is invoked from the first-time open 
-         
+        
+        // we use triggerHandler() so that the pushState logic is invoked from the first-time open 
+        
         if (ebookURL) {
-              //EpubReader.loadUI(urlParams);
-            var eventPayload = {embedded: embedded, epub: ebookURL, epubs: libraryURL};
-            $(window).triggerHandler('readepub', eventPayload);
+            //EpubReader.loadUI(urlParams);
+	    
+	    if (ebookURL.substr(0, 5) == "db://") {
+		StorageManager.initStorage(function () {
+		    StorageManager.getFile(ebookURL, function (data) {
+			var eventPayload = {embedded: embedded, localPath: ebookURL, epub: data, epubs: libraryURL};
+			$(window).triggerHandler('readepub', eventPayload);
+		    });		
+		},
+		function (x) { console.log(x); });		
+	    } else {
+		var eventPayload = {embedded: embedded, epub: ebookURL, epubs: libraryURL};
+		$(window).triggerHandler('readepub', eventPayload);
+	    }            
         }
         else {
             //EpubLibrary.loadUI({epubs: libraryURL});
@@ -23,24 +34,24 @@ define(['jquery', './EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 
         }
 
         $(document.body).on('click', function()
-        {
-            $(document.body).removeClass("keyboard");
-        });
+			    {
+				$(document.body).removeClass("keyboard");
+			    });
 
         $(document).on('keyup', function(e)
-        {
-            $(document.body).addClass("keyboard");
-        });
+		       {
+			   $(document.body).addClass("keyboard");
+		       });
     };
 
     var pushState = $.noop;
     var replaceState = $.noop;
 
     var isChromeExtensionPackagedApp = (typeof chrome !== "undefined") && chrome.app
-            && chrome.app.window && chrome.app.window.current; // a bit redundant?
+        && chrome.app.window && chrome.app.window.current; // a bit redundant?
 
     if (!isChromeExtensionPackagedApp // "history.pushState is not available in packaged apps"
-            && window.history && window.history.pushState){
+        && window.history && window.history.pushState){
         
         $(window).on('popstate', function(){
             
@@ -104,7 +115,7 @@ define(['jquery', './EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 
         
         if (!eventPayload || !eventPayload.epub) return;
         
-        var ebookURL_filepath = Helpers.getEbookUrlFilePath(eventPayload.epub);
+        var ebookURL_filepath = eventPayload.localPath ? eventPayload.localPath : Helpers.getEbookUrlFilePath(eventPayload.epub);
         
         var epub = eventPayload.epub;
         if (epub && (typeof epub !== "string")) {
@@ -115,7 +126,7 @@ define(['jquery', './EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 
         
         var epubs = eventPayload.epubs;
         epubs = EpubReader.ensureUrlIsRelativeToApp(epubs);
-        
+	
         var urlState = Helpers.buildUrlQueryParameters(undefined, {
             epub: ebookURL_filepath,
             epubs: (epubs ? epubs : undefined),
@@ -128,7 +139,7 @@ define(['jquery', './EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 
             "Readium Viewer",
             urlState
         );
-    
+	
         _initialLoad = false;
         
         readerView(eventPayload);
@@ -166,13 +177,13 @@ define(['jquery', './EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 
     $(document.body).tooltip({
         selector : EpubReader.tooltipSelector(),
         placement: function(tip, element){
-          var placeValue = 'auto';
-          if (element.id == 'left-page-btn'){
-            placeValue = 'right';
-          } else if (element.id == 'right-page-btn') {
-            placeValue = 'left'
-          }
-          return placeValue;
+            var placeValue = 'auto';
+            if (element.id == 'left-page-btn'){
+		placeValue = 'right';
+            } else if (element.id == 'right-page-btn') {
+		placeValue = 'left'
+            }
+            return placeValue;
         },
         container: 'body' // do this to prevent weird navbar re-sizing issue when the tooltip is inserted
     }).on('show.bs.tooltip', function(e){
@@ -186,8 +197,8 @@ define(['jquery', './EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 
     
     
     if (window.File
-         //&& window.FileReader
-     ) {
+        //&& window.FileReader
+       ) {
         var fileDragNDropHTMLArea = $(document.body);
         fileDragNDropHTMLArea.on("dragover", function(ev) {
             ev.stopPropagation();
@@ -244,9 +255,9 @@ define(['jquery', './EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 
 
                 // var reader = new FileReader();
                 // reader.onload = function(e) {
-                    
+                
                 //     console.log(e.target.result);
-                    
+                
                 //     var ebookURL = e.target.result;
                 //     $(window).triggerHandler('readepub', ...);
                 // }

@@ -86,8 +86,7 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
 	    var checkExternal = function (extraData) {
 		if (indexUrl.substr(0, 5) == "db://")
 		    indexUrl = "./" + indexUrl.substr(5);
-		if (/\.json$/.test(indexUrl)) {
-                    
+		if (/\.json$/.test(indexUrl)) {                   
                     $.getJSON(indexUrl, function(data){
 			if (extraData != null)
 			    for (var i = 0; i < extraData.length; i++)

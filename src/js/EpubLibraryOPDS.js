@@ -11,7 +11,7 @@ $,
 Helpers,
 URI){
 
-    var processOPDS = function(opdsURL, data, dataSuccess, dataFail) {
+    var processOPDS = function(opdsURL, data, dataSuccess, dataFail, extraData) {
 
         var CORS_PROXY_HTTP_TOKEN = "/http://";
         var CORS_PROXY_HTTPS_TOKEN = "/https://";
@@ -237,6 +237,7 @@ URI){
                 }
 
                 if (json.length < 50) { // TODO: library view pagination! (better list / grid UI)
+		    debugger;
                     json.push({
                         rootUrl: rootUrl,
                         title: title,

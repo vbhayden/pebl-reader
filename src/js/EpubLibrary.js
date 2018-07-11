@@ -285,7 +285,7 @@ Helpers){
 	
 	if (ebookURL && ebookURL.substr(0, 5) == "db://") {
 	    StorageManager.getFile(ebookURL, function (data) {		
-		var eventPayload = {embedded: embedded, epub: data, epubs: libraryURL};
+		var eventPayload = {embedded: embedded, localPath : ebookURL, epub: data, epubs: libraryURL};
 		$(window).triggerHandler('readepub', eventPayload);
 	    });
 	} else if (ebookURL) {
