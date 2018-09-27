@@ -49,7 +49,34 @@ html#simpleViewer .icon-library{
   border-right: solid 2px rgba(0,0,0,.15);
 }
 
+#annotations-body{
+  display: none;
+  overflow: auto;
+  background: #f3f3f3;
+  border-right: solid 2px rgba(0,0,0,.15);
+}
+
+#bookmarks-body{
+  display: none;
+  overflow: auto;
+  background: #f3f3f3;
+  border-right: solid 2px rgba(0,0,0,.15);
+}
+
+
 #readium-toc-body button.close{
+  margin-right: 20px;
+  margin-top: 5px;
+  opacity: .8;
+}
+
+#annotations-body button.close{
+  margin-right: 20px;
+  margin-top: 5px;
+  opacity: .8;
+}
+
+#bookmarks-body button.close{
   margin-right: 20px;
   margin-top: 5px;
   opacity: .8;
@@ -73,6 +100,24 @@ direction: rtl;
 }
 
 .toc-visible #reading-area{
+  left: 30%;
+}
+
+.annotations-visible #annotations-body{
+  display: inline-block;
+  width: 30%;
+}
+
+.annotations-visible #reading-area{
+  left: 30%;
+}
+
+.bookmarks-visible #bookmarks-body{
+  display: inline-block;
+  width: 30%;
+}
+
+.bookmarks-visible #reading-area{
   left: 30%;
 }
 

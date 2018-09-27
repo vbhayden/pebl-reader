@@ -36,6 +36,12 @@
   "settings" : {
     "message" : "Settings"
   },
+  "annotations" : {
+    "message" : "Annotations"
+  },
+  "bookmarks" : {
+    "message" : "Bookmarks"
+  },        
   "layout" : {
     "message" : "Layout"
   },
