@@ -250,10 +250,11 @@ define([
 	   var tocShowHideToggle = function(){
 
                unhideUI();
-
+	       
                var $appContainer = $('#app-container'),
 		   hide = $appContainer.hasClass('toc-visible');
                var bookmark;
+	       $appContainer.removeClass();
                if (readium.reader.handleViewportResize && !embedded){
 		   bookmark = JSON.parse(readium.reader.bookmarkCurrentPage());
                }
@@ -288,6 +289,100 @@ define([
                }
 	   };
 
+	   var annotationsShowHideToggle = function(){
+
+               unhideUI();
+	       
+               var $appContainer = $('#app-container'),
+		   hide = $appContainer.hasClass('annotations-visible');
+               var bookmark;
+	       $appContainer.removeClass();	       
+               if (readium.reader.handleViewportResize && !embedded){
+		   bookmark = JSON.parse(readium.reader.bookmarkCurrentPage());
+               }
+
+               if (hide){
+		   $appContainer.removeClass('annotations-visible');
+
+		   // clear tabindex off of any previously focused ToC item
+		   // var existsFocusable = $('#readium-toc-body a[tabindex="60"]');
+		   // if (existsFocusable.length > 0){
+		   //     existsFocusable[0].setAttribute("tabindex", "-1");
+		   // }
+		   /* end of clear focusable tab item */
+		   // setTimeout(function(){ $('#tocButt')[0].focus(); }, 100);
+               }
+               else {
+		   $("#annotations-body-list")
+
+		   window.pebl.getGeneralAnnotations("taco",
+						     function (stmts) {									   
+							 $appContainer.addClass('annotations-visible');
+						     });
+		   
+		   // setTimeout(function(){ $('#readium-toc-body button.close')[0].focus(); }, 100);
+               }
+
+               if(embedded){
+		   hideLoop(null, true);
+               }else if (readium.reader.handleViewportResize){
+
+		   readium.reader.handleViewportResize(bookmark);
+
+		   // setTimeout(function()
+		   // {
+		   //     readium.reader.openSpineItemElementCfi(bookmark.idref, bookmark.contentCFI, readium.reader);
+		   // }, 90);
+               }
+	   };
+
+	   var bookmarksShowHideToggle = function(){
+
+               unhideUI();
+
+               var $appContainer = $('#app-container'),
+		   hide = $appContainer.hasClass('bookmarks-visible');
+               var bookmark;
+	       $appContainer.removeClass();
+               if (readium.reader.handleViewportResize && !embedded){
+		   bookmark = JSON.parse(readium.reader.bookmarkCurrentPage());
+               }
+
+               if (hide){
+		   $appContainer.removeClass('bookmarks-visible');
+
+		   // clear tabindex off of any previously focused ToC item
+		   // var existsFocusable = $('#readium-toc-body a[tabindex="60"]');
+		   // if (existsFocusable.length > 0){
+		   //     existsFocusable[0].setAttribute("tabindex", "-1");
+		   // }
+		   /* end of clear focusable tab item */
+		   // setTimeout(function(){ $('#tocButt')[0].focus(); }, 100);
+               }
+               else{
+		   window.pebl.getAnnotations("taco",
+					      function (stmts) {
+						  $appContainer.addClass('bookmarks-visible');
+					      });
+		   
+		   $appContainer.addClass('bookmarks-visible');
+
+		   // setTimeout(function(){ $('#readium-toc-body button.close')[0].focus(); }, 100);
+               }
+
+               if(embedded){
+		   hideLoop(null, true);
+               }else if (readium.reader.handleViewportResize){
+
+		   readium.reader.handleViewportResize(bookmark);
+
+		   // setTimeout(function()
+		   // {
+		   //     readium.reader.openSpineItemElementCfi(bookmark.idref, bookmark.contentCFI, readium.reader);
+		   // }, 90);
+               }
+	   };	   
+	   
 	   var showScaleDisplay = function(){
                $('.zoom-wrapper').show();
 	   }
@@ -542,7 +637,16 @@ define([
 						 return false;
 					     }
 					 });
+	       $('#annotations-body').prepend('<div id="annotations-body-list"></div>');
+	       $('#bookmarks-body').prepend('<div id="bookmarks-body-list"></div>');
+	       
+	       $('#annotations-body').prepend('<h2 aria-label="'+Strings.annotations+'" title="'+Strings.annotations+'">'+Strings.annotations+'</h2>');
+	       $('#bookmarks-body').prepend('<h2 aria-label="'+Strings.bookmarks+'" title="'+Strings.bookmarks+'">'+Strings.bookmarks+'</h2>');
+	       
                $('#readium-toc-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="'+Strings.i18n_close+' '+Strings.toc+'" title="'+Strings.i18n_close+' '+Strings.toc+'"><span aria-hidden="true">&times;</span></button>');
+	       $('#annotations-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="'+Strings.i18n_close+' '+Strings.annotations+'" title="'+Strings.i18n_close+' '+Strings.annotations+'"><span aria-hidden="true">&times;</span></button>');
+	       $('#bookmarks-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="'+Strings.i18n_close+' '+Strings.bookmarks+'" title="'+Strings.i18n_close+' '+Strings.bookmarks+'"><span aria-hidden="true">&times;</span></button>');
+	      
                $('#readium-toc-body button.close').on('click', function(){
 		   tocShowHideToggle();
 		   /*
@@ -556,7 +660,15 @@ define([
 		     }
 		   */
 		   return false;
-               })
+               });
+	       $('#annotations-body button.close').on('click', function(){
+		   annotationsShowHideToggle();
+		   return false;
+               });
+	       $('#bookmarks-body button.close').on('click', function(){
+		   bookmarksShowHideToggle();
+		   return false;
+               });	       
 	       //        var KEY_ENTER = 0x0D;
 	       //        var KEY_SPACE = 0x20;
                var KEY_END = 0x23;
@@ -1000,19 +1112,25 @@ define([
 			   });
 
                $('.icon-toc').on('click', tocShowHideToggle);
+	       $('.icon-show-annotations').on('click', annotationsShowHideToggle);
+	       $('.icon-show-bookmarks').on('click', bookmarksShowHideToggle);
+	       
 
                var setTocSize = function(){
 		   var appHeight = $(document.body).height() - $('#app-container')[0].offsetTop;
 		   $('#app-container').height(appHeight);
 		   $('#readium-toc-body').height(appHeight);
+		   $('#annotations-body').height(appHeight);
+		   $('#bookmarks-body').height(appHeight);
                };
-
+	       
                Keyboard.on(Keyboard.ShowSettingsModal, 'reader', function(){$('#settings-dialog').modal("show")});
 
                $('#app-navbar').on('mousemove', hideLoop);
                
                $(window).on('resize', setTocSize);
                setTocSize();
+	       
                hideLoop();
 
                // captures all clicks on the document on the capture phase. Not sure if it's possible with jquery
@@ -1239,7 +1357,7 @@ define([
 
 			   readium.reader.plugins.highlights.on("annotationClicked", function(type, idref, cfi, id) {
 			       console.debug("ANNOTATION CLICK: " + id);
-                               readium.reader.plugins.highlights.removeHighlight(id);
+                               // readium.reader.plugins.highlights.removeHighlight(id);
 			   });
                        }
 		       
@@ -1324,6 +1442,28 @@ define([
                        Keyboard.scope('about');
 		   });
 
+		   $('#annotations-dialog').on('hidden.bs.modal', function () {
+                       Keyboard.scope('reader');
+
+                       unhideUI();
+                       // setTimeout(function(){ $("#annotationsButt1").focus(); }, 50);
+		   });
+		   $('#annotations-dialog').on('shown.bs.modal', function(){
+                       Keyboard.scope('annotations');
+		   });
+
+		   $('#bookmarks-dialog').on('hidden.bs.modal', function () {
+                       Keyboard.scope('reader');
+
+                       unhideUI();
+                       // setTimeout(function(){ $("#bookmarksButt1").focus(); }, 50);
+		   });
+		   $('#bookmarks-dialog').on('shown.bs.modal', function(){
+                       Keyboard.scope('bookmarks');
+		   });
+		   
+		   
+
 		   var readerSettings;
 		   if (settings.reader){
                        readerSettings = settings.reader;
@@ -1379,7 +1519,6 @@ define([
 		   Versioning.getVersioningInfo(function(version){
 
                        $('#app-container').append(AboutDialog({imagePathPrefix: moduleConfig.imagePathPrefix, strings: Strings, dateTimeString: version.dateTimeString, viewerJs: version.readiumJsViewer, readiumJs: version.readiumJs, sharedJs: version.readiumSharedJs, cfiJs: version.readiumCfiJs}));
-
 
                        window.navigator.epubReadingSystem.name = "readium-js-viewer";
                        window.navigator.epubReadingSystem.version = version.readiumJsViewer.chromeVersion;
