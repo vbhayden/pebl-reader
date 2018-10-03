@@ -14,7 +14,7 @@
 
 require.config({
 
-    baseUrl: process._RJS_baseUrl(3),
+    baseUrl: process._RJS_baseUrl(2),
 
     name: "readium-js-viewer_CLOUDAPP-WORKER",
 
@@ -34,26 +34,26 @@ require.config({
     paths:
     {
         "readium-js-viewer_CLOUDAPP-WORKER":
-            process._RJS_rootDir(3) + '/readium-js/readium-shared-js/readium-cfi-js/node_modules/almond/almond',
+            process._RJS_rootDir(2) + '/readium-js/readium-shared-js/node_modules/almond/almond',
 
         "readium_js_viewer_RJS-CONFIG":
-                process._RJS_rootDir(3) + '/src/cloud-reader/requirejs-config',
+                process._RJS_rootDir(2) + '/src/cloud-reader/requirejs-config',
 
         'i18nStrings':
-            process._RJS_rootDir(3) + '/src/i18n/Strings',
+            process._RJS_rootDir(2) + '/src/i18n/Strings',
 
         // 'Settings':
         //     process._RJS_rootDir(3) + '/src/chrome-app/storage/ChromeSettings',
 
 	'StorageManager':
-            process._RJS_rootDir(3) + '/src/js/storage/IndexedDBStorageManager'
+            process._RJS_rootDir(2) + '/src/js/storage/IndexedDBStorageManager'
     },
 
     packages: [
           {
               name: 'readium_js_viewer_cloudApp',
               location:
-                  process._RJS_rootDir(3) + '/src/cloud-reader',
+                  process._RJS_rootDir(2) + '/src/cloud-reader',
 
               main: 'background'
           }

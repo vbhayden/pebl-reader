@@ -19,10 +19,6 @@
         npm run dist:cloudReader:copy
         &&
         npm run dist:cloudReader:copy:fonts
-        &&
-	npm run
-            build:scripts:single:CHROMEAPPWORKER
-            --readium-js-viewer:RJS_UGLY=no
 	&&
         npm run dist:cloudReader:css
         &&
@@ -102,6 +98,15 @@
         npm run cpy
             build-output/_single-bundle/readium-js-viewer_all.js.map
             dist/cloud-reader_sourcemap/
+	&&
+        npm run cpy
+            build-output/_single-bundle/readium-js-viewer_CLOUDAPP-WORKER.js
+            dist/cloud-reader/scripts/
+        &&
+        npm run cpy
+            build-output/_single-bundle/readium-js-viewer_CLOUDAPP-WORKER.js.map
+            dist/cloud-reader_sourcemap/
+
     '
 
 #node node_modules/uglify-js/bin/uglifyjs

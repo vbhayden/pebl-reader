@@ -93,14 +93,10 @@
         &&
         npm run
             build:scripts:single:LITE
-        &&
+	&&
         npm run
-            build:scripts:single:CHROMEAPP
-            --readium-js-viewer:RJS_UGLY=no
-        &&
-        npm run
-            build:scripts:single:CHROMEAPPWORKER
-            --readium-js-viewer:RJS_UGLY=no
+            build:scripts:single:CLOUDAPPWORKER
+            --readium-js-viewer:RJS_UGLY=no	    
     '
 
 #=====================
@@ -132,6 +128,13 @@
         npm run rjs
              --rjs_bundle=single
              --rjs_configOverrideTarget=_CHROMEAPP-WORKER
+    '
+#=====================
+    'build:scripts:single:CLOUDAPPWORKER': '
+
+        npm run rjs
+             --rjs_bundle=single
+             --rjs_configOverrideTarget=_CLOUDAPP-WORKER
     '
 
 #=====================
