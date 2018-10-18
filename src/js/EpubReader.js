@@ -175,33 +175,36 @@ define([
                            
 			   return;
                        }
-                       
-                       currentPackageDocument = packageDocument;
-                       currentPackageDocument.generateTocListDOM(function(dom){
-			   loadToc(dom)
-                       });
-		       
-                       wasFixed = readium.reader.isCurrentViewFixedLayout();
-                       var metadata = options.metadata;
-		       
-                       setBookTitle(metadata.title);
 
-                       $("#left-page-btn").unbind("click");
-                       $("#right-page-btn").unbind("click");
-                       var $pageBtnsContainer = $('#readium-page-btns');
-                       $pageBtnsContainer.empty();
-                       var rtl = currentPackageDocument.getPageProgressionDirection() === "rtl"; //_package.spine.isLeftToRight()
-                       $pageBtnsContainer.append(ReaderBodyPageButtons({strings: Strings, dialogs: Dialogs, keyboard: Keyboard,
-									pageProgressionDirectionIsRTL: rtl
-								       }));
-                       $("#left-page-btn").on("click", prevPage);
-                       $("#right-page-btn").on("click", nextPage);
-                       $("#left-page-btn").mouseleave(function() {
-			   $(tooltipSelector()).tooltip('destroy');
-                       });
-                       $("#right-page-btn").mouseleave(function() {
-			   $(tooltipSelector()).tooltip('destroy');
-                       });
+		       window.pebl.openBook(ebookURL_filepath, function () {
+			   
+			   currentPackageDocument = packageDocument;
+			   currentPackageDocument.generateTocListDOM(function(dom){
+			       loadToc(dom)
+			   });			  			   
+			   
+			   wasFixed = readium.reader.isCurrentViewFixedLayout();
+			   var metadata = options.metadata;
+			   
+			   setBookTitle(metadata.title);
+
+			   $("#left-page-btn").unbind("click");
+			   $("#right-page-btn").unbind("click");
+			   var $pageBtnsContainer = $('#readium-page-btns');
+			   $pageBtnsContainer.empty();
+			   var rtl = currentPackageDocument.getPageProgressionDirection() === "rtl"; //_package.spine.isLeftToRight()
+			   $pageBtnsContainer.append(ReaderBodyPageButtons({strings: Strings, dialogs: Dialogs, keyboard: Keyboard,
+									    pageProgressionDirectionIsRTL: rtl
+									   }));
+			   $("#left-page-btn").on("click", prevPage);
+			   $("#right-page-btn").on("click", nextPage);
+			   $("#left-page-btn").mouseleave(function() {
+			       $(tooltipSelector()).tooltip('destroy');
+			   });
+			   $("#right-page-btn").mouseleave(function() {
+			       $(tooltipSelector()).tooltip('destroy');
+			   });
+		       });
 		   },
 		   openPageRequest
                );
@@ -315,10 +318,19 @@ define([
                else {
 		   $("#annotations-body-list")
 
-		   window.pebl.getGeneralAnnotations("taco",
-						     function (stmts) {									   
-							 $appContainer.addClass('annotations-visible');
-						     });
+		   var book = window.pebl.activityManager.getBook();
+
+		   if (book)
+		       window.pebl.getGeneralAnnotations(book,
+							 function (stmts) {
+							     window.pebl.getAnnotations(book,
+											function (stmts) {									   
+											    $appContainer.addClass('annotations-visible');
+											    debugger;
+											});
+							     $appContainer.addClass('annotations-visible');
+							     debugger;
+							 });
 		   
 		   // setTimeout(function(){ $('#readium-toc-body button.close')[0].focus(); }, 100);
                }
@@ -351,6 +363,19 @@ define([
                if (hide){
 		   $appContainer.removeClass('bookmarks-visible');
 
+		   var book = window.pebl.activityManager.getBook();
+		   
+		   window.pebl.getGeneralAnnotations(book,
+						     function (stmts) {
+							 window.pebl.getAnnotations(book,
+										    function (stmts) {									   
+											$appContainer.addClass('annotations-visible');
+											debugger;
+										    });
+							 $appContainer.addClass('annotations-visible');
+							 debugger;
+						     });
+		   
 		   // clear tabindex off of any previously focused ToC item
 		   // var existsFocusable = $('#readium-toc-body a[tabindex="60"]');
 		   // if (existsFocusable.length > 0){
@@ -646,7 +671,7 @@ define([
                $('#readium-toc-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="'+Strings.i18n_close+' '+Strings.toc+'" title="'+Strings.i18n_close+' '+Strings.toc+'"><span aria-hidden="true">&times;</span></button>');
 	       $('#annotations-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="'+Strings.i18n_close+' '+Strings.annotations+'" title="'+Strings.i18n_close+' '+Strings.annotations+'"><span aria-hidden="true">&times;</span></button>');
 	       $('#bookmarks-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="'+Strings.i18n_close+' '+Strings.bookmarks+'" title="'+Strings.i18n_close+' '+Strings.bookmarks+'"><span aria-hidden="true">&times;</span></button>');
-	      
+	       
                $('#readium-toc-body button.close').on('click', function(){
 		   tocShowHideToggle();
 		   /*
@@ -903,14 +928,22 @@ define([
 	   };
 
 	   var nextPage = function () {
-
+	       
                readium.reader.openPageRight();
+
+	       window.pebl.eventNextPage(readium.reader.getFirstVisibleCfi(),
+					 readium.reader.getLastVisibleCfi());
+	       
                return false;
 	   };
 
 	   var prevPage = function () {
 
                readium.reader.openPageLeft();
+
+	       window.pebl.eventPrevPage(readium.reader.getFirstVisibleCfi(),
+					 readium.reader.getLastVisibleCfi());
+	       
                return false;
 	   };
 
@@ -1630,7 +1663,7 @@ define([
 	   {
                // override current scheme with user options
                Settings.get('reader', function(json)
-			    {
+			    {				    
 				Keyboard.applySettings(json);
 
 				loadReaderUI(data);

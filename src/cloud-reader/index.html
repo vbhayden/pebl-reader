@@ -21,8 +21,11 @@
     </style>
 
     <link rel="stylesheet" type="text/css" href="css/readium-all.css">
-
+    <link rel="stylesheet" type="text/css" href="http://localhost/PEBL/Extensions/DiscussionExtension/pebl-discussion-widget.css">
+    
+    <script type="text/javascript" src="http://localhost/PEBL/Extensions/PEBLCore.js"> </script>
     <script type="text/javascript" src="scripts/readium-js-viewer_all.js"> </script>
+    <script type="text/javascript" src="http://localhost/PEBL/Extensions/LoginExtension/pebl-login-widget.js"> </script>
 
     <script type="text/javascript" src="font-faces/fonts.js"> </script>
 
@@ -86,7 +89,7 @@
 
 	  config : {
 
-              'readium_js_viewer/ModuleConfig' : {
+	      'readium_js_viewer/ModuleConfig' : {
 
 		  'mathJaxUrl': HTTPServerRootFolder + '/scripts/mathjax/MathJax.js',
 		  
@@ -108,8 +111,12 @@
 
 		  'workerUrl': 'scripts/readium-js-viewer_CLOUDAPP-WORKER.js',
 		  'epubReadingSystemUrl': undefined
-              }
+	      }
 	  }
+      });
+
+      PEBL.registerReadyCallback(function () {
+	  loadReadiumReader();
       });
     </script>
 
