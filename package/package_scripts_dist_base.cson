@@ -38,8 +38,6 @@
 
         npm run dist:copy
         &&
-        npm run dist:cloudReaderLite
-        &&
         npm run dist:cloudReader       
     '
 
@@ -50,8 +48,6 @@
         npm run dist
         &&
         npm run deploy:cloudReader:copy:sourcemap
-        &&
-        npm run deploy:cloudReaderLite:copy:sourcemap       
     '
 
 

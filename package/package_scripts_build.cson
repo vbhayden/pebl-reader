@@ -84,15 +84,12 @@
     'build:scripts': '
 
         npm run versioning
-        &&
+	&&
         npm run
             build:scripts:multiple
         &&
         npm run
             build:scripts:single
-        &&
-        npm run
-            build:scripts:single:LITE
 	&&
         npm run
             build:scripts:single:CLOUDAPPWORKER
