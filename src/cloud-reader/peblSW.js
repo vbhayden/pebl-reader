@@ -1,8 +1,8 @@
 var CACHE_NAME = "peblV2";
 
 var FILES_TO_CACHE = [
-    "/",
-    "/?",
+    "./",
+    "./?",
 
     
     "./css/readium-all.css",
@@ -94,21 +94,18 @@ self.addEventListener('install',
 self.addEventListener('fetch', event => {
     if (event.request.method != 'GET') return;
 
-    event.respondWith(async function() {
-
-	var request = event.request
-
-	if (request.mode != "cors") {
-	    
-	    const cachedResponse = await cache.match(request);
-	    
-	    if (cachedResponse) {
-		event.waitUntil(cache.add(request));
-		return cachedResponse;
-	    }
-	    
-	}
-
-	return fetch(event.request);
-    }());
+    var request = event.request;
+    
+    var url = new URL(request.url);
+    
+    if (url.origin == location.origin) {
+	event.respondWith(
+	    fetch(event.request).then(function (response) {
+		cache.put(request, response.clone());
+		return response;
+	    }).catch(function () {
+		return cache.match(request);
+	    }));
+    } else
+	event.respondWith(fetch(event.request));          
 });
