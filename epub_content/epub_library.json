@@ -1,12 +1,3 @@
 [
-    {
-        "title" : "CODIAC",
-        "author" : "Eduworks",
-        "rootUrl" : "epub_content/CODIAC.epub"
-    },
-    {
-        "title" : "CyberSec",
-        "author" : "Eduworks",
-        "rootUrl" : "epub_content/PEBL_CyberSec_v12b.epub"
-    }
+    
 ]

@@ -65,6 +65,34 @@
         npm run cpy
             src/css/annotations.css
             dist/cloud-reader/css/
+        &&
+        npm run cpy
+            src/cloud-reader/offlinePebl.appcache
+            dist/cloud-reader/
+        &&
+        npm run cpy
+            src/cloud-reader/manifest.json
+            dist/cloud-reader/
+        &&
+        npm run cpy
+            src/cloud-reader/peblSW.js
+            dist/cloud-reader/
+        &&
+        npm run cpy
+            src/js/PEBLCore.js
+            dist/cloud-reader/scripts/
+        &&
+        npm run cpy
+            src/js/jquery-3.3.1.min.js
+            dist/cloud-reader/scripts/
+        &&
+        npm run cpy
+            src/css/pebl-discussion-widget.css
+            dist/cloud-reader/css/
+        &&
+        npm run cpy
+            src/js/pebl-login-widget.js
+            dist/cloud-reader/scripts/
     '
 
 #=====================

@@ -210,7 +210,7 @@ html[data-theme=night-theme] .modal
 }*/
 
 .navbar .icon-logo, .navbar .icon-logo:active{
-  background-image: url('../images/readium_logo.png');
+  background-image: url('../images/webreader_logo_eduworks.png');
   width: 130px; 
   background-size: auto 28px !important;
 }
