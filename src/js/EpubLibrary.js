@@ -240,10 +240,32 @@ Helpers){
                 //     console.warn("no epub.packagePath (OPF within zipped EPUB archive?): " + epub.rootUrl);
                 //     //console.log(epub);
                 // }
+
                 
-                $('.library-items').append(LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, strings: Strings, noCoverBackground: noCoverBackground}));
+
+                var background = epub.coverHref;
+
+                if (background.substr(0,5) === "blob:") {
+                    var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, strings: Strings, noCoverBackground: noCoverBackground});
+                    $('.library-items').append(elem);
+                    processEpub(epubs, ++count);
+                } else {
+                    StorageManager.getFile(background, function(data) {
+                        var newEpub = epub;
+                        newEpub.coverHref = URL.createObjectURL(data);
+                        var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: newEpub, strings: Strings, noCoverBackground: noCoverBackground});
+                        $('.library-items').append(elem);
+                    
+                        processEpub(epubs, ++count);
+                    }, function() {
+                        var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, strings: Strings, noCoverBackground: noCoverBackground});
+                        $('.library-items').append(elem);
+                    
+                        processEpub(epubs, ++count);
+                    });
+                }
                 
-                processEpub(epubs, ++count);
+                
             };
             
             if (!epub.isSubLibraryLink && !epub.packagePath) {
@@ -657,6 +679,7 @@ Helpers){
             $("#buttSave").attr("accesskey", Keyboard.accesskeys.SettingsModalSave);
             $("#buttClose").attr("accesskey", Keyboard.accesskeys.SettingsModalClose);
         });
+        
 
         var isChromeExtensionPackagedApp_ButNotChromeOS = (typeof chrome !== "undefined") && chrome.app
             && chrome.app.window && chrome.app.window.current // a bit redundant?

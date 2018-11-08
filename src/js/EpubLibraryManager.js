@@ -90,7 +90,7 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
                     $.getJSON(indexUrl, function(data){
 			if (extraData != null)
 			    for (var i = 0; i < extraData.length; i++)
-				data.push(extraData[i]);			
+				data.push(extraData[i]);
 			dataSuccess(data);
                     }).fail(function(){
 			if (extraData!=null)
@@ -104,7 +104,7 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
 	    };
 	    
 	    if (indexUrl.substr(0, 5) == "db://") {
-		StorageManager.getFile(indexUrl,
+		StorageManager.getFile(indexUrl.replace('epub_content/', ''),
 				       checkExternal,
 				       function (x) { console.log(x); });	
 

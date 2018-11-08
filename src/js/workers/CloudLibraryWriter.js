@@ -55,6 +55,9 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
 	    }
 
 	    var commitEpubToLibrary = function(){
+                    console.log('package: ');
+                    console.log(JSON.stringify(packageObj, null, 4));
+                    console.log('packagePath: ' + packagePath);
 
                 var epubObj = {
 		    id: packageObj.id,
@@ -72,7 +75,11 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
                 self._saveEpubToIndex(options, epubObj);
 	    };
 	    
-	    StorageManager.saveFile("db://" + rootDirName, blob, commitEpubToLibrary, function (x) { console.log(x); });
+	    StorageManager.saveFile("db://" + rootDirName, blob, function() {
+            fileLoader.loadFile('OEBPS/' + packageObj.coverHref, function(image) {
+                StorageManager.saveFile("db://" + rootDirName + '/OEBPS/' + packageObj.coverHref, image, commitEpubToLibrary, function (x) {console.log(x); });
+            });
+        }, function (x) { console.log(x); });
 
             //var contentTransformer = new ContentTransformer(encryptionData);
 
