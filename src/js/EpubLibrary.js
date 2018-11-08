@@ -245,25 +245,18 @@ Helpers){
 
                 var background = epub.coverHref;
 
-                if (background.substr(0,5) === "blob:") {
+                StorageManager.getFile(background, function(data) {
+                    var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: URL.createObjectURL(data), strings: Strings, noCoverBackground: noCoverBackground});
+                    $('.library-items').append(elem);
+                
+                    processEpub(epubs, ++count);
+                }, function() {
                     var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, strings: Strings, noCoverBackground: noCoverBackground});
                     $('.library-items').append(elem);
+                
                     processEpub(epubs, ++count);
-                } else {
-                    StorageManager.getFile(background, function(data) {
-                        var newEpub = epub;
-                        newEpub.coverHref = URL.createObjectURL(data);
-                        var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: newEpub, strings: Strings, noCoverBackground: noCoverBackground});
-                        $('.library-items').append(elem);
-                    
-                        processEpub(epubs, ++count);
-                    }, function() {
-                        var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, strings: Strings, noCoverBackground: noCoverBackground});
-                        $('.library-items').append(elem);
-                    
-                        processEpub(epubs, ++count);
-                    });
-                }
+                });
+
                 
                 
             };
