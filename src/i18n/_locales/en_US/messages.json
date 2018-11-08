@@ -117,6 +117,9 @@
     "i18n_readium_library" : {
 	"message" : "Readium Library"
     },
+    "i18n_pebl_library" : {
+	"message" : "PeBL Library"
+    },    
     "i18n_loading" : {
 	"message" : "Loading Library"
     },
@@ -216,6 +219,9 @@
     "i18n_add_book_to_readium_library" : {
 	"message" : "Add Book To Readium Library:"
     },
+    "i18n_add_book_to_pebl_library" : {
+	"message" : "Add Book To PeBL Library:"
+    },    
     "i18n_add_book" : {
 	"message" : "Add to Library"
     },

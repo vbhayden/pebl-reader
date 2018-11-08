@@ -1,12 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html manifest="offlinePebl.appcache">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="images/readium_favicon.png" rel="shortcut icon"/>
-    <link href="images/readium-touch-icon.png" rel="apple-touch-icon"/>
+    <link rel="manifest" href="manifest.json" />
+    
+    <link href="images/PEBL-icon-16.ico" rel="shortcut icon"/>
+    <link href="images/PEBL-icon-144.png" rel="apple-touch-icon"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="PeBL eReader">
 
+    <meta name="msapplication-TileImage" content="images/PEBL-icon-144.png">
+    <meta name="msapplication-TileColor" content="#000000">
+    
+    
     <style>
       .library-item{
           height: 100px;
@@ -21,16 +30,25 @@
     </style>
 
     <link rel="stylesheet" type="text/css" href="css/readium-all.css">
-    <link rel="stylesheet" type="text/css" href="http://localhost/PEBL/Extensions/DiscussionExtension/pebl-discussion-widget.css">
-    
-    <script type="text/javascript" src="http://localhost/PEBL/Extensions/PEBLCore.js"> </script>
+    <link rel="stylesheet" type="text/css" href="css/pebl-discussion-widget.css">
+
+    <script type="text/javascript" src="scripts/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="scripts/PEBLCore.js"> </script>
     <script type="text/javascript" src="scripts/readium-js-viewer_all.js"> </script>
-    <script type="text/javascript" src="http://localhost/PEBL/Extensions/LoginExtension/pebl-login-widget.js"> </script>
+    <script type="text/javascript" src="scripts/pebl-login-widget.js"> </script>
 
     <script type="text/javascript" src="font-faces/fonts.js"> </script>
 
     <script type="text/javascript">
 
+      if (navigator.serviceWorker) {
+	  navigator.serviceWorker.register('peblSW.js').then(function (reg) {
+	      console.log("Service worker registered", reg.scope);
+	  }).catch(function (err) {
+	      console.log("Bad service worker", err);
+	  });
+      } 
+      
       var path = (window.location && window.location.pathname) ? window.location.pathname : ''; 
 
       // extracts path to index.html (or more generally: /PATH/TO/*.[x]html)

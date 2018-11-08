@@ -1,0 +1,78 @@
+CACHE MANIFEST
+# v1 - 2018-11-01
+
+# http://192.168.1.247:9090/dist/cloud-reader/?
+index.html
+
+# stylesheets
+css/readium-all.css
+css/annotations.css
+css/pebl-discussion-widget.css
+
+# scripts
+scripts/jquery-3.3.1.min.js
+scripts/PEBLCore.js
+scripts/readium-js-viewer_all.js
+scripts/readium-js-viewer_CLOUDAPP-WORKER.js
+scripts/mathjax/MathJax.js
+scripts/zip/deflate.js
+scripts/zip/inflate.js
+scripts/zip/z-worker.js
+font-faces/fonts.js
+scripts/pebl-login-widget.js
+
+# media
+images/covers/cover1.jpg
+images/covers/cover2.jpg
+images/covers/cover3.jpg
+images/covers/cover4.jpg
+images/covers/cover5.jpg
+images/covers/cover6.jpg
+images/covers/cover7.jpg
+images/covers/cover8.jpg
+images/about_readium_logo.png
+images/epub_favicon.ico
+images/epub-touch-icon.png
+images/glyphicons_115_text_smaller.png
+images/glyphicons_116_text_bigger.png
+images/ico_doublepage_up.png
+images/ico_singlepage_up.png
+images/library_arrow.png
+images/margin1_off.png
+images/margin4_off.png
+images/pagination.svg
+images/pagination1.svg
+images/partner_logos.png
+images/PEBL-icon-16.ico
+images/readium_logo.png
+images/PEBL-icon-48.png
+images/PEBL-icon-144.png
+images/PEBL-icon-192.png
+
+# fonts
+fonts/glyphicons-halflings-regular.eot
+fonts/glyphicons-halflings-regular.svg
+fonts/glyphicons-halflings-regular.ttf
+fonts/glyphicons-halflings-regular.woff
+fonts/glyphicons-halflings-regular.woff2
+font-faces/Noto-Serif/Noto-Serif.css
+font-faces/Noto-Serif/Noto-Serif-700.woff
+font-faces/Noto-Serif/Noto-Serif-700italic.woff
+font-faces/Noto-Serif/Noto-Serif-italic.woff
+font-faces/Noto-Serif/Noto-Serif-regular.woff
+font-faces/OpenDyslexic/OpenDyslexic.css
+font-faces/OpenDyslexic/OpenDyslexic-Bold.woff
+font-faces/OpenDyslexic/OpenDyslexic-BoldItalic.woff
+font-faces/OpenDyslexic/OpenDyslexic-Italic.woff
+font-faces/OpenDyslexic/OpenDyslexic-Regular.woff
+font-faces/Open-Sans/Open-Sans.css
+font-faces/Open-Sans/Open-Sans-700.woff
+font-faces/Open-Sans/Open-Sans-700italic.woff
+font-faces/Open-Sans/Open-Sans-italic.woff
+font-faces/Open-Sans/Open-Sans-regular.woff
+
+# epub content
+epub_content/epub_library.json
+epub_content/epub_library.opds
+# epub_content/CODIAC.epub
+# epub_content/PEBLCyberSecv12b.epub
