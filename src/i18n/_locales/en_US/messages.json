@@ -24,6 +24,9 @@
     "highlight_selection" : {
 	"message" : "Highlight Selected Text"
     },
+    "bookmark" : {
+    "message" : "Bookmark"
+    },
     "share_url" : {
 	"message" : "Share reader bookmark..."
     },

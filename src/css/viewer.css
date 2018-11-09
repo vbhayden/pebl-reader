@@ -82,6 +82,20 @@ html#simpleViewer .icon-library{
   opacity: .8;
 }
 
+#bookmarks-body-list {
+  margin-left: 1em;
+}
+
+#bookmarks-body-list span {
+  color: #337ab7;
+  cursor: pointer;
+}
+
+#bookmarks-body-list span:hover {
+  text-decoration: underline;
+  filter: brightness(0.5);
+}
+
 /*
 #readium-toc-body *[dir=rtl]{
 direction: rtl;
@@ -119,6 +133,56 @@ direction: rtl;
 
 .bookmarks-visible #reading-area{
   left: 30%;
+}
+
+.bookmark-wrapper {
+  float: left;
+}
+
+.bookmark-wrapper a {
+  color: #ddd;
+}
+
+.dropdown-menu > li {
+  cursor: pointer;
+}
+
+.dropdown-menu > li > span {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: 400;
+  line-height: 1.42857143;
+  color: #333;
+  white-space: nowrap;
+}
+
+.dropdown-menu > li > span:hover {
+  color:#262626;
+  background-color:#f5f5f5
+}
+
+#bookmarkModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-wrap: wrap;
+  transform: translate(-50%, -50%);
+}
+
+#bookmarkInput {
+  width: 100%;
+}
+
+#bookmarkSubmit {
+  width: 50%;
+  height: 50px;
+}
+
+#bookmarkCancel {
+  width: 50%;
+  height: 50px;
 }
 
 .navbar

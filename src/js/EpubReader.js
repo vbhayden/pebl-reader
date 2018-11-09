@@ -156,6 +156,7 @@ define([
 	   
 	   // This function will retrieve a package document and load an EPUB
 	   var loadEbook = function (readerSettings, openPageRequest) {
+	   	
 
                readium.openPackageDocument(
 		   
@@ -175,6 +176,7 @@ define([
                            
 			   return;
                        }
+
 
 		       window.pebl.openBook(ebookURL_filepath, function () {
 			   
@@ -348,6 +350,56 @@ define([
                }
 	   };
 
+	   var showBookmarkDialogue = function() {
+	   	$('#bookmarkModal').remove();
+	   	var modalContainer = document.createElement('div');
+	   	modalContainer.id = 'bookmarkModal';
+	   	var bookmarkInput = document.createElement('input');
+	   	bookmarkInput.id = 'bookmarkInput';
+	   	bookmarkInput.placeholder = 'Bookmark name...';
+	   	var bookmarkSubmit = document.createElement('button');
+	   	bookmarkSubmit.id = 'bookmarkSubmit';
+	   	bookmarkSubmit.textContent = 'Bookmark';
+	   	var bookmarkCancel = document.createElement('button');
+	   	bookmarkCancel.id = 'bookmarkCancel';
+	   	bookmarkCancel.textContent = 'Cancel';
+
+	   	bookmarkSubmit.addEventListener('click', function() {
+	   		saveBookmark($('#bookmarkInput').val());
+	   		$('#bookmarkModal').remove();
+	   	});
+
+	   	bookmarkCancel.addEventListener('click', function() {
+	   		$('#bookmarkModal').remove();
+	   	});
+
+	   	modalContainer.appendChild(bookmarkInput);
+	   	modalContainer.appendChild(bookmarkSubmit);
+	   	modalContainer.appendChild(bookmarkCancel);
+
+	   	window.document.body.appendChild(modalContainer);
+	   };
+
+	   var saveBookmark = function(title) {
+	   	var annID = Math.random()*1000000;
+	   	var bookmark = JSON.parse(readium.reader.bookmarkCurrentPage());
+	   	var annotation = {};
+	   	var timestamp = new Date();
+	   	annotation.AnnID = annID;
+	   	annotation.CFI = bookmark.contentCFI;
+	   	annotation.ContainerPath = ebookURL_filepath;
+	   	annotation.Date = timestamp.toISOString();
+	   	annotation.IDRef = bookmark.idref;
+	   	annotation.Owner = "N/A";
+	   	annotation.Style = 0;
+	   	annotation.Text = "";
+	   	annotation.Title = title;
+	   	annotation.Type = 1;
+
+
+	   	window.pebl.addAnnotation(annotation);
+	   };
+
 	   var bookmarksShowHideToggle = function(){
 
                unhideUI();
@@ -361,38 +413,37 @@ define([
                }
 
                if (hide){
-		   $appContainer.removeClass('bookmarks-visible');
-
-		   var book = window.pebl.activityManager.getBook();
-		   
-		   window.pebl.getGeneralAnnotations(book,
-						     function (stmts) {
-							 window.pebl.getAnnotations(book,
-										    function (stmts) {									   
-											$appContainer.addClass('annotations-visible');
-											debugger;
-										    });
-							 $appContainer.addClass('annotations-visible');
-							 debugger;
-						     });
-		   
-		   // clear tabindex off of any previously focused ToC item
-		   // var existsFocusable = $('#readium-toc-body a[tabindex="60"]');
-		   // if (existsFocusable.length > 0){
-		   //     existsFocusable[0].setAttribute("tabindex", "-1");
-		   // }
-		   /* end of clear focusable tab item */
-		   // setTimeout(function(){ $('#tocButt')[0].focus(); }, 100);
+		   		$appContainer.removeClass('bookmarks-visible');
                }
                else{
-		   window.pebl.getAnnotations("taco",
+               	$('#bookmarks-body-list').children().remove();
+		   window.pebl.getAnnotations(ebookURL_filepath,
 					      function (stmts) {
-						  $appContainer.addClass('bookmarks-visible');
+						  	$appContainer.addClass('bookmarks-visible');
+						  	for (var stmt of stmts) {
+						  		if (stmt.Type === 1) {
+						  			var bookmarkWrapper = document.createElement('div');
+							  		var bookmarkLink = document.createElement('span');
+							  		bookmarkLink.addEventListener('click', function(evt) {
+							  			var bookmark = {
+								       		contentCFI: evt.currentTarget.getAttribute('data-CFI'),
+								       		IDRef: evt.currentTarget.getAttribute('data-IDRef')
+								       	}
+								       	readium.reader.openSpineItemElementCfi(bookmark.IDRef, bookmark.contentCFI);
+							  		});
+							  		bookmarkLink.classList.add('bookmarkLink');
+							  		bookmarkLink.textContent = stmt.Title;
+							  		bookmarkLink.setAttribute('data-CFI', stmt.CFI);
+							  		bookmarkLink.setAttribute('data-IDRef', stmt.IDRef);
+
+							  		bookmarkWrapper.appendChild(bookmarkLink);
+							  		$('#bookmarks-body-list').append($(bookmarkWrapper));
+						  		}
+						  	}
 					      });
 		   
 		   $appContainer.addClass('bookmarks-visible');
 
-		   // setTimeout(function(){ $('#readium-toc-body button.close')[0].focus(); }, 100);
                }
 
                if(embedded){
@@ -401,10 +452,6 @@ define([
 
 		   readium.reader.handleViewportResize(bookmark);
 
-		   // setTimeout(function()
-		   // {
-		   //     readium.reader.openSpineItemElementCfi(bookmark.idref, bookmark.contentCFI, readium.reader);
-		   // }, 90);
                }
 	   };	   
 	   
@@ -1146,7 +1193,8 @@ define([
 
                $('.icon-toc').on('click', tocShowHideToggle);
 	       $('.icon-show-annotations').on('click', annotationsShowHideToggle);
-	       $('.icon-show-bookmarks').on('click', bookmarksShowHideToggle);
+	       $('#bookmark-show').on('click', bookmarksShowHideToggle);
+	       $('#bookmark-page').on('click', showBookmarkDialogue);
 	       
 
                var setTocSize = function(){
