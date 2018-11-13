@@ -1,11 +1,35 @@
-.rd-highlight.test-highlight {
+.rd-highlight.user-highlight {
     position: absolute;
     opacity: 0.2;
-    background-color: red;
+    background-color: yellow;
 }
 
-.rd-highlight.hover-test-highlight {
+.rd-highlight.hover-user-highlight {
     position: absolute;
     opacity: 0.4;
-    background-color: red;
+    background-color: yellow;
+}
+
+.rd-highlight.shared-highlight {
+	position: absolute;
+	opacity: 0.2;
+	background-color: red;
+}
+
+.rd-highlight.hover-shared-highlight {
+	position: absolute;
+	opacity: 0.4;
+	background-color: red;
+}
+
+.rd-highlight.shared-my-highlight {
+	position: absolute;
+	opacity: 0.2;
+	background-color: #0070ff;
+}
+
+.rd-highlight.hover-shared-my-highlight {
+	position: absolute;
+	opacity: 0.4;
+	background-color: #0070ff;
 }

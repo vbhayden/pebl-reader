@@ -162,7 +162,8 @@ direction: rtl;
   background-color:#f5f5f5
 }
 
-#bookmarkModal {
+#bookmarkModal,
+#annotationNoteModal {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -171,16 +172,19 @@ direction: rtl;
   transform: translate(-50%, -50%);
 }
 
-#bookmarkInput {
+#bookmarkInput,
+#annotationNoteInput {
   width: 100%;
 }
 
-#bookmarkSubmit {
+#bookmarkSubmit,
+#noteSubmit {
   width: 50%;
   height: 50px;
 }
 
-#bookmarkCancel {
+#bookmarkCancel,
+#noteCancel {
   width: 50%;
   height: 50px;
 }
@@ -736,4 +740,96 @@ ul.nav-tabs li:not(.active) button:hover
 
 #zoom-menu .active-zoom .glyphicon-ok{
   display: inline-block;
+}
+
+#clickOutOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4999;
+}
+
+#annotationContextMenu {
+  position: fixed;
+  width: 250px;
+  height: auto;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 15px;
+  z-index: 5000;
+}
+
+#annotationContextMenu > .noteContainer {
+  padding: 10px;
+  border-top: 1px solid white;
+  width: 100%;
+}
+
+#annotationContextMenu > .annotationContextButtonWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 50px;
+  width: 100%;
+}
+
+#annotationContextMenu > .annotationContextButtonWrapper > div {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+#annotationContextMenu > .annotationContextButtonWrapper > div:not(:last-child) {
+  border-right: 1px solid white;
+}
+
+#annotationContextMenu > .annotationContextButtonWrapper > div:not(:first-child),
+#annotationContextMenu > .annotationContextButtonWrapper > div:not(:last-child) {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#my-shared-annotations > div,
+#my-annotations > div,
+#general-shared-annotations > div {
+  margin: 1em;
+  cursor: pointer
+}
+
+#my-shared-annotations > div > div:first-child > span {
+  background: #cbe1ff;
+}
+
+#my-shared-annotations > div:hover > div:first-child > span {
+  background: #98c5ff;
+}
+
+#my-annotations > div > div:first-child > span {
+  background: #ffffcb;
+}
+
+#my-annotations > div:hover > div:first-child > span {
+  background: #ffff98;
+}
+
+#general-shared-annotations > div > div:first-child > span {
+  background: #ffcbcb;
+}
+
+#general-shared-annotations > div:hover > div:first-child > span {
+  background: #ff9898;
+}
+
+#my-shared-annotations > div > div:last-child,
+#my-annotations > div > div:last-child,
+#general-shared-annotations > div > div:last-child {
+  font-style: italic;
 }
