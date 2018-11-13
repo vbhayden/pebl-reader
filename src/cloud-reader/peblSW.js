@@ -74,22 +74,24 @@ var FILES_TO_CACHE = [
     "./images/webreader_logo_eduworks.png",
     "./images/about_readium_logo.png",
 
+    
     "./epub_content/epub_library.json",
     "./epub_content/epub_library.opds"    
 ];
-
-var cache;
 
 self.addEventListener('install',
 		      function (event) {
 			  event.waitUntil(
 			      caches.open(CACHE_NAME).then(function (openCache) {
-				  cache = openCache;
-				  return cache.addAll(FILES_TO_CACHE);
+				  return openCache.addAll(FILES_TO_CACHE);
 			      })
 			  );
 		      });
 
+self.addEventListener('activate',
+		      function (e) {
+			  
+		      });
 
 self.addEventListener('fetch', event => {
     if (event.request.method != 'GET') return;
@@ -101,10 +103,12 @@ self.addEventListener('fetch', event => {
     if (url.origin == location.origin) {
 	event.respondWith(
 	    fetch(event.request).then(function (response) {
-		cache.put(request, response.clone());
-		return response;
+		return caches.open(CACHE_NAME).then(function (openCache) {
+		    openCache.put(request, response.clone());
+		    return response;
+		});		
 	    }).catch(function () {
-		return cache.match(request);
+		return caches.match(request);
 	    }));
     } else
 	event.respondWith(fetch(event.request));          

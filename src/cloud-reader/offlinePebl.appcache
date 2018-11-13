@@ -47,7 +47,10 @@ images/PEBL-icon-16.ico
 images/readium_logo.png
 images/PEBL-icon-48.png
 images/PEBL-icon-144.png
+images/webreader_logo_eduworks.png
 images/PEBL-icon-192.png
+
+manifest.json
 
 # fonts
 fonts/glyphicons-halflings-regular.eot
