@@ -155,6 +155,13 @@ define([
             readium.reader.debugBookmarkData(cfi);
         };
 
+        var constructEbookTitle = function(ebookURL) {
+        	var title = ebookURL.replace('epub_content/bookshelf/', '');
+        	if (!title.slice(-5) === '.epub')
+        		title = title + '.epub';
+        	return title;
+        };
+
         // This function will retrieve a package document and load an EPUB
         var loadEbook = function(readerSettings, openPageRequest) {
 
@@ -179,7 +186,7 @@ define([
                     }
 
 
-                    window.pebl.openBook(ebookURL_filepath, function() {
+                    window.pebl.openBook(constructEbookTitle(ebookURL_filepath), function() {
 
                         currentPackageDocument = packageDocument;
                         currentPackageDocument.generateTocListDOM(function(dom) {
@@ -318,7 +325,7 @@ define([
             	$('#my-shared-annotations').children().remove();
             	$('#general-shared-annotations').children().remove();
             	$appContainer.addClass('annotations-visible');
-                window.pebl.getAnnotations(ebookURL_filepath,
+                window.pebl.getAnnotations(window.pebl.activityManager.getBook(),
                     function(stmts) {
                         for (var stmt of stmts) {
                         	if (stmt.Type === 2) {
@@ -345,7 +352,7 @@ define([
                         	}
                         }
                     });
-                window.pebl.getGeneralAnnotations(ebookURL_filepath,
+                window.pebl.getGeneralAnnotations(window.pebl.activityManager.getBook(),
                 	function(stmts) {
                 		for (var stmt of stmts) {
                 			if (stmt.Type === 3) {
@@ -402,7 +409,7 @@ define([
                 var iframeWindow = iframe.contentWindow || iframe.contentDocument;
                 annotation.AnnID = annID;
                 annotation.CFI = CFI.cfi;
-                annotation.ContainerPath = ebookURL_filepath;
+                annotation.ContainerPath = window.pebl.activityManager.getBook();
                 annotation.Date = timestamp.toISOString();
                 annotation.IDRef = CFI.idref;
                 annotation.Style = 1;
@@ -601,7 +608,7 @@ define([
             var timestamp = new Date();
             annotation.AnnID = annID;
             annotation.CFI = bookmark.contentCFI;
-            annotation.ContainerPath = ebookURL_filepath;
+            annotation.ContainerPath = window.pebl.activityManager.getBook();
             annotation.Date = timestamp.toISOString();
             annotation.IDRef = bookmark.idref;
             annotation.Owner = "N/A";
@@ -630,7 +637,7 @@ define([
                 $appContainer.removeClass('bookmarks-visible');
             } else {
                 $('#bookmarks-body-list').children().remove();
-                window.pebl.getAnnotations(ebookURL_filepath,
+                window.pebl.getAnnotations(window.pebl.activityManager.getBook(),
                     function(stmts) {
                         $appContainer.addClass('bookmarks-visible');
                         for (var stmt of stmts) {
@@ -808,7 +815,7 @@ define([
 
                 //TODO: Find a way to not need to remove and readd all the highlights each time
                 readium.reader.plugins.highlights.removeHighlightsByType('user-highlight');
-                window.pebl.getAnnotations(ebookURL_filepath,
+                window.pebl.getAnnotations(window.pebl.activityManager.getBook(),
                     function(stmts) {
                         for (var stmt of stmts) {
                             if (stmt.Type === 2) {
@@ -820,7 +827,7 @@ define([
                     });
                 readium.reader.plugins.highlights.removeHighlightsByType('shared-highlight');
                 readium.reader.plugins.highlights.removeHighlightsByType('shared-my-highlight');
-                window.pebl.getGeneralAnnotations(ebookURL_filepath,
+                window.pebl.getGeneralAnnotations(window.pebl.activityManager.getBook(),
                     function(stmts) {
                         for (var stmt of stmts) {
                             if (stmt.Type === 3) {
@@ -1636,7 +1643,7 @@ define([
                             console.debug("ANNOTATION CLICK: " + id);
                             //TODO: Maybe have a function to get a specific annotation rather than loop through them all?
                             if (type === 'user-highlight')
-                                window.pebl.getAnnotations(ebookURL_filepath, function(stmts) {
+                                window.pebl.getAnnotations(window.pebl.activityManager.getBook(), function(stmts) {
                                     for (var stmt of stmts) {
                                         if (stmt.id === id) {
                                             console.log(stmt);
@@ -1646,7 +1653,7 @@ define([
                                     }
                                 });
                             else if (type === 'shared-highlight' || type === 'shared-my-highlight');
-                            window.pebl.getGeneralAnnotations(ebookURL_filepath, function(stmts) {
+                            window.pebl.getGeneralAnnotations(window.pebl.activityManager.getBook(), function(stmts) {
                                 for (var stmt of stmts) {
                                     if (stmt.id === id) {
                                         console.log(stmt);
