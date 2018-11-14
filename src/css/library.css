@@ -263,3 +263,7 @@ body.list-view .details{
     vertical-align: middle;
     line-height: normal;
 }
+
+.library-item > .info-wrap > button > div.has-cover {
+    background-size: cover;
+}
