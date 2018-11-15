@@ -1200,6 +1200,8 @@ define([
             window.pebl.eventNextPage(readium.reader.getFirstVisibleCfi(),
                 readium.reader.getLastVisibleCfi());
 
+            $('#readium-page-count').text(parseInt($('#readium-page-count').text()) + 1);
+
             return false;
         };
 
@@ -1209,6 +1211,8 @@ define([
 
             window.pebl.eventPrevPage(readium.reader.getFirstVisibleCfi(),
                 readium.reader.getLastVisibleCfi());
+
+            $('#readium-page-count').text(parseInt($('#readium-page-count').text()) - 1);
 
             return false;
         };

@@ -833,3 +833,15 @@ ul.nav-tabs li:not(.active) button:hover
 #general-shared-annotations > div > div:last-child {
   font-style: italic;
 }
+
+#readium-slider {
+  position: absolute;
+  bottom: 0;
+  height: 40px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #4d4d4d;
+  color: white;
+}
