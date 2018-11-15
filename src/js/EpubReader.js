@@ -419,6 +419,7 @@ define([
 
                 var peblID = window.pebl.addAnnotation(annotation);
                 readium.reader.plugins.highlights.addSelectionHighlight(peblID, "user-highlight");
+                //updateAnnotationsMenu();
             } else {
                 throw new Error("Nothing selected");
             }
@@ -430,15 +431,16 @@ define([
             else if (annotation.Type === 3)
                 window.pebl.removeSharedAnnotation(annotation);
             readium.reader.plugins.highlights.removeHighlight(annotation.id);
+            //updateAnnotationsMenu();
         };
 
         var shareHighlight = function(annotation) {
             window.pebl.removeAnnotation(annotation);
             readium.reader.plugins.highlights.removeHighlight(annotation.id);
             annotation.Type = 3;
-            //TODO: shareAnnotation needs to return the new ID it creates, clicking on the new annotation doesn't work until page refresh
-            window.pebl.shareAnnotation(annotation);
-            readium.reader.plugins.highlights.addHighlight(annotation.IDRef, annotation.CFI, annotation.id, 'shared-my-highlight');
+            var peblID = window.pebl.shareAnnotation(annotation);
+            readium.reader.plugins.highlights.addHighlight(annotation.IDRef, annotation.CFI, peblID, 'shared-my-highlight');
+            //updateAnnotationsMenu();
         };
 
         var showAnnotationNoteDialogue = function(annotation) {
@@ -461,12 +463,11 @@ define([
 
                 annotation.Text = note;
                 if (annotation.Type === 2) {
-                    var id = window.pebl.addAnnotation(annotation);
-                    readium.reader.plugins.highlights.addHighlight(annotation.IDRef, annotation.CFI, id, 'user-highlight');
+                    var peblID = window.pebl.addAnnotation(annotation);
+                    readium.reader.plugins.highlights.addHighlight(annotation.IDRef, annotation.CFI, peblID, 'user-highlight');
                 } else if (annotation.Type === 3) {
-                    //TODO: shareAnnotation needs to return the new ID it creates, clicking on the new annotation doesn't work until page refresh
-                    window.pebl.shareAnnotation(annotation);
-                    readium.reader.plugins.highlights.addHighlight(annotation.IDRef, annotation.CFI, annotation.id, 'shared-my-highlight');
+                    var peblID = window.pebl.shareAnnotation(annotation);
+                    readium.reader.plugins.highlights.addHighlight(annotation.IDRef, annotation.CFI, peblID, 'shared-my-highlight');
                 }
 
                 $('#annotationNoteModal').remove();
