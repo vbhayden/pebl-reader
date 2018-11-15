@@ -767,6 +767,7 @@ ul.nav-tabs li:not(.active) button:hover
   padding: 10px;
   border-top: 1px solid white;
   width: 100%;
+  font-style: italic;
 }
 
 #annotationContextMenu > .annotationContextButtonWrapper {
