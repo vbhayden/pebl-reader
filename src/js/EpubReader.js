@@ -1412,6 +1412,11 @@ define([
             $('.icon-show-annotations').on('click', annotationsShowHideToggle);
             $('#bookmark-show').on('click', bookmarksShowHideToggle);
             $('#bookmark-page').on('click', showBookmarkDialogue);
+            $('#loginButt').on('click', function() {
+            	loadlibrary();
+	            window.pebl.logout();
+	            return false;
+	        });
 
 
             var setTocSize = function() {

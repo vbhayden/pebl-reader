@@ -634,6 +634,9 @@ Helpers){
             $(document.body).removeClass('list-view');
             setTimeout(function(){ $('.icon-list-view')[0].focus(); }, 50);
         });
+        $('#loginButt').on('click', function() {
+            window.pebl.logout();
+        });
         findHeightRule();
         setItemHeight();
         StorageManager.initStorage(function(){
