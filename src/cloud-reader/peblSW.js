@@ -111,5 +111,5 @@ self.addEventListener('fetch', event => {
 		return caches.match(request);
 	    }));
     } else
-	event.respondWith(fetch(event.request));          
+	event.respondWith(fetch(event.request));
 });

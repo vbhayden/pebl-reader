@@ -698,6 +698,7 @@ Helpers){
 
     var applyKeyboardSettingsAndLoadUi = function(data)
     {
+	PeBL.emitEvent(PeBL.events.newBook, "Library");
         if (data && data.epubs && (typeof data.epubs == "string")) {
             
             // this is normally init'ed at page launch using the "epubs" URL GET query parameter,
