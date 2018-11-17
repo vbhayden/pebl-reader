@@ -172,7 +172,6 @@ var Annotation = /** @class */ (function (_super) {
             _this.book = _this.book.substring(_this.book.indexOf(PREFIX_PEBL_THREAD) + PREFIX_PEBL_THREAD.length);
         _this.owner = _this.getActorId();
         var extensions = _this.object.definition.extensions;
-        _this.annId = extensions[PREFIX_PEBL_EXTENSION + "annId"];
         _this.type = extensions[PREFIX_PEBL_EXTENSION + "type"];
         _this.cfi = extensions[PREFIX_PEBL_EXTENSION + "cfi"];
         _this.idRef = extensions[PREFIX_PEBL_EXTENSION + "idRef"];
@@ -2114,13 +2113,13 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.pebl.emitEvent(self.pebl.events.eventInteracted, {
                     activity: book
                 });
+                self.pebl.unsubscribeAllEvents();
+                self.pebl.unsubscribeAllThreads();
+                self.pebl.storage.saveCurrentBook(book);
             }
             else {
                 self.pebl.emitEvent(self.pebl.events.eventJumpPage, null);
             }
-            self.pebl.unsubscribeAllEvents();
-            self.pebl.unsubscribeAllThreads();
-            self.pebl.storage.saveCurrentBook(book);
         });
     };
     PEBLEventHandlers.prototype.newActivity = function (event) {
