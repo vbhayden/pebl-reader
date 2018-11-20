@@ -157,9 +157,185 @@ define([
 
         var constructEbookTitle = function(ebookURL) {
         	var title = ebookURL.replace('epub_content/bookshelf/', '');
-        	if (!title.slice(-5) === '.epub')
+        	if (!(title.slice(-5) === '.epub'))
         		title = title + '.epub';
         	return title;
+        };
+
+        var getChapters = function() {
+        	return readium.reader.spine().items;
+        };
+
+        //Add a css rule to the page, needed for pseudo element styling
+        var addRule = (function (style) {
+		    var sheet = document.head.appendChild(style).sheet;
+		    return function (selector, css) {
+		        var propText = typeof css === "string" ? css : Object.keys(css).map(function (p) {
+		            return p + ":" + (p === "content" ? "'" + css[p] + "'" : css[p]);
+		        }).join(";");
+		        sheet.insertRule(selector + "{" + propText + "}", sheet.cssRules.length);
+		    };
+		})(document.createElement("style"));
+
+
+		//TODO: Get the actual chapter names instead of Idref when displaying to the user
+        var createNavigationSlider = function() {
+        	//Remove the old slider
+        	$('.sliderContainer').remove();
+        	$('.sliderInfoContainer').remove();
+
+        	//Get a copy of the spine items
+        	var chapters = getChapters().slice();
+        	//Get the current idref
+        	var currentIdref = readium.reader.getFirstVisibleCfi().idref;
+        	var currentChapter = 0;
+        	//Get the number of pages in the chapter
+        	var pageCount = getPageCountOfCurrentChapter();
+        	//Get the number of the current page relative to the chapter
+        	var currentPage = getCurrentPageNumber();
+
+        	//Find the current chapter in the spine
+        	for (var i = 0; i < chapters.length; i++) {
+        		if (chapters[i].idref === currentIdref) {
+        			currentChapter = i;
+        			break;
+        		}
+        	}
+
+        	//Mark the start point of the chapter in the array
+        	var point1 = currentChapter;
+
+
+        	var inChapterPages = [];
+        	//Array of the pages in this chapter
+        	for (var i = 0; i < pageCount; i++) {
+        		var inChapterPageObject = {
+        			inChapterPageObject: true,
+        			pageNumber: i + 1
+        		}
+        		inChapterPages.push(inChapterPageObject);
+        	}
+
+        	//Add the pages in this chapter to the spine item array, removing the oringal entry for this chapter
+        	chapters.splice(currentChapter, 1, ...inChapterPages);
+
+        	//Mark the end point of the chapter in the array
+        	var point2 = point1;
+        	if (pageCount > 1)
+        		point2 += pageCount;
+        	//Calculate the percentage of the slider that the pages in this chapter occupy
+        	var percent1 = Math.floor((point1 / chapters.length) * 100);
+        	var percent2 = Math.floor((point2 / chapters.length) * 100);
+
+        	//TODO: Need style strings and rules for all browsers
+
+        	//Style the slider bar to show the section containing pages in this chapter
+        	var styleString = 'linear-gradient(to right, rgba(236, 83, 83,0) ' + percent1 + '%, rgba(236, 83, 83,1) ' + percent1 + '%, rgba(236, 83, 83,1) ' + percent2 + '%, rgba(236, 83, 83,0) ' + percent2 + '%)';
+        	addRule('input[type=range]::-webkit-slider-runnable-track', {
+        		background: styleString,
+        		height: '5px'
+        	});
+
+        	currentChapter += currentPage - 1;
+
+        	var sliderContainer = document.createElement('div');
+        	sliderContainer.classList.add('sliderContainer');
+
+        	var sliderInfoContainer = document.createElement('div');
+        	sliderInfoContainer.classList.add('sliderInfoContainer');
+
+        	var sliderInfo = document.createElement('span');
+        	sliderInfo.id = 'sliderInfo';
+
+        	sliderInfoContainer.appendChild(sliderInfo);
+
+        	var slider = document.createElement('input');
+        	slider.type = 'range';
+        	slider.min = '0';
+        	slider.max = chapters.length - 1;
+        	slider.step = '0.001';
+        	slider.value = currentChapter;
+
+        	slider.oninput = function() {
+        		var val = Math.round(this.value);
+        		//Show either the page or the chapter while dragging the slider
+        		if (typeof chapters[val].idref !== 'undefined')
+        			sliderInfo.textContent = chapters[val].idref;
+        		else if (chapters[val].inChapterPageObject === true) {
+        			sliderInfo.textContent = currentIdref + ': Page ' + chapters[val].pageNumber;
+        		}
+        		$(sliderInfoContainer).show();
+        	}
+
+        	slider.addEventListener('mouseup', function() {
+        		var val = Math.round(this.value);
+        		//Go to the chapter or page that was selected
+        		$(sliderInfoContainer).hide();
+        		if (typeof chapters[val].idref !== 'undefined')
+        			readium.reader.openSpineItemElementCfi(chapters[val].idref, chapters[val].cfi, readium.reader);
+        		else if (chapters[val].inChapterPageObject === true) {
+        			var pageDifference = currentPage - chapters[val].pageNumber;
+        			if (pageDifference > 0) {
+        				for (var i = 0; i < pageDifference; i++) {
+        					prevPage();
+        				}
+        			} else if (pageDifference < 0) {
+        				for (var i = 0; i > pageDifference; i--) {
+        					nextPage();
+        				}
+        			}
+        		}
+        	});
+
+        	sliderContainer.appendChild(slider);
+
+        	$('#readium-page-count').text(currentIdref + ': Page ' + currentPage);
+
+        	$('#readium-slider').prepend($(sliderContainer));
+        	$('#readium-slider').append($(sliderInfoContainer));
+        };
+
+        var getPageCountOfCurrentChapter = function() {
+        	var iframe = $("#epub-reader-frame iframe")[0];
+            var iframeWindow = iframe.contentWindow || iframe.contentDocument;
+            var $body = $(iframeWindow.document.body);
+            var $html = $body.parent();
+        	var contentHeight = parseInt($body.css('height'));
+        	var pageHeight = parseInt($html.css('height'));
+        	var columnCount = $html.css('column-count') === 'auto' ? 1 : $html.css('column-count');
+
+        	return Math.ceil(Math.ceil(contentHeight / pageHeight) / columnCount);
+        };
+
+        var getCurrentPageNumber = function() {
+        	var iframe = $("#epub-reader-frame iframe")[0];
+            var iframeWindow = iframe.contentWindow || iframe.contentDocument;
+            var $body = $(iframeWindow.document.body);
+            var $html = $body.parent();
+        	var contentHeight = parseInt($body.css('height'));
+        	var pageHeight = parseInt($html.css('height'));
+        	var columnCount = $html.css('column-count') === 'auto' ? 1 : $html.css('column-count');
+
+        	var bookmark = JSON.parse(readium.reader.getLastVisibleCfi());
+        	var firstElement = readium.reader.getElementByCfi(bookmark.idref, bookmark.contentCFI);
+        	if (typeof firstElement[0].offsetTop === 'undefined')
+        		while (typeof firstElement[0].offsetTop === 'undefined')
+        			firstElement = firstElement.parent();
+
+        	var offsetTop = firstElement[0].offsetTop;
+
+        	var temp1 = offsetTop / pageHeight;
+
+        	//Nudge it over the edge if the pageHeight happens to match the offset exactly
+        	if (offsetTop % pageHeight === 0)
+        		temp1 += 0.0001;
+
+        	var temp2 = Math.ceil(temp1 / columnCount);
+
+        	if (temp2 < 1)
+        		temp2 = 1;
+
+        	return temp2;
         };
 
         // This function will retrieve a package document and load an EPUB
@@ -184,6 +360,7 @@ define([
 
                         return;
                     }
+
 
 
                     window.pebl.openBook(constructEbookTitle(ebookURL_filepath), function() {
@@ -485,7 +662,6 @@ define([
         };
 
         var showAnnotationContextMenu = function(event, annotation) {
-            console.log(event);
             $('#annotationContextMenu').remove();
             $('#clickOutOverlay').remove();
             var readerFrameOffset = $('#reading-area').position().left;
@@ -786,6 +962,8 @@ define([
 
                 var isFixed = readium.reader.isCurrentViewFixedLayout();
 
+                
+
                 // TODO: fix the pan-zoom feature!
                 if (isFixed) {
                     showScaleDisplay();
@@ -820,7 +998,6 @@ define([
                     function(stmts) {
                         for (var stmt of stmts) {
                             if (stmt.Type === 2) {
-                                console.log(stmt);
 
                                 readium.reader.plugins.highlights.addHighlight(stmt.IDRef, stmt.CFI, stmt.id, 'user-highlight');
                             }
@@ -832,7 +1009,6 @@ define([
                     function(stmts) {
                         for (var stmt of stmts) {
                             if (stmt.Type === 3) {
-                                console.log(stmt);
                                 var highlightType = 'shared-highlight';
                                 if (stmt.Owner === window.pebl.getUserName())
                                     highlightType = 'shared-my-highlight';
@@ -840,6 +1016,9 @@ define([
                             }
                         }
                     });
+
+                createNavigationSlider();
+                
 
                 if (!_tocLinkActivated) return;
                 _tocLinkActivated = false;
@@ -893,6 +1072,7 @@ define([
                     if (!iframe) {
                         iframe = lastIframe;
                     }
+
 
 
                     /* Remove because is removing focus from the toc
@@ -1201,8 +1381,6 @@ define([
             window.pebl.eventNextPage(readium.reader.getFirstVisibleCfi(),
                 readium.reader.getLastVisibleCfi());
 
-            $('#readium-page-count').text(parseInt($('#readium-page-count').text()) + 1);
-
             return false;
         };
 
@@ -1212,8 +1390,6 @@ define([
 
             window.pebl.eventPrevPage(readium.reader.getFirstVisibleCfi(),
                 readium.reader.getLastVisibleCfi());
-
-            $('#readium-page-count').text(parseInt($('#readium-page-count').text()) - 1);
 
             return false;
         };
@@ -1656,7 +1832,6 @@ define([
                                 window.pebl.getAnnotations(window.pebl.activityManager.getBook(), function(stmts) {
                                     for (var stmt of stmts) {
                                         if (stmt.id === id) {
-                                            console.log(stmt);
                                             showAnnotationContextMenu(event, stmt);
                                             break;
                                         }
@@ -1666,7 +1841,6 @@ define([
                             window.pebl.getGeneralAnnotations(window.pebl.activityManager.getBook(), function(stmts) {
                                 for (var stmt of stmts) {
                                     if (stmt.id === id) {
-                                        console.log(stmt);
                                         showAnnotationContextMenu(event, stmt);
                                         break;
                                     }
