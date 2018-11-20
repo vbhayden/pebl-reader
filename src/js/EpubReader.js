@@ -822,7 +822,7 @@ define([
 					       for (var stmt of stmts) {
 						   if (stmt.type == 2) {
 						       if (!readium.reader.plugins.highlights.getHighlight(stmt.id))
-							   readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, stmt.type, stmt.style);
+							   readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, "user-highlight");
 						   }
 					       }
 					       readium.reader.plugins.highlights.redrawAnnotations();
