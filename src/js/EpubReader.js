@@ -287,6 +287,26 @@ define([
         		}
         	});
 
+        	slider.addEventListener('touchend', function() {
+        		var val = Math.round(this.value);
+        		//Go to the chapter or page that was selected
+        		$(sliderInfoContainer).hide();
+        		if (typeof chapters[val].idref !== 'undefined')
+        			readium.reader.openSpineItemElementCfi(chapters[val].idref, chapters[val].cfi, readium.reader);
+        		else if (chapters[val].inChapterPageObject === true) {
+        			var pageDifference = currentPage - chapters[val].pageNumber;
+        			if (pageDifference > 0) {
+        				for (var i = 0; i < pageDifference; i++) {
+        					prevPage();
+        				}
+        			} else if (pageDifference < 0) {
+        				for (var i = 0; i > pageDifference; i--) {
+        					nextPage();
+        				}
+        			}
+        		}
+        	})
+
         	sliderContainer.appendChild(slider);
 
         	$('#readium-page-count').text(currentIdref + ': Page ' + currentPage);
