@@ -429,7 +429,7 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
     };
     IndexedDBStorageAdapter.prototype.cleanRecord = function (r) {
         var recordType = typeof (r);
-        if (recordType == "object") {
+        if (r && (recordType == "object")) {
             var rec = r;
             for (var _i = 0, _a = Object.keys(r); _i < _a.length; _i++) {
                 var p = _a[_i];

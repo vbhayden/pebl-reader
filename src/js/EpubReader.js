@@ -215,6 +215,7 @@ define([
                        $("#right-page-btn").mouseleave(function() {
                            $(tooltipSelector()).tooltip('destroy');
                        });
+
                    },
                    openPageRequest
                );
@@ -299,24 +300,27 @@ define([
 	       for (var stmt of stmts) {
                    if (stmt.type === 2) {
 		       (function(stmt) {
-                	   var annotationContainer = document.createElement('div');
-		           var annotation = document.createElement('div');
-		           var annotationTitle = document.createElement('span');
-		           annotationTitle.textContent = stmt.title;
-		           annotation.appendChild(annotationTitle);
-		           var note = document.createElement('div');
-		           var noteText = document.createElement('span');
-		           noteText.textContent = stmt.text;
-		           note.appendChild(noteText);
+			   if ($("#annotation-" + stmt.id).length == 0) {
+                	       var annotationContainer = document.createElement('div');
+			       annotationContainer.id = "annotation-" + stmt.id;
+		               var annotation = document.createElement('div');
+		               var annotationTitle = document.createElement('span');
+		               annotationTitle.textContent = stmt.title;
+		               annotation.appendChild(annotationTitle);
+		               var note = document.createElement('div');
+		               var noteText = document.createElement('span');
+		               noteText.textContent = stmt.text;
+		               note.appendChild(noteText);
 
-		           annotationContainer.appendChild(annotation);
-		           annotationContainer.appendChild(note);
+		               annotationContainer.appendChild(annotation);
+		               annotationContainer.appendChild(note);
 
-		           annotationContainer.addEventListener('click', function() {
-			       readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
-	                   });
+		               annotationContainer.addEventListener('click', function() {
+				   readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
+	                       });
 
-			   $('#my-annotations').append($(annotationContainer));
+			       $('#my-annotations').append($(annotationContainer));
+			   }
 		       })(stmt);
                    }
 	       }
@@ -327,7 +331,9 @@ define([
 		   for (var stmt of stmts) {
 		       if (stmt.type === 3) {
 			   (function(stmt) {
+			   if ($("#sharedAnnotation-" + stmt.id).length == 0) {			       
                 	       var annotationContainer = document.createElement('div');
+			       annotationContainer.id = "sharedAnnotation-" + stmt.id;
 			       var annotation = document.createElement('div');
 			       var annotationTitle = document.createElement('span');
 			       annotationTitle.textContent = stmt.title;
@@ -348,6 +354,7 @@ define([
 				   $('#my-shared-annotations').append($(annotationContainer));
 			       else
 				   $('#general-shared-annotations').append($(annotationContainer));
+			   }
 			   })(stmt);
 		       }
 		   }
@@ -603,17 +610,15 @@ define([
 	       var bookmark = JSON.parse(readium.reader.bookmarkCurrentPage());
 	       var annotation = {};
 
-	       PeBL.storage.getCurrentBook(function (book) {
-		   annotation.cfi = bookmark.contentCFI;
-		   annotation.idRef = bookmark.idref;
-		   
-		   annotation.style = 0;
-		   annotation.text = "";
-		   annotation.title = title;
-		   annotation.type = 1;
+	       annotation.cfi = bookmark.contentCFI;
+	       annotation.idRef = bookmark.idref;
+	       
+	       annotation.style = 0;
+	       annotation.text = "";
+	       annotation.title = title;
+	       annotation.type = 1;
 
-		   PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
-	       });
+	       PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
            };
 
 	   var bookmarksCallback = function(stmts) {
@@ -800,7 +805,7 @@ define([
                    $iframe.attr("title", "EPUB");
                    $iframe.attr("aria-label", "EPUB");
 
-                   lastIframe = $iframe[0];
+                   lastIframe = $iframe[0];		   
 	       });
 
 	       var sunkHighlighHandler = false;
@@ -821,11 +826,9 @@ define([
 					   function (stmts) {
 					       for (var stmt of stmts) {
 						   if (stmt.type == 2) {
-						       if (!readium.reader.plugins.highlights.getHighlight(stmt.id))
-							   readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, "user-highlight");
+						       readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, "user-highlight");
 						   }
 					       }
-					       readium.reader.plugins.highlights.redrawAnnotations();
 					   });
 		   }
 		   
@@ -835,33 +838,45 @@ define([
                    spin(false);
 
 		   readium.reader.plugins.highlights.redrawAnnotations();
-		   
-                   //TODO: Find a way to not need to remove and readd all the highlights each time
-                   // readium.reader.plugins.highlights.removeHighlightsByType('user-highlight');
-                   // window.pebl.getAnnotations(window.pebl.activityManager.getBook(),
-		   // 			      function(stmts) {
-		   // 				  for (var stmt of stmts) {
-		   // 				      if (stmt.Type === 2) {
-		   // 					  console.log(stmt);
 
-		   // 					  readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, 'user-highlight');
-		   // 				      }
-		   // 				  }
-		   // 			      });
-                   // readium.reader.plugins.highlights.removeHighlightsByType('shared-highlight');
-                   // readium.reader.plugins.highlights.removeHighlightsByType('shared-my-highlight');
-                   // window.pebl.getGeneralAnnotations(window.pebl.activityManager.getBook(),
-		   // 				     function(stmts) {
-		   // 					 for (var stmt of stmts) {
-		   // 					     if (stmt.Type === 3) {
-		   // 						 console.log(stmt);
-		   // 						 var highlightType = 'shared-highlight';
-		   // 						 if (stmt.Owner === window.pebl.getUserName())
-		   // 						     highlightType = 'shared-my-highlight';
-		   // 						 readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, highlightType);
-		   // 					     }
-		   // 					 }
-		   // 				     });
+		   readium.reader.plugins.highlights.removeHighlightsByType('user-highlight');
+		   readium.reader.plugins.highlights.removeHighlightsByType('shared-highlight');
+		   readium.reader.plugins.highlights.removeHighlightsByType('shared-my-highlight');
+
+		   //TODO: Find a way to not need to remove and readd all the highlights each time
+		   PeBL.storage.getCurrentBook(function (book) {
+		       PeBL.user.getUser(function (userProfile) {
+		   	   if (book && userProfile) {			   			   
+
+		   	       PeBL.storage.getAnnotations(userProfile,
+		   					   book,
+		   					   function(stmts) {
+		   					       for (var stmt of stmts) {
+		   						   if (stmt.type === 2) {
+		   						       // console.log(stmt);
+		   						       
+		   						       readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, 'user-highlight');
+		   						   }
+		   					       }		   					      		   					       							  
+		   					   });
+
+			       PeBL.storage.getSharedAnnotations(userProfile,
+		   						 book,
+		   						 function(stmts) {
+		   						     for (var stmt of stmts) {
+		   							 if (stmt.type === 3) {
+		   							     // console.log(stmt);
+		   							     var highlightType = 'shared-highlight';
+		   							     if (stmt.owner === userProfile.identity)
+		   								 highlightType = 'shared-my-highlight';
+		   							     
+		   							     readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, highlightType);
+		   							 }
+		   						     }
+		   						 });
+		   	   }
+		       });
+		   });			   
 
                    if (!_tocLinkActivated) return;
                    _tocLinkActivated = false;
