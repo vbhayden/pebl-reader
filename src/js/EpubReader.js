@@ -430,20 +430,18 @@ define([
            };
 
            var removeHighlight = function(annotation) {
-	       if (annotation.Type === 2)
-                   window.pebl.removeAnnotation(annotation);
-	       else if (annotation.Type === 3)
-                   window.pebl.removeSharedAnnotation(annotation);
+	       if (annotation.type === 2)
+		   PeBL.emitEvent(PeBL.events.removedAnnotation, annotation);
+	       else if (annotation.type === 3)
+		   PeBL.emitEvent(PeBL.events.removedSharedAnnotation, annotation);
 	       readium.reader.plugins.highlights.removeHighlight(annotation.id);
            };
 
            var shareHighlight = function(annotation) {
-	       window.pebl.removeAnnotation(annotation);
+	       PeBL.emitEvent(PeBL.events.removedAnnotation, annotation);
 	       readium.reader.plugins.highlights.removeHighlight(annotation.id);
-	       annotation.Type = 3;
-	       //TODO: shareAnnotation needs to return the new ID it creates, clicking on the new annotation doesn't work until page refresh
-	       window.pebl.shareAnnotation(annotation);
-	       readium.reader.plugins.highlights.addHighlight(annotation.idRef, annotation.cfi, annotation.id, 'shared-my-highlight');
+	       annotation.type = 3;
+	       PeBL.emitEvent(PeBL.events.newSharedAnnotation, annotation);
            };
 
            var showAnnotationNoteDialogue = function(annotation) {
@@ -452,7 +450,7 @@ define([
 	       modalContainer.id = 'annotationNoteModal';
 	       var noteInput = document.createElement('textarea');
 	       noteInput.id = 'annotationNoteInput';
-	       noteInput.value = annotation.Text;
+	       noteInput.value = annotation.text;
 	       var noteSubmit = document.createElement('button');
 	       noteSubmit.id = 'noteSubmit';
 	       noteSubmit.textContent = 'Add Note';
@@ -464,14 +462,11 @@ define([
                    var note = $('#annotationNoteInput').val();
                    removeHighlight(annotation);
 
-                   annotation.Text = note;
-                   if (annotation.Type === 2) {
-		       var id = window.pebl.addAnnotation(annotation);
-		       readium.reader.plugins.highlights.addHighlight(annotation.idRef, annotation.cfi, id, 'user-highlight');
-                   } else if (annotation.Type === 3) {
-		       //TODO: shareAnnotation needs to return the new ID it creates, clicking on the new annotation doesn't work until page refresh
-		       window.pebl.shareAnnotation(annotation);
-		       readium.reader.plugins.highlights.addHighlight(annotation.idRef, annotation.cfi, annotation.id, 'shared-my-highlight');
+                   annotation.text = note;
+                   if (annotation.type === 2) {
+		       PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
+                   } else if (annotation.type === 3) {
+		       PeBL.emitEvent(PeBL.events.newSharedAnnotation, annotation);
                    }
 
                    $('#annotationNoteModal').remove();
@@ -507,73 +502,75 @@ define([
 	       var buttonWrapper = document.createElement('div');
 	       buttonWrapper.classList.add('annotationContextButtonWrapper');
 
-	       if (annotation.Owner === window.pebl.getUserName()) {
-                   var deleteButtonContainer = document.createElement('div');
-                   var deleteButton = document.createElement('span');
-                   deleteButton.classList.add('glyphicon', 'glyphicon-trash');
-                   deleteButtonContainer.appendChild(deleteButton);
-                   deleteButtonContainer.addEventListener('click', function() {
-		       removeHighlight(annotation);
-		       $('#annotationContextMenu').remove();
-		       $('#clickOutOverlay').remove();
-                   });
+	       PeBL.user.getUser(function (userProfile) {		   
+		   if (annotation.owner === userProfile.identity) {
+                       var deleteButtonContainer = document.createElement('div');
+                       var deleteButton = document.createElement('span');
+                       deleteButton.classList.add('glyphicon', 'glyphicon-trash');
+                       deleteButtonContainer.appendChild(deleteButton);
+                       deleteButtonContainer.addEventListener('click', function() {
+			   removeHighlight(annotation);
+			   $('#annotationContextMenu').remove();
+			   $('#clickOutOverlay').remove();
+                       });
 
-                   var noteButtonContainer = document.createElement('div');
-                   var noteButton = document.createElement('span');
-                   noteButton.textContent = 'Note';
-                   noteButtonContainer.appendChild(noteButton);
-                   noteButtonContainer.addEventListener('click', function() {
-		       showAnnotationNoteDialogue(annotation);
-		       $('#annotationContextMenu').remove();
-		       $('#clickOutOverlay').remove();
-                   });
+                       var noteButtonContainer = document.createElement('div');
+                       var noteButton = document.createElement('span');
+                       noteButton.textContent = 'Note';
+                       noteButtonContainer.appendChild(noteButton);
+                       noteButtonContainer.addEventListener('click', function() {
+			   showAnnotationNoteDialogue(annotation);
+			   $('#annotationContextMenu').remove();
+			   $('#clickOutOverlay').remove();
+                       });
 
-                   buttonWrapper.appendChild(deleteButtonContainer);
-                   buttonWrapper.appendChild(noteButtonContainer);
-	       } else {
-                   var infoContainer = document.createElement('div');
-                   var info = document.createElement('span');
-                   info.textContent = 'Shared by ' + annotation.Owner;
-                   infoContainer.appendChild(info);
-                   buttonWrapper.appendChild(infoContainer);
-	       }
-
-
-	       if (annotation.Type === 2) {
-                   var shareButtonContainer = document.createElement('div');
-                   var shareButton = document.createElement('span');
-                   shareButton.textContent = 'Share';
-                   shareButtonContainer.appendChild(shareButton);
-                   shareButtonContainer.addEventListener('click', function() {
-		       shareHighlight(annotation);
-		       $('#annotationContextMenu').remove();
-		       $('#clickOutOverlay').remove();
-                   });
-                   buttonWrapper.appendChild(shareButtonContainer);
-	       }
-
-	       menu.appendChild(buttonWrapper);
-
-	       if (annotation.Text && annotation.Text.length > 0) {
-                   var noteContainer = document.createElement('div');
-                   noteContainer.classList.add('noteContainer');
-                   var noteText = document.createElement('span');
-                   noteText.textContent = annotation.Text;
-                   noteContainer.appendChild(noteText);
-
-                   menu.appendChild(noteContainer);
-	       }
+                       buttonWrapper.appendChild(deleteButtonContainer);
+                       buttonWrapper.appendChild(noteButtonContainer);
+		   } else {
+                       var infoContainer = document.createElement('div');
+                       var info = document.createElement('span');
+                       info.textContent = 'Shared by ' + annotation.owner;
+                       infoContainer.appendChild(info);
+                       buttonWrapper.appendChild(infoContainer);
+		   }
 
 
-	       var clickOutOverlay = document.createElement('div');
-	       clickOutOverlay.id = 'clickOutOverlay';
-	       clickOutOverlay.addEventListener('click', function() {
-                   $('#annotationContextMenu').remove();
-                   $('#clickOutOverlay').remove();
-	       });
+		   if (annotation.type === 2) {
+                       var shareButtonContainer = document.createElement('div');
+                       var shareButton = document.createElement('span');
+                       shareButton.textContent = 'Share';
+                       shareButtonContainer.appendChild(shareButton);
+                       shareButtonContainer.addEventListener('click', function() {
+			   shareHighlight(annotation);
+			   $('#annotationContextMenu').remove();
+			   $('#clickOutOverlay').remove();
+                       });
+                       buttonWrapper.appendChild(shareButtonContainer);
+		   }
 
-	       document.body.appendChild(clickOutOverlay);
-	       document.body.appendChild(menu);
+		   menu.appendChild(buttonWrapper);
+
+		   if (annotation.text && annotation.text.length > 0) {
+                       var noteContainer = document.createElement('div');
+                       noteContainer.classList.add('noteContainer');
+                       var noteText = document.createElement('span');
+                       noteText.textContent = annotation.text;
+                       noteContainer.appendChild(noteText);
+
+                       menu.appendChild(noteContainer);
+		   }
+
+
+		   var clickOutOverlay = document.createElement('div');
+		   clickOutOverlay.id = 'clickOutOverlay';
+		   clickOutOverlay.addEventListener('click', function() {
+                       $('#annotationContextMenu').remove();
+                       $('#clickOutOverlay').remove();
+		   });
+
+		   document.body.appendChild(clickOutOverlay);
+		   document.body.appendChild(menu);
+	       });		   
            };
 
            var showBookmarkDialogue = function() {
@@ -844,40 +841,29 @@ define([
 		   readium.reader.plugins.highlights.removeHighlightsByType('shared-my-highlight');
 
 		   //TODO: Find a way to not need to remove and readd all the highlights each time
-		   PeBL.storage.getCurrentBook(function (book) {
-		       PeBL.user.getUser(function (userProfile) {
-		   	   if (book && userProfile) {			   			   
-
-		   	       PeBL.storage.getAnnotations(userProfile,
-		   					   book,
-		   					   function(stmts) {
-		   					       for (var stmt of stmts) {
-		   						   if (stmt.type === 2) {
-		   						       // console.log(stmt);
-		   						       
-		   						       readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, 'user-highlight');
-		   						   }
-		   					       }		   					      		   					       							  
-		   					   });
-
-			       PeBL.storage.getSharedAnnotations(userProfile,
-		   						 book,
-		   						 function(stmts) {
-		   						     for (var stmt of stmts) {
-		   							 if (stmt.type === 3) {
-		   							     // console.log(stmt);
-		   							     var highlightType = 'shared-highlight';
-		   							     if (stmt.owner === userProfile.identity)
-		   								 highlightType = 'shared-my-highlight';
-		   							     
-		   							     readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, highlightType);
-		   							 }
-		   						     }
-		   						 });
+		   PeBL.utils.getAnnotations(function(stmts) {
+		       for (var stmt of stmts) {
+		   	   if (stmt.type === 2) {
+		   	       // console.log(stmt);
+		   	       
+		   	       readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, 'user-highlight');
 		   	   }
-		       });
-		   });			   
+		       }		   					      		   					       							  
+		   });
 
+		   PeBL.utils.getSharedAnnotations(function(stmts) {
+		       for (var stmt of stmts) {
+		   	   if (stmt.type === 3) {
+		   	       // console.log(stmt);
+		   	       var highlightType = 'shared-highlight';
+		   	       if (stmt.owner === userProfile.identity)
+		   		   highlightType = 'shared-my-highlight';
+		   	       
+		   	       readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, highlightType);
+		   	   }
+		       }
+		   });
+		   
                    if (!_tocLinkActivated) return;
                    _tocLinkActivated = false;
 
@@ -1681,33 +1667,37 @@ define([
                            readium.reader.plugins.highlights.initialize({
 			       annotationCSSUrl: readerOptions.annotationCSSUrl
                            });
+			   
+                           readium.reader.plugins.highlights.on("annotationClicked", function(type, idref, cfi, id, event) {
+                               console.debug("ANNOTATION CLICK: " + id);
+                               //TODO: Maybe have a function to get a specific annotation rather than loop through them all?
 
-                           // readium.reader.plugins.highlights.on("annotationClicked", function(type, idref, cfi, id, event) {
-                           //     console.debug("ANNOTATION CLICK: " + id);
-                           //     //TODO: Maybe have a function to get a specific annotation rather than loop through them all?
-                           //     if (type === 'user-highlight')
-                           //         window.pebl.getAnnotations(window.pebl.activityManager.getBook(), function(stmts) {
-                           //             for (var stmt of stmts) {
-                           //                 if (stmt.id === id) {
-                           //                     console.log(stmt);
-                           //                     showAnnotationContextMenu(event, stmt);
-                           //                     break;
-                           //                 }
-                           //             }
-                           //         });
-                           //     else if (type === 'shared-highlight' || type === 'shared-my-highlight');
-                           //     window.pebl.getGeneralAnnotations(window.pebl.activityManager.getBook(), function(stmts) {
-                           //         for (var stmt of stmts) {
-                           //             if (stmt.id === id) {
-                           //                 console.log(stmt);
-                           //                 showAnnotationContextMenu(event, stmt);
-                           //                 break;
-                           //             }
-                           //         }
-                           //     });
-
-                           //     // readium.reader.plugins.highlights.removeHighlight(id);
-                           // });
+			       PeBL.storage.getCurrentBook(function (book) {
+				   if(book) {
+				       if (type === 'user-highlight')
+					   PeBL.storage.getAnnotations(book, function(stmts) {
+					       for (var stmt of stmts) {
+						   if (stmt.id === id) {
+						       console.log(stmt);
+						       showAnnotationContextMenu(event, stmt);
+						       break;
+						   }
+					       }
+					   });
+				       else if (type === 'shared-highlight' || type === 'shared-my-highlight')
+					   window.pebl.getGeneralAnnotations(book, function(stmts) {
+					       for (var stmt of stmts) {
+						   if (stmt.id === id) {
+						       console.log(stmt);
+						       showAnnotationContextMenu(event, stmt);
+						       break;
+						   }
+					       }
+					   });
+				   }				   
+			       });
+                               // readium.reader.plugins.highlights.removeHighlight(id);
+                           });
 		       }
 
 		       if (readium.reader.plugins.example) {

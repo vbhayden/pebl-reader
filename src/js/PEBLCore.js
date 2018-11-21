@@ -141,7 +141,7 @@ var Reference = /** @class */ (function (_super) {
         if (_this.thread.indexOf(PREFIX_PEBL_THREAD) != -1)
             _this.thread = _this.thread.substring(PREFIX_PEBL_THREAD.length);
         var extensions = _this["object"].extensions;
-        _this.name = _this.object.name["en-US"];
+        _this.name = _this.object.definition.name["en-US"];
         _this.book = extensions[PREFIX_PEBL_EXTENSION + "book"];
         _this.docType = extensions[PREFIX_PEBL_EXTENSION + "docType"];
         _this.location = extensions[PREFIX_PEBL_EXTENSION + "location"];
@@ -205,7 +205,7 @@ var Action = /** @class */ (function (_super) {
         var _this = _super.call(this, raw) || this;
         _this.activityId = _this.object.id;
         _this.action = _this.verb.display["en-US"];
-        var extensions = _this.object.extensions;
+        var extensions = _this.object.definition.extensions;
         if (extensions) {
             _this.target = extensions[PREFIX_PEBL_EXTENSION + "target"];
             _this.type = extensions[PREFIX_PEBL_EXTENSION + "type"];
@@ -226,7 +226,7 @@ var Navigation = /** @class */ (function (_super) {
         var _this = _super.call(this, raw) || this;
         _this.type = _this.verb.display["en-US"];
         _this.activityId = _this.object.id;
-        var extensions = _this.object.extensions;
+        var extensions = _this.object.definition.extensions;
         if (extensions) {
             _this.firstCfi = extensions[PREFIX_PEBL_EXTENSION + "firstCfi"];
             _this.lastCfi = extensions[PREFIX_PEBL_EXTENSION + "lastCfi"];
@@ -249,10 +249,10 @@ var Message = /** @class */ (function (_super) {
         _this.thread = _this.object.id;
         if (_this.thread.indexOf(PREFIX_PEBL_THREAD) != -1)
             _this.thread = _this.thread.substring(PREFIX_PEBL_THREAD.length);
-        _this.prompt = _this.object.name["en-US"];
+        _this.prompt = _this.object.definition.name["en-US"];
         _this.name = _this.actor.name;
         _this.direct = _this.thread == (NAMESPACE_USER_MESSAGES + _this.getActorId());
-        _this.text = _this.object.description["en-US"];
+        _this.text = _this.object.definition.description["en-US"];
         return _this;
     }
     Message.is = function (x) {
@@ -336,8 +336,8 @@ var Session = /** @class */ (function (_super) {
     function Session(raw) {
         var _this = _super.call(this, raw) || this;
         _this.activityId = _this.object.id;
-        _this.activityName = _this.object.name && _this.object.name["en-US"];
-        _this.activityDescription = _this.object.description && _this.object.description["en-US"];
+        _this.activityName = _this.object.definition.name && _this.object.definition.name["en-US"];
+        _this.activityDescription = _this.object.definition.description && _this.object.definition.description["en-US"];
         _this.type = _this.verb.display["en-US"];
         return _this;
     }
@@ -1851,6 +1851,45 @@ var EventSet = /** @class */ (function () {
 }());
 
 
+// CONCATENATED MODULE: ./src/utils.ts
+var Utils = /** @class */ (function () {
+    function Utils(pebl) {
+        this.pebl = pebl;
+    }
+    Utils.prototype.getAnnotations = function (callback) {
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentBook(function (book) {
+                    if (book)
+                        self.pebl.storage.getAnnotations(userProfile, book, callback);
+                    else
+                        callback([]);
+                });
+            }
+            else
+                callback([]);
+        });
+    };
+    Utils.prototype.getSharedAnnotations = function (callback) {
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentBook(function (book) {
+                    if (book)
+                        self.pebl.storage.getSharedAnnotations(userProfile, book, callback);
+                    else
+                        callback([]);
+                });
+            }
+            else
+                callback([]);
+        });
+    };
+    return Utils;
+}());
+
+
 // CONCATENATED MODULE: ./src/xapiGenerator.ts
 var xapiGenerator_PREFIX_PEBL_EXTENSION = "https://www.peblproject.com/definitions.html#";
 var XApiGenerator = /** @class */ (function () {
@@ -2201,7 +2240,6 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         self.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
                 var exts_1 = {
-                    annId: payload.annId,
                     type: payload.type,
                     cfi: payload.cfi,
                     idRef: payload.idRef,
@@ -2231,7 +2269,6 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         this.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
                 var exts_2 = {
-                    annId: payload.annId,
                     type: payload.type,
                     cfi: payload.cfi,
                     idRef: payload.idRef,
@@ -2706,6 +2743,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
 // import { Messenger } from "./messenger";
 
 
+
 var pebl_PEBL = /** @class */ (function () {
     // readonly launcher: LauncherAdapter;
     function PEBL(config, callback) {
@@ -2723,6 +2761,7 @@ var pebl_PEBL = /** @class */ (function () {
             this.enableDirectMessages = true;
             this.useIndexedDB = true;
         }
+        this.utils = new Utils(this);
         this.eventHandlers = new eventHandlers_PEBLEventHandlers(this);
         this.events = new EventSet();
         this.user = new User(this);
