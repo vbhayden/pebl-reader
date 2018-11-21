@@ -67,6 +67,7 @@ define([
 
         // initialised in loadEbook() >> readium.openPackageDocument()
         var currentPackageDocument = undefined;
+        var currentSliderToc = undefined;
 
         // initialised in initReadium()
         // (variable not actually used anywhere here, but top-level to indicate that its lifespan is that of the reader object (not to be garbage-collected))
@@ -162,6 +163,37 @@ define([
         	return title;
         };
 
+        var initializeSlider = function() {
+        	currentPackageDocument.generateTocListDOM(function(dom) {
+        		var chaptersArray = [];
+        		var nav = dom.getElementById('toc');
+        		
+        		$(nav).find('a').each(function() {
+        			var href = this.href.split('/').pop();
+        			var hashIndex = href.indexOf('#');
+	        		var hrefPart;
+	        		var elementId;
+	        		if (hashIndex >= 0) {
+	        			hrefPart = href.substr(0, hashIndex);
+	        			elementId = href.substr(hashIndex + 1);
+	        		} else {
+	        			hrefPart = href;
+	        			elementId = undefined;
+	        		}
+        			var spineItem = readium.reader.spine().getItemByHref(hrefPart);
+        			var item = {
+        				href: this.href,
+        				title: this.text,
+        				idref: spineItem.idref,
+        				elementId: elementId
+        			};
+        			chaptersArray.push(item);
+        		});
+        		currentSliderToc = chaptersArray;
+
+        	});
+        }
+
         var getChapters = function() {
         	return readium.reader.spine().items;
         };
@@ -178,54 +210,93 @@ define([
 		})(document.createElement("style"));
 
 
-		//TODO: Get the actual chapter names instead of Idref when displaying to the user
         var createNavigationSlider = function() {
         	//Remove the old slider
         	$('.sliderContainer').remove();
         	$('.sliderInfoContainer').remove();
 
-        	//Get a copy of the spine items
-        	var chapters = getChapters().slice();
-        	//Get the current idref
         	var currentIdref = readium.reader.getFirstVisibleCfi().idref;
-        	var currentChapter = 0;
+
         	//Get the number of pages in the chapter
         	var pageCount = getPageCountOfCurrentChapter();
+
         	//Get the number of the current page relative to the chapter
         	var currentPage = getCurrentPageNumber();
 
-        	//Find the current chapter in the spine
+        	//index of chapter start
+        	var chapterStart = undefined;
+
+        	//index of chapter end
+        	var chapterEnd = undefined;
+
+        	//deep copy the toc array, leave original untouched
+        	var chapters = JSON.parse(JSON.stringify(currentSliderToc));
+        	
+        	//index of the page we're on
+        	var currentPageIndex = undefined;
+
+
         	for (var i = 0; i < chapters.length; i++) {
         		if (chapters[i].idref === currentIdref) {
-        			currentChapter = i;
+        			//Mark the chapter start
+        			chapterStart = i;
+        			while (chapters[i].idref === currentIdref) {
+        				//Set the page number for each 'subchapter' in this chapter
+        				chapters[i].pageNumber = typeof chapters[i].elementId !== 'undefined' ? getPageNumberForElement(readium.reader.getElementById(currentIdref, chapters[i].elementId)) : getCurrentPageNumber();
+        				//Mark the chapter end
+        				chapterEnd = i;
+        				i++;
+        			}
         			break;
         		}
         	}
 
-        	//Mark the start point of the chapter in the array
-        	var point1 = currentChapter;
+        	//deep copy again, this time with the page numbers added
+        	var newChapters = JSON.parse(JSON.stringify(chapters));
 
+        	//Used to draw the start and end points on the slider
+        	var point1 = chapterStart;
+        	var point2 = chapterEnd;
 
-        	var inChapterPages = [];
-        	//Array of the pages in this chapter
+        	//the index to insert filler pages to
+        	var insertIndex = chapterStart;
+        	
+        	//Loop through all the possible additional filler pages
         	for (var i = 0; i < pageCount; i++) {
         		var inChapterPageObject = {
         			inChapterPageObject: true,
         			pageNumber: i + 1
         		}
-        		inChapterPages.push(inChapterPageObject);
+        		var chapterMatch = false;
+        		//If 'subchapter' already has a page number matching this potential filler page, we don't need to add a filler page
+        		for (var j = chapterStart; j <= chapterEnd; j++) {
+        			if (chapters[j].pageNumber === inChapterPageObject.pageNumber) {
+        				chapterMatch = true;
+        				insertIndex++;
+        			}
+        		}
+
+        		//There was no match for this filler page, add the filler page
+        		if (!chapterMatch) {
+        			newChapters.splice(insertIndex, 0, inChapterPageObject);
+        			insertIndex++;
+        			point2++;
+        		}
         	}
 
-        	//Add the pages in this chapter to the spine item array, removing the oringal entry for this chapter
-        	chapters.splice(currentChapter, 1, ...inChapterPages);
 
-        	//Mark the end point of the chapter in the array
-        	var point2 = point1;
-        	if (pageCount > 1)
-        		point2 += pageCount;
+        	//Find out where to put the slider button for the current page
+        	for (var i = chapterStart; i <= point2; i++) {
+        		if (newChapters[i].pageNumber === currentPage) {
+        			currentPageIndex = i;
+        			break;
+        		}
+        	}
+
+
         	//Calculate the percentage of the slider that the pages in this chapter occupy
-        	var percent1 = Math.floor((point1 / chapters.length) * 100);
-        	var percent2 = Math.floor((point2 / chapters.length) * 100);
+        	var percent1 = Math.floor((point1 / newChapters.length) * 100);
+        	var percent2 = Math.floor(((point2 + 1) / newChapters.length) * 100);
 
         	//TODO: Need style strings and rules for all browsers
 
@@ -236,7 +307,6 @@ define([
         		height: '5px'
         	});
 
-        	currentChapter += currentPage - 1;
 
         	var sliderContainer = document.createElement('div');
         	sliderContainer.classList.add('sliderContainer');
@@ -244,37 +314,105 @@ define([
         	var sliderInfoContainer = document.createElement('div');
         	sliderInfoContainer.classList.add('sliderInfoContainer');
 
-        	var sliderInfo = document.createElement('span');
-        	sliderInfo.id = 'sliderInfo';
+        	var sliderPageNumber = document.createElement('span');
+        	sliderPageNumber.id = 'sliderPageNumber';
 
-        	sliderInfoContainer.appendChild(sliderInfo);
+        	var sliderChapterName = document.createElement('span');
+        	sliderChapterName.id = 'sliderChapterName';
+
+        	
+        	sliderInfoContainer.appendChild(sliderPageNumber);
+        	sliderInfoContainer.appendChild(sliderChapterName);
 
         	var slider = document.createElement('input');
         	slider.type = 'range';
         	slider.min = '0';
-        	slider.max = chapters.length - 1;
+        	slider.max = newChapters.length - 1;
         	slider.step = '0.001';
-        	slider.value = currentChapter;
+        	slider.value = currentPageIndex;
 
         	slider.oninput = function() {
         		var val = Math.round(this.value);
         		//Show either the page or the chapter while dragging the slider
-        		if (typeof chapters[val].idref !== 'undefined')
-        			sliderInfo.textContent = chapters[val].idref;
-        		else if (chapters[val].inChapterPageObject === true) {
-        			sliderInfo.textContent = currentIdref + ': Page ' + chapters[val].pageNumber;
+        		if (typeof newChapters[val].pageNumber !== 'undefined') {
+        			$(sliderPageNumber).text('Page ' + newChapters[val].pageNumber);
+        			$(sliderPageNumber).show();
+        		} else {
+        			$(sliderPageNumber).hide();
         		}
-        		$(sliderInfoContainer).show();
+        		if (typeof newChapters[val].title !== 'undefined') {
+        			$(sliderChapterName).text(newChapters[val].title);
+        			$(sliderChapterName).show();
+        		} else {
+        			$(sliderChapterName).hide();
+        		}
+        		$(sliderInfoContainer).addClass('visible');
         	}
 
         	slider.addEventListener('mouseup', function() {
         		var val = Math.round(this.value);
-        		//Go to the chapter or page that was selected
-        		$(sliderInfoContainer).hide();
-        		if (typeof chapters[val].idref !== 'undefined')
-        			readium.reader.openSpineItemElementCfi(chapters[val].idref, chapters[val].cfi, readium.reader);
-        		else if (chapters[val].inChapterPageObject === true) {
-        			var pageDifference = currentPage - chapters[val].pageNumber;
+        		var tocUrl = currentPackageDocument.getToc();
+        		$(sliderInfoContainer).removeClass('visible');
+        		if (typeof newChapters[val].pageNumber == 'undefined') {
+        			try {
+	                    spin(true);
+
+	                    var href = newChapters[val].href.split('/').pop();
+	                    //href = tocUrl ? new URI(href).absoluteTo(tocUrl).toString() : href;
+
+	                    _tocLinkActivated = true;
+
+	                    readium.reader.openContentUrl(href, tocUrl, undefined);
+	                } catch (err) {
+
+	                    console.error(err);
+
+	                } finally {
+	                    //e.preventDefault();
+	                    //e.stopPropagation();
+	                    return false;
+	                }
+        		} else {
+        			var pageDifference = currentPage - newChapters[val].pageNumber;
+        			if (pageDifference > 0) {
+        				for (var i = 0; i < pageDifference; i++) {
+        					prevPage();
+        				}
+        			} else if (pageDifference < 0) {
+        				for (var i = 0; i > pageDifference; i--) {
+        					nextPage();
+        				}
+        			}
+        		}
+        		
+        	});
+
+        	//same as above, but for touch screens
+        	slider.addEventListener('touchend', function() {
+        		var val = Math.round(this.value);
+        		var tocUrl = currentPackageDocument.getToc();
+        		$(sliderInfoContainer).removeClass('visible');
+        		if (typeof newChapters[val].pageNumber == 'undefined') {
+        			try {
+	                    spin(true);
+
+	                    var href = newChapters[val].href.split('/').pop();
+	                    //href = tocUrl ? new URI(href).absoluteTo(tocUrl).toString() : href;
+
+	                    _tocLinkActivated = true;
+
+	                    readium.reader.openContentUrl(href, tocUrl, undefined);
+	                } catch (err) {
+
+	                    console.error(err);
+
+	                } finally {
+	                    //e.preventDefault();
+	                    //e.stopPropagation();
+	                    return false;
+	                }
+        		} else {
+        			var pageDifference = currentPage - newChapters[val].pageNumber;
         			if (pageDifference > 0) {
         				for (var i = 0; i < pageDifference; i++) {
         					prevPage();
@@ -287,33 +425,16 @@ define([
         		}
         	});
 
-        	slider.addEventListener('touchend', function() {
-        		var val = Math.round(this.value);
-        		//Go to the chapter or page that was selected
-        		$(sliderInfoContainer).hide();
-        		if (typeof chapters[val].idref !== 'undefined')
-        			readium.reader.openSpineItemElementCfi(chapters[val].idref, chapters[val].cfi, readium.reader);
-        		else if (chapters[val].inChapterPageObject === true) {
-        			var pageDifference = currentPage - chapters[val].pageNumber;
-        			if (pageDifference > 0) {
-        				for (var i = 0; i < pageDifference; i++) {
-        					prevPage();
-        				}
-        			} else if (pageDifference < 0) {
-        				for (var i = 0; i > pageDifference; i--) {
-        					nextPage();
-        				}
-        			}
-        		}
-        	})
 
         	sliderContainer.appendChild(slider);
 
-        	$('#readium-page-count').text(currentIdref + ': Page ' + currentPage);
+        	//Add the chapter title and page nyumber under the slider
+        	$('#readium-page-count').text(newChapters[chapterStart].title + ': Page ' + currentPage);
 
         	$('#readium-slider').prepend($(sliderContainer));
         	$('#readium-slider').append($(sliderInfoContainer));
         };
+
 
         var getPageCountOfCurrentChapter = function() {
         	var iframe = $("#epub-reader-frame iframe")[0];
@@ -338,6 +459,36 @@ define([
 
         	var bookmark = JSON.parse(readium.reader.getLastVisibleCfi());
         	var firstElement = readium.reader.getElementByCfi(bookmark.idref, bookmark.contentCFI);
+        	if (typeof firstElement[0].offsetTop === 'undefined')
+        		while (typeof firstElement[0].offsetTop === 'undefined')
+        			firstElement = firstElement.parent();
+
+        	var offsetTop = firstElement[0].offsetTop;
+
+        	var temp1 = offsetTop / pageHeight;
+
+        	//Nudge it over the edge if the pageHeight happens to match the offset exactly
+        	if (offsetTop % pageHeight === 0)
+        		temp1 += 0.0001;
+
+        	var temp2 = Math.ceil(temp1 / columnCount);
+
+        	if (temp2 < 1)
+        		temp2 = 1;
+
+        	return temp2;
+        };
+
+        var getPageNumberForElement = function(element) {
+        	var iframe = $("#epub-reader-frame iframe")[0];
+            var iframeWindow = iframe.contentWindow || iframe.contentDocument;
+            var $body = $(iframeWindow.document.body);
+            var $html = $body.parent();
+        	var contentHeight = parseInt($body.css('height'));
+        	var pageHeight = parseInt($html.css('height'));
+        	var columnCount = $html.css('column-count') === 'auto' ? 1 : $html.css('column-count');
+
+        	var firstElement = element;
         	if (typeof firstElement[0].offsetTop === 'undefined')
         		while (typeof firstElement[0].offsetTop === 'undefined')
         			firstElement = firstElement.parent();
@@ -389,6 +540,8 @@ define([
                         currentPackageDocument.generateTocListDOM(function(dom) {
                             loadToc(dom)
                         });
+
+                        initializeSlider();
 
                         wasFixed = readium.reader.isCurrentViewFixedLayout();
                         var metadata = options.metadata;
