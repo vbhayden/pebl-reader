@@ -15,6 +15,8 @@ define([
         'hgn!readium_js_viewer_html_templates/reader-navbar.html',
         'hgn!readium_js_viewer_html_templates/reader-body.html',
         'hgn!readium_js_viewer_html_templates/reader-body-page-btns.html',
+        'hgn!readium_js_viewer_html_templates/add-bookmark-dialog.html',
+        'hgn!readium_js_viewer_html_templates/add-note-dialog.html',
         'Analytics',
         'screenfull',
         './Keyboard',
@@ -44,6 +46,8 @@ define([
         ReaderNavbar,
         ReaderBody,
         ReaderBodyPageButtons,
+        AddBookmarkDialog,
+        AddNoteDialog,
         Analytics,
         screenfull,
         Keyboard,
@@ -794,44 +798,46 @@ define([
         };
 
         var showAnnotationNoteDialogue = function(annotation) {
-            $('#annotationNoteModal').remove();
-            var modalContainer = document.createElement('div');
-            modalContainer.id = 'annotationNoteModal';
-            var noteInput = document.createElement('textarea');
-            noteInput.id = 'annotationNoteInput';
-            noteInput.value = annotation.Text;
-            var noteSubmit = document.createElement('button');
-            noteSubmit.id = 'noteSubmit';
-            noteSubmit.textContent = 'Add Note';
-            var noteCancel = document.createElement('button');
-            noteCancel.id = 'noteCancel';
-            noteCancel.textContent = 'Cancel';
+        	$('#annotationInput').val(annotation.Text);
+        	$('#add-note-submit').data('annotation', annotation);
+            $('#add-note-dialog').modal('show');
+            // var modalContainer = document.createElement('div');
+            // modalContainer.id = 'annotationNoteModal';
+            // var noteInput = document.createElement('textarea');
+            // noteInput.id = 'annotationNoteInput';
+            // noteInput.value = annotation.Text;
+            // var noteSubmit = document.createElement('button');
+            // noteSubmit.id = 'noteSubmit';
+            // noteSubmit.textContent = 'Add Note';
+            // var noteCancel = document.createElement('button');
+            // noteCancel.id = 'noteCancel';
+            // noteCancel.textContent = 'Cancel';
 
-            noteSubmit.addEventListener('click', function() {
-                var note = $('#annotationNoteInput').val();
-                removeHighlight(annotation);
+            // noteSubmit.addEventListener('click', function() {
+            //     var note = $('#annotationNoteInput').val();
+            //     removeHighlight(annotation);
 
-                annotation.Text = note;
-                if (annotation.Type === 2) {
-                    var peblID = window.pebl.addAnnotation(annotation);
-                    readium.reader.plugins.highlights.addHighlight(annotation.IDRef, annotation.CFI, peblID, 'user-highlight');
-                } else if (annotation.Type === 3) {
-                    var peblID = window.pebl.shareAnnotation(annotation);
-                    readium.reader.plugins.highlights.addHighlight(annotation.IDRef, annotation.CFI, peblID, 'shared-my-highlight');
-                }
+            //     annotation.Text = note;
+            //     if (annotation.Type === 2) {
+            //         var peblID = window.pebl.addAnnotation(annotation);
+            //         readium.reader.plugins.highlights.addHighlight(annotation.IDRef, annotation.CFI, peblID, 'user-highlight');
+            //     } else if (annotation.Type === 3) {
+            //         var peblID = window.pebl.shareAnnotation(annotation);
+            //         readium.reader.plugins.highlights.addHighlight(annotation.IDRef, annotation.CFI, peblID, 'shared-my-highlight');
+            //     }
 
-                $('#annotationNoteModal').remove();
-            });
+            //     $('#annotationNoteModal').remove();
+            // });
 
-            noteCancel.addEventListener('click', function() {
-                $('#annotationNoteModal').remove();
-            });
+            // noteCancel.addEventListener('click', function() {
+            //     $('#annotationNoteModal').remove();
+            // });
 
-            modalContainer.appendChild(noteInput);
-            modalContainer.appendChild(noteSubmit);
-            modalContainer.appendChild(noteCancel);
+            // modalContainer.appendChild(noteInput);
+            // modalContainer.appendChild(noteSubmit);
+            // modalContainer.appendChild(noteCancel);
 
-            window.document.body.appendChild(modalContainer);
+            // window.document.body.appendChild(modalContainer);
         };
 
         var showAnnotationContextMenu = function(event, annotation) {
@@ -922,33 +928,8 @@ define([
         };
 
         var showBookmarkDialogue = function() {
-            $('#bookmarkModal').remove();
-            var modalContainer = document.createElement('div');
-            modalContainer.id = 'bookmarkModal';
-            var bookmarkInput = document.createElement('input');
-            bookmarkInput.id = 'bookmarkInput';
-            bookmarkInput.placeholder = 'Bookmark name...';
-            var bookmarkSubmit = document.createElement('button');
-            bookmarkSubmit.id = 'bookmarkSubmit';
-            bookmarkSubmit.textContent = 'Bookmark';
-            var bookmarkCancel = document.createElement('button');
-            bookmarkCancel.id = 'bookmarkCancel';
-            bookmarkCancel.textContent = 'Cancel';
-
-            bookmarkSubmit.addEventListener('click', function() {
-                saveBookmark($('#bookmarkInput').val());
-                $('#bookmarkModal').remove();
-            });
-
-            bookmarkCancel.addEventListener('click', function() {
-                $('#bookmarkModal').remove();
-            });
-
-            modalContainer.appendChild(bookmarkInput);
-            modalContainer.appendChild(bookmarkSubmit);
-            modalContainer.appendChild(bookmarkCancel);
-
-            window.document.body.appendChild(modalContainer);
+        	$('#bookmarkInput').val('');
+        	$('#add-bookmark-dialog').modal('show');
         };
 
         var saveBookmark = function(title) {
@@ -1766,6 +1747,25 @@ define([
 	            window.pebl.logout();
 	            return false;
 	        });
+	        $('#add-bookmark-submit').on('click', function() {
+	        	var val = $('#bookmarkInput').val();
+	        	saveBookmark(val);
+	        });
+	        $('#add-note-submit').on('click', function(evt) {
+	        	var annotation = $(evt.currentTarget).data('annotation');
+
+                var note = $('#annotationInput').val();
+                removeHighlight(annotation);
+
+                annotation.Text = note;
+                if (annotation.Type === 2) {
+                    var peblID = window.pebl.addAnnotation(annotation);
+                    readium.reader.plugins.highlights.addHighlight(annotation.IDRef, annotation.CFI, peblID, 'user-highlight');
+                } else if (annotation.Type === 3) {
+                    var peblID = window.pebl.shareAnnotation(annotation);
+                    readium.reader.plugins.highlights.addHighlight(annotation.IDRef, annotation.CFI, peblID, 'shared-my-highlight');
+                }
+	        });
 
 
             var setTocSize = function() {
@@ -1836,6 +1836,8 @@ define([
             $('nav').empty();
             $('nav').attr("aria-label", Strings.i18n_toolbar);
             $('nav').append(ReaderNavbar({ strings: Strings, dialogs: Dialogs, keyboard: Keyboard }));
+            $appContainer.append(AddBookmarkDialog({ strings: Strings }));
+            $appContainer.append(AddNoteDialog({ strings: Strings }));
             installReaderEventHandlers();
             document.title = "Readium";
             $('#zoom-fit-width a').on('click', setFitWidth);
