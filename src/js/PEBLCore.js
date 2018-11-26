@@ -205,6 +205,8 @@ var Action = /** @class */ (function (_super) {
         var _this = _super.call(this, raw) || this;
         _this.activityId = _this.object.id;
         _this.action = _this.verb.display["en-US"];
+        _this.name = _this.object.definition.name && _this.object.definition.name["en-US"];
+        _this.description = _this.object.definition.description && _this.object.definition.description["en-US"];
         var extensions = _this.object.definition.extensions;
         if (extensions) {
             _this.target = extensions[PREFIX_PEBL_EXTENSION + "target"];
@@ -1011,7 +1013,7 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
                     var record = stmtsCopy_4.pop();
                     if (record) {
                         var clone = record;
-                        clone.identity = record.identity;
+                        clone.identity = userProfile.identity;
                         var request = objectStore_5.put(self_30.cleanRecord(clone));
                         request.onerror = processCallback_6;
                         request.onsuccess = processCallback_6;
@@ -1907,7 +1909,7 @@ var XApiGenerator = /** @class */ (function () {
         if (!stmt.result)
             stmt.result = {};
         stmt.result.success = success;
-        stmt.result.complete = complete;
+        stmt.result.completion = complete;
         stmt.result.response = answered;
         if (!stmt.result.score)
             stmt.result.score = {};
@@ -1947,6 +1949,19 @@ var XApiGenerator = /** @class */ (function () {
             stmt.object.definition.extensions = extensions;
         return stmt;
     };
+    XApiGenerator.prototype.memberToIndex = function (x, arr) {
+        for (var i = 0; i < arr.length; i++)
+            if (x == arr[i])
+                return i;
+        return -1;
+    };
+    XApiGenerator.prototype.arrayToIndexes = function (arr, indexArr) {
+        var clone = arr.slice(0);
+        for (var i = 0; i < arr.length; i++) {
+            clone[i] = this.memberToIndex(arr[i], indexArr).toString();
+        }
+        return clone;
+    };
     XApiGenerator.prototype.addObjectInteraction = function (stmt, activityId, name, prompt, interaction, answers, correctAnswers) {
         if (!stmt.object)
             stmt.object = {};
@@ -1960,17 +1975,17 @@ var XApiGenerator = /** @class */ (function () {
         stmt.object.definition.interactionType = interaction;
         var answerArr = [];
         for (var _i = 0, correctAnswers_1 = correctAnswers; _i < correctAnswers_1.length; _i++) {
-            var answers_2 = correctAnswers_1[_i];
-            answerArr.push(answers_2.join("[,]"));
+            var corrrectAnswer = correctAnswers_1[_i];
+            answerArr.push(this.arrayToIndexes(corrrectAnswer, answers).join("[,]"));
         }
-        stmt.object.definition.correctResponsePattern = answerArr;
+        stmt.object.definition.correctResponsesPattern = answerArr;
         if (interaction == "choice") {
             stmt.object.definition.choices = [];
             var i = 0;
             for (var _a = 0, answers_1 = answers; _a < answers_1.length; _a++) {
                 var answer = answers_1[_a];
                 stmt.object.definition.choices.push({
-                    id: i,
+                    id: i.toString(),
                     description: {
                         "en-US": answer
                     }
@@ -2222,7 +2237,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/responded", "responded");
                         self.xapiGen.addTimestamp(xapi);
-                        self.xapiGen.addObject(xapi, PEBL_THREAD_PREFIX + payload.to, payload.prompt, payload.text);
+                        self.xapiGen.addObject(xapi, PEBL_THREAD_PREFIX + payload.thread, payload.prompt, payload.text);
                         self.xapiGen.addActorAccount(xapi, userProfile);
                         var message = new Message(xapi);
                         self.pebl.storage.saveMessages(userProfile, message);
@@ -2565,18 +2580,22 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             target: payload.target,
             type: payload.type
         };
-        this.pebl.user.getUser(function (userProfile) {
-            if (userProfile) {
-                self.xapiGen.addId(xapi);
-                self.xapiGen.addTimestamp(xapi);
-                self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, PEBL_PREFIX + payload.activity, payload.name, payload.description, self.xapiGen.addExtensions(exts));
-                self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/preferred", "preferred");
-                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + payload.activity);
-                var s = new Action(xapi);
-                self.pebl.storage.saveOutgoing(userProfile, s);
-                self.pebl.storage.saveEvent(userProfile, s);
-            }
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentActivity(function (book) {
+                self.pebl.user.getUser(function (userProfile) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addExtensions(exts));
+                        self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/preferred", "preferred");
+                        self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
+                        var s = new Action(xapi);
+                        self.pebl.storage.saveOutgoing(userProfile, s);
+                        self.pebl.storage.saveEvent(userProfile, s);
+                    }
+                });
+            });
         });
     };
     PEBLEventHandlers.prototype.eventContentMorphed = function (event) {
@@ -2765,33 +2784,31 @@ var pebl_PEBL = /** @class */ (function () {
         this.eventHandlers = new eventHandlers_PEBLEventHandlers(this);
         this.events = new EventSet();
         this.user = new User(this);
-        // this.activity = new Activity(this);
         this.network = new network_Network(this);
         var self = this;
-        if (this.useIndexedDB) {
-            this.storage = new storage_IndexedDBStorageAdapter(function () {
-                self.loaded = true;
-                self.addSystemEventListeners();
-                if (callback)
-                    callback(self);
-                self.processQueuedEvents();
-            });
-        }
-        else {
-            this.storage = new storage_IndexedDBStorageAdapter(function () { });
-            // if (localStorage != null) {
-            //     this.storage;
-            // } else if (sessionStorage != null) {
-            //     this.storage;
-            // } else {
-            //     this.storage;
-            // }
-            this.loaded = true;
-            this.addSystemEventListeners();
+        // if (this.useIndexedDB) {
+        this.storage = new storage_IndexedDBStorageAdapter(function () {
+            self.loaded = true;
+            self.addSystemEventListeners();
             if (callback)
-                callback(this);
+                callback(self);
             self.processQueuedEvents();
-        }
+        });
+        // } else {
+        //     this.storage = new IndexedDBStorageAdapter(function() { });
+        //     // if (localStorage != null) {
+        //     //     this.storage;
+        //     // } else if (sessionStorage != null) {
+        //     //     this.storage;
+        //     // } else {
+        //     //     this.storage;
+        //     // }
+        //     this.loaded = true;
+        //     this.addSystemEventListeners();
+        //     if (callback)
+        //         callback(this);
+        //     self.processQueuedEvents();
+        // }
     }
     PEBL.prototype.addListener = function (event, callback) {
         document.removeEventListener(event, callback);
@@ -2897,7 +2914,7 @@ var pebl_PEBL = /** @class */ (function () {
     //fix once for return of getMessages
     PEBL.prototype.subscribeThread = function (thread, once, callback) {
         var threadCallbacks = this.subscribedThreadHandlers[thread];
-        if (threadCallbacks) {
+        if (!threadCallbacks) {
             threadCallbacks = [];
             this.subscribedThreadHandlers[thread] = threadCallbacks;
         }
