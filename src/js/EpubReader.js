@@ -1670,9 +1670,10 @@ define([
                Keyboard.on(Keyboard.ToolbarHide, 'reader', hideTB);
 
                var showTB = function() {
-                   $("#aboutButt1")[0].focus();
-                   unhideUI();
-                   setTimeout(function() { $("#aboutButt1")[0].focus(); }, 50);
+                   // FIXME AboutDialog Removed
+                   // $("#aboutButt1")[0].focus();
+                   // unhideUI();
+                   // setTimeout(function() { $("#aboutButt1")[0].focus(); }, 50);
                };
                $("#buttShowToolBar").on("click", showTB);
                Keyboard.on(Keyboard.ToolbarShow, 'reader', showTB);
@@ -1737,7 +1738,7 @@ define([
                $('#bookmark-page').on('click', showBookmarkDialogue);
                $('#loginButt').on('click', function() {
                    loadlibrary();
-                   PeBL.emitEvent(PeBL.events.eventLoggingOut);
+                   PeBL.emitEvent(PeBL.events.eventLoggedOut);
                    return false;
                });
                $('#add-bookmark-submit').on('click', function() {

@@ -736,7 +736,8 @@ Helpers){
         $('#about-dialog').on('hidden.bs.modal', function () {
             Keyboard.scope('library');
 
-            setTimeout(function(){ $("#aboutButt1").focus(); }, 50);
+            // FIXME AboutDialog Removed
+            // setTimeout(function(){ $("#aboutButt1").focus(); }, 50);
         });
         $('#about-dialog').on('shown.bs.modal', function(){
             Keyboard.scope('about');
@@ -776,7 +777,7 @@ Helpers){
             setTimeout(function(){ $('.icon-list-view')[0].focus(); }, 50);
         });
         $('#loginButt').on('click', function() {
-            window.pebl.logout();
+            PeBL.emitEvent(PeBL.events.eventloggedOut);
         });
 
         findHeightRule();
