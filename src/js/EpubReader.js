@@ -244,9 +244,9 @@ define([
                    if (chapters[i].idref === currentIdref) {
                        //Mark the chapter start
                        chapterStart = i;
-                       while (chapters[i].idref === currentIdref) {
+                       while (i < chapters.length && chapters[i].idref === currentIdref) {
                            //Set the page number for each 'subchapter' in this chapter
-                           chapters[i].pageNumber = typeof chapters[i].elementId !== 'undefined' ? getPageNumberForElement(readium.reader.getElementById(currentIdref, chapters[i].elementId)) : getCurrentPageNumber();
+                           chapters[i].pageNumber = typeof chapters[i].elementId !== 'undefined' ? getPageNumberForElement(readium.reader.getElementById(currentIdref, chapters[i].elementId)) : 1;
                            //Mark the chapter end
                            chapterEnd = i;
                            i++;
@@ -515,8 +515,6 @@ define([
 
            // This function will retrieve a package document and load an EPUB
            var loadEbook = function(readerSettings, openPageRequest) {
-
-
                readium.openPackageDocument(
 
                    ebookURL,
