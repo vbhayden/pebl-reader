@@ -35,12 +35,11 @@
     <script type="text/javascript" src="scripts/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="scripts/PEBLCore.js"> </script>
     <script type="text/javascript" src="scripts/readium-js-viewer_all.js"> </script>
-    <script type="text/javascript" src="scripts/pebl-login-widget.js"> </script>
 
     <script type="text/javascript" src="font-faces/fonts.js"> </script>
 
     <script type="text/javascript">
-
+      
       if (navigator.serviceWorker) {
 	  navigator.serviceWorker.register('peblSW.js').then(function (reg) {
 	      console.log("Service worker registered", reg.scope);
@@ -133,9 +132,10 @@
 	  }
       });
 
-      PEBL.registerReadyCallback(function () {
-	  loadReadiumReader();
-      });
+      // PEBL.registerReadyCallback(function () {
+      // 	  loadReadiumReader();
+      // });
+      // loadReadiumReader();
     </script>
 
   </head>
@@ -146,6 +146,7 @@
     </nav>
     <div id="app-container">
     </div>
+    <script type="text/javascript" src="scripts/pebl-login-widget.js"> </script>
   </body>
 
 </html>

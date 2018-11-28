@@ -1,23 +1,26 @@
+PeBL.user.isLoggedIn(function (loggedIn) {
+    if (!loggedIn) {
 
-if (!window.PEBLPreventAutoLogin) {
-    PEBL.registerReadyCallback(function() {
-	var e = document.getElementById("top-menu");
-	if (e != null) {
-	    
-	    var li = $('<li id="loginTopMenu" class="menu-item menu-item-type-post_type menu-item-object-page"></li>');
-	    $(e).append(li[0]);
-	    pebl.loginStoredUser(function () {
-		Lightbox.createLoginButton("loginTopMenu");
-	    });
-	    
-	} else {
-	    if (!window.PEBLbuttonLogin)
-		pebl.login(function() {
-		    dosomething();
-		});
-	}
-    });
-}
+	Lightbox.createLoginForm();
+
+	// var e = document.getElementById("top-menu");
+	// if (e != null) {
+	
+	//     var li = $('<li id="loginTopMenu" class="menu-item menu-item-type-post_type menu-item-object-page"></li>');
+	//     $(e).append(li[0]);
+
+	// } else {
+	//     // if (!window.PEBLbuttonLogin)
+	//     // 	pebl.login(function() {
+	//     // 	    dosomething();
+	//     // 	});
+	// }	
+    } else {
+	PeBL.user.getUser(function (user) {
+	    PeBL.emitEvent(PeBL.events.eventLoggedIn, user);
+	});
+    }
+})
 
 window.Lightbox = {
     close : function() {
@@ -71,7 +74,7 @@ window.Lightbox = {
     },
 
     initDefaultLRSSettings : function(reset) {
-    	var lrsURL = "https://lrs.peblproject.com/";
+    	var lrsURL = "https://lrs.peblproject.org/";
     	var lrsPassword = null;
     	var lrsToken = "ZmI0YmRkZmM5Yzc2NzM2Mjg5MmUzOWI2NjUyZmM3YzgwZDcxMGMzZDowNGNiNDJmNTgzODZkN2ZkMDgzNGJmMDcwMmRjMDFjY2I0YzVkNWRi";
 	var lrsUsername = null;
@@ -168,6 +171,20 @@ window.Lightbox = {
 	lightBoxContentSecondary.appendChild(lrsCancelButton[0]);
 	lightBoxContentSecondary.appendChild(lrsSaveButton[0]);
 	lightBoxContentSecondary.appendChild(lrsDefaultButton[0]);
+
+	$("#loginUserNameSubmit").click(function () {
+	    PeBL.emitEvent(PeBL.events.eventLoggedIn,
+			   {
+			       identity : $("#loginUserNameSelector").val(),
+			       endpoints : [
+				   {
+    				       url: "https://lrs.peblproject.com/",
+    				       token: "ZmI0YmRkZmM5Yzc2NzM2Mjg5MmUzOWI2NjUyZmM3YzgwZDcxMGMzZDowNGNiNDJmNTgzODZkN2ZkMDgzNGJmMDcwMmRjMDFjY2I0YzVkNWRi"
+				   }
+			       ]
+			   });
+	    Lightbox.close();
+	});
     },
 
     openIDLogin : function () {
@@ -177,7 +194,6 @@ window.Lightbox = {
 	var loginFrame = $('#loginIFrame');
 	if (loginFrame.length == 0) {
 	    loginFrame = $('<iframe id="loginIFrame" src="about:blank" style="width:100%;margin-bottom:20px;margin-top:30px;height:550px"></iframe>');
-
 	    lf = loginFrame;
 
 	    loginFrame.off();
@@ -420,4 +436,4 @@ function useOpenIDLoginButton(elementName) {
     Lightbox.createLoginButton(elementName);
 }
 
-Lightbox.initDefaultLRSSettings();
+// Lightbox.initDefaultLRSSettings();

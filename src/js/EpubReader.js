@@ -28,6 +28,7 @@ define([
     'readium_shared_js/helpers',
     'readium_shared_js/models/bookmark_data'
 ],
+
        function(
            globalSetup,
            Globals,
@@ -534,9 +535,18 @@ define([
 
                            return;
                        }
+                       
+                       currentPackageDocument = packageDocument;
+                       currentPackageDocument.generateTocListDOM(function(dom) {
+                           loadToc(dom)
+                       });
 
+                       wasFixed = readium.reader.isCurrentViewFixedLayout();
+                       var metadata = options.metadata;
 
+                       setBookTitle(metadata.title);
 
+<<<<<<< variant A
                        window.pebl.openBook(constructEbookTitle(ebookURL_filepath), function() {
 
                            currentPackageDocument = packageDocument;
@@ -570,7 +580,28 @@ define([
                            $("#right-page-btn").mouseleave(function() {
                                $(tooltipSelector()).tooltip('destroy');
                            });
+>>>>>>> variant B
+                       $("#left-page-btn").unbind("click");
+                       $("#right-page-btn").unbind("click");
+                       var $pageBtnsContainer = $('#readium-page-btns');
+                       $pageBtnsContainer.empty();
+                       var rtl = currentPackageDocument.getPageProgressionDirection() === "rtl"; //_package.spine.isLeftToRight()
+                       $pageBtnsContainer.append(ReaderBodyPageButtons({
+                           strings: Strings,
+                           dialogs: Dialogs,
+                           keyboard: Keyboard,
+                           pageProgressionDirectionIsRTL: rtl
+                       }));
+                       $("#left-page-btn").on("click", prevPage);
+                       $("#right-page-btn").on("click", nextPage);
+                       $("#left-page-btn").mouseleave(function() {
+                           $(tooltipSelector()).tooltip('destroy');
+======= end
                        });
+                       $("#right-page-btn").mouseleave(function() {
+                           $(tooltipSelector()).tooltip('destroy');
+                       });
+
                    },
                    openPageRequest
                );
@@ -651,6 +682,71 @@ define([
                }
            };
 
+           var annotationCallback = function(stmts) {
+               for (var stmt of stmts) {
+                   if (stmt.type === 2) {
+                       (function(stmt) {
+                           if ($("#annotation-" + stmt.id).length == 0) {
+                               var annotationContainer = document.createElement('div');
+                               annotationContainer.id = "annotation-" + stmt.id;
+                               var annotation = document.createElement('div');
+                               var annotationTitle = document.createElement('span');
+                               annotationTitle.textContent = stmt.title;
+                               annotation.appendChild(annotationTitle);
+                               var note = document.createElement('div');
+                               var noteText = document.createElement('span');
+                               noteText.textContent = stmt.text;
+                               note.appendChild(noteText);
+
+                               annotationContainer.appendChild(annotation);
+                               annotationContainer.appendChild(note);
+
+                               annotationContainer.addEventListener('click', function() {
+                                   readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
+                               });
+
+                               $('#my-annotations').append($(annotationContainer));
+                           }
+                       })(stmt);
+                   }
+               }
+           };
+
+           var sharedAnnotationCallback = function(stmts) {
+               PeBL.storage.getCurrentUser(function (userName) {                   
+                   for (var stmt of stmts) {
+                       if (stmt.type === 3) {
+                           (function(stmt) {
+                               if ($("#sharedAnnotation-" + stmt.id).length == 0) {                        
+                                   var annotationContainer = document.createElement('div');
+                                   annotationContainer.id = "sharedAnnotation-" + stmt.id;
+                                   var annotation = document.createElement('div');
+                                   var annotationTitle = document.createElement('span');
+                                   annotationTitle.textContent = stmt.title;
+                                   annotation.appendChild(annotationTitle);
+                                   var note = document.createElement('div');
+                                   var noteText = document.createElement('span');
+                                   noteText.textContent = stmt.text;
+                                   note.appendChild(noteText);
+
+                                   annotationContainer.appendChild(annotation);
+                                   annotationContainer.appendChild(note);
+
+                                   annotationContainer.addEventListener('click', function() {
+                                       readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
+                                   });
+                                   
+                                   if (stmt.owner === userName)
+                                       $('#my-shared-annotations').append($(annotationContainer));
+                                   else
+                                       $('#general-shared-annotations').append($(annotationContainer));
+                               }
+                           })(stmt);
+                       }
+                   }
+               });
+           };
+           
            var annotationsShowHideToggle = function() {
 
                unhideUI();
@@ -666,75 +762,23 @@ define([
                if (hide) {
                    $appContainer.removeClass('annotations-visible');
 
-                   // clear tabindex off of any previously focused ToC item
-                   // var existsFocusable = $('#readium-toc-body a[tabindex="60"]');
-                   // if (existsFocusable.length > 0){
-                   //     existsFocusable[0].setAttribute("tabindex", "-1");
-                   // }
-                   /* end of clear focusable tab item */
-                   // setTimeout(function(){ $('#tocButt')[0].focus(); }, 100);
+                   PeBL.unsubscribeEvent(PeBL.events.incomingAnnotations,
+                                         false,
+                                         annotationCallback);
+                   PeBL.unsubscribeEvent(PeBL.events.incomingSharedAnnotations,
+                                         false,
+                                         sharedAnnotationCallback);
                } else {
                    $('#my-annotations').children().remove();
                    $('#my-shared-annotations').children().remove();
                    $('#general-shared-annotations').children().remove();
                    $appContainer.addClass('annotations-visible');
-                   window.pebl.getAnnotations(window.pebl.activityManager.getBook(),
-                                              function(stmts) {
-                                                  for (var stmt of stmts) {
-                                                      if (stmt.Type === 2) {
-                                                          (function(stmt) {
-                                                              var annotationContainer = document.createElement('div');
-                                                              var annotation = document.createElement('div');
-                                                              var annotationTitle = document.createElement('span');
-                                                              annotationTitle.textContent = stmt.Title;
-                                                              annotation.appendChild(annotationTitle);
-                                                              var note = document.createElement('div');
-                                                              var noteText = document.createElement('span');
-                                                              noteText.textContent = stmt.Text;
-                                                              note.appendChild(noteText);
-
-                                                              annotationContainer.appendChild(annotation);
-                                                              annotationContainer.appendChild(note);
-
-                                                              annotationContainer.addEventListener('click', function() {
-                                                                  readium.reader.openSpineItemElementCfi(stmt.IDRef, stmt.CFI);
-                                                              });
-
-                                                              $('#my-annotations').append($(annotationContainer));
-                                                          })(stmt);
-                                                      }
-                                                  }
-                                              });
-                   window.pebl.getGeneralAnnotations(window.pebl.activityManager.getBook(),
-                                                     function(stmts) {
-                                                         for (var stmt of stmts) {
-                                                             if (stmt.Type === 3) {
-                                                                 (function(stmt) {
-                                                                     var annotationContainer = document.createElement('div');
-                                                                     var annotation = document.createElement('div');
-                                                                     var annotationTitle = document.createElement('span');
-                                                                     annotationTitle.textContent = stmt.Title;
-                                                                     annotation.appendChild(annotationTitle);
-                                                                     var note = document.createElement('div');
-                                                                     var noteText = document.createElement('span');
-                                                                     noteText.textContent = stmt.Text;
-                                                                     note.appendChild(noteText);
-
-                                                                     annotationContainer.appendChild(annotation);
-                                                                     annotationContainer.appendChild(note);
-
-                                                                     annotationContainer.addEventListener('click', function() {
-                                                                         readium.reader.openSpineItemElementCfi(stmt.IDRef, stmt.CFI);
-                                                                     });
-
-                                                                     if (stmt.Owner === window.pebl.getUserName())
-                                                                         $('#my-shared-annotations').append($(annotationContainer));
-                                                                     else
-                                                                         $('#general-shared-annotations').append($(annotationContainer));
-                                                                 })(stmt);
-                                                             }
-                                                         }
-                                                     });
+                   PeBL.subscribeEvent(PeBL.events.incomingAnnotations,
+                                       false,
+                                       annotationCallback);
+                   PeBL.subscribeEvent(PeBL.events.incomingSharedAnnotations,
+                                       false,
+                                       sharedAnnotationCallback);
 
                    // setTimeout(function(){ $('#readium-toc-body button.close')[0].focus(); }, 100);
                }
@@ -751,52 +795,43 @@ define([
                    // }, 90);
                }
            };
-
+           
            var saveHighlight = function() {
                var CFI = readium.reader.plugins.highlights.getCurrentSelectionCfi();
                if (CFI) {
-                   var annID = Math.random() * 1000000;
                    var annotation = {};
-                   var timestamp = new Date();
                    var iframe = $("#epub-reader-frame iframe")[0];
                    var iframeWindow = iframe.contentWindow || iframe.contentDocument;
-                   annotation.AnnID = annID;
-                   annotation.CFI = CFI.cfi;
-                   annotation.ContainerPath = window.pebl.activityManager.getBook();
-                   annotation.Date = timestamp.toISOString();
-                   annotation.IDRef = CFI.idref;
-                   annotation.Style = 1;
-                   annotation.Text = "";
-                   annotation.Title = iframeWindow.getSelection().toString();
-                   annotation.Type = 2;
+                   annotation.cfi = CFI.cfi;
+                   annotation.idRef = CFI.idref;
+                   annotation.style = 1;
+                   annotation.text = "";
+                   annotation.title = iframeWindow.getSelection().toString();
+                   annotation.type = 2;
 
-                   var peblID = window.pebl.addAnnotation(annotation);
-                   readium.reader.plugins.highlights.addSelectionHighlight(peblID, "user-highlight");
-                   //updateAnnotationsMenu();
+                   PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
                } else {
                    throw new Error("Nothing selected");
                }
            };
 
            var removeHighlight = function(annotation) {
-               if (annotation.Type === 2)
-                   window.pebl.removeAnnotation(annotation);
-               else if (annotation.Type === 3)
-                   window.pebl.removeSharedAnnotation(annotation);
+               if (annotation.type === 2)
+                   PeBL.emitEvent(PeBL.events.removedAnnotation, annotation);
+               else if (annotation.type === 3)
+                   PeBL.emitEvent(PeBL.events.removedSharedAnnotation, annotation);
                readium.reader.plugins.highlights.removeHighlight(annotation.id);
-               //updateAnnotationsMenu();
            };
 
            var shareHighlight = function(annotation) {
-               window.pebl.removeAnnotation(annotation);
+               PeBL.emitEvent(PeBL.events.removedAnnotation, annotation);
                readium.reader.plugins.highlights.removeHighlight(annotation.id);
-               annotation.Type = 3;
-               var peblID = window.pebl.shareAnnotation(annotation);
-               readium.reader.plugins.highlights.addHighlight(annotation.IDRef, annotation.CFI, peblID, 'shared-my-highlight');
-               //updateAnnotationsMenu();
+               annotation.type = 3;
+               PeBL.emitEvent(PeBL.events.newSharedAnnotation, annotation);
            };
 
            var showAnnotationNoteDialogue = function(annotation) {
+<<<<<<< variant A
                $('#annotationInput').val(annotation.Text);
                $('#add-note-submit').data('annotation', annotation);
                $('#add-note-dialog').modal('show');
@@ -835,6 +870,31 @@ define([
                // modalContainer.appendChild(noteInput);
                // modalContainer.appendChild(noteSubmit);
                // modalContainer.appendChild(noteCancel);
+>>>>>>> variant B
+               $('#annotationNoteModal').remove();
+               var modalContainer = document.createElement('div');
+               modalContainer.id = 'annotationNoteModal';
+               var noteInput = document.createElement('textarea');
+               noteInput.id = 'annotationNoteInput';
+               noteInput.value = annotation.text;
+               var noteSubmit = document.createElement('button');
+               noteSubmit.id = 'noteSubmit';
+               noteSubmit.textContent = 'Add Note';
+               var noteCancel = document.createElement('button');
+               noteCancel.id = 'noteCancel';
+               noteCancel.textContent = 'Cancel';
+
+               noteSubmit.addEventListener('click', function() {
+                   var note = $('#annotationNoteInput').val();
+                   removeHighlight(annotation);
+
+                   annotation.text = note;
+                   if (annotation.type === 2) {
+                       PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
+                   } else if (annotation.type === 3) {
+                       PeBL.emitEvent(PeBL.events.newSharedAnnotation, annotation);
+                   }
+======= end
 
                // window.document.body.appendChild(modalContainer);
            };
@@ -857,6 +917,7 @@ define([
                var buttonWrapper = document.createElement('div');
                buttonWrapper.classList.add('annotationContextButtonWrapper');
 
+<<<<<<< variant A
                if (annotation.Owner === window.pebl.getUserName()) {
                    var deleteButtonContainer = document.createElement('div');
                    var deleteButton = document.createElement('span');
@@ -867,63 +928,77 @@ define([
                        $('#annotationContextMenu').remove();
                        $('#clickOutOverlay').remove();
                    });
+>>>>>>> variant B
+               PeBL.user.getUser(function (userProfile) {                  
+                   if (annotation.owner === userProfile.identity) {
+                       var deleteButtonContainer = document.createElement('div');
+                       var deleteButton = document.createElement('span');
+                       deleteButton.classList.add('glyphicon', 'glyphicon-trash');
+                       deleteButtonContainer.appendChild(deleteButton);
+                       deleteButtonContainer.addEventListener('click', function() {
+                           removeHighlight(annotation);
+                           $('#annotationContextMenu').remove();
+                           $('#clickOutOverlay').remove();
+                       });
+======= end
 
-                   var noteButtonContainer = document.createElement('div');
-                   var noteButton = document.createElement('span');
-                   noteButton.textContent = 'Note';
-                   noteButtonContainer.appendChild(noteButton);
-                   noteButtonContainer.addEventListener('click', function() {
-                       showAnnotationNoteDialogue(annotation);
+                       var noteButtonContainer = document.createElement('div');
+                       var noteButton = document.createElement('span');
+                       noteButton.textContent = 'Note';
+                       noteButtonContainer.appendChild(noteButton);
+                       noteButtonContainer.addEventListener('click', function() {
+                           showAnnotationNoteDialogue(annotation);
+                           $('#annotationContextMenu').remove();
+                           $('#clickOutOverlay').remove();
+                       });
+
+                       buttonWrapper.appendChild(deleteButtonContainer);
+                       buttonWrapper.appendChild(noteButtonContainer);
+                   } else {
+                       var infoContainer = document.createElement('div');
+                       var info = document.createElement('span');
+                       info.textContent = 'Shared by ' + annotation.owner;
+                       infoContainer.appendChild(info);
+                       buttonWrapper.appendChild(infoContainer);
+                   }
+
+
+                   if (annotation.type === 2) {
+                       var shareButtonContainer = document.createElement('div');
+                       var shareButton = document.createElement('span');
+                       shareButton.textContent = 'Share';
+                       shareButtonContainer.appendChild(shareButton);
+                       shareButtonContainer.addEventListener('click', function() {
+                           shareHighlight(annotation);
+                           $('#annotationContextMenu').remove();
+                           $('#clickOutOverlay').remove();
+                       });
+                       buttonWrapper.appendChild(shareButtonContainer);
+                   }
+
+                   menu.appendChild(buttonWrapper);
+
+                   if (annotation.text && annotation.text.length > 0) {
+                       var noteContainer = document.createElement('div');
+                       noteContainer.classList.add('noteContainer');
+                       var noteText = document.createElement('span');
+                       noteText.textContent = annotation.text;
+                       noteContainer.appendChild(noteText);
+
+                       menu.appendChild(noteContainer);
+                   }
+
+
+                   var clickOutOverlay = document.createElement('div');
+                   clickOutOverlay.id = 'clickOutOverlay';
+                   clickOutOverlay.addEventListener('click', function() {
                        $('#annotationContextMenu').remove();
                        $('#clickOutOverlay').remove();
                    });
 
-                   buttonWrapper.appendChild(deleteButtonContainer);
-                   buttonWrapper.appendChild(noteButtonContainer);
-               } else {
-                   var infoContainer = document.createElement('div');
-                   var info = document.createElement('span');
-                   info.textContent = 'Shared by ' + annotation.Owner;
-                   infoContainer.appendChild(info);
-                   buttonWrapper.appendChild(infoContainer);
-               }
-
-
-               if (annotation.Type === 2) {
-                   var shareButtonContainer = document.createElement('div');
-                   var shareButton = document.createElement('span');
-                   shareButton.textContent = 'Share';
-                   shareButtonContainer.appendChild(shareButton);
-                   shareButtonContainer.addEventListener('click', function() {
-                       shareHighlight(annotation);
-                       $('#annotationContextMenu').remove();
-                       $('#clickOutOverlay').remove();
-                   });
-                   buttonWrapper.appendChild(shareButtonContainer);
-               }
-
-               menu.appendChild(buttonWrapper);
-
-               if (annotation.Text && annotation.Text.length > 0) {
-                   var noteContainer = document.createElement('div');
-                   noteContainer.classList.add('noteContainer');
-                   var noteText = document.createElement('span');
-                   noteText.textContent = annotation.Text;
-                   noteContainer.appendChild(noteText);
-
-                   menu.appendChild(noteContainer);
-               }
-
-
-               var clickOutOverlay = document.createElement('div');
-               clickOutOverlay.id = 'clickOutOverlay';
-               clickOutOverlay.addEventListener('click', function() {
-                   $('#annotationContextMenu').remove();
-                   $('#clickOutOverlay').remove();
-               });
-
-               document.body.appendChild(clickOutOverlay);
-               document.body.appendChild(menu);
+                   document.body.appendChild(clickOutOverlay);
+                   document.body.appendChild(menu);
+               });                 
            };
 
            var showBookmarkDialogue = function() {
@@ -932,25 +1007,48 @@ define([
            };
 
            var saveBookmark = function(title) {
-               var annID = Math.random() * 1000000;
                var bookmark = JSON.parse(readium.reader.bookmarkCurrentPage());
                var annotation = {};
-               var timestamp = new Date();
-               annotation.AnnID = annID;
-               annotation.CFI = bookmark.contentCFI;
-               annotation.ContainerPath = window.pebl.activityManager.getBook();
-               annotation.Date = timestamp.toISOString();
-               annotation.IDRef = bookmark.idref;
-               annotation.Owner = "N/A";
-               annotation.Style = 0;
-               annotation.Text = "";
-               annotation.Title = title;
-               annotation.Type = 1;
 
+               annotation.cfi = bookmark.contentCFI;
+               annotation.idRef = bookmark.idref;
+               
+               annotation.style = 0;
+               annotation.text = "";
+               annotation.title = title;
+               annotation.type = 1;
 
-               window.pebl.addAnnotation(annotation);
+               PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
            };
 
+           var bookmarksCallback = function(stmts) {
+               var $appContainer = $('#app-container');
+               $appContainer.addClass('bookmarks-visible');
+               for (var stmt of stmts) {
+                   if (stmt.type === 1) {
+                       if ($("#bookmark-" + stmt.id).length == 0) {                        
+                           var bookmarkWrapper = document.createElement('div');
+                           bookmarkWrapper.id = "bookmark-" + stmt.id;
+                           var bookmarkLink = document.createElement('span');                  
+                           bookmarkLink.addEventListener('click', function(evt) {
+                               var bookmark = {
+                                   contentCFI: evt.currentTarget.getAttribute('data-CFI'),
+                                   IDRef: evt.currentTarget.getAttribute('data-IDRef')
+                               }
+                               readium.reader.openSpineItemElementCfi(bookmark.IDRef, bookmark.contentCFI);
+                           });
+                           bookmarkLink.classList.add('bookmarkLink');
+                           bookmarkLink.textContent = stmt.title;
+                           bookmarkLink.setAttribute('data-CFI', stmt.cfi);
+                           bookmarkLink.setAttribute('data-IDRef', stmt.idRef);
+
+                           bookmarkWrapper.appendChild(bookmarkLink);
+                           $('#bookmarks-body-list').append($(bookmarkWrapper));
+                       }
+                   }
+               }
+           };
+           
            var bookmarksShowHideToggle = function() {
 
                unhideUI();
@@ -965,35 +1063,16 @@ define([
 
                if (hide) {
                    $appContainer.removeClass('bookmarks-visible');
+                   PeBL.unsubscribeEvent(PeBL.events.incomingAnnotations,
+                                         false,
+                                         bookmarksCallback);               
                } else {
                    $('#bookmarks-body-list').children().remove();
-                   window.pebl.getAnnotations(window.pebl.activityManager.getBook(),
-                                              function(stmts) {
-                                                  $appContainer.addClass('bookmarks-visible');
-                                                  for (var stmt of stmts) {
-                                                      if (stmt.Type === 1) {
-                                                          var bookmarkWrapper = document.createElement('div');
-                                                          var bookmarkLink = document.createElement('span');
-                                                          bookmarkLink.addEventListener('click', function(evt) {
-                                                              var bookmark = {
-                                                                  contentCFI: evt.currentTarget.getAttribute('data-CFI'),
-                                                                  IDRef: evt.currentTarget.getAttribute('data-IDRef')
-                                                              }
-                                                              readium.reader.openSpineItemElementCfi(bookmark.IDRef, bookmark.contentCFI);
-                                                          });
-                                                          bookmarkLink.classList.add('bookmarkLink');
-                                                          bookmarkLink.textContent = stmt.Title;
-                                                          bookmarkLink.setAttribute('data-CFI', stmt.CFI);
-                                                          bookmarkLink.setAttribute('data-IDRef', stmt.IDRef);
-
-                                                          bookmarkWrapper.appendChild(bookmarkLink);
-                                                          $('#bookmarks-body-list').append($(bookmarkWrapper));
-                                                      }
-                                                  }
-                                              });
+                   PeBL.subscribeEvent(PeBL.events.incomingAnnotations,
+                                       false,
+                                       bookmarksCallback);
 
                    $appContainer.addClass('bookmarks-visible');
-
                }
 
                if (embedded) {
@@ -1115,8 +1194,6 @@ define([
 
                    var isFixed = readium.reader.isCurrentViewFixedLayout();
 
-                   
-
                    // TODO: fix the pan-zoom feature!
                    if (isFixed) {
                        showScaleDisplay();
@@ -1128,9 +1205,11 @@ define([
                    $iframe.attr("title", "EPUB");
                    $iframe.attr("aria-label", "EPUB");
 
-                   lastIframe = $iframe[0];
+                   lastIframe = $iframe[0];                
                });
 
+               var sunkHighlighHandler = false;
+               
                readium.reader.on(ReadiumSDK.Events.PAGINATION_CHANGED, function(pageChangeData) {
                    Globals.logEvent("PAGINATION_CHANGED", "ON", "EpubReader.js");
 
@@ -1140,39 +1219,56 @@ define([
                        _debugBookmarkData_goto = undefined;
                    }
 
+                   if (!sunkHighlighHandler) {
+                       sunkHighlighHandler = true;                     
+                       PeBL.subscribeEvent(PeBL.events.incomingAnnotations,
+                                           false,
+                                           function (stmts) {
+                                               for (var stmt of stmts) {
+                                                   if (stmt.type == 2) {
+                                                       readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, "user-highlight");
+                                                   }
+                                               }
+                                           });
+                   }
+                   
                    savePlace();
                    updateUI(pageChangeData);
 
                    spin(false);
 
-                   //TODO: Find a way to not need to remove and readd all the highlights each time
-                   readium.reader.plugins.highlights.removeHighlightsByType('user-highlight');
-                   window.pebl.getAnnotations(window.pebl.activityManager.getBook(),
-                                              function(stmts) {
-                                                  for (var stmt of stmts) {
-                                                      if (stmt.Type === 2) {
+                   readium.reader.plugins.highlights.redrawAnnotations();
 
-                                                          readium.reader.plugins.highlights.addHighlight(stmt.IDRef, stmt.CFI, stmt.id, 'user-highlight');
-                                                      }
-                                                  }
-                                              });
+                   readium.reader.plugins.highlights.removeHighlightsByType('user-highlight');
                    readium.reader.plugins.highlights.removeHighlightsByType('shared-highlight');
                    readium.reader.plugins.highlights.removeHighlightsByType('shared-my-highlight');
-                   window.pebl.getGeneralAnnotations(window.pebl.activityManager.getBook(),
-                                                     function(stmts) {
-                                                         for (var stmt of stmts) {
-                                                             if (stmt.Type === 3) {
-                                                                 var highlightType = 'shared-highlight';
-                                                                 if (stmt.Owner === window.pebl.getUserName())
-                                                                     highlightType = 'shared-my-highlight';
-                                                                 readium.reader.plugins.highlights.addHighlight(stmt.IDRef, stmt.CFI, stmt.id, highlightType);
-                                                             }
-                                                         }
-                                                     });
 
                    createNavigationSlider();
                    
+                   //TODO: Find a way to not need to remove and readd all the highlights each time
+                   PeBL.utils.getAnnotations(function(stmts) {
+                       for (var stmt of stmts) {
+                           if (stmt.type === 2) {
+                               // console.log(stmt);
+                               
+                               readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, 'user-highlight');
+                           }
+                       }                                                                                                                                                                          
+                   });
 
+                   PeBL.utils.getSharedAnnotations(function(stmts) {
+                       for (var stmt of stmts) {
+                           if (stmt.type === 3) {
+                               // console.log(stmt);
+                               var highlightType = 'shared-highlight';
+                               if (stmt.owner === userProfile.identity)
+                                   highlightType = 'shared-my-highlight';
+                               
+                               readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, highlightType);
+                           }
+                       }
+                   });
+                   
                    if (!_tocLinkActivated) return;
                    _tocLinkActivated = false;
 
@@ -1225,7 +1321,6 @@ define([
                        if (!iframe) {
                            iframe = lastIframe;
                        }
-
 
 
                        /* Remove because is removing focus from the toc
@@ -1531,8 +1626,10 @@ define([
 
                readium.reader.openPageRight();
 
-               window.pebl.eventNextPage(readium.reader.getFirstVisibleCfi(),
-                                         readium.reader.getLastVisibleCfi());
+               PeBL.emitEvent(PeBL.events.eventNextPage, {
+                   firstCfi: readium.reader.getFirstVisibleCfi(),
+                   lastCfi: readium.reader.getLastVisibleCfi()
+               });
 
                return false;
            };
@@ -1541,8 +1638,10 @@ define([
 
                readium.reader.openPageLeft();
 
-               window.pebl.eventPrevPage(readium.reader.getFirstVisibleCfi(),
-                                         readium.reader.getLastVisibleCfi());
+               PeBL.emitEvent(PeBL.events.eventPrevPage, {
+                   firstCfi: readium.reader.getFirstVisibleCfi(),
+                   lastCfi: readium.reader.getLastVisibleCfi()
+               });
 
                return false;
            };
@@ -1854,6 +1953,7 @@ define([
                ebookURL = data.epub;
                ebookURL_filepath = Helpers.getEbookUrlFilePath(ebookURL);
 
+               PeBL.emitEvent(PeBL.events.newBook, constructEbookTitle(ebookURL_filepath));
 
                Analytics.trackView('/reader');
                embedded = data.embedded;
@@ -2002,25 +2102,31 @@ define([
                            readium.reader.plugins.highlights.on("annotationClicked", function(type, idref, cfi, id, event) {
                                console.debug("ANNOTATION CLICK: " + id);
                                //TODO: Maybe have a function to get a specific annotation rather than loop through them all?
-                               if (type === 'user-highlight')
-                                   window.pebl.getAnnotations(window.pebl.activityManager.getBook(), function(stmts) {
-                                       for (var stmt of stmts) {
-                                           if (stmt.id === id) {
-                                               showAnnotationContextMenu(event, stmt);
-                                               break;
-                                           }
-                                       }
-                                   });
-                               else if (type === 'shared-highlight' || type === 'shared-my-highlight');
-                               window.pebl.getGeneralAnnotations(window.pebl.activityManager.getBook(), function(stmts) {
-                                   for (var stmt of stmts) {
-                                       if (stmt.id === id) {
-                                           showAnnotationContextMenu(event, stmt);
-                                           break;
-                                       }
-                                   }
-                               });
 
+                               PeBL.storage.getCurrentBook(function (book) {
+                                   if(book) {
+                                       if (type === 'user-highlight')
+                                           PeBL.storage.getAnnotations(book, function(stmts) {
+                                               for (var stmt of stmts) {
+                                                   if (stmt.id === id) {
+                                                       console.log(stmt);
+                                                       showAnnotationContextMenu(event, stmt);
+                                                       break;
+                                                   }
+                                               }
+                                           });
+                                       else if (type === 'shared-highlight' || type === 'shared-my-highlight')
+                                           window.pebl.getGeneralAnnotations(book, function(stmts) {
+                                               for (var stmt of stmts) {
+                                                   if (stmt.id === id) {
+                                                       console.log(stmt);
+                                                       showAnnotationContextMenu(event, stmt);
+                                                       break;
+                                                   }
+                                               }
+                                           });
+                                   }                               
+                               });
                                // readium.reader.plugins.highlights.removeHighlight(id);
                            });
                        }
@@ -2300,4 +2406,5 @@ define([
                tooltipSelector: tooltipSelector,
                ensureUrlIsRelativeToApp: ensureUrlIsRelativeToApp
            };
+
        });

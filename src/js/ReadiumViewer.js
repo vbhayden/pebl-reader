@@ -267,6 +267,6 @@ define(['jquery', './EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 
         });
     }
 
-    // $(initialLoad);
-    window.loadReadiumReader = initialLoad;
+    $(initialLoad);
+    // window.loadReadiumReader = initialLoad;
 });

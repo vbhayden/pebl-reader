@@ -1,3 +1,8 @@
 [
-    
+    {
+        "title": "CODIAC",
+        "author": "Eduworks",
+	"coverHref": "epub_content/CODIAC/OEBPS/image/cover.jpg",
+        "rootUrl": "epub_content/CODIAC"
+    }    
 ]
