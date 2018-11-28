@@ -15,6 +15,10 @@ define([
 'hgn!readium_js_viewer_html_templates/about-dialog.html',
 'hgn!readium_js_viewer_html_templates/details-body.html',
 'hgn!readium_js_viewer_html_templates/add-epub-dialog.html',
+'hgn!readium_js_viewer_html_templates/download-books-dialog.html',
+'hgn!readium_js_viewer_html_templates/install-reader-dialog.html',
+'hgn!readium_js_viewer_html_templates/spinner-dialog.html',
+'./Spinner',
 './ReaderSettingsDialog',
 './Dialogs',
 './workers/Messages',
@@ -40,6 +44,10 @@ DetailsDialog,
 AboutDialog,
 DetailsBody,
 AddEpubDialog,
+DownloadBooksDialog,
+InstallReaderDialog,
+SpinnerDialog,
+spinner,
 SettingsDialog,
 Dialogs,
 Messages,
@@ -53,6 +61,40 @@ Helpers){
     var heightRule,
         noCoverRule;
         //maxHeightRule
+
+    var spinLibrary = function(on) {
+        if (on) {
+            //console.error("do SPIN: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
+            if (spinner.willSpin || spinner.isSpinning) return;
+
+            spinner.willSpin = true;
+
+            setTimeout(function() {
+                if (spinner.stopRequested) {
+                    //console.debug("STOP REQUEST: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
+                    spinner.willSpin = false;
+                    spinner.stopRequested = false;
+                    return;
+                }
+                //console.debug("SPIN: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
+                spinner.isSpinning = true;
+                spinner.spin($('#install-spinner-body')[0]);
+
+                spinner.willSpin = false;
+
+            }, 100);
+        } else {
+
+            if (spinner.isSpinning) {
+                //console.debug("!! SPIN: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
+                spinner.stop();
+                spinner.isSpinning = false;
+            } else if (spinner.willSpin) {
+                //console.debug("!! SPIN REQ: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
+                spinner.stopRequested = true;
+            }
+        }
+    };
 
     var findHeightRule = function(){
 
@@ -216,6 +258,16 @@ Helpers){
     var loadLibraryItems = function(epubs){
         $('#app-container .library-items').remove();
         $('#app-container').append(LibraryBody({}));
+        var blacklist = window.localStorage.getItem('blacklist');
+        if (blacklist != null) {
+            blacklist = JSON.parse(blacklist);
+            var i = epubs.length;
+            while (i--) {
+                var epubUrl = epubs[i].rootUrl;
+                if (epubUrl && blacklist[epubUrl] === true)
+                    epubs.splice(i, 1);
+            }
+        }
         if (!epubs.length){
             $('#app-container .library-items').append(EmptyLibrary({imagePathPrefix: moduleConfig.imagePathPrefix, strings: Strings}));
             return;
@@ -406,7 +458,7 @@ Helpers){
     };
 
     var importZippedEpubs_CANCELLED = false;
-    var importZippedEpubs = function(files, i) {
+    var importZippedEpubs = function(files, i, callback) {
     
         if (!window.Blob || !window.File) return;
 
@@ -430,11 +482,11 @@ Helpers){
             return;
         }
 
-        var nextImportEPUB = function() {
+        var nextImportEPUB = function(callback) {
             setTimeout(function(){
                 //Dialogs.closeModal();
                 //Dialogs.reset(); // ? (costly DOM mutations)
-                importZippedEpubs(files, ++i); // next
+                importZippedEpubs(files, ++i, callback); // next
             }, 100); // time for the Web Worker to die (background unzipping)
         };
 
@@ -464,8 +516,11 @@ Helpers){
             file: file,
             overwrite: promptForReplace,
             success: function() {
-
-                nextImportEPUB();
+                if (callback) {
+                    callback(i);
+                    nextImportEPUB(callback);
+                } else
+                    nextImportEPUB();
             },
             progress: Dialogs.updateProgress,
             error: function(errorCode, data) {
@@ -570,6 +625,55 @@ Helpers){
         });
     }
 
+    var blacklistEpub = function(url) {
+        var blacklist = window.localStorage.getItem('blacklist');
+        if (blacklist == null)
+            blacklist = {};
+        else
+            blacklist = JSON.parse(blacklist);
+
+        blacklist[url] = true;
+        window.localStorage.setItem('blacklist', JSON.stringify(blacklist));
+    };
+
+    var storeLibraryOffline = function(callback) {
+        libraryManager.retrieveAvailableEpubs(function(epubs) {
+            var i = epubs.length;
+            while (i--) {
+                if (epubs[i].rootUrl.substr(0, 5) === 'db://')
+                    epubs.splice(i, 1);
+            }
+            console.log(epubs);
+            if (epubs.length < 1)
+                callback();
+            else {
+                var ebooks = [];
+                for (var epub of epubs) {
+                    (function(epub) {
+                        var url = epub.rootUrl;
+                        var request = new XMLHttpRequest();
+                        request.responseType = 'blob';
+                        request.onload = function(data) {
+                            var blob = this.response;
+                            var file = new File([blob], url.split('/').pop());
+                            ebooks.push(file);
+                            if (ebooks.length === epubs.length) {
+                                importZippedEpubs(ebooks, 0, function(num) {
+                                    blacklistEpub(url);
+                                    if (ebooks.length === num + 1) {
+                                        callback();
+                                    }
+                                });
+                            }
+                        }
+                        request.open('GET', url);
+                        request.send();
+                    })(epub);
+                }
+            }
+        });
+    };
+
     var loadLibraryUI = function(){
 
         Dialogs.reset();
@@ -590,6 +694,43 @@ Helpers){
         Versioning.getVersioningInfo(function(version){
             $appContainer.append(AboutDialog({imagePathPrefix: moduleConfig.imagePathPrefix, strings: Strings, dateTimeString: version.dateTimeString, viewerJs: version.readiumJsViewer, readiumJs: version.readiumJs, sharedJs: version.readiumSharedJs, cfiJs: version.readiumCfiJs}));
         });
+
+        $appContainer.append(DownloadBooksDialog({
+            strings: Strings
+        }));
+
+        $appContainer.append(InstallReaderDialog({
+            strings: Strings
+        }));
+
+        $appContainer.append(SpinnerDialog({
+            strings: Strings
+        }));
+
+        window.addEventListener('beforeinstallprompt', function(e) {
+            console.log(e);
+            e.preventDefault();
+            var deferredPrompt = e;
+            $('#installbutt').show();
+            $('#installbutt')[0].addEventListener('click', function() {
+                $('#download-books-dialog').modal('show');
+            });
+            $('#download-books-submit')[0].addEventListener('click', function() {
+                $('#install-spinner-dialog').modal('show');
+                spinLibrary(true);
+                storeLibraryOffline(function() {
+                    spinLibrary(false);
+                    $('#install-spinner-dialog').modal('hide');
+                    $('#installbutt').hide();
+                    $('#install-reader-dialog').modal('show');
+                    $('#install-reader-submit')[0].addEventListener('click', function() {
+                        deferredPrompt.prompt();
+                    });
+                });
+            });
+        });
+
+        
 
 
         $('#about-dialog').on('hidden.bs.modal', function () {
@@ -637,6 +778,7 @@ Helpers){
         $('#loginButt').on('click', function() {
             window.pebl.logout();
         });
+
         findHeightRule();
         setItemHeight();
         StorageManager.initStorage(function(){

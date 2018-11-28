@@ -18,16 +18,33 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
             return root + (relativeUrl.charAt(0) == '/' ? '' : '/') + relativeUrl
         },
 
-        _saveLibraryIndex : function(success, error){
+        _saveLibraryIndex : function(success, error, index){
             //var blob = new Blob([JSON.stringify(this.libraryData)]);
 	    // var blob = JSON.stringify(this.libraryData);
-            StorageManager.saveBookshelf('db://epub_library.json', this.libraryData, success, error);
+            //Don't put serverside books in the indexeddb version of the library json by default
+            var i = index.length;
+            while (i--) {
+                if (typeof index[i].id === 'undefined')
+                    index.splice(i, 1);
+            }
+            StorageManager.saveBookshelf('db://epub_library.json', index, success, error);
         },
         _saveEpubToIndex : function(options, epubObj){
-            this.libraryData.push(epubObj);
-            this._saveLibraryIndex(function(){
-                options.success(epubObj);
-            }, options.error);
+            var newThis = this;
+            StorageManager.getFile('db://epub_library.json', function(index) {
+                var newIndex = [];
+                if (index)
+                    newIndex = index;
+                newIndex.push(epubObj);
+                Array.prototype.push.apply(newThis.libraryData, newIndex);
+                newThis._saveLibraryIndex(function(){
+                    options.success(epubObj);
+                }, options.error, newIndex);
+            }, function() {
+                console.log('error getting epub_content');
+            });
+            //this.libraryData.push(epubObj);
+            
         },
 
         _addEpub : function(options, packageObj, packagePath, encryptionData){

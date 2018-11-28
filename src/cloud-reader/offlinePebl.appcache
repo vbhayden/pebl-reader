@@ -74,8 +74,5 @@ font-faces/Open-Sans/Open-Sans-700italic.woff
 font-faces/Open-Sans/Open-Sans-italic.woff
 font-faces/Open-Sans/Open-Sans-regular.woff
 
-# epub content
-epub_content/epub_library.json
-epub_content/epub_library.opds
-# epub_content/CODIAC.epub
-# epub_content/PEBLCyberSecv12b.epub
+NETWORK:
+https://*/epub_content/

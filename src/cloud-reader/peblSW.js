@@ -72,11 +72,7 @@ var FILES_TO_CACHE = [
     "./images/PEBL-icon-144.png",
     "./images/PEBL-icon-192.png",
     "./images/webreader_logo_eduworks.png",
-    "./images/about_readium_logo.png",
-
-    
-    "./epub_content/epub_library.json",
-    "./epub_content/epub_library.opds"    
+    "./images/about_readium_logo.png"
 ];
 
 self.addEventListener('install',
