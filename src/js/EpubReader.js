@@ -1739,7 +1739,7 @@ define([
                $('#bookmark-page').on('click', showBookmarkDialogue);
                $('#loginButt').on('click', function() {
                    loadlibrary();
-                   window.pebl.logout();
+                   PeBL.emitEvent(PeBL.events.eventLoggingOut);
                    return false;
                });
                $('#add-bookmark-submit').on('click', function() {
@@ -2000,30 +2000,29 @@ define([
                                console.debug("ANNOTATION CLICK: " + id);
                                //TODO: Maybe have a function to get a specific annotation rather than loop through them all?
 
-                               PeBL.storage.getCurrentBook(function (book) {
-                                   if(book) {
-                                       if (type === 'user-highlight')
-                                           PeBL.storage.getAnnotations(book, function(stmts) {
-                                               for (var stmt of stmts) {
-                                                   if (stmt.id === id) {
-                                                       console.log(stmt);
-                                                       showAnnotationContextMenu(event, stmt);
-                                                       break;
-                                                   }
+                               if(book) {
+                                   if (type === 'user-highlight')
+                                       PeBL.utils.getAnnotations(function(stmts) {
+                                           for (var stmt of stmts) {
+                                               if (stmt.id === id) {
+                                                   console.log(stmt);
+                                                   showAnnotationContextMenu(event, stmt);
+                                                   break;
                                                }
-                                           });
-                                       else if (type === 'shared-highlight' || type === 'shared-my-highlight')
-                                           window.pebl.getGeneralAnnotations(book, function(stmts) {
-                                               for (var stmt of stmts) {
-                                                   if (stmt.id === id) {
-                                                       console.log(stmt);
-                                                       showAnnotationContextMenu(event, stmt);
-                                                       break;
-                                                   }
+                                           }
+                                       });
+                                   else if (type === 'shared-highlight' || type === 'shared-my-highlight')
+                                       PeBL.utils.getSharedAnnotations(function(stmts) {
+                                           for (var stmt of stmts) {
+                                               if (stmt.id === id) {
+                                                   console.log(stmt);
+                                                   showAnnotationContextMenu(event, stmt);
+                                                   break;
                                                }
-                                           });
-                                   }                               
-                               });
+                                           }
+                                       });
+                               }
+                               
                                // readium.reader.plugins.highlights.removeHighlight(id);
                            });
                        }

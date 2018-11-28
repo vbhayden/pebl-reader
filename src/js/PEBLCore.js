@@ -205,12 +205,14 @@ var Action = /** @class */ (function (_super) {
         var _this = _super.call(this, raw) || this;
         _this.activityId = _this.object.id;
         _this.action = _this.verb.display["en-US"];
-        _this.name = _this.object.definition.name && _this.object.definition.name["en-US"];
-        _this.description = _this.object.definition.description && _this.object.definition.description["en-US"];
-        var extensions = _this.object.definition.extensions;
-        if (extensions) {
-            _this.target = extensions[PREFIX_PEBL_EXTENSION + "target"];
-            _this.type = extensions[PREFIX_PEBL_EXTENSION + "type"];
+        if (_this.object.definition) {
+            _this.name = _this.object.definition.name && _this.object.definition.name["en-US"];
+            _this.description = _this.object.definition.description && _this.object.definition.description["en-US"];
+            var extensions = _this.object.definition.extensions;
+            if (extensions) {
+                _this.target = extensions[PREFIX_PEBL_EXTENSION + "target"];
+                _this.type = extensions[PREFIX_PEBL_EXTENSION + "type"];
+            }
         }
         return _this;
     }
@@ -338,8 +340,10 @@ var Session = /** @class */ (function (_super) {
     function Session(raw) {
         var _this = _super.call(this, raw) || this;
         _this.activityId = _this.object.id;
-        _this.activityName = _this.object.definition.name && _this.object.definition.name["en-US"];
-        _this.activityDescription = _this.object.definition.description && _this.object.definition.description["en-US"];
+        if (_this.object.definition) {
+            _this.activityName = _this.object.definition.name && _this.object.definition.name["en-US"];
+            _this.activityDescription = _this.object.definition.description && _this.object.definition.description["en-US"];
+        }
         _this.type = _this.verb.display["en-US"];
         return _this;
     }
@@ -2177,17 +2181,18 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         });
     };
     PEBLEventHandlers.prototype.newActivity = function (event) {
-        var activity = event.detail;
+        var payload = event.detail;
         var self = this;
         this.pebl.storage.getCurrentActivity(function (currentActivity) {
-            if (activity != currentActivity) {
+            if (payload.activity != currentActivity) {
                 if (currentActivity)
                     self.pebl.emitEvent(self.pebl.events.eventTerminated, currentActivity);
                 self.pebl.emitEvent(self.pebl.events.eventInitialized, {
-                    activity: activity
+                    name: payload.name,
+                    description: payload.description
                 });
             }
-            self.pebl.storage.saveCurrentActivity(activity);
+            self.pebl.storage.saveCurrentActivity(payload.activity);
         });
     };
     PEBLEventHandlers.prototype.newReference = function (event) {
@@ -2447,18 +2452,20 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         var payload = event.detail;
         var xapi = {};
         var self = this;
-        this.pebl.user.getUser(function (userProfile) {
-            if (userProfile) {
-                self.xapiGen.addId(xapi);
-                self.xapiGen.addTimestamp(xapi);
-                self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, PEBL_PREFIX + payload.activity, payload.name, payload.description);
-                self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/initialized", "initialized");
-                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + payload.activity);
-                var s = new Session(xapi);
-                self.pebl.storage.saveOutgoing(userProfile, s);
-                self.pebl.storage.saveEvent(userProfile, s);
-            }
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.user.getUser(function (userProfile) {
+                if (userProfile) {
+                    self.xapiGen.addId(xapi);
+                    self.xapiGen.addTimestamp(xapi);
+                    self.xapiGen.addActorAccount(xapi, userProfile);
+                    self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description);
+                    self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/initialized", "initialized");
+                    self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + payload.activity);
+                    var s = new Session(xapi);
+                    self.pebl.storage.saveOutgoing(userProfile, s);
+                    self.pebl.storage.saveEvent(userProfile, s);
+                }
+            });
         });
     };
     PEBLEventHandlers.prototype.eventInteracted = function (event) {
