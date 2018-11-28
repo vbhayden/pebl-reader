@@ -546,41 +546,8 @@ define([
 
                        setBookTitle(metadata.title);
 
-<<<<<<< variant A
-                       window.pebl.openBook(constructEbookTitle(ebookURL_filepath), function() {
-
-                           currentPackageDocument = packageDocument;
-                           currentPackageDocument.generateTocListDOM(function(dom) {
-                               loadToc(dom)
-                           });
-
-                           initializeSlider();
-
-                           wasFixed = readium.reader.isCurrentViewFixedLayout();
-                           var metadata = options.metadata;
-
-                           setBookTitle(metadata.title);
-
-                           $("#left-page-btn").unbind("click");
-                           $("#right-page-btn").unbind("click");
-                           var $pageBtnsContainer = $('#readium-page-btns');
-                           $pageBtnsContainer.empty();
-                           var rtl = currentPackageDocument.getPageProgressionDirection() === "rtl"; //_package.spine.isLeftToRight()
-                           $pageBtnsContainer.append(ReaderBodyPageButtons({
-                               strings: Strings,
-                               dialogs: Dialogs,
-                               keyboard: Keyboard,
-                               pageProgressionDirectionIsRTL: rtl
-                           }));
-                           $("#left-page-btn").on("click", prevPage);
-                           $("#right-page-btn").on("click", nextPage);
-                           $("#left-page-btn").mouseleave(function() {
-                               $(tooltipSelector()).tooltip('destroy');
-                           });
-                           $("#right-page-btn").mouseleave(function() {
-                               $(tooltipSelector()).tooltip('destroy');
-                           });
->>>>>>> variant B
+                       initializeSlider();
+                       
                        $("#left-page-btn").unbind("click");
                        $("#right-page-btn").unbind("click");
                        var $pageBtnsContainer = $('#readium-page-btns');
@@ -596,7 +563,6 @@ define([
                        $("#right-page-btn").on("click", nextPage);
                        $("#left-page-btn").mouseleave(function() {
                            $(tooltipSelector()).tooltip('destroy');
-======= end
                        });
                        $("#right-page-btn").mouseleave(function() {
                            $(tooltipSelector()).tooltip('destroy');
@@ -831,74 +797,18 @@ define([
            };
 
            var showAnnotationNoteDialogue = function(annotation) {
-<<<<<<< variant A
+
                $('#annotationInput').val(annotation.Text);
                $('#add-note-submit').data('annotation', annotation);
                $('#add-note-dialog').modal('show');
-               // var modalContainer = document.createElement('div');
-               // modalContainer.id = 'annotationNoteModal';
-               // var noteInput = document.createElement('textarea');
-               // noteInput.id = 'annotationNoteInput';
-               // noteInput.value = annotation.Text;
-               // var noteSubmit = document.createElement('button');
-               // noteSubmit.id = 'noteSubmit';
-               // noteSubmit.textContent = 'Add Note';
-               // var noteCancel = document.createElement('button');
-               // noteCancel.id = 'noteCancel';
-               // noteCancel.textContent = 'Cancel';
 
-               // noteSubmit.addEventListener('click', function() {
-               //     var note = $('#annotationNoteInput').val();
-               //     removeHighlight(annotation);
-
-               //     annotation.Text = note;
-               //     if (annotation.Type === 2) {
-               //         var peblID = window.pebl.addAnnotation(annotation);
-               //         readium.reader.plugins.highlights.addHighlight(annotation.IDRef, annotation.CFI, peblID, 'user-highlight');
-               //     } else if (annotation.Type === 3) {
-               //         var peblID = window.pebl.shareAnnotation(annotation);
-               //         readium.reader.plugins.highlights.addHighlight(annotation.IDRef, annotation.CFI, peblID, 'shared-my-highlight');
-               //     }
-
-               //     $('#annotationNoteModal').remove();
-               // });
-
-               // noteCancel.addEventListener('click', function() {
-               //     $('#annotationNoteModal').remove();
-               // });
-
-               // modalContainer.appendChild(noteInput);
-               // modalContainer.appendChild(noteSubmit);
-               // modalContainer.appendChild(noteCancel);
->>>>>>> variant B
-               $('#annotationNoteModal').remove();
-               var modalContainer = document.createElement('div');
-               modalContainer.id = 'annotationNoteModal';
-               var noteInput = document.createElement('textarea');
-               noteInput.id = 'annotationNoteInput';
-               noteInput.value = annotation.text;
-               var noteSubmit = document.createElement('button');
-               noteSubmit.id = 'noteSubmit';
-               noteSubmit.textContent = 'Add Note';
-               var noteCancel = document.createElement('button');
-               noteCancel.id = 'noteCancel';
-               noteCancel.textContent = 'Cancel';
-
-               noteSubmit.addEventListener('click', function() {
-                   var note = $('#annotationNoteInput').val();
-                   removeHighlight(annotation);
-
-                   annotation.text = note;
-                   if (annotation.type === 2) {
-                       PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
-                   } else if (annotation.type === 3) {
-                       PeBL.emitEvent(PeBL.events.newSharedAnnotation, annotation);
-                   }
-======= end
-
-               // window.document.body.appendChild(modalContainer);
-           };
-
+               // if (annotation.type === 2) {
+               //     PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
+               // } else if (annotation.type === 3) {
+               //     PeBL.emitEvent(PeBL.events.newSharedAnnotation, annotation);
+               // }
+           }
+           
            var showAnnotationContextMenu = function(event, annotation) {
                $('#annotationContextMenu').remove();
                $('#clickOutOverlay').remove();
@@ -917,18 +827,6 @@ define([
                var buttonWrapper = document.createElement('div');
                buttonWrapper.classList.add('annotationContextButtonWrapper');
 
-<<<<<<< variant A
-               if (annotation.Owner === window.pebl.getUserName()) {
-                   var deleteButtonContainer = document.createElement('div');
-                   var deleteButton = document.createElement('span');
-                   deleteButton.classList.add('glyphicon', 'glyphicon-trash');
-                   deleteButtonContainer.appendChild(deleteButton);
-                   deleteButtonContainer.addEventListener('click', function() {
-                       removeHighlight(annotation);
-                       $('#annotationContextMenu').remove();
-                       $('#clickOutOverlay').remove();
-                   });
->>>>>>> variant B
                PeBL.user.getUser(function (userProfile) {                  
                    if (annotation.owner === userProfile.identity) {
                        var deleteButtonContainer = document.createElement('div');
@@ -940,7 +838,6 @@ define([
                            $('#annotationContextMenu').remove();
                            $('#clickOutOverlay').remove();
                        });
-======= end
 
                        var noteButtonContainer = document.createElement('div');
                        var noteButton = document.createElement('span');
