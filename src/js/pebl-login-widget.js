@@ -3,24 +3,44 @@ PeBL.user.isLoggedIn(function (loggedIn) {
 
 	Lightbox.createLoginForm();
 
-	// var e = document.getElementById("top-menu");
-	// if (e != null) {
-	
-	//     var li = $('<li id="loginTopMenu" class="menu-item menu-item-type-post_type menu-item-object-page"></li>');
-	//     $(e).append(li[0]);
-
-	// } else {
-	//     // if (!window.PEBLbuttonLogin)
-	//     // 	pebl.login(function() {
-	//     // 	    dosomething();
-	//     // 	});
-	// }
+        $('#loginButt span').removeClass("glyphicon-log-out");
+        $('#loginButt span').addClass("glyphicon-log-in");                           
     } else {
 	PeBL.user.getUser(function (user) {
 	    PeBL.emitEvent(PeBL.events.eventLoggedIn, user);
-	});
+	});           
     }
+
+    document.addEventListener("eventLogout", function () {
+        $('#loginButt span').removeClass("glyphicon-log-out");
+        $('#loginButt span').addClass("glyphicon-log-in");
+        Lightbox.createLoginForm();
+    });
+
+    document.addEventListener("eventLogin", function () {
+        $('#loginButt span').addClass("glyphicon-log-out");
+        $('#loginButt span').removeClass("glyphicon-log-in");                             
+    });
 })
+
+PeBL.extension.hardcodeLogin = {
+    hookLoginButton: function (elementName, loginFn, logoutFn) {
+        $('#' + elementName).on("click", function () {
+            PeBL.user.isLoggedIn(function (loggedIn) {
+                if (loggedIn) {
+                    PeBL.emitEvent(PeBL.events.eventLoggedOut);
+                    if (loginFn)
+                        loginFn();
+                } else {
+                    Lightbox.createLoginForm();
+                    if (logoutFn)
+                        logoutFn();
+                }
+                return false;
+            });
+        });
+    }
+};
 
 window.Lightbox = {
     close : function() {

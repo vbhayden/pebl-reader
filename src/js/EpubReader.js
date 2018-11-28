@@ -1738,11 +1738,11 @@ define([
                $('.icon-show-annotations').on('click', annotationsShowHideToggle);
                $('#bookmark-show').on('click', bookmarksShowHideToggle);
                $('#bookmark-page').on('click', showBookmarkDialogue);
-               $('#loginButt').on('click', function() {
-                   loadlibrary();
-                   PeBL.emitEvent(PeBL.events.eventLoggedOut);
-                   return false;
-               });
+               PeBL.extension.hardcodeLogin.hookLoginButton("loginButt",
+                                                            null,
+                                                            function() {
+                                                                loadlibrary();               
+                                                            });
                $('#add-bookmark-submit').on('click', function() {
                    var val = $('#bookmarkInput').val();
                    saveBookmark(val);

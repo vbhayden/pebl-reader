@@ -2777,6 +2777,7 @@ var pebl_PEBL = /** @class */ (function () {
         this.subscribedEventHandlers = {};
         this.subscribedThreadHandlers = {};
         this.loaded = false;
+        this.extension = {};
         if (config) {
             this.teacher = config.teacher;
             this.enableDirectMessages = config.enableDirectMessages;
