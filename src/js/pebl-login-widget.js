@@ -14,7 +14,7 @@ PeBL.user.isLoggedIn(function (loggedIn) {
 	//     // 	pebl.login(function() {
 	//     // 	    dosomething();
 	//     // 	});
-	// }	
+	// }
     } else {
 	PeBL.user.getUser(function (user) {
 	    PeBL.emitEvent(PeBL.events.eventLoggedIn, user);
