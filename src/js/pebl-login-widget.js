@@ -1,30 +1,21 @@
-PeBL.user.isLoggedIn(function (loggedIn) {
-    if (!loggedIn) {
+document.addEventListener("eventLogout", function () {
+    $('#loginButt span').removeClass("glyphicon-log-out");
+    $('#loginButt span').addClass("glyphicon-log-in");
+    Lightbox.createLoginForm();
+});
 
-	Lightbox.createLoginForm();
-
-        $('#loginButt span').removeClass("glyphicon-log-out");
-        $('#loginButt span').addClass("glyphicon-log-in");                           
-    } else {
-	PeBL.user.getUser(function (user) {
-	    PeBL.emitEvent(PeBL.events.eventLoggedIn, user);
-	});           
-    }
-
-    document.addEventListener("eventLogout", function () {
-        $('#loginButt span').removeClass("glyphicon-log-out");
-        $('#loginButt span').addClass("glyphicon-log-in");
-        Lightbox.createLoginForm();
-    });
-
-    document.addEventListener("eventLogin", function () {
-        $('#loginButt span').addClass("glyphicon-log-out");
-        $('#loginButt span').removeClass("glyphicon-log-in");                             
-    });
-})
+document.addEventListener("eventLogin", function () {
+    $('#loginButt span').addClass("glyphicon-log-out");
+    $('#loginButt span').removeClass("glyphicon-log-in");                             
+});
 
 PeBL.extension.hardcodeLogin = {
     hookLoginButton: function (elementName, loginFn, logoutFn) {
+        PeBL.user.isLoggedIn(function (loggedIn) {
+            if (!loggedIn)
+                Lightbox.createLoginForm();
+        });
+        
         $('#' + elementName).on("click", function () {
             PeBL.user.isLoggedIn(function (loggedIn) {
                 if (loggedIn) {
@@ -36,8 +27,8 @@ PeBL.extension.hardcodeLogin = {
                     if (logoutFn)
                         logoutFn();
                 }
-                return false;
             });
+            return false;
         });
     }
 };

@@ -366,7 +366,7 @@ var CURRENT_USER = "peblCurrentUser";
 var storage_IndexedDBStorageAdapter = /** @class */ (function () {
     function IndexedDBStorageAdapter(callback) {
         this.invocationQueue = [];
-        var request = window.indexedDB.open("pebl", 11);
+        var request = window.indexedDB.open("pebl", 12);
         var self = this;
         request.onupgradeneeded = function () {
             var db = request.result;
@@ -389,7 +389,7 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             eventStore.createIndex(MASTER_INDEX, ["identity", "book"]);
             annotationStore.createIndex(MASTER_INDEX, ["identity", "book"]);
             competencyStore.createIndex(MASTER_INDEX, "identity");
-            generalAnnotationStore.createIndex(MASTER_INDEX, "book");
+            generalAnnotationStore.createIndex(MASTER_INDEX, ["identity", "book"]);
             outgoingStore.createIndex(MASTER_INDEX, "identity");
             messageStore.createIndex(MASTER_INDEX, ["identity", "thread"]);
             queuedReferences.createIndex(MASTER_INDEX, "identity");
@@ -1578,7 +1578,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                             var a = new Annotation(xapi);
                             annotations[a.id] = a;
                         }
-                        else if (Reference.is(xapi)) {
+                        else if (SharedAnnotation.is(xapi)) {
                             var a = new SharedAnnotation(xapi);
                             sharedAnnotations[a.id] = a;
                         }
@@ -1605,6 +1605,11 @@ var syncing_LLSyncAction = /** @class */ (function () {
                         else if (Question.is(xapi)) {
                             var q = new Question(xapi);
                             events[q.id] = q;
+                        }
+                        else if (Reference.is(xapi)) {
+                            var r = new Reference(xapi);
+                            events[r.id] = r;
+                            self.pebl.network.queueReference(r);
                         }
                         else {
                             new Error("Unknown Statement type");
@@ -1636,7 +1641,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                     var cleanSharedAnnotations = [];
                     for (var _b = 0, _c = Object.keys(sharedAnnotations); _b < _c.length; _b++) {
                         var id = _c[_b];
-                        cleanSharedAnnotations.push(annotations[id]);
+                        cleanSharedAnnotations.push(sharedAnnotations[id]);
                     }
                     if (cleanAnnotations.length > 0) {
                         cleanSharedAnnotations.sort();
@@ -2355,7 +2360,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addStatementRef(xapi, xId);
                         self.xapiGen.addActorAccount(xapi, userProfile);
                         var annotation = new Voided(xapi);
-                        self.pebl.storage.removeAnnotation(userProfile, xId);
+                        self.pebl.storage.removeSharedAnnotation(userProfile, xId);
                         self.pebl.storage.saveOutgoing(userProfile, annotation);
                         self.pebl.emitEvent(self.pebl.events.incomingSharedAnnotations, [annotation]);
                     });
@@ -2902,22 +2907,16 @@ var pebl_PEBL = /** @class */ (function () {
             document.addEventListener(eventName, modifiedHandler);
             this.subscribedEventHandlers[eventName].push({ once: once, fn: callback, modifiedFn: modifiedHandler });
         }
-        this.user.getUser(function (userProfile) {
-            self.storage.getCurrentBook(function (book) {
-                if (userProfile && book) {
-                    if (eventName == self.events.incomingAnnotations) {
-                        self.storage.getAnnotations(userProfile, book, function (annotations) {
-                            callback(annotations);
-                        });
-                    }
-                    else if (eventName == self.events.incomingSharedAnnotations) {
-                        self.storage.getSharedAnnotations(userProfile, book, function (annotations) {
-                            callback(annotations);
-                        });
-                    }
-                }
+        if (eventName == self.events.incomingAnnotations) {
+            self.utils.getAnnotations(function (annotations) {
+                callback(annotations);
             });
-        });
+        }
+        else if (eventName == self.events.incomingSharedAnnotations) {
+            self.utils.getSharedAnnotations(function (annotations) {
+                callback(annotations);
+            });
+        }
     };
     //fix once for return of getMessages
     PEBL.prototype.subscribeThread = function (thread, once, callback) {
