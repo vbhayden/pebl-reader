@@ -2308,7 +2308,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.title, payload.text, self.xapiGen.addExtensions(exts_2));
                         self.xapiGen.addActorAccount(xapi, userProfile);
                         var annotation = new SharedAnnotation(xapi);
-                        self.pebl.storage.saveAnnotations(userProfile, annotation);
+                        self.pebl.storage.saveSharedAnnotations(userProfile, annotation);
                         self.pebl.storage.saveOutgoing(userProfile, annotation);
                         self.pebl.emitEvent(self.pebl.events.incomingSharedAnnotations, [annotation]);
                     });

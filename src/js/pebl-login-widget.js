@@ -1,19 +1,31 @@
 document.addEventListener("eventLogout", function () {
     $('#loginButt span').removeClass("glyphicon-log-out");
     $('#loginButt span').addClass("glyphicon-log-in");
+    $('#loginButt').attr("aria-label", "Login");
+    $('#loginButt').attr("title", "Login");
     Lightbox.createLoginForm();
 });
 
 document.addEventListener("eventLogin", function () {
     $('#loginButt span').addClass("glyphicon-log-out");
-    $('#loginButt span').removeClass("glyphicon-log-in");                             
+    $('#loginButt span').removeClass("glyphicon-log-in");
+
+    $('#loginButt').attr("title", "Logout");
+    $('#loginButt').attr("aria-label", "Logout");
 });
 
 PeBL.extension.hardcodeLogin = {
     hookLoginButton: function (elementName, loginFn, logoutFn) {
-        PeBL.user.isLoggedIn(function (loggedIn) {
-            if (!loggedIn)
+        PeBL.user.getUser(function (userProfile) {
+            if (!userProfile)
                 Lightbox.createLoginForm();
+            else {
+                PeBL.emitEvent(PeBL.events.eventLoggedIn, userProfile);
+                $('#loginButt span').addClass("glyphicon-log-out");
+                $('#loginButt span').removeClass("glyphicon-log-in");
+                $('#loginButt').attr("title", "Logout");
+                $('#loginButt').attr("aria-label", "Logout");                
+            }
         });
         
         $('#' + elementName).on("click", function () {

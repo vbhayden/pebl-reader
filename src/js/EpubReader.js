@@ -783,7 +783,7 @@ define([
                if (annotation.type === 2)
                    PeBL.emitEvent(PeBL.events.removedAnnotation, annotation.id);
                else if (annotation.type === 3)
-                   PeBL.emitEvent(PeBL.events.removedSharedAnnotation, annotation);
+                   PeBL.emitEvent(PeBL.events.removedSharedAnnotation, annotation.id);
                readium.reader.plugins.highlights.removeHighlight(annotation.id);
            };
 
@@ -795,8 +795,7 @@ define([
            };
 
            var showAnnotationNoteDialogue = function(annotation) {
-
-               $('#annotationInput').val(annotation.Text);
+               $('#annotationInput').val(annotation.text);
                $('#add-note-submit').data('annotation', annotation);
                $('#add-note-dialog').modal('show');
            }
@@ -819,9 +818,9 @@ define([
                var buttonWrapper = document.createElement('div');
                buttonWrapper.classList.add('annotationContextButtonWrapper');
 
-               PeBL.user.getUser(function (userProfile) {                  
-                   if (userProfile) {
-                       if (annotation.owner === userProfile.identity) {
+               PeBL.storage.getCurrentUser(function (identity) {                  
+                   if (identity) {
+                       if (annotation.owner === identity) {
                            var deleteButtonContainer = document.createElement('div');
                            var deleteButton = document.createElement('span');
                            deleteButton.classList.add('glyphicon', 'glyphicon-trash');
@@ -1130,14 +1129,16 @@ define([
                                            false,
                                            function (stmts) {
                                                for (var stmt of stmts) {
-                                                   if (stmt.type == 3) {
-                                                       readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, "user-highlight");
-                                                   } else if (stmt.target) {
-                                                       readium.reader.plugins.highlights.removeHighlight(stmt.target);
-                                                       $("#annotation-" + stmt.id).remove();
-                                                       $("#bookmark-" + stmt.id).remove();
-                                                       $("#sharedAnnotation-" + stmt.id).remove();
-                                                   }
+                                                   PeBL.storage.getCurrentUser(function (identity) {                                                       
+                                                       if (stmt.type == 3) {
+                                                           readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, identity == stmt.owner ? 'shared-my-highlight' : 'shared-highlight');
+                                                       } else if (stmt.target) {
+                                                           readium.reader.plugins.highlights.removeHighlight(stmt.target);
+                                                           $("#annotation-" + stmt.id).remove();
+                                                           $("#bookmark-" + stmt.id).remove();
+                                                           $("#sharedAnnotation-" + stmt.id).remove();
+                                                       }
+                                                   });
                                                }
                                            });                       
                    }
@@ -1768,13 +1769,11 @@ define([
                    var note = $('#annotationInput').val();
                    removeHighlight(annotation);
 
-                   annotation.Text = note;
-                   if (annotation.Type === 2) {
-                       var peblID = window.pebl.addAnnotation(annotation);
-                       readium.reader.plugins.highlights.addHighlight(annotation.IDRef, annotation.CFI, peblID, 'user-highlight');
-                   } else if (annotation.Type === 3) {
-                       var peblID = window.pebl.shareAnnotation(annotation);
-                       readium.reader.plugins.highlights.addHighlight(annotation.IDRef, annotation.CFI, peblID, 'shared-my-highlight');
+                   annotation.text = note;
+                   if (annotation.type === 2) {
+                       PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
+                   } else if (annotation.type === 3) {
+                       PeBL.emitEvent(PeBL.events.newSharedAnnotation, annotation);
                    }
                });
 
