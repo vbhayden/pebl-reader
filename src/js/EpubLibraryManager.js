@@ -51,10 +51,10 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
         // },
 
         retrieveAvailableEpubs : function(success, error){
-            if (this.libraryData){
-                success(this.libraryData);
-                return;
-            }
+            // if (this.libraryData){
+            //     success(this.libraryData);
+            //     return;
+            // }
 
             var self = this;
             

@@ -1,4 +1,4 @@
-define(['../ModuleConfig', './Messages', 'jquery', '../PackageParser', 'readium_js/epub-fetch/encryption_handler'], function(moduleConfig, Messages, $, PackageParser, EncryptionHandler){
+define(['../storage/IndexedDBStorageManager', '../ModuleConfig', './Messages', 'jquery', '../PackageParser', 'readium_js/epub-fetch/encryption_handler'], function(StorageManager, moduleConfig, Messages, $, PackageParser, EncryptionHandler){
 
     var worker;
     var cleanupWorker = function(){
@@ -36,6 +36,9 @@ define(['../ModuleConfig', './Messages', 'jquery', '../PackageParser', 'readium_
         worker.onmessage = function(evt){
             var data = evt.data;
             switch (data.msg){
+                case Messages.STORE_TEMP_BOOKSHELF:
+                    StorageManager.saveTemporaryBookshelf(data.epubObj);
+                    break;
                 case Messages.READY:                
                     worker.postMessage(job);
                     break;

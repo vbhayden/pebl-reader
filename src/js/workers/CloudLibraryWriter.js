@@ -31,6 +31,7 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
         },
         _saveEpubToIndex : function(options, epubObj){
             var newThis = this;
+            postMessage({msg: Messages.STORE_TEMP_BOOKSHELF, epubObj: epubObj});
             StorageManager.getFile('db://epub_library.json', function(index) {
                 var newIndex = [];
                 if (index)

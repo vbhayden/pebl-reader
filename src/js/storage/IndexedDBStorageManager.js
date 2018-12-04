@@ -36,6 +36,15 @@ define([], function(){
 		success(e.target.result);
 	};
     };
+
+    var saveTemporaryBookshelf = function(epubObj) {
+    	if (window.tempBookshelf)
+    		window.tempBookshelf.push(epubObj);
+    };
+
+    var getTemporaryBookshelf = function() {
+    	return JSON.parse(window.localStorage.getItem('tempBookshelf'));
+    };
     
     var saveBook = function(id, book, success, error) {
 	var data = {
@@ -139,6 +148,14 @@ define([], function(){
 
 	saveBookshelf : function(path, blob, success, error){
 	    saveBookshelf(path, blob, success, error);	 	          
+        },
+
+        saveTemporaryBookshelf : function(epubObj) {
+        saveTemporaryBookshelf(epubObj);
+        },
+
+        getTemporaryBookshelf : function() {
+        	getTemporaryBookshelf();
         },
 
 	getFile : function(path, success, error) {

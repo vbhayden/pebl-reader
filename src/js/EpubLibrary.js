@@ -637,40 +637,57 @@ Helpers){
     };
 
     var storeLibraryOffline = function(callback) {
-        libraryManager.retrieveAvailableEpubs(function(epubs) {
-            var i = epubs.length;
-            while (i--) {
-                if (epubs[i].rootUrl.substr(0, 5) === 'db://')
-                    epubs.splice(i, 1);
-            }
-            console.log(epubs);
-            if (epubs.length < 1)
-                callback();
-            else {
-                var ebooks = [];
-                for (var epub of epubs) {
-                    (function(epub) {
-                        var url = epub.rootUrl;
-                        var request = new XMLHttpRequest();
-                        request.responseType = 'blob';
-                        request.onload = function(data) {
-                            var blob = this.response;
-                            var file = new File([blob], url.split('/').pop());
-                            ebooks.push(file);
-                            if (ebooks.length === epubs.length) {
-                                importZippedEpubs(ebooks, 0, function(num) {
-                                    blacklistEpub(url);
-                                    if (ebooks.length === num + 1) {
-                                        callback();
-                                    }
-                                });
+        StorageManager.getFile('db://epub_library.json', function(index) {
+            if (index)
+                window.tempBookshelf = index;
+            else
+                window.tempBookshelf = [];
+            libraryManager.retrieveAvailableEpubs(function(epubs) {
+                var i = epubs.length;
+                //Strip out epubs that were already added to indexeddb
+                while (i--) {
+                    if (epubs[i].rootUrl.substr(0, 5) === 'db://')
+                        epubs.splice(i, 1);
+                    else
+                        if (index) {
+                            for (var j = 0; j < index.length; j++) {
+                                if (index[j].rootUrl.split('/').pop() === epubs[i].rootUrl.split('/').pop()) {
+                                    epubs.splice(i, 1);
+                                    break;
+                                }
                             }
                         }
-                        request.open('GET', url);
-                        request.send();
-                    })(epub);
+                    
                 }
-            }
+                console.log(epubs);
+                if (epubs.length < 1)
+                    callback();
+                else {
+                    var ebooks = [];
+                    for (var epub of epubs) {
+                        (function(epub) {
+                            var url = epub.rootUrl;
+                            var request = new XMLHttpRequest();
+                            request.responseType = 'blob';
+                            request.onload = function(data) {
+                                var blob = this.response;
+                                var file = new File([blob], url.split('/').pop());
+                                ebooks.push(file);
+                                blacklistEpub(url);
+                                if (ebooks.length === epubs.length) {
+                                    importZippedEpubs(ebooks, 0, function(num) {
+                                        if (ebooks.length === num + 1) {
+                                            callback();
+                                        }
+                                    });
+                                }
+                            }
+                            request.open('GET', url);
+                            request.send();
+                        })(epub);
+                    }
+                }
+            });
         });
     };
 
@@ -719,13 +736,24 @@ Helpers){
                 $('#install-spinner-dialog').modal('show');
                 spinLibrary(true);
                 storeLibraryOffline(function() {
-                    spinLibrary(false);
-                    $('#install-spinner-dialog').modal('hide');
-                    $('#installbutt').hide();
-                    $('#install-reader-dialog').modal('show');
-                    $('#install-reader-submit')[0].addEventListener('click', function() {
-                        deferredPrompt.prompt();
+                    console.log(window.tempBookshelf);
+                    StorageManager.saveBookshelf('db://epub_library.json', window.tempBookshelf, function() {
+                        spinLibrary(false);
+                        libraryManager.retrieveAvailableEpubs(loadLibraryItems);
+                        $('#install-spinner-dialog').modal('hide');
+                        $('#installbutt').hide();
+                        $('#install-reader-dialog').modal('show');
+                        $('#install-reader-cancel')[0].addEventListener('click', function() {
+                            libraryManager.retrieveAvailableEpubs(loadLibraryItems);
+                        });
+                        $('#install-reader-submit')[0].addEventListener('click', function() {
+                            libraryManager.retrieveAvailableEpubs(loadLibraryItems);
+                            deferredPrompt.prompt();
+                        });
+                    }, function() {
+                        console.log('error thing');
                     });
+                    
                 });
             });
         });

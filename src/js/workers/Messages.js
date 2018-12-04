@@ -31,6 +31,8 @@ define(function(){
         ERROR_AJAX : 302,
         ERROR_PACKAGE_PARSE: 303,
         
-        READY: 400
+        READY: 400,
+
+        STORE_TEMP_BOOKSHELF: 500
     }
 });
