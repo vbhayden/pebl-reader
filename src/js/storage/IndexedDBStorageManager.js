@@ -41,10 +41,6 @@ define([], function(){
     	if (window.tempBookshelf)
     		window.tempBookshelf.push(epubObj);
     };
-
-    var getTemporaryBookshelf = function() {
-    	return JSON.parse(window.localStorage.getItem('tempBookshelf'));
-    };
     
     var saveBook = function(id, book, success, error) {
 	var data = {
@@ -152,10 +148,6 @@ define([], function(){
 
         saveTemporaryBookshelf : function(epubObj) {
         saveTemporaryBookshelf(epubObj);
-        },
-
-        getTemporaryBookshelf : function() {
-        	getTemporaryBookshelf();
         },
 
 	getFile : function(path, success, error) {
