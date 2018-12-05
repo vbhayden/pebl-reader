@@ -1308,23 +1308,14 @@ var User = /** @class */ (function () {
                 callback();
         });
     };
-    User.prototype.login = function (userProfile, callback) {
-        var self = this;
-        this.pebl.storage.saveUserProfile(userProfile, function () {
-            self.pebl.storage.saveCurrentUser(userProfile, callback);
-        });
-    };
-    User.prototype.logout = function (callback) {
-        if (callback != null)
-            this.pebl.storage.removeCurrentUser(callback);
-        else
-            this.pebl.storage.removeCurrentUser();
-    };
     return User;
 }());
 
 
 // CONCATENATED MODULE: ./src/syncing.ts
+var USER_PREFIX = "user-";
+var PEBL_THREAD_PREFIX = "peblThread://";
+var PEBL_THREAD_USER_PREFIX = "peblThread://" + USER_PREFIX;
 
 var syncing_LLSyncAction = /** @class */ (function () {
     function LLSyncAction(pebl, endpoint) {
@@ -1397,13 +1388,27 @@ var syncing_LLSyncAction = /** @class */ (function () {
                 "statement.stored": {
                     "$gt": timestamp.toISOString()
                 },
-                "statement.object.id": "peblThread://" + thread
+                "statement.object.id": PEBL_THREAD_PREFIX + thread
             });
         }
-        if ((threadPairs.length == 0) && self.running)
-            self.threadPoll = setTimeout(self.threadPollingCallback.bind(self), 2000);
-        else
-            self.pullMessages({ "$or": threadPairs });
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile && self.pebl.enableDirectMessages) {
+                var directThread = PEBL_THREAD_USER_PREFIX + userProfile.identity;
+                var timeStr = self.endpoint.lastSyncedThreads[directThread];
+                var timestamp = timeStr == null ? new Date("2017-06-05T21:07:49-07:00") : timeStr;
+                self.endpoint.lastSyncedThreads[USER_PREFIX + userProfile.identity] = timestamp;
+                threadPairs.push({
+                    "statement.stored": {
+                        "$gt": timestamp.toISOString()
+                    },
+                    "statement.object.id": directThread
+                });
+            }
+            if ((threadPairs.length == 0) && self.running)
+                self.threadPoll = setTimeout(self.threadPollingCallback.bind(self), 2000);
+            else
+                self.pullMessages({ "$or": threadPairs });
+        });
     };
     LLSyncAction.prototype.pullHelper = function (pipeline, callback) {
         var self = this;
@@ -1770,6 +1775,10 @@ var network_Network = /** @class */ (function () {
                             xhr.open("GET", url + ref.url);
                             xhr.send();
                         }
+                    }
+                    else {
+                        if (self.running)
+                            self.pullAssetTimeout = setTimeout(self.pullAsset.bind(self), 5000);
                     }
                 });
             }
@@ -2172,8 +2181,8 @@ var UserProfile = /** @class */ (function () {
         this.name = raw.name;
         this.homePage = raw.homePage;
         this.preferredName = raw.preferredName;
-        if (raw.registryEndPoint)
-            this.registryEndpoint = new Endpoint(raw.registryEndPoint);
+        if (raw.registryEndpoint)
+            this.registryEndpoint = new Endpoint(raw.registryEndpoint);
         this.endpoints = [];
         if (raw.endpoints)
             for (var _i = 0, _a = raw.endpoints; _i < _a.length; _i++) {
@@ -2234,7 +2243,8 @@ var Endpoint = /** @class */ (function () {
 
 // CONCATENATED MODULE: ./src/eventHandlers.ts
 var PEBL_PREFIX = "pebl://";
-var PEBL_THREAD_PREFIX = "peblThread://";
+var eventHandlers_PEBL_THREAD_PREFIX = "peblThread://";
+var eventHandlers_PEBL_THREAD_USER_PREFIX = "peblThread://user-";
 
 
 
@@ -2300,8 +2310,9 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_THREAD_PREFIX + payload.target, payload.name, payload.description, self.xapiGen.addExtensions(exts));
-                        if (userProfile.identity == payload.target)
+                        self.xapiGen.addObject(xapi, eventHandlers_PEBL_THREAD_USER_PREFIX + payload.target, payload.name, payload.description, self.xapiGen.addExtensions(exts));
+                        var pulled = userProfile.identity == payload.target;
+                        if (pulled)
                             self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#pulled", "pulled");
                         else
                             self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#pushed", "pushed");
@@ -2310,7 +2321,8 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         var s = new Reference(xapi);
                         self.pebl.storage.saveOutgoing(userProfile, s);
                         self.pebl.storage.saveEvent(userProfile, s);
-                        // self.pebl.emitEvent(self.pebl.events.in)
+                        if (pulled)
+                            self.pebl.emitEvent(eventHandlers_PEBL_THREAD_USER_PREFIX + payload.target, [s]);
                     }
                 });
             });
@@ -2328,7 +2340,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/responded", "responded");
                         self.xapiGen.addTimestamp(xapi);
-                        self.xapiGen.addObject(xapi, PEBL_THREAD_PREFIX + payload.thread, payload.prompt, payload.text);
+                        self.xapiGen.addObject(xapi, eventHandlers_PEBL_THREAD_PREFIX + payload.thread, payload.prompt, payload.text);
                         self.xapiGen.addActorAccount(xapi, userProfile);
                         var message = new Message(xapi);
                         self.pebl.storage.saveMessages(userProfile, message);

@@ -204,7 +204,10 @@ window.Lightbox = {
     				       url: "https://lrs.peblproject.com/",
     				       token: "ZmI0YmRkZmM5Yzc2NzM2Mjg5MmUzOWI2NjUyZmM3YzgwZDcxMGMzZDowNGNiNDJmNTgzODZkN2ZkMDgzNGJmMDcwMmRjMDFjY2I0YzVkNWRi"
 				   }
-			       ]
+			       ],
+                               registryEndpoint : {
+    				   url: "https://peblproject.com/registry/api/downloadContent?guid="
+			       }
 			   });
 	    Lightbox.close();
 	});
