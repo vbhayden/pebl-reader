@@ -140,8 +140,8 @@ var Reference = /** @class */ (function (_super) {
         _this.thread = _this["object"].id;
         if (_this.thread.indexOf(PREFIX_PEBL_THREAD) != -1)
             _this.thread = _this.thread.substring(PREFIX_PEBL_THREAD.length);
-        var extensions = _this["object"].extensions;
         _this.name = _this.object.definition.name["en-US"];
+        var extensions = _this["object"].definition.extensions;
         _this.book = extensions[PREFIX_PEBL_EXTENSION + "book"];
         _this.docType = extensions[PREFIX_PEBL_EXTENSION + "docType"];
         _this.location = extensions[PREFIX_PEBL_EXTENSION + "location"];
@@ -366,7 +366,7 @@ var CURRENT_USER = "peblCurrentUser";
 var storage_IndexedDBStorageAdapter = /** @class */ (function () {
     function IndexedDBStorageAdapter(callback) {
         this.invocationQueue = [];
-        var request = window.indexedDB.open("pebl", 12);
+        var request = window.indexedDB.open("pebl", 13);
         var self = this;
         request.onupgradeneeded = function () {
             var db = request.result;
@@ -384,7 +384,7 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             db.createObjectStore("assets", { keyPath: ["identity", "id"] });
             var queuedReferences = db.createObjectStore("queuedReferences", { keyPath: ["identity", "id"] });
             var notificationStore = db.createObjectStore("notifications", { keyPath: ["identity", "id"] });
-            var tocStore = db.createObjectStore("tocs", { keyPath: ["identity", "containerPath", "section", "pageKey"] });
+            var tocStore = db.createObjectStore("tocs", { keyPath: ["identity", "book", "section", "pageKey"] });
             db.createObjectStore("lrsAuth", { keyPath: "id" });
             eventStore.createIndex(MASTER_INDEX, ["identity", "book"]);
             annotationStore.createIndex(MASTER_INDEX, ["identity", "book"]);
@@ -394,7 +394,7 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             messageStore.createIndex(MASTER_INDEX, ["identity", "thread"]);
             queuedReferences.createIndex(MASTER_INDEX, "identity");
             notificationStore.createIndex(MASTER_INDEX, "identity");
-            tocStore.createIndex(MASTER_INDEX, ["identity", "containerPath"]);
+            tocStore.createIndex(MASTER_INDEX, ["identity", "book"]);
         };
         request.onsuccess = function () {
             self.db = request.result;
@@ -1186,6 +1186,7 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
         }
     };
     IndexedDBStorageAdapter.prototype.getToc = function (userProfile, book, callback) {
+        //TODO Remove me
         if (book == null) {
             callback([]);
             return;
@@ -1895,6 +1896,86 @@ var Utils = /** @class */ (function () {
             }
             else
                 callback([]);
+        });
+    };
+    Utils.prototype.initializeToc = function (data) {
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentBook(function (book) {
+                    if (book) {
+                        self.pebl.storage.getToc(userProfile, book, function (toc) {
+                            if (toc.length == 0) {
+                                for (var section in data) {
+                                    var pages = data[section];
+                                    for (var pageKey in pages) {
+                                        var pageMetadata = pages[pageKey];
+                                        if (pageKey == "DynamicContent") {
+                                            var documents = pageMetadata["documents"];
+                                            for (var dynamicPageKey in documents) {
+                                                var documentMetadata = documents[dynamicPageKey];
+                                                documentMetadata["pageKey"] = dynamicPageKey;
+                                                self.pebl.storage.saveToc(userProfile, book, documentMetadata);
+                                            }
+                                        }
+                                        else {
+                                            pageMetadata["pageKey"] = pageKey;
+                                            pageMetadata["section"] = section;
+                                            self.pebl.storage.saveToc(userProfile, book, pageMetadata);
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    };
+    Utils.prototype.getToc = function (callback) {
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentBook(function (book) {
+                    if (book)
+                        self.pebl.storage.getToc(userProfile, book, function (entries) {
+                            var toc = {};
+                            for (var i = 0; i < entries.length; i++) {
+                                var entry = entries[i];
+                                var sectionKey = entry["section"];
+                                if (toc[sectionKey] == null) {
+                                    toc[sectionKey] = {};
+                                }
+                                var section = toc[sectionKey];
+                                if (sectionKey == "DynamicContent") {
+                                    if (section["documents"] == null) {
+                                        section["location"] = entry["location"];
+                                        section["documents"] = {};
+                                    }
+                                    var dynamicSection = section["documents"];
+                                    dynamicSection[entry["pageKey"]] = entry;
+                                }
+                                else
+                                    section[entry["pageKey"]] = entry;
+                            }
+                            callback(toc);
+                        });
+                    else
+                        callback({});
+                });
+            }
+            else
+                callback({});
+        });
+    };
+    Utils.prototype.removeToc = function (id, section) {
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile)
+                self.pebl.storage.getCurrentBook(function (book) {
+                    if (book)
+                        self.pebl.storage.removeToc(userProfile, book, section, id);
+                });
         });
     };
     return Utils;
