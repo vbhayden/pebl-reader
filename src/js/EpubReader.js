@@ -1771,7 +1771,9 @@ define([
                $('#bookmark-show').on('click', bookmarksShowHideToggle);
                $('#bookmark-page').on('click', showBookmarkDialogue);
                PeBL.extension.hardcodeLogin.hookLoginButton("loginButt",
-                                                            null,
+                                                            function() {
+                                                                loadlibrary();
+                                                            },
                                                             function() {
                                                                 loadlibrary();               
                                                             });
