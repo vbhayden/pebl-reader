@@ -21,6 +21,18 @@ define([], function(){
 	};	
     };
 
+    var deleteFile = function(id, success, error) {
+    var request = db.transaction(["books"], "readwrite").objectStore("books").delete(id);
+    request.onerror = function (e) {
+    	if (error != null)
+    		error();
+    };
+    request.onsuccess = function (e) {
+    	if (success != null)
+    		success();
+    };
+    }
+
     var saveBookshelf = function(id, bookshelf, success, error) {
 	var data = {
 	    id : id,
@@ -155,8 +167,7 @@ define([], function(){
 	},
 	
         deleteFile : function(path, success, error){
-	    console.log(path, success, error);
-            success();
+	    	deleteFile(path, success, error);
         },
 
         getPathUrl : function(path){	   

@@ -642,13 +642,24 @@ Helpers){
                 window.tempBookshelf = index;
             else
                 window.tempBookshelf = [];
+
+            var blacklist = window.localStorage.getItem('blacklist');
+            if (blacklist != null)
+                blacklist = JSON.parse(blacklist);
+
             libraryManager.retrieveAvailableEpubs(function(epubs) {
                 var i = epubs.length;
-                //Strip out epubs that were already added to indexeddb
+                //Strip out epubs that were already added to indexeddb and blacklisted ones
                 while (i--) {
+                    if (blacklist != null)  {
+                        if (blacklist[epubs[i].rootUrl] === true) {
+                            epubs.splice(i, 1);
+                            continue;
+                        }
+                    }
                     if (epubs[i].rootUrl.substr(0, 5) === 'db://')
                         epubs.splice(i, 1);
-                    else
+                    else {
                         if (index) {
                             for (var j = 0; j < index.length; j++) {
                                 if (index[j].rootUrl.split('/').pop() === epubs[i].rootUrl.split('/').pop()) {
@@ -657,6 +668,7 @@ Helpers){
                                 }
                             }
                         }
+                    }
                     
                 }
                 console.log(epubs);
@@ -827,6 +839,37 @@ Helpers){
         $(document.body).on('click', '.read', readClick);
         $('#epub-upload').on('change', handleFileSelect);
         $('#dir-upload').on('change', handleDirSelect);
+
+        $(document.body).on('click', '.delete-book-button', function(evt) {
+            var url = $(evt.currentTarget).attr('data-root');
+            if (url.substr(0, 5) == 'db://') {
+                StorageManager.deleteFile(url, function() {
+                    StorageManager.getFile('db://epub_library.json', function(index) {
+                        if (index) {
+                            for (var i = 0; i < index.length; i++) {
+                                if (index[i].rootUrl === url) {
+                                    index.splice(i, 1);
+                                    StorageManager.saveBookshelf('db://epub_library.json', index, function() {
+                                        console.log('deleted epub_library.json entry');
+                                        libraryManager.retrieveAvailableEpubs(loadLibraryItems);
+                                    }, function() {
+                                        console.log('failed to delete epub_library.json entry');
+                                    });
+                                }
+                            }
+                        } else {
+                            console.log('No associated epub_library.json found');
+                        }
+                    });
+                }, function() {
+                    console.log('delete failed');
+                });
+            } else {
+                blacklistEpub(url);
+                libraryManager.retrieveAvailableEpubs(loadLibraryItems);
+            }
+            
+        });
 
         document.title = Strings.i18n_pebl_library;
 

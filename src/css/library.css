@@ -273,3 +273,9 @@ body.list-view .details{
     margin-top: 100px;
     position: relative !important;
 }
+
+.delete-book-button {
+    color: #fff;
+    background-color: #da5243;
+    border-color: #da5243;
+}
