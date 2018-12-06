@@ -98,7 +98,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -366,7 +366,7 @@ var CURRENT_USER = "peblCurrentUser";
 var storage_IndexedDBStorageAdapter = /** @class */ (function () {
     function IndexedDBStorageAdapter(callback) {
         this.invocationQueue = [];
-        var request = window.indexedDB.open("pebl", 13);
+        var request = window.indexedDB.open("pebl", 14);
         var self = this;
         request.onupgradeneeded = function () {
             var db = request.result;
@@ -1775,6 +1775,8 @@ var network_Network = /** @class */ (function () {
                             xhr.open("GET", url + ref.url);
                             xhr.send();
                         }
+                        else if (self.running)
+                            self.pullAssetTimeout = setTimeout(self.pullAsset.bind(self), 5000);
                     }
                     else {
                         if (self.running)
@@ -1782,6 +1784,8 @@ var network_Network = /** @class */ (function () {
                     }
                 });
             }
+            else if (self.running)
+                self.pullAssetTimeout = setTimeout(self.pullAsset.bind(self), 5000);
         });
     };
     Network.prototype.disable = function (callback) {
