@@ -788,8 +788,7 @@ define([
            };
 
            var shareHighlight = function(annotation) {
-               PeBL.emitEvent(PeBL.events.removedAnnotation, annotation.id);
-               readium.reader.plugins.highlights.removeHighlight(annotation.id);
+               removeHighlight(annotation);
                annotation.type = 3;
                PeBL.emitEvent(PeBL.events.newSharedAnnotation, annotation);
            };
@@ -1135,9 +1134,9 @@ define([
                                                        readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, "user-highlight");
                                                    } else if (stmt.target) {
                                                        readium.reader.plugins.highlights.removeHighlight(stmt.target);
-                                                       $("#annotation-" + stmt.id).remove();
-                                                       $("#bookmark-" + stmt.id).remove();
-                                                       $("#sharedAnnotation-" + stmt.id).remove();
+                                                       $("#annotation-" + stmt.target).remove();
+                                                       $("#bookmark-" + stmt.target).remove();
+                                                       $("#sharedAnnotation-" + stmt.target).remove();
                                                    }
                                                }
                                            });
@@ -1150,9 +1149,9 @@ define([
                                                            readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, identity == stmt.owner ? 'shared-my-highlight' : 'shared-highlight');
                                                        } else if (stmt.target) {
                                                            readium.reader.plugins.highlights.removeHighlight(stmt.target);
-                                                           $("#annotation-" + stmt.id).remove();
-                                                           $("#bookmark-" + stmt.id).remove();
-                                                           $("#sharedAnnotation-" + stmt.id).remove();
+                                                           $("#annotation-" + stmt.target).remove();
+                                                           $("#bookmark-" + stmt.target).remove();
+                                                           $("#sharedAnnotation-" + stmt.target).remove();
                                                        }
                                                    });
                                                }
