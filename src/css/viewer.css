@@ -86,15 +86,28 @@ html#simpleViewer .icon-library{
   margin-left: 1em;
 }
 
+#bookmarks-body-list > div {
+  display: flex;
+  justify-content: space-between;
+}
+
 #bookmarks-body-list span {
   color: #337ab7;
   cursor: pointer;
+  margin-right: 1em;
 }
 
 #bookmarks-body-list span:hover {
   text-decoration: underline;
   filter: brightness(0.5);
 }
+
+#bookmarks-body-list i {
+  margin-right: 1em;
+  cursor: pointer;
+}
+
+
 
 /*
 #readium-toc-body *[dir=rtl]{

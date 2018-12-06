@@ -922,7 +922,8 @@ define([
                $appContainer.addClass('bookmarks-visible');
                for (var stmt of stmts) {
                    if (stmt.type === 1) {
-                       if ($("#bookmark-" + stmt.id).length == 0) {                        
+                       if ($("#bookmark-" + stmt.id).length == 0) {
+                         (function(stmt) {
                            var bookmarkWrapper = document.createElement('div');
                            bookmarkWrapper.id = "bookmark-" + stmt.id;
                            var bookmarkLink = document.createElement('span');                  
@@ -938,8 +939,17 @@ define([
                            bookmarkLink.setAttribute('data-CFI', stmt.cfi);
                            bookmarkLink.setAttribute('data-IDRef', stmt.idRef);
 
+                           var bookmarkDeleteButton = document.createElement('i');
+                           bookmarkDeleteButton.classList.add('glyphicon', 'glyphicon-remove');
+                           bookmarkDeleteButton.addEventListener('click', function() {
+                            PeBL.emitEvent(PeBL.events.removedAnnotation, stmt.id);
+                            $(bookmarkWrapper).remove();
+                           });
+
                            bookmarkWrapper.appendChild(bookmarkLink);
+                           bookmarkWrapper.appendChild(bookmarkDeleteButton);
                            $('#bookmarks-body-list').append($(bookmarkWrapper));
+                         })(stmt);                   
                        }
                    }
                }
