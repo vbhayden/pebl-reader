@@ -798,6 +798,9 @@ define([
                $('#annotationInput').val(annotation.text);
                $('#add-note-submit').data('annotation', annotation);
                $('#add-note-dialog').modal('show');
+               setTimeout(function() {
+                $('#annotationInput').focus();
+               }, 500);
            }
            
            var showAnnotationContextMenu = function(event, annotation) {
@@ -894,6 +897,9 @@ define([
            var showBookmarkDialogue = function() {
                $('#bookmarkInput').val('');
                $('#add-bookmark-dialog').modal('show');
+               setTimeout(function() {
+                $('#bookmarkInput').focus();
+               }, 500)
            };
 
            var saveBookmark = function(title) {
