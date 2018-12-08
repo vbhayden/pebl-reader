@@ -6,7 +6,7 @@ define([], function(){
 
     var db;
 
-    var getBook = function(id, success, error) {
+    var getBook = function(id, success, error, isIOS) {
 	var request = db.transaction(["books"], "readonly").objectStore("books").get(id);
 	request.onerror = function (e) {
 	    //console.log(e);
@@ -14,11 +14,35 @@ define([], function(){
 		error();
 	};
 	request.onsuccess = function (e) {
-	    if ((success != null) && e.target.result)
-		success(e.target.result.content);
-	    else
-		success();
+	    if ((success != null) && e.target.result) {
+	    	var data = e.target.result.content;
+	    	var filename = e.target.result.id.split('/').pop();
+	    	if (isIOS && data instanceof ArrayBuffer) {
+	    		convertToFile(data, filename, function(file) {
+	    			success(file);
+	    		})
+	    	} else {
+	    		success(e.target.result.content);
+	    	}
+	    } else
+			success();
 	};	
+    };
+
+    var convertToArrayBuffer = function(blob, callback) {
+    	var arrayBuffer;
+		var fileReader = new FileReader();
+		fileReader.onload = function(event) {
+		    arrayBuffer = event.target.result;
+		    callback(arrayBuffer);
+		};
+		fileReader.readAsArrayBuffer(blob);
+    };
+
+    function convertToFile(arraybuffer, filename, callback) {
+    	var blob = new Blob([new Uint8Array(arraybuffer)]);
+    	var file = new File([blob], filename);
+    	callback(file);
     };
 
     var deleteFile = function(id, success, error) {
@@ -41,7 +65,7 @@ define([], function(){
 	var request = db.transaction(["books"], "readwrite").objectStore("books").put(cleanRecord(data));
 	request.onerror = function (e) {
 	    if (error != null)
-		error();
+		error(e);
 	};
 	request.onsuccess = function (e) {
 	    if (success != null)
@@ -62,7 +86,7 @@ define([], function(){
 	var request = db.transaction(["books"], "readwrite").objectStore("books").put(cleanRecord(data));
 	request.onerror = function (e) {
 	    if (error != null)
-		error();
+		error(e);
 	};
 	request.onsuccess = function (e) {
 	    if (success != null)
@@ -151,7 +175,13 @@ define([], function(){
     var StaticStorageManager = {
 
         saveFile : function(path, blob, success, error){
-	    saveBook(path, blob, success, error);	 	          
+        	if (isIOS) {
+        		convertToArrayBuffer(blob, function(arraybuffer) {
+        			saveBook(path, arraybuffer, success, error);
+        		});
+        	} else {
+        		saveBook(path, blob, success, error);
+        	}    
         },
 
 	saveBookshelf : function(path, blob, success, error){
@@ -163,7 +193,7 @@ define([], function(){
         },
 
 	getFile : function(path, success, error) {
-	    getBook(path, success, error);
+	    getBook(path, success, error, isIOS);
 	},
 	
         deleteFile : function(path, success, error){

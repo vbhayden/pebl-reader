@@ -17,6 +17,7 @@ define([
 'hgn!readium_js_viewer_html_templates/add-epub-dialog.html',
 'hgn!readium_js_viewer_html_templates/download-books-dialog.html',
 'hgn!readium_js_viewer_html_templates/install-reader-dialog.html',
+'hgn!readium_js_viewer_html_templates/install-ios-reader-dialog.html',
 'hgn!readium_js_viewer_html_templates/spinner-dialog.html',
 './Spinner',
 './ReaderSettingsDialog',
@@ -46,6 +47,7 @@ DetailsBody,
 AddEpubDialog,
 DownloadBooksDialog,
 InstallReaderDialog,
+InstallIosReaderDialog,
 SpinnerDialog,
 spinner,
 SettingsDialog,
@@ -704,6 +706,23 @@ Helpers){
     };
 
     var loadLibraryUI = function(){
+        var inIos = false;
+        var inIosStandalone = false;
+        // Detects if device is on iOS 
+        const isIos = () => {
+          const userAgent = window.navigator.userAgent.toLowerCase();
+          return /iphone|ipad|ipod/.test( userAgent );
+        }
+        // Detects if device is in standalone mode
+        const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
+
+        // Checks if should display install popup notification:
+        if (isIos()) {
+            inIos = true;
+        }
+        if (isInStandaloneMode()) {
+            inIosStandalone = true;
+        }
 
         Dialogs.reset();
 
@@ -730,6 +749,11 @@ Helpers){
 
         $appContainer.append(InstallReaderDialog({
             strings: Strings
+        }));
+
+        $appContainer.append(InstallIosReaderDialog({
+            strings: Strings,
+            imagePathPrefix: moduleConfig.imagePathPrefix
         }));
 
         $appContainer.append(SpinnerDialog({
@@ -807,7 +831,7 @@ Helpers){
         $('.add-book').on('click', handleUrlSelect);
         $('nav').empty();
         $('nav').attr("aria-label", Strings.i18n_toolbar);
-        $('nav').append(LibraryNavbar({strings: Strings, dialogs: Dialogs, keyboard: Keyboard}));
+        $('nav').append(LibraryNavbar({strings: Strings, dialogs: Dialogs, keyboard: Keyboard, inIos: inIos}));
         $('.icon-list-view').on('click', function(){
             $(document.body).addClass('list-view');
             setTimeout(function(){ $('.icon-thumbnails')[0].focus(); }, 50);
@@ -871,6 +895,36 @@ Helpers){
             
         });
 
+        if (inIos && !inIosStandalone) {
+            $(document.body).on('click', '#installbutt2', function() {
+                $('#install-ios-reader-dialog').modal('show');
+            });
+        }
+
+        if (inIos && inIosStandalone) {
+            $(document.body).on('click', '#installbutt2', function() {
+                $('#download-books-dialog').modal('show');
+            });
+            $('#download-books-submit')[0].addEventListener('click', function() {
+                $('#install-spinner-dialog').modal('show');
+                spinLibrary(true);
+                storeLibraryOffline(function() {
+                    console.log(window.tempBookshelf);
+                    StorageManager.saveBookshelf('db://epub_library.json', window.tempBookshelf, function() {
+                        spinLibrary(false);
+                        setTimeout(function() {
+                            libraryManager.retrieveAvailableEpubs(loadLibraryItems);
+                        }, 1000);
+                        $('#install-spinner-dialog').modal('hide');
+                    }, function() {
+                        console.log('error thing');
+                    });
+                    
+                });
+            });
+        }
+        
+
         document.title = Strings.i18n_pebl_library;
 
         $('#settings-dialog').on('hidden.bs.modal', function () {
@@ -908,6 +962,9 @@ Helpers){
                 doMigration();
             }
         });
+
+        
+
     }
 
     var applyKeyboardSettingsAndLoadUi = function(data)

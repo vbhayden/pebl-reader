@@ -22,7 +22,9 @@
     <button style="display: none;" id="installbutt" tabindex="1" type="button" class="btn icon-install" title="{{strings.install}}" aria-label="{{strings.install}}">
         <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
     </button>
-    <button style="display: none;" id="installbutt2" tabindex="1" type="button" class="btn icon-install" title="{{strings.install}}" aria-label="{{strings.install}}">
+    {{#inIos}}
+    <button id="installbutt2" tabindex="1" type="button" class="btn icon-install" title="{{strings.install}}" aria-label="{{strings.install}}">
         <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
     </button>
+    {{/inIos}}
 </div>
