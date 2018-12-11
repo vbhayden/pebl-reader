@@ -445,11 +445,13 @@ define([
                var iframeWindow = iframe.contentWindow || iframe.contentDocument;
                var $body = $(iframeWindow.document.body);
                var $html = $body.parent();
-               var contentHeight = parseInt($body.css('height'));
-               var pageHeight = parseInt($html.css('height'));
                var columnCount = $html.css('column-count') === 'auto' ? 1 : $html.css('column-count');
-
-               return Math.ceil(Math.ceil(contentHeight / pageHeight) / columnCount);
+               var paginationInfo = readium.reader.getPaginationInfo();
+               if (columnCount == 2) {
+                return Math.ceil(paginationInfo.openPages[0].spineItemPageCount / 2);
+               } else {
+                return paginationInfo.openPages[0].spineItemPageCount;
+               }
            };
 
            var getCurrentPageNumber = function() {
@@ -457,30 +459,13 @@ define([
                var iframeWindow = iframe.contentWindow || iframe.contentDocument;
                var $body = $(iframeWindow.document.body);
                var $html = $body.parent();
-               var contentHeight = parseInt($body.css('height'));
-               var pageHeight = parseInt($html.css('height'));
                var columnCount = $html.css('column-count') === 'auto' ? 1 : $html.css('column-count');
-
-               var bookmark = JSON.parse(readium.reader.getLastVisibleCfi());
-               var firstElement = readium.reader.getElementByCfi(bookmark.idref, bookmark.contentCFI);
-               if (typeof firstElement[0].offsetTop === 'undefined')
-                   while (typeof firstElement[0].offsetTop === 'undefined')
-                       firstElement = firstElement.parent();
-
-               var offsetTop = firstElement[0].offsetTop;
-
-               var temp1 = offsetTop / pageHeight;
-
-               //Nudge it over the edge if the pageHeight happens to match the offset exactly
-               if (offsetTop % pageHeight === 0)
-                   temp1 += 0.0001;
-
-               var temp2 = Math.ceil(temp1 / columnCount);
-
-               if (temp2 < 1)
-                   temp2 = 1;
-
-               return temp2;
+               var paginationInfo = readium.reader.getPaginationInfo();
+               if (columnCount == 2) {
+                return Math.ceil((paginationInfo.openPages[0].spineItemPageIndex + 1) / 2);
+               } else {
+                return Math.ceil(paginationInfo.openPages[0].spineItemPageIndex + 1);
+               }
            };
 
            var getPageNumberForElement = function(element) {
