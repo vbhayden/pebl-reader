@@ -407,15 +407,7 @@ define([
                      }
                  } else {
                      var pageDifference = currentPage - newChapters[val].pageNumber;
-                     if (pageDifference > 0) {
-                         for (var i = 0; i < pageDifference; i++) {
-                             prevPage();
-                         }
-                     } else if (pageDifference < 0) {
-                         for (var i = 0; i > pageDifference; i--) {
-                             nextPage();
-                         }
-                     }
+                     readium.reader.openPageIndex(newChapters[val].pageNumber - 1);
                  }
                }
 
