@@ -406,8 +406,19 @@ define([
                          return false;
                      }
                  } else {
-                     var pageDifference = currentPage - newChapters[val].pageNumber;
-                     readium.reader.openPageIndex(newChapters[val].pageNumber - 1);
+                     var iframe = $("#epub-reader-frame iframe")[0];
+                     var iframeWindow = iframe.contentWindow || iframe.contentDocument;
+                     var $body = $(iframeWindow.document.body);
+                     var $html = $body.parent();
+                     var columnCount = $html.css('column-count') === 'auto' ? 1 : $html.css('column-count');
+                     var paginationInfo = readium.reader.getPaginationInfo();
+                     var pageIndex;
+                     if (columnCount == 2) {
+                      pageIndex = (newChapters[val].pageNumber * 2) - 1;
+                     } else {
+                      pageIndex = newChapters[val].pageNumber - 1;
+                     }
+                     readium.reader.openPageIndex(pageIndex);
                  }
                }
 
