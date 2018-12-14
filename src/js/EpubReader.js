@@ -171,12 +171,15 @@ define([
                currentPackageDocument.generateTocListDOM(function(dom) {
                    var chaptersArray = [];
                    var nav = dom.getElementById('toc');
+                   var currentChapterTitle = null;
+                   var currentIdref = null;
                    
                    $(nav).find('a').each(function() {
                        var href = this.href.split('/').pop();
                        var hashIndex = href.indexOf('#');
                        var hrefPart;
                        var elementId;
+                       var chapterTitle;
                        if (hashIndex >= 0) {
                            hrefPart = href.substr(0, hashIndex);
                            elementId = href.substr(hashIndex + 1);
@@ -184,12 +187,28 @@ define([
                            hrefPart = href;
                            elementId = undefined;
                        }
+
                        var spineItem = readium.reader.spine().getItemByHref(hrefPart);
+
+                       if (currentChapterTitle == null)
+                        currentChapterTitle = this.text;
+                       if (currentIdref == null)
+                        currentIdref = spineItem.idref;
+
+                       if (currentIdref === spineItem.idref) {
+                        chapterTitle = currentChapterTitle;
+                       } else {
+                        chapterTitle = this.text;
+                        currentIdref = spineItem.idref;
+                        currentChapterTitle = this.text
+                       }
+                       
                        var item = {
                            href: this.href,
                            title: this.text,
                            idref: spineItem.idref,
-                           elementId: elementId
+                           elementId: elementId,
+                           chapterTitle: chapterTitle
                        };
                        chaptersArray.push(item);
                    });
@@ -324,9 +343,13 @@ define([
                var sliderChapterName = document.createElement('span');
                sliderChapterName.id = 'sliderChapterName';
 
+               var sliderSubChapterName = document.createElement('span');
+               sliderSubChapterName.id ='sliderSubChapterName';
+
                
                sliderInfoContainer.appendChild(sliderPageNumber);
                sliderInfoContainer.appendChild(sliderChapterName);
+               sliderInfoContainer.appendChild(sliderSubChapterName);
 
                var slider = document.createElement('input');
                slider.type = 'range';
@@ -345,89 +368,61 @@ define([
                        $(sliderPageNumber).hide();
                    }
                    if (typeof newChapters[val].title !== 'undefined') {
-                       $(sliderChapterName).text(newChapters[val].title);
-                       $(sliderChapterName).show();
+                       $(sliderSubChapterName).text(newChapters[val].title);
+                       $(sliderSubChapterName).show();
                    } else {
-                       $(sliderChapterName).hide();
+                       $(sliderSubChapterName).hide();
+                   }
+                   if (newChapters[val].chapterTitle !== newChapters[val].title) {
+                      $(sliderChapterName).text(newChapters[val].chapterTitle);
+                      $(sliderChapterName).show();
+                   } else {
+                      $(sliderChapterName).hide();
                    }
                    $(sliderInfoContainer).addClass('visible');
                }
 
-               slider.addEventListener('mouseup', function() {
-                   var val = Math.round(this.value);
-                   var tocUrl = currentPackageDocument.getToc();
-                   $(sliderInfoContainer).removeClass('visible');
-                   if (typeof newChapters[val].pageNumber == 'undefined') {
-                       try {
-                           spin(true);
+               var sliderSelectFunction = function() {
+                 var val = Math.round(this.value);
+                 var tocUrl = currentPackageDocument.getToc();
+                 $(sliderInfoContainer).removeClass('visible');
+                 if (typeof newChapters[val].pageNumber == 'undefined') {
+                     try {
+                         spin(true);
 
-                           var href = newChapters[val].href.split('/').pop();
-                           //href = tocUrl ? new URI(href).absoluteTo(tocUrl).toString() : href;
+                         var href = newChapters[val].href.split('/').pop();
+                         //href = tocUrl ? new URI(href).absoluteTo(tocUrl).toString() : href;
 
-                           _tocLinkActivated = true;
+                         _tocLinkActivated = true;
 
-                           readium.reader.openContentUrl(href, tocUrl, undefined);
-                       } catch (err) {
+                         readium.reader.openContentUrl(href, tocUrl, undefined);
+                     } catch (err) {
 
-                           console.error(err);
+                         console.error(err);
 
-                       } finally {
-                           //e.preventDefault();
-                           //e.stopPropagation();
-                           return false;
-                       }
-                   } else {
-                       var pageDifference = currentPage - newChapters[val].pageNumber;
-                       if (pageDifference > 0) {
-                           for (var i = 0; i < pageDifference; i++) {
-                               prevPage();
-                           }
-                       } else if (pageDifference < 0) {
-                           for (var i = 0; i > pageDifference; i--) {
-                               nextPage();
-                           }
-                       }
-                   }
-                   
-               });
+                     } finally {
+                         //e.preventDefault();
+                         //e.stopPropagation();
+                         return false;
+                     }
+                 } else {
+                     var pageDifference = currentPage - newChapters[val].pageNumber;
+                     if (pageDifference > 0) {
+                         for (var i = 0; i < pageDifference; i++) {
+                             prevPage();
+                         }
+                     } else if (pageDifference < 0) {
+                         for (var i = 0; i > pageDifference; i--) {
+                             nextPage();
+                         }
+                     }
+                 }
+               }
+
+               slider.addEventListener('mouseup', sliderSelectFunction);
 
                //same as above, but for touch screens
-               slider.addEventListener('touchend', function() {
-                   var val = Math.round(this.value);
-                   var tocUrl = currentPackageDocument.getToc();
-                   $(sliderInfoContainer).removeClass('visible');
-                   if (typeof newChapters[val].pageNumber == 'undefined') {
-                       try {
-                           spin(true);
-
-                           var href = newChapters[val].href.split('/').pop();
-                           //href = tocUrl ? new URI(href).absoluteTo(tocUrl).toString() : href;
-
-                           _tocLinkActivated = true;
-
-                           readium.reader.openContentUrl(href, tocUrl, undefined);
-                       } catch (err) {
-
-                           console.error(err);
-
-                       } finally {
-                           //e.preventDefault();
-                           //e.stopPropagation();
-                           return false;
-                       }
-                   } else {
-                       var pageDifference = currentPage - newChapters[val].pageNumber;
-                       if (pageDifference > 0) {
-                           for (var i = 0; i < pageDifference; i++) {
-                               prevPage();
-                           }
-                       } else if (pageDifference < 0) {
-                           for (var i = 0; i > pageDifference; i--) {
-                               nextPage();
-                           }
-                       }
-                   }
-               });
+               slider.addEventListener('touchend', sliderSelectFunction);
 
 
                sliderContainer.appendChild(slider);
