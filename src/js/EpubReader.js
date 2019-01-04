@@ -1799,7 +1799,24 @@ define([
                    }
                });
 
-               
+               window.addEventListener('message', function(event) {
+                console.log(event);
+                  if (event.origin === 'http://localhost:8081') {
+                    var data = JSON.parse(event.data);
+                    if (data.message === 'programID') {
+                      window.programID = data.programID;
+                      console.log(data.programID);
+                      console.log('SUCCESS');
+                    }
+                  }
+               }, false);
+
+               if (window.opener) {
+                var message = {
+                  "message": "readerLoaded"
+                }
+                window.opener.postMessage(JSON.stringify(message), '*');
+               }
 
 
                var setTocSize = function() {
