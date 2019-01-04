@@ -167,6 +167,20 @@ define([
                return title;
            };
 
+           var checkCompletion = function() {
+              var iframe = $("#epub-reader-frame iframe")[0];
+              var iframeWindow = iframe.contentWindow || iframe.contentDocument;
+              var iframeDocument = iframeWindow.document
+
+              var elem = iframeDocument.getElementById('CompleteTrigger');
+
+              var rect = elem.getBoundingClientRect();
+
+              if (rect.top >= 0 && rect.left >= 0 && rect.bottom <= (iframeWindow.innerHeight || iframeDocument.documentElement.clientHeight) && rect.right <= (iframeWindow.innerWidth || iframeDocument.documentElement.clientWidth)) {
+                PeBL.emitEvent(PeBL.events.eventCompleted, {});
+              }
+           }
+
            var initializeSlider = function() {
                currentPackageDocument.generateTocListDOM(function(dom) {
                    var chaptersArray = [];
@@ -419,6 +433,8 @@ define([
                       pageIndex = newChapters[val].pageNumber - 1;
                      }
                      readium.reader.openPageIndex(pageIndex);
+
+                     PeBL.emitEvent(PeBL.events.eventJumpPage, {});
                  }
                }
 
@@ -1153,6 +1169,8 @@ define([
                    readium.reader.plugins.highlights.removeHighlightsByType('shared-my-highlight');
 
                    createNavigationSlider();
+
+                   checkCompletion();
                    
                    //TODO: Find a way to not need to remove and readd all the highlights each time
                    PeBL.utils.getAnnotations(function(stmts) {
@@ -1732,6 +1750,10 @@ define([
                    return false;
                });
 
+               $('.icon-help').on('click', function() {
+                  PeBL.emitEvent(PeBL.events.eventHelped, {});
+               });
+
                $('.zoom-wrapper input').on('click', function() {
                    if (!this.disabled) {
                        this.focus();
@@ -1776,6 +1798,8 @@ define([
                        PeBL.emitEvent(PeBL.events.newSharedAnnotation, annotation);
                    }
                });
+
+               
 
 
                var setTocSize = function() {
