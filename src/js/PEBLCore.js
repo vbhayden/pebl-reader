@@ -356,6 +356,28 @@ var Session = /** @class */ (function (_super) {
 }(XApiStatement));
 
 // -------------------------------
+var Membership = /** @class */ (function (_super) {
+    __extends(Membership, _super);
+    function Membership(raw) {
+        var _this = _super.call(this, raw) || this;
+        _this.groupId = _this.object.id;
+        _this.groupId = _this.object.id;
+        if (_this.groupId.indexOf(PREFIX_PEBL_THREAD) != -1)
+            _this.groupId = _this.groupId.substring(PREFIX_PEBL_THREAD.length);
+        if (_this.object.definition) {
+            _this.groupName = _this.object.definition.name && _this.object.definition.name["en-US"];
+            _this.groupDescription = _this.object.definition.description && _this.object.definition.description["en-US"];
+        }
+        return _this;
+    }
+    Membership.is = function (x) {
+        var verb = x.verb.display["en-US"];
+        return (verb == "joined");
+    };
+    return Membership;
+}(XApiStatement));
+
+// -------------------------------
 
 // CONCATENATED MODULE: ./src/storage.ts
 
@@ -379,6 +401,7 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             var generalAnnotationStore = db.createObjectStore("sharedAnnotations", { keyPath: ["identity", "id"] });
             var outgoingStore = db.createObjectStore("outgoing", { keyPath: ["identity", "id"] });
             var messageStore = db.createObjectStore("messages", { keyPath: ["identity", "id"] });
+            var groupStore = db.createObjectStore("groups", { keyPath: ["identity", "id"] });
             db.createObjectStore("user", { keyPath: "identity" });
             db.createObjectStore("state", { keyPath: "id" });
             db.createObjectStore("assets", { keyPath: ["identity", "id"] });
@@ -391,6 +414,7 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             competencyStore.createIndex(MASTER_INDEX, "identity");
             generalAnnotationStore.createIndex(MASTER_INDEX, ["identity", "book"]);
             outgoingStore.createIndex(MASTER_INDEX, "identity");
+            groupStore.createIndex(MASTER_INDEX, "identity");
             messageStore.createIndex(MASTER_INDEX, ["identity", "thread"]);
             queuedReferences.createIndex(MASTER_INDEX, "identity");
             notificationStore.createIndex(MASTER_INDEX, "identity");
@@ -1279,6 +1303,87 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             });
         }
     };
+    // -------------------------------
+    IndexedDBStorageAdapter.prototype.saveGroupMembership = function (userProfile, stmts, callback) {
+        if (this.db) {
+            if (stmts instanceof Membership) {
+                var ga = stmts;
+                ga.identity = userProfile.identity;
+                var request = this.db.transaction(["groups"], "readwrite").objectStore("groups").put(ga);
+                request.onerror = function (e) {
+                    console.log(e);
+                };
+                request.onsuccess = function () {
+                    if (callback)
+                        callback();
+                };
+            }
+            else {
+                var objectStore_6 = this.db.transaction(["groups"], "readwrite").objectStore("groups");
+                var stmtsCopy_5 = stmts.slice(0);
+                var self_44 = this;
+                var processCallback_7 = function () {
+                    var record = stmtsCopy_5.pop();
+                    if (record) {
+                        var clone = record;
+                        clone.identity = userProfile.identity;
+                        var request = objectStore_6.put(self_44.cleanRecord(clone));
+                        request.onerror = processCallback_7;
+                        request.onsuccess = processCallback_7;
+                    }
+                    else {
+                        if (callback)
+                            callback();
+                    }
+                };
+                processCallback_7();
+            }
+        }
+        else {
+            var self_45 = this;
+            this.invocationQueue.push(function () {
+                self_45.saveGroupMembership(userProfile, stmts, callback);
+            });
+        }
+    };
+    IndexedDBStorageAdapter.prototype.getGroupMembership = function (userProfile, callback) {
+        if (this.db) {
+            var os = this.db.transaction(["groups"], "readonly").objectStore("groups");
+            var index_5 = os.index(MASTER_INDEX);
+            var param_4 = userProfile.identity;
+            var self_46 = this;
+            this.getAll(index_5, IDBKeyRange.only(param_4), function (arr) {
+                if (arr.length == 0)
+                    self_46.getAll(index_5, IDBKeyRange.only([param_4]), callback);
+                else
+                    callback(arr);
+            });
+        }
+        else {
+            var self_47 = this;
+            this.invocationQueue.push(function () {
+                self_47.getGroupMembership(userProfile, callback);
+            });
+        }
+    };
+    IndexedDBStorageAdapter.prototype.removeGroupMembership = function (userProfile, xId, callback) {
+        if (this.db) {
+            var request = this.db.transaction(["groups"], "readwrite").objectStore("groups").delete(IDBKeyRange.only([userProfile.identity, xId]));
+            request.onerror = function (e) {
+                console.log(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            var self_48 = this;
+            this.invocationQueue.push(function () {
+                self_48.removeGroupMembership(userProfile, xId, callback);
+            });
+        }
+    };
     return IndexedDBStorageAdapter;
 }());
 
@@ -1314,13 +1419,20 @@ var User = /** @class */ (function () {
 
 // CONCATENATED MODULE: ./src/syncing.ts
 var USER_PREFIX = "user-";
+var GROUP_PREFIX = "group-";
 var PEBL_THREAD_PREFIX = "peblThread://";
+var PEBL_THREAD_REGISTRY = "peblThread://registry";
 var PEBL_THREAD_USER_PREFIX = "peblThread://" + USER_PREFIX;
+var PEBL_THREAD_GROUP_PREFIX = "peblThread://" + GROUP_PREFIX;
+var THREAD_POLL_INTERVAL = 4000;
+var BOOK_POLL_INTERVAL = 6000;
+var PRESENCE_POLL_INTERVAL = 120000;
 
 var syncing_LLSyncAction = /** @class */ (function () {
     function LLSyncAction(pebl, endpoint) {
         this.bookPoll = null;
         this.threadPoll = null;
+        this.presencePoll = null;
         this.running = false;
         this.pebl = pebl;
         this.endpoint = endpoint;
@@ -1333,6 +1445,9 @@ var syncing_LLSyncAction = /** @class */ (function () {
         if (this.threadPoll)
             clearTimeout(this.threadPoll);
         this.threadPoll = null;
+        if (this.presencePoll)
+            clearTimeout(this.presencePoll);
+        this.presencePoll = null;
     };
     LLSyncAction.prototype.toVoidRecord = function (rec) {
         var o = {
@@ -1361,6 +1476,62 @@ var syncing_LLSyncAction = /** @class */ (function () {
         };
         return new Voided(o);
     };
+    LLSyncAction.prototype.retrievePresence = function () {
+        var self = this;
+        var presence = new XMLHttpRequest();
+        presence.addEventListener("load", function () {
+            self.pebl.emitEvent(self.pebl.events.incomingPresence, JSON.parse(presence.responseText));
+            if (self.running)
+                self.presencePoll = setTimeout(self.registerPresence.bind(self), PRESENCE_POLL_INTERVAL);
+        });
+        presence.addEventListener("error", function () {
+            if (self.running)
+                self.presencePoll = setTimeout(self.registerPresence.bind(self), PRESENCE_POLL_INTERVAL);
+        });
+        presence.open("GET", self.endpoint.url + "data/xapi/activities/profile?activityId=" + encodeURIComponent(PEBL_THREAD_REGISTRY) + "&profileId=Registration", true);
+        presence.setRequestHeader("X-Experience-API-Version", "1.0.3");
+        presence.setRequestHeader("Authorization", "Basic " + self.endpoint.token);
+        presence.send();
+    };
+    LLSyncAction.prototype.registerPresence = function () {
+        var self = this;
+        var xhr = new XMLHttpRequest();
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                xhr.addEventListener("load", function () {
+                    self.retrievePresence();
+                });
+                xhr.addEventListener("error", function () {
+                    if (self.running)
+                        self.presencePoll = setTimeout(self.registerPresence.bind(self), PRESENCE_POLL_INTERVAL);
+                });
+                xhr.open("POST", self.endpoint.url + "data/xapi/activities/profile?activityId=" + encodeURIComponent(PEBL_THREAD_REGISTRY) + "&profileId=Registration", true);
+                xhr.setRequestHeader("X-Experience-API-Version", "1.0.3");
+                xhr.setRequestHeader("Authorization", "Basic " + self.endpoint.token);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                var obj = {};
+                obj[userProfile.identity] = true;
+                xhr.send(JSON.stringify(obj));
+            }
+            else if (self.running)
+                self.presencePoll = setTimeout(self.registerPresence.bind(self), PRESENCE_POLL_INTERVAL);
+        });
+    };
+    LLSyncAction.prototype.unregisterPresence = function () {
+        var self = this;
+        var xhr = new XMLHttpRequest();
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                xhr.open("POST", self.endpoint.url + "data/xapi/activities/profile?activityId=" + encodeURIComponent(PEBL_THREAD_REGISTRY) + "&profileId=Registration", true);
+                xhr.setRequestHeader("X-Experience-API-Version", "1.0.3");
+                xhr.setRequestHeader("Authorization", "Basic " + self.endpoint.token);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                var obj = {};
+                obj[userProfile.identity] = false;
+                xhr.send(JSON.stringify(obj));
+            }
+        });
+    };
     LLSyncAction.prototype.bookPollingCallback = function () {
         var self = this;
         this.pebl.storage.getCurrentBook(function (book) {
@@ -1373,7 +1544,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                 self.pullBook(lastSynced, book);
             }
             else if (self.running)
-                self.bookPoll = setTimeout(self.bookPollingCallback.bind(self), 5000);
+                self.bookPoll = setTimeout(self.bookPollingCallback.bind(self), BOOK_POLL_INTERVAL);
         });
     };
     LLSyncAction.prototype.threadPollingCallback = function () {
@@ -1391,23 +1562,42 @@ var syncing_LLSyncAction = /** @class */ (function () {
                 "statement.object.id": PEBL_THREAD_PREFIX + thread
             });
         }
-        this.pebl.user.getUser(function (userProfile) {
-            if (userProfile && self.pebl.enableDirectMessages) {
-                var directThread = PEBL_THREAD_USER_PREFIX + userProfile.identity;
-                var timeStr = self.endpoint.lastSyncedThreads[directThread];
-                var timestamp = timeStr == null ? new Date("2017-06-05T21:07:49-07:00") : timeStr;
-                self.endpoint.lastSyncedThreads[USER_PREFIX + userProfile.identity] = timestamp;
-                threadPairs.push({
-                    "statement.stored": {
-                        "$gt": timestamp.toISOString()
-                    },
-                    "statement.object.id": directThread
-                });
+        this.pebl.utils.getGroupMemberships(function (memberships) {
+            if (memberships) {
+                for (var _i = 0, memberships_1 = memberships; _i < memberships_1.length; _i++) {
+                    var membership = memberships_1[_i];
+                    var fullDirectThread = PEBL_THREAD_GROUP_PREFIX + membership.groupId;
+                    var thread = GROUP_PREFIX + membership.groupId;
+                    var timeStr = self.endpoint.lastSyncedThreads[thread];
+                    var timestamp = timeStr == null ? new Date("2017-06-05T21:07:49-07:00") : timeStr;
+                    self.endpoint.lastSyncedThreads[thread] = timestamp;
+                    threadPairs.push({
+                        "statement.stored": {
+                            "$gt": timestamp.toISOString()
+                        },
+                        "statement.object.id": fullDirectThread
+                    });
+                }
             }
-            if ((threadPairs.length == 0) && self.running)
-                self.threadPoll = setTimeout(self.threadPollingCallback.bind(self), 2000);
-            else
-                self.pullMessages({ "$or": threadPairs });
+            self.pebl.user.getUser(function (userProfile) {
+                if (userProfile && self.pebl.enableDirectMessages) {
+                    var fullDirectThread = PEBL_THREAD_USER_PREFIX + userProfile.identity;
+                    var thread = USER_PREFIX + userProfile.identity;
+                    var timeStr = self.endpoint.lastSyncedThreads[thread];
+                    var timestamp = timeStr == null ? new Date("2017-06-05T21:07:49-07:00") : timeStr;
+                    self.endpoint.lastSyncedThreads[thread] = timestamp;
+                    threadPairs.push({
+                        "statement.stored": {
+                            "$gt": timestamp.toISOString()
+                        },
+                        "statement.object.id": fullDirectThread
+                    });
+                }
+                if ((threadPairs.length == 0) && self.running)
+                    self.threadPoll = setTimeout(self.threadPollingCallback.bind(self), THREAD_POLL_INTERVAL);
+                else
+                    self.pullMessages({ "$or": threadPairs });
+            });
         });
     };
     LLSyncAction.prototype.pullHelper = function (pipeline, callback) {
@@ -1437,16 +1627,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
     LLSyncAction.prototype.pullMessages = function (params) {
         var pipeline = [
             {
-                "$sort": {
-                    "stored": -1,
-                    "_id": 1
-                }
-            },
-            {
                 "$match": params
-            },
-            {
-                "$limit": 1500
             },
             {
                 "$project": {
@@ -1454,11 +1635,21 @@ var syncing_LLSyncAction = /** @class */ (function () {
                     "_id": 0,
                     "voided": 1
                 }
+            },
+            {
+                "$sort": {
+                    "stored": -1,
+                    "_id": 1
+                }
+            },
+            {
+                "$limit": 1500
             }
         ];
         var self = this;
         this.pullHelper(pipeline, function (stmts) {
             var buckets = {};
+            var memberships = {};
             var deleteIds = [];
             for (var i = 0; i < stmts.length; i++) {
                 var xapi = stmts[i];
@@ -1480,12 +1671,18 @@ var syncing_LLSyncAction = /** @class */ (function () {
                     deleteIds.push(v);
                     thread = v.thread;
                 }
+                else if (Membership.is(xapi)) {
+                    var m = new Membership(xapi);
+                    thread = m.groupId;
+                    tsd = m;
+                }
                 if (thread != null) {
                     if (tsd != null) {
-                        var stmts_1 = buckets[thread];
+                        var container = tsd instanceof Membership ? memberships : buckets;
+                        var stmts_1 = container[thread];
                         if (stmts_1 == null) {
                             stmts_1 = {};
-                            buckets[thread] = stmts_1;
+                            container[thread] = stmts_1;
                         }
                         stmts_1[tsd.id] = tsd;
                     }
@@ -1505,13 +1702,29 @@ var syncing_LLSyncAction = /** @class */ (function () {
                             delete bucket[v.target];
                         }
                         self.pebl.storage.removeMessage(userProfile, v.target);
+                        self.pebl.storage.removeGroupMembership(userProfile, v.target);
                     }
-                    for (var _i = 0, _a = Object.keys(buckets); _i < _a.length; _i++) {
+                    for (var _i = 0, _a = Object.keys(memberships); _i < _a.length; _i++) {
                         var thread = _a[_i];
+                        var membership = memberships[thread];
+                        var cleanMemberships = [];
+                        for (var _b = 0, _c = Object.keys(membership); _b < _c.length; _b++) {
+                            var messageId = _c[_b];
+                            var rec = membership[messageId];
+                            cleanMemberships.push(rec);
+                        }
+                        if (cleanMemberships.length > 0) {
+                            cleanMemberships.sort();
+                            self.pebl.storage.saveGroupMembership(userProfile, cleanMemberships);
+                            self.pebl.emitEvent(thread, cleanMemberships);
+                        }
+                    }
+                    for (var _d = 0, _e = Object.keys(buckets); _d < _e.length; _d++) {
+                        var thread = _e[_d];
                         var bucket = buckets[thread];
                         var cleanMessages = [];
-                        for (var _b = 0, _c = Object.keys(bucket); _b < _c.length; _b++) {
-                            var messageId = _c[_b];
+                        for (var _f = 0, _g = Object.keys(bucket); _f < _g.length; _f++) {
+                            var messageId = _g[_f];
                             var rec = bucket[messageId];
                             if (rec instanceof Message)
                                 cleanMessages.push(rec);
@@ -1524,7 +1737,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                     }
                     self.pebl.storage.saveUserProfile(userProfile);
                     if (self.running)
-                        self.threadPoll = setTimeout(self.threadPollingCallback.bind(self), 2000);
+                        self.threadPoll = setTimeout(self.threadPollingCallback.bind(self), THREAD_POLL_INTERVAL);
                 }
             });
         });
@@ -1538,12 +1751,6 @@ var syncing_LLSyncAction = /** @class */ (function () {
         };
         var self = this;
         var pipeline = [
-            {
-                "$sort": {
-                    "stored": -1,
-                    "_id": 1
-                }
-            },
             {
                 "$match": {
                     "$or": [
@@ -1559,14 +1766,20 @@ var syncing_LLSyncAction = /** @class */ (function () {
                 }
             },
             {
-                "$limit": 1500
-            },
-            {
                 "$project": {
                     "statement": 1,
                     "_id": 0,
                     "voided": 1
                 }
+            },
+            {
+                "$sort": {
+                    "stored": -1,
+                    "_id": 1
+                }
+            },
+            {
+                "$limit": 1500
             }
         ];
         this.pebl.user.getUser(function (userProfile) {
@@ -1666,7 +1879,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                     }
                     self.pebl.storage.saveUserProfile(userProfile);
                     if (self.running)
-                        self.threadPoll = setTimeout(self.bookPollingCallback.bind(self), 5000);
+                        self.bookPoll = setTimeout(self.bookPollingCallback.bind(self), BOOK_POLL_INTERVAL);
                 });
             }
         });
@@ -1676,6 +1889,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
         this.clearTimeouts();
         this.bookPollingCallback();
         this.threadPollingCallback();
+        this.registerPresence();
     };
     LLSyncAction.prototype.push = function (outgoing, callback) {
         var xhr = new XMLHttpRequest();
@@ -1696,6 +1910,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
     };
     LLSyncAction.prototype.terminate = function () {
         this.running = false;
+        this.unregisterPresence();
         this.clearTimeouts();
     };
     return LLSyncAction;
@@ -1738,6 +1953,12 @@ var network_Network = /** @class */ (function () {
             if (userProfile)
                 self.pebl.storage.saveQueuedReference(userProfile, ref);
         });
+    };
+    Network.prototype.retrievePresence = function () {
+        for (var _i = 0, _a = this.syncingProcess; _i < _a.length; _i++) {
+            var sync = _a[_i];
+            sync.retrievePresence();
+        }
     };
     Network.prototype.pullAsset = function () {
         var self = this;
@@ -1843,11 +2064,13 @@ var EventSet = /** @class */ (function () {
         this.incomingNotifications = "incomingNotifications";
         this.incomingAssets = "incomingAssets";
         this.incomingEvents = "incomingEvents";
+        this.incomingPresence = "incomingPresence";
         this.newBook = "newBook";
         this.newMessage = "newMessage";
         this.newActivity = "newActivity";
         this.newAnnotation = "newAnnotation";
         this.newReference = "newReference";
+        this.newMembership = "newMembership";
         this.newSharedAnnotation = "newSharedAnnotation";
         this.removedAnnotation = "removedAnnotation";
         this.removedSharedAnnotation = "removedSharedAnnotation";
@@ -1871,6 +2094,7 @@ var EventSet = /** @class */ (function () {
         this.eventCompleted = "eventCompleted";
         this.eventCompatibilityTested = "eventCompatibilityTested";
         this.eventChecklisted = "eventChecklisted";
+        this.eventHelped = "eventHelped";
     }
     return EventSet;
 }());
@@ -1989,6 +2213,16 @@ var Utils = /** @class */ (function () {
                     if (book)
                         self.pebl.storage.removeToc(userProfile, book, section, id);
                 });
+        });
+    };
+    Utils.prototype.getGroupMemberships = function (callback) {
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getGroupMembership(userProfile, callback);
+            }
+            else
+                callback([]);
         });
     };
     return Utils;
@@ -2276,7 +2510,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.pebl.storage.saveCurrentBook(book);
             }
             else {
-                self.pebl.emitEvent(self.pebl.events.eventJumpPage, null);
+                self.pebl.emitEvent(self.pebl.events.eventJumpPage, {});
             }
         });
     };
@@ -2350,6 +2584,29 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.pebl.storage.saveMessages(userProfile, message);
                         self.pebl.storage.saveOutgoing(userProfile, message);
                         self.pebl.emitEvent(message.thread, [message]);
+                    });
+                });
+            }
+        });
+    };
+    PEBLEventHandlers.prototype.newMembership = function (event) {
+        var payload = event.detail;
+        var xapi = {};
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, eventHandlers_PEBL_THREAD_USER_PREFIX + payload.thread, payload.groupId, payload.groupDescription);
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#joined", "joined");
+                        if (book || activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
+                        var m = new Membership(xapi);
+                        self.pebl.storage.saveOutgoing(userProfile, m);
+                        self.pebl.storage.saveEvent(userProfile, m);
                     });
                 });
             }
@@ -2592,22 +2849,27 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             }
         });
     };
-    PEBLEventHandlers.prototype.eventJumpedPage = function (event) {
+    PEBLEventHandlers.prototype.eventJumpPage = function (event) {
         var payload = event.detail;
         var xapi = {};
         var self = this;
-        this.pebl.user.getUser(function (userProfile) {
-            if (userProfile) {
-                self.xapiGen.addId(xapi);
-                self.xapiGen.addTimestamp(xapi);
-                self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, PEBL_PREFIX + payload.activity, payload.name, payload.description);
-                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#paged-jump", "paged-jump");
-                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + payload.activity);
-                var s = new Navigation(xapi);
-                self.pebl.storage.saveOutgoing(userProfile, s);
-                self.pebl.storage.saveEvent(userProfile, s);
-            }
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentActivity(function (activity) {
+                self.pebl.user.getUser(function (userProfile) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description);
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#paged-jump", "paged-jump");
+                        if (activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        var s = new Navigation(xapi);
+                        self.pebl.storage.saveOutgoing(userProfile, s);
+                        self.pebl.storage.saveEvent(userProfile, s);
+                    }
+                });
+            });
         });
     };
     // -------------------------------
@@ -2814,6 +3076,29 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
     };
     PEBLEventHandlers.prototype.eventChecklisted = function (event) {
     };
+    PEBLEventHandlers.prototype.eventHelped = function (event) {
+        var payload = event.detail;
+        var xapi = {};
+        var self = this;
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentActivity(function (activity) {
+                self.pebl.user.getUser(function (userProfile) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description);
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#helped", "helped");
+                        if (activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        var s = new Navigation(xapi);
+                        self.pebl.storage.saveOutgoing(userProfile, s);
+                        self.pebl.storage.saveEvent(userProfile, s);
+                    }
+                });
+            });
+        });
+    };
     // -------------------------------
     PEBLEventHandlers.prototype.eventLogin = function (event) {
         var userProfile = event.detail;
@@ -3013,6 +3298,9 @@ var pebl_PEBL = /** @class */ (function () {
             self.utils.getSharedAnnotations(function (annotations) {
                 callback(annotations);
             });
+        }
+        else if (eventName == self.events.incomingPresence) {
+            self.network.retrievePresence();
         }
     };
     //fix once for return of getMessages
