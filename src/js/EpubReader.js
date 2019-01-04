@@ -1801,11 +1801,15 @@ define([
 
                window.addEventListener('message', function(event) {
                 console.log(event);
+                  //Change this url
                   if (event.origin === 'http://localhost:8081') {
                     var data = JSON.parse(event.data);
-                    if (data.message === 'programID') {
-                      window.programID = data.programID;
-                      console.log(data.programID);
+                    if (data.message === 'extensionDashboardSync') {
+                      window.extensionDashboard = {};
+                      window.extensionDashboard.programID = data.programID;
+                      window.extensionDashboard.userProfile = data.userProfile;
+                      PeBL.emitEvent(PeBL.events.eventLoggedIn, data.userProfile);
+                      window.Lightbox.close();
                       console.log('SUCCESS');
                     }
                   }
