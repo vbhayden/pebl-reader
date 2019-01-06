@@ -1802,14 +1802,17 @@ define([
                window.addEventListener('message', function(event) {
                 console.log(event);
                   //Change this url
-                  if (event.origin === 'http://localhost:8081') {
+                  if (event.origin === 'https://extensiondashboard.peblproject.com') {
                     var data = JSON.parse(event.data);
                     if (data.message === 'extensionDashboardSync') {
                       window.extensionDashboard = {};
                       window.extensionDashboard.programID = data.programID;
                       window.extensionDashboard.userProfile = data.userProfile;
-                      PeBL.emitEvent(PeBL.events.eventLoggedIn, data.userProfile);
-                      window.Lightbox.close();
+                      if (data.userProfile) {
+                        PeBL.emitEvent(PeBL.events.eventLoggedIn, data.userProfile);
+                        window.Lightbox.close();
+                      }
+                      
                       console.log('SUCCESS');
                     }
                   }
