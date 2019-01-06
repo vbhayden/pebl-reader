@@ -99,7 +99,7 @@ window.Lightbox = {
     initDefaultLRSSettings : function(reset) {
     	var lrsURL = "https://lrs.peblproject.org/";
     	var lrsPassword = null;
-    	var lrsToken = "ZWVlMWNlMWYxNWE5NDg0MGE1ZmQxYzQ5N2Q3YjQyNWM0MWJlYmYzZTo5ODdhMTVmZTdhYTc1MTY0ODg2MmNlN2FjM2Y0MDVkMWY2MjAzNmIx";
+    	var lrsToken = "MTFkZWU2MDg1NTMyZGM4YzE4ZTQyMDFiMGY2YmE4NjE0NTBhMmI3NzoyMGFkNzM3NWE5YjcwYWY1OWJiYzM3ZWZhNjJlYTNlOGNlM2MyMGUw";
 	var lrsUsername = null;
     	var currentSettings = window.Lightbox.getLRSSettings();
 
@@ -202,7 +202,7 @@ window.Lightbox = {
 			       endpoints : [
 				   {
     				       url: "https://lrs.peblproject.com/",
-    				       token: "ZWVlMWNlMWYxNWE5NDg0MGE1ZmQxYzQ5N2Q3YjQyNWM0MWJlYmYzZTo5ODdhMTVmZTdhYTc1MTY0ODg2MmNlN2FjM2Y0MDVkMWY2MjAzNmIx"
+    				       token: "MTFkZWU2MDg1NTMyZGM4YzE4ZTQyMDFiMGY2YmE4NjE0NTBhMmI3NzoyMGFkNzM3NWE5YjcwYWY1OWJiYzM3ZWZhNjJlYTNlOGNlM2MyMGUw"
 				   }
 			       ],
                                registryEndpoint : {
