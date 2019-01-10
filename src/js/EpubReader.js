@@ -1800,18 +1800,41 @@ define([
                });
 
                window.addEventListener('message', function(event) {
+                
+
                 console.log(event);
                 var data = JSON.parse(event.data);
                 if (data.message === 'extensionDashboardSync') {
-                  window.extensionDashboard = {};
-                  window.extensionDashboard.programID = data.programID;
-                  window.extensionDashboard.userProfile = data.userProfile;
-                  if (data.userProfile) {
-                    PeBL.emitEvent(PeBL.events.eventLoggedIn, data.userProfile);
-                    window.Lightbox.close();
+                  var handleSync = function() {
+                    window.extensionDashboard = {};
+                    window.extensionDashboard.programID = data.programID;
+                    window.extensionDashboard.userProfile = data.userProfile;
+                    if (data.userProfile) {
+                      PeBL.emitEvent(PeBL.events.eventLoggedIn, data.userProfile);
+                      window.Lightbox.close();
+                    }
+                    
+                    console.log('SUCCESS');
                   }
-                  
-                  console.log('SUCCESS');
+
+                  window.PeBL.user.isLoggedIn(function(isLoggedIn) {
+                    if (isLoggedIn) {
+                      window.PeBL.user.getUser(function(userProfile) {
+                        if (userProfile.identity !== data.userProfile.identity || (window.extensionDashboard && window.extensionDashboard.programID && (window.extensionDashboard.programID !== data.programID))) {
+                          setTimeout(function() {
+                            window.location.href = window.location.href;
+                          }, 10);
+                          handleSync();
+                        } else {
+                          handleSync();
+                        }
+                      });
+                    } else {
+                      handleSync();
+                    }
+                  });
+                } else if (data.message === 'goToIdref') {
+                  readium.reader.openSpineItemPage(data.idref, 0);
                 }
                }, false);
 
