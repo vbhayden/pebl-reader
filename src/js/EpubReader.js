@@ -1917,7 +1917,7 @@ define([
                $appContainer.append(AddBookmarkDialog({ strings: Strings }));
                $appContainer.append(AddNoteDialog({ strings: Strings }));
                installReaderEventHandlers();
-               document.title = "Readium";
+               document.title = "PeBL Reader";
                $('#zoom-fit-width a').on('click', setFitWidth);
                $('#zoom-fit-screen a').on('click', setFitScreen);
                $('#zoom-custom a').on('click', enableCustom);
@@ -2260,7 +2260,7 @@ define([
 
                    Versioning.getVersioningInfo(function(version) {
 
-                       $('#app-container').append(AboutDialog({ imagePathPrefix: moduleConfig.imagePathPrefix, strings: Strings, dateTimeString: version.dateTimeString, viewerJs: version.readiumJsViewer, readiumJs: version.readiumJs, sharedJs: version.readiumSharedJs, cfiJs: version.readiumCfiJs }));
+                       //$('#app-container').append(AboutDialog({ imagePathPrefix: moduleConfig.imagePathPrefix, strings: Strings, dateTimeString: version.dateTimeString, viewerJs: version.readiumJsViewer, readiumJs: version.readiumJs, sharedJs: version.readiumSharedJs, cfiJs: version.readiumCfiJs }));
 
                        window.navigator.epubReadingSystem.name = "readium-js-viewer";
                        window.navigator.epubReadingSystem.version = version.readiumJsViewer.chromeVersion;
