@@ -339,10 +339,18 @@ define([
 
                //Style the slider bar to show the section containing pages in this chapter
                var styleString = 'linear-gradient(to right, rgba(236, 83, 83,0) ' + percent1 + '%, rgba(236, 83, 83,1) ' + percent1 + '%, rgba(236, 83, 83,1) ' + percent2 + '%, rgba(236, 83, 83,0) ' + percent2 + '%)';
-               addRule('input[type=range]::-webkit-slider-runnable-track', {
-                   background: styleString,
-                   height: '5px'
-               });
+
+               if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+                   addRule('input[type=range]::-moz-range-track', {
+                       background: styleString,
+                       height: '5px'
+                   });
+               } else {
+                   addRule('input[type=range]::-webkit-slider-runnable-track', {
+                     background: styleString,
+                     height: '5px'
+                   });
+               }
 
 
                var sliderContainer = document.createElement('div');
