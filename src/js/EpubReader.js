@@ -1817,6 +1817,7 @@ define([
                         window.extensionDashboard = {};
                         window.extensionDashboard.programID = data.programID;
                         window.extensionDashboard.userProfile = data.userProfile;
+                        window.extensionDashboard.programTitle = data.programTitle;
                         if (data.userProfile) {
                             PeBL.emitEvent(PeBL.events.eventLoggedIn, data.userProfile);
                             window.Lightbox.close();
