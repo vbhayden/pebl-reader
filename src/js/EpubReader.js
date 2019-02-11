@@ -174,10 +174,12 @@ define([
 
             var elem = iframeDocument.getElementById('CompleteTrigger');
 
-            var rect = elem.getBoundingClientRect();
+            if (elem) {
+                var rect = elem.getBoundingClientRect();
 
-            if (rect.top >= 0 && rect.left >= 0 && rect.bottom <= (iframeWindow.innerHeight || iframeDocument.documentElement.clientHeight) && rect.right <= (iframeWindow.innerWidth || iframeDocument.documentElement.clientWidth)) {
-                PeBL.emitEvent(PeBL.events.eventCompleted, {});
+                if (rect.top >= 0 && rect.left >= 0 && rect.bottom <= (iframeWindow.innerHeight || iframeDocument.documentElement.clientHeight) && rect.right <= (iframeWindow.innerWidth || iframeDocument.documentElement.clientWidth)) {
+                    PeBL.emitEvent(PeBL.events.eventCompleted, {});
+                }
             }
         }
 
