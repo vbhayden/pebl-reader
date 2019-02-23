@@ -1765,9 +1765,9 @@ define([
                 return false;
             });
 
-            $('.icon-help').on('click', function() {
-                PeBL.emitEvent(PeBL.events.eventHelped, {});
-            });
+            // $('.icon-help').on('click', function() {
+            //     PeBL.emitEvent(PeBL.events.eventHelped, {});
+            // });
 
             $('.zoom-wrapper input').on('click', function() {
                 if (!this.disabled) {
