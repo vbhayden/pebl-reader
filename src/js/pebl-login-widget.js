@@ -168,7 +168,10 @@ window.Lightbox = {
 	lightBoxContent.appendChild(selects[3]);
 	lightBoxContent.appendChild(selects[4]);
 
-	var teamSelect = $('<br/><p>Team: <input type="text" id="loginTeamSelect"></input></p>');
+	var classSelect = $('<br/><br/><p>Class ID: <input type="text" id="loginClassSelect"></input></p>');
+	$(lightBoxContent).append(classSelect);
+
+	var teamSelect = $('<br/><br/><p>Team: <input type="text" id="loginTeamSelect"></input></p>');
 	$(lightBoxContent).append(teamSelect);
 
 	var login = $('<br/><br/><input type="button" value="Login" id="loginUserNameSubmit" />');
@@ -206,9 +209,18 @@ window.Lightbox = {
 	    	if ($('#loginTeamSelect').val().trim().length > 0)
 	    		currentTeam = $('#loginTeamSelect').val();
 	    }
+	    var currentClass = null;
+	    if ($('#loginClassSelect').length > 0) {
+	    	if ($('#loginClassSelect').val().trim().length > 0) {
+	    		currentClass = $('#loginClassSelect').val();
+	    	}
+	    }
+	    var identity = $("#loginUserNameSelector").val();
+	    if (currentClass)
+	    	identity += ('-' + currentClass);
 	    PeBL.emitEvent(PeBL.events.eventLoggedIn,
 			   {
-			       identity : $("#loginUserNameSelector").val(),
+			       identity : identity,
 			       endpoints : [
 				   {
     				       url: "https://lrs.peblproject.com/",
@@ -218,7 +230,8 @@ window.Lightbox = {
                                registryEndpoint : {
     				   url: "https://peblproject.com/registry/api/downloadContent?guid="
 			       },
-			       currentTeam: currentTeam
+			       currentTeam: currentTeam,
+			       currentClass: currentClass
 			   });
 	    Lightbox.close();
 	});
