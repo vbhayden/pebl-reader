@@ -170,7 +170,7 @@ define([
         var checkCompletion = function() {
             var iframe = $("#epub-reader-frame iframe")[0];
             var iframeWindow = iframe.contentWindow || iframe.contentDocument;
-            var iframeDocument = iframeWindow.document
+            var iframeDocument = iframeWindow.document;
 
             var elem = iframeDocument.getElementById('CompleteTrigger');
 
@@ -1566,7 +1566,26 @@ define([
             }
         };
 
+        // Focus a hidden input in the content and blur it immediately to clear the iOS keyboard.
+        var clearIosKeyboard = function() {
+            var iframe = $("#epub-reader-frame iframe")[0];
+            var iframeWindow = iframe.contentWindow || iframe.contentDocument;
+            var iframeDocument = iframeWindow.document;
+
+            if (iframeDocument) {
+                var activeElement = iframeDocument.activeElement;
+                var input = iframeDocument.getElementById('iosKeyboardClearInput');
+                if (input && activeElement && ($(activeElement).is('input') || $(activeElement).is('textarea'))) {
+                    $(input).show();
+                    input.focus();
+                    input.blur();
+                    $(input).hide();
+                }
+            }
+        }
+
         var nextPage = function() {
+            clearIosKeyboard();
 
             readium.reader.openPageRight();
 
@@ -1579,6 +1598,7 @@ define([
         };
 
         var prevPage = function() {
+            clearIosKeyboard();
 
             readium.reader.openPageLeft();
 
