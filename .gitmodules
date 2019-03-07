@@ -1,3 +1,3 @@
 [submodule "readium-js"]
 	path = readium-js
-	url = git@git-p.i.eduworks.us:pebl/readium-js.git
+	url = git@git-p.i.eduworks.us:pebl/WebReaderReadiumJs.git
