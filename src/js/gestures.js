@@ -15,75 +15,95 @@ define(['readium_shared_js/globals', 'jquery','jquery_hammer','hammerjs'], funct
 
     var gesturesHandler = function(reader, viewport){
         
-this.initialize= function(){};
-return; // TODO upgrade to Hammer API v2
+        // this.initialize= function(){};
+        // return; // TODO upgrade to Hammer API v2
+        
+        // var onSwipeLeft = function(){
+        //     reader.openPageRight();
+        // };
 
-        var onSwipeLeft = function(){
-            reader.openPageRight();
-        };
+        // var onSwipeRight = function(){
+        //     reader.openPageLeft();
+        // };
 
-        var onSwipeRight = function(){
-            reader.openPageLeft();
-        };
+        // var isGestureHandled = function() {
+        //     var viewType = reader.getCurrentViewType();
 
-        var isGestureHandled = function() {
-            var viewType = reader.getCurrentViewType();
-
-            return viewType === ReadiumSDK.Views.ReaderView.VIEW_TYPE_FIXED || viewType == ReadiumSDK.Views.ReaderView.VIEW_TYPE_COLUMNIZED;
-        };
-
+        //     return viewType === ReadiumSDK.Views.ReaderView.VIEW_TYPE_FIXED || viewType == ReadiumSDK.Views.ReaderView.VIEW_TYPE_COLUMNIZED;
+        // };
+        
+        // debugger;
+        
         this.initialize= function(){
-
+            // debugger;
+            
             reader.on(ReadiumSDK.Events.CONTENT_DOCUMENT_LOADED, function(iframe, spineItem) {
                 Globals.logEvent("CONTENT_DOCUMENT_LOADED", "ON", "gestures.js [ " + spineItem.href + " ]");
+
+                // debugger;
+
+                delete Hammer.defaults.cssProps.userSelect;
+                
+                var hammer = new Hammer(iframe[0].contentDocument.body);
                 
                 //set hammer's document root
-                Hammer.DOCUMENT = iframe.contents();
+                // Hammer.DOCUMENT = iframe.contents();
                 //hammer's internal touch events need to be redefined? (doesn't work without)
-                Hammer.event.onTouch(Hammer.DOCUMENT, Hammer.EVENT_MOVE, Hammer.detection.detect);
-                Hammer.event.onTouch(Hammer.DOCUMENT, Hammer.EVENT_END, Hammer.detection.detect);
+                // Hammer.event.onTouch(Hammer.DOCUMENT, Hammer.EVENT_MOVE, Hammer.detection.detect);
+                // Hammer.event.onTouch(Hammer.DOCUMENT, Hammer.EVENT_END, Hammer.detection.detect);
 
                 //set up the hammer gesture events
                 //swiping handlers
-                var swipingOptions = {prevent_mouseevents: true};
-                Hammer(Hammer.DOCUMENT,swipingOptions).on("swipeleft", function() {
-                    onSwipeLeft();
+                // var swipingOptions = {prevent_mouseevents: true};
+                hammer.on("swipeleft", function (event) {
+                    if (event.pointerType === 'touch') {
+                        reader.openPageLeft();
+                    }
                 });
-                Hammer(Hammer.DOCUMENT,swipingOptions).on("swiperight", function() {
-                    onSwipeRight();
+                hammer.on("swiperight", function (event) {
+                    if (event.pointerType === 'touch') {
+                        reader.openPageRight();
+                    }
                 });
+                
+                // Hammer(Hammer.DOCUMENT,swipingOptions).on("swipeleft", function() {
+                //     onSwipeLeft();                    
+                // });
+                // Hammer(Hammer.DOCUMENT,swipingOptions).on("swiperight", function() {
+                //     onSwipeRight();
+                // });
 
                 //remove stupid ipad safari elastic scrolling
                 //TODO: test this with reader ScrollView and FixedView
-                $(Hammer.DOCUMENT).on(
-                    'touchmove',
-                    function(e) {
-                        //hack: check if we are not dealing with a scrollview
-                        if(isGestureHandled()){
-                            e.preventDefault();
-                        }
-                    }
-                );
+                // $(Hammer.DOCUMENT).on(
+                //     'touchmove',
+                //     function(e) {
+                //         //hack: check if we are not dealing with a scrollview
+                //         if(isGestureHandled()){
+                //             e.preventDefault();
+                //         }
+                //     }
+                // );
             });
 
             //remove stupid ipad safari elastic scrolling (improves UX for gestures)
             //TODO: test this with reader ScrollView and FixedView
-            $(viewport).on(
-                'touchmove',
-                function(e) {
-                    if(isGestureHandled()) {
-                        e.preventDefault();
-                    }
-                }
-            );
+            // $(viewport).on(
+            //     'touchmove',
+            //     function(e) {
+            //         if(isGestureHandled()) {
+            //             e.preventDefault();
+            //         }
+            //     }
+            // );
 
-            //handlers on viewport
-            $(viewport).hammer().on("swipeleft", function() {
-                onSwipeLeft();
-            });
-            $(viewport).hammer().on("swiperight", function() {
-                onSwipeRight();
-            });
+            // //handlers on viewport
+            // $(viewport).hammer().on("swipeleft", function() {
+            //     onSwipeLeft();
+            // });
+            // $(viewport).hammer().on("swiperight", function() {
+            //     onSwipeRight();
+            // });
         };
 
     };
