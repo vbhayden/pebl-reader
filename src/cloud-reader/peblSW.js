@@ -76,18 +76,18 @@ var FILES_TO_CACHE = [
 ];
 
 self.addEventListener('install',
-		      function (event) {
-			  event.waitUntil(
-			      caches.open(CACHE_NAME).then(function (openCache) {
-				  return openCache.addAll(FILES_TO_CACHE);
-			      })
-			  );
-		      });
+                      function (event) {
+                          event.waitUntil(
+                              caches.open(CACHE_NAME).then(function (openCache) {
+                                  return openCache.addAll(FILES_TO_CACHE);
+                              })
+                          );
+                      });
 
 self.addEventListener('activate',
-		      function (e) {
-			  
-		      });
+                      function (e) {
+                          
+                      });
 
 self.addEventListener('fetch', event => {
     if (event.request.method != 'GET') return;
@@ -97,15 +97,17 @@ self.addEventListener('fetch', event => {
     var url = new URL(request.url);
     
     if (url.origin == location.origin) {
-	event.respondWith(
-	    fetch(event.request).then(function (response) {
-		return caches.open(CACHE_NAME).then(function (openCache) {
-		    openCache.put(request, response.clone());
-		    return response;
-		});		
-	    }).catch(function () {
-		return caches.match(request);
-	    }));
+        event.respondWith(
+            fetch(event.request).then(function (response) {
+                return caches.open(CACHE_NAME).then(function (openCache) {                    
+                    if (response.status != 206) {
+                        openCache.put(request, response.clone());
+                    }
+                    return response;
+                });             
+            }).catch(function () {
+                return caches.match(request);
+            }));
     } else
-	event.respondWith(fetch(event.request));
+        event.respondWith(fetch(event.request));
 });
