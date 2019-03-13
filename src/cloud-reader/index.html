@@ -65,7 +65,8 @@
                      }
                  }
              });
-             cache.update();
+             if (cache.status == 1 || cache.status > 3)
+                cache.update();
          }
          
          var path = (window.location && window.location.pathname) ? window.location.pathname : ''; 
