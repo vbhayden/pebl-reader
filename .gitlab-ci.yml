@@ -51,8 +51,8 @@ buildDev:
   only:
     - Dev
   before_script:
-    - git submodule sync
-    - git submodule update --init readium-js
+    - git submodule sync --recursive
+    - git submodule update --init --recursive readium-js
   script:
   # - LAST_TAG=$(git describe --tags)
   # - sed -i "s/0\.0\.0/$LAST_TAG/g" src/mixins/config.js
