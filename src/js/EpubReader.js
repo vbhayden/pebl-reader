@@ -1745,10 +1745,9 @@ define([
             Keyboard.on(Keyboard.ToolbarHide, 'reader', hideTB);
 
             var showTB = function() {
-                // FIXME AboutDialog Removed
-                // $("#aboutButt1")[0].focus();
-                // unhideUI();
-                // setTimeout(function() { $("#aboutButt1")[0].focus(); }, 50);
+                $("#aboutButt1")[0].focus();
+                unhideUI();
+                setTimeout(function() { $("#aboutButt1")[0].focus(); }, 50);
             };
             $("#buttShowToolBar").on("click", showTB);
             Keyboard.on(Keyboard.ToolbarShow, 'reader', showTB);
@@ -2303,7 +2302,7 @@ define([
 
                 Versioning.getVersioningInfo(function(version) {
 
-                    //$('#app-container').append(AboutDialog({ imagePathPrefix: moduleConfig.imagePathPrefix, strings: Strings, dateTimeString: version.dateTimeString, viewerJs: version.readiumJsViewer, readiumJs: version.readiumJs, sharedJs: version.readiumSharedJs, cfiJs: version.readiumCfiJs }));
+                    $('#app-container').append(AboutDialog({ imagePathPrefix: moduleConfig.imagePathPrefix, strings: Strings, dateTimeString: version.dateTimeString, viewerJs: version.readiumJsViewer, readiumJs: version.readiumJs, sharedJs: version.readiumSharedJs, cfiJs: version.readiumCfiJs }));
 
                     window.navigator.epubReadingSystem.name = "readium-js-viewer";
                     window.navigator.epubReadingSystem.version = version.readiumJsViewer.chromeVersion;
