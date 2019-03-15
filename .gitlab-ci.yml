@@ -54,6 +54,7 @@ buildDev:
   # - LAST_TAG=$(git describe --tags)
   # - sed -i "s/0\.0\.0/$LAST_TAG/g" src/mixins/config.js
 
+  - git fetch origin
   - git submodule update --init readium-js
   - git submodule update --merge --remote --recursive
   
