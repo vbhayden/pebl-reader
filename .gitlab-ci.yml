@@ -19,13 +19,17 @@ buildProd:
 
   only:
     - master
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --init --recursive readium-js    
   script:
   # - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
   # - sed -i "s/0\.0\.0/$LAST_TAG/g" src/mixins/config.js
   # Yaml doesn't like ':<space>' wrap command in quotes
   # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_LRS_AUTH\'/g\" src/mixins/config.js"
   # - "sed -i \"s/production: false/production: true/g\" src/mixins/config.js"
-  - npm install
+
+  - npm run prepare:all
   - npm run dist
   artifacts:
     paths:
@@ -36,11 +40,14 @@ buildQA:
 
   only:
     - QA
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --init --recursive readium-js    
   script:  
   # - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
   # - sed -i "s/0\.0\.0/$LAST_TAG/g" src/mixins/config.js
   
-  - npm install
+  - npm run prepare:all
   - npm run dist
   artifacts:
     paths:
@@ -57,13 +64,7 @@ buildDev:
   # - LAST_TAG=$(git describe --tags)
   # - sed -i "s/0\.0\.0/$LAST_TAG/g" src/mixins/config.js
 
-  # - rm -rf readium-js
-  # - git fetch origin
-  # - git submodule sync
-  # - git submodule update --init readium-js
   - npm run prepare:all
-  
-  - npm install
   - npm run dist
   artifacts:
     paths:
@@ -105,10 +106,10 @@ prodDeploy:
    - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
 
    ## Build commands
-   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/htmlReaderOrgDev/epub_content /var/www/prodBookshelf"      
-   - ssh -p22 $USERNAME@$SERVER_IP "rm -rf /var/www/htmlReaderOrgProd/*"
-   - scp -P22 -r dist/cloud-reader/* $USERNAME@$SERVER_IP:/var/www/htmlReaderOrgProd/
-   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/prodBookshelf /var/www/htmlReaderOrgDev/epub_content"
+   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/htmlOrgReaderProd/epub_content /var/www/prodBookshelf"      
+   - ssh -p22 $USERNAME@$SERVER_IP "rm -rf /var/www/htmlOrgReaderProd/*"
+   - scp -P22 -r dist/cloud-reader/* $USERNAME@$SERVER_IP:/var/www/htmlOrgReaderProd/
+   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/prodBookshelf /var/www/htmlOrgReaderProd/epub_content"
    
 ### ----------------------
 
@@ -151,10 +152,10 @@ qaDeploy:
    - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
 
    ## Build commands
-   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/htmlReaderOrgDev/epub_content /var/www/qaBookshelf"   
-   - ssh -p22 $USERNAME@$SERVER_IP "rm -rf /var/www/htmlReaderOrgQa/*"
-   - scp -P22 -r dist/cloud-reader/* $USERNAME@$SERVER_IP:/var/www/htmlReaderOrgQa/
-   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/qaBookshelf /var/www/htmlReaderOrgDev/epub_content"
+   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/htmlOrgReaderQa/epub_content /var/www/qaBookshelf"   
+   - ssh -p22 $USERNAME@$SERVER_IP "rm -rf /var/www/htmlOrgReaderQa/*"
+   - scp -P22 -r dist/cloud-reader/* $USERNAME@$SERVER_IP:/var/www/htmlOrgReaderQa/
+   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/qaBookshelf /var/www/htmlOrgReaderQa/epub_content"
 
 ### ----------------------
 
@@ -197,7 +198,7 @@ devDeploy:
    - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
 
    ## Build commands
-   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/htmlReaderOrgDev/epub_content /var/www/devBookshelf"
-   - ssh -p22 $USERNAME@$SERVER_IP "rm -rf /var/www/htmlReaderOrgDev/*"
-   - scp -P22 -r dist/cloud-reader/* $USERNAME@$SERVER_IP:/var/www/htmlReaderOrgDev/
-   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/devBookshelf /var/www/htmlReaderOrgDev/epub_content"
+   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/htmlOrgReaderDev/epub_content /var/www/devBookshelf"
+   - ssh -p22 $USERNAME@$SERVER_IP "rm -rf /var/www/htmlOrgReaderDev/*"
+   - scp -P22 -r dist/cloud-reader/* $USERNAME@$SERVER_IP:/var/www/htmlOrgReaderDev/
+   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/devBookshelf /var/www/htmlOrgReaderDev/epub_content"
