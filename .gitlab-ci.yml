@@ -106,10 +106,10 @@ prodDeploy:
    - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
 
    ## Build commands
-   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/htmlOrgReaderProd/epub_content /var/www/prodBookshelf"      
+   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/htmlOrgReaderProd/epub_content /var/www/bookTempDeployment/prodBookshelf"      
    - ssh -p22 $USERNAME@$SERVER_IP "rm -rf /var/www/htmlOrgReaderProd/*"
    - scp -P22 -r dist/cloud-reader/* $USERNAME@$SERVER_IP:/var/www/htmlOrgReaderProd/
-   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/prodBookshelf /var/www/htmlOrgReaderProd/epub_content"
+   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/bookTempDeployment/prodBookshelf /var/www/htmlOrgReaderProd/epub_content"
    
 ### ----------------------
 
@@ -152,10 +152,10 @@ qaDeploy:
    - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
 
    ## Build commands
-   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/htmlOrgReaderQa/epub_content /var/www/qaBookshelf"   
+   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/htmlOrgReaderQa/epub_content /var/www/bookTempDeployment/qaBookshelf"   
    - ssh -p22 $USERNAME@$SERVER_IP "rm -rf /var/www/htmlOrgReaderQa/*"
    - scp -P22 -r dist/cloud-reader/* $USERNAME@$SERVER_IP:/var/www/htmlOrgReaderQa/
-   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/qaBookshelf /var/www/htmlOrgReaderQa/epub_content"
+   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/bookTempDeployment/qaBookshelf /var/www/htmlOrgReaderQa/epub_content"
 
 ### ----------------------
 
@@ -198,7 +198,7 @@ devDeploy:
    - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
 
    ## Build commands
-   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/htmlOrgReaderDev/epub_content /var/www/devBookshelf"
+   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/htmlOrgReaderDev/epub_content /var/www/bookTempDeployment/devBookshelf"
    - ssh -p22 $USERNAME@$SERVER_IP "rm -rf /var/www/htmlOrgReaderDev/*"
    - scp -P22 -r dist/cloud-reader/* $USERNAME@$SERVER_IP:/var/www/htmlOrgReaderDev/
-   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/devBookshelf /var/www/htmlOrgReaderDev/epub_content"
+   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/bookTempDeployment/devBookshelf /var/www/htmlOrgReaderDev/epub_content"
