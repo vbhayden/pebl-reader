@@ -61,7 +61,7 @@ buildDev:
     - git submodule sync --recursive
     - git submodule update --init --recursive readium-js
   script:
-  - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
+  - LAST_TAG=$(git describe --tags)
   - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
 
   - npm run prepare:all
