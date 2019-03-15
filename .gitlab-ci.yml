@@ -50,14 +50,17 @@ buildDev:
   stage: build
   only:
     - Dev
+  before_script:
+    - git submodule sync
+    - git submodule update --init readium-js
   script:
   # - LAST_TAG=$(git describe --tags)
   # - sed -i "s/0\.0\.0/$LAST_TAG/g" src/mixins/config.js
 
-  - rm -rf readium-js
-  - git fetch origin
-  - git submodule sync
-  - git submodule update --init readium-js
+  # - rm -rf readium-js
+  # - git fetch origin
+  # - git submodule sync
+  # - git submodule update --init readium-js
   - git submodule update --merge --remote --recursive
   
   - npm install
