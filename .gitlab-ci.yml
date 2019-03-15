@@ -26,7 +26,7 @@ buildProd:
   - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
   - sed -i "s/0\.31\.1/$LAST_TAG/" package.json    
   # Yaml doesn't like ':<space>' wrap command in quotes
-  # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_LRS_AUTH\'/g\" src/mixins/config.js"
+  - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_LRS_AUTH\'/g\" src/js/pebl-login-widget.js"
   # - "sed -i \"s/production: false/production: true/g\" src/mixins/config.js"
 
   - npm run prepare:all
@@ -61,7 +61,7 @@ buildDev:
     - git submodule sync --recursive
     - git submodule update --init --recursive readium-js
   script:
-  - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
+  - LAST_TAG=$(git describe --tags)
   - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
 
   - npm run prepare:all
