@@ -1566,46 +1566,52 @@ define([
             }
         };
 
-        // Focus a hidden input in the content and blur it immediately to clear the iOS keyboard.
-        var clearIosKeyboard = function() {
-            var iframe = $("#epub-reader-frame iframe")[0];
-            var iframeWindow = iframe.contentWindow || iframe.contentDocument;
-            var iframeDocument = iframeWindow.document;
+        var isInputFocused = function() {
+            const isIos = () => {
+                const userAgent = window.navigator.userAgent.toLowerCase();
+                return /iphone|ipad|ipod/.test( userAgent );
+            }
+            if (isIos()) {
+                var iframe = $("#epub-reader-frame iframe")[0];
+                var iframeWindow = iframe.contentWindow || iframe.contentDocument;
+                var iframeDocument = iframeWindow.document;
 
-            if (iframeDocument) {
-                var activeElement = iframeDocument.activeElement;
-                var input = iframeDocument.getElementById('iosKeyboardClearInput');
-                if (input && activeElement && ($(activeElement).is('input') || $(activeElement).is('textarea'))) {
-                    $(input).show();
-                    input.focus();
-                    input.blur();
-                    $(input).hide();
+                if (iframeDocument) {
+                    var activeElement = iframeDocument.activeElement;
+                    if ($(activeElement).is('input') || $(activeElement).is('textarea')) {
+                        return true;
+                    }
                 }
             }
+            return false;
         }
 
         var nextPage = function() {
-            clearIosKeyboard();
+            if (isInputFocused()) {
+                window.alert('Please close the keyboard before turning the page.')
+            } else {
+                readium.reader.openPageRight();
 
-            readium.reader.openPageRight();
-
-            PeBL.emitEvent(PeBL.events.eventNextPage, {
-                firstCfi: readium.reader.getFirstVisibleCfi(),
-                lastCfi: readium.reader.getLastVisibleCfi()
-            });
+                PeBL.emitEvent(PeBL.events.eventNextPage, {
+                    firstCfi: readium.reader.getFirstVisibleCfi(),
+                    lastCfi: readium.reader.getLastVisibleCfi()
+                });
+            }
 
             return false;
         };
 
         var prevPage = function() {
-            clearIosKeyboard();
+            if (isInputFocused()) {
+                window.alert('Please close the keyboard before turning the page.')
+            } else {
+                readium.reader.openPageLeft();
 
-            readium.reader.openPageLeft();
-
-            PeBL.emitEvent(PeBL.events.eventPrevPage, {
-                firstCfi: readium.reader.getFirstVisibleCfi(),
-                lastCfi: readium.reader.getLastVisibleCfi()
-            });
+                PeBL.emitEvent(PeBL.events.eventPrevPage, {
+                    firstCfi: readium.reader.getFirstVisibleCfi(),
+                    lastCfi: readium.reader.getLastVisibleCfi()
+                });
+            }
 
             return false;
         };
@@ -1739,10 +1745,9 @@ define([
             Keyboard.on(Keyboard.ToolbarHide, 'reader', hideTB);
 
             var showTB = function() {
-                // FIXME AboutDialog Removed
-                // $("#aboutButt1")[0].focus();
-                // unhideUI();
-                // setTimeout(function() { $("#aboutButt1")[0].focus(); }, 50);
+                $("#aboutButt1")[0].focus();
+                unhideUI();
+                setTimeout(function() { $("#aboutButt1")[0].focus(); }, 50);
             };
             $("#buttShowToolBar").on("click", showTB);
             Keyboard.on(Keyboard.ToolbarShow, 'reader', showTB);
@@ -2297,7 +2302,7 @@ define([
 
                 Versioning.getVersioningInfo(function(version) {
 
-                    //$('#app-container').append(AboutDialog({ imagePathPrefix: moduleConfig.imagePathPrefix, strings: Strings, dateTimeString: version.dateTimeString, viewerJs: version.readiumJsViewer, readiumJs: version.readiumJs, sharedJs: version.readiumSharedJs, cfiJs: version.readiumCfiJs }));
+                    $('#app-container').append(AboutDialog({ imagePathPrefix: moduleConfig.imagePathPrefix, strings: Strings, dateTimeString: version.dateTimeString, viewerJs: version.readiumJsViewer, readiumJs: version.readiumJs, sharedJs: version.readiumSharedJs, cfiJs: version.readiumCfiJs }));
 
                     window.navigator.epubReadingSystem.name = "readium-js-viewer";
                     window.navigator.epubReadingSystem.version = version.readiumJsViewer.chromeVersion;
