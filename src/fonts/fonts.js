@@ -1,44 +1,44 @@
 var _fontFaces_BUILT_IN =
 [
-    {
-        displayName: "Open Dyslexic",
-        fontFamily: "OpenDyslexic",
-        url: "OpenDyslexic/OpenDyslexic.css"
-    },
-    {
-        displayName: "Open Sans",
-        fontFamily: "Open Sans",
-        url: "Open-Sans/Open-Sans.css"
-    },
-    {
-        displayName: "Noto Serif",
-        fontFamily: "Noto Serif",
-        url: "Noto-Serif/Noto-Serif.css"
-    }
+    // {
+    //     displayName: "Open Dyslexic",
+    //     fontFamily: "OpenDyslexic",
+    //     url: "OpenDyslexic/OpenDyslexic.css"
+    // },
+    // {
+    //     displayName: "Open Sans",
+    //     fontFamily: "Open Sans",
+    //     url: "Open-Sans/Open-Sans.css"
+    // },
+    // {
+    //     displayName: "Noto Serif",
+    //     fontFamily: "Noto Serif",
+    //     url: "Noto-Serif/Noto-Serif.css"
+    // }
 ];
 
 var _fontFaces_ONLINE =
 [
-    {
-        displayName: "Old Standard TT (serif) [online]",
-        fontFamily: "Old Standard TT",
-        url: "https://fonts.googleapis.com/css?family=Old+Standard+TT"
-    },
-    {
-        displayName: "Bitter (serif) [online]",
-        fontFamily: "Bitter",
-        url: "https://fonts.googleapis.com/css?family=Bitter"
-    },
-    {
-        displayName: "Alegreya (serif) [online]",
-        fontFamily: "Alegreya",
-        url: "https://fonts.googleapis.com/css?family=Alegreya"
-    },
-    {
-        displayName: "Roboto Mono (sans-serif) [online]",
-        fontFamily: "Roboto Mono",
-        url: "https://fonts.googleapis.com/css?family=Roboto+Mono"
-    }
+    // {
+    //     displayName: "Old Standard TT (serif) [online]",
+    //     fontFamily: "Old Standard TT",
+    //     url: "https://fonts.googleapis.com/css?family=Old+Standard+TT"
+    // },
+    // {
+    //     displayName: "Bitter (serif) [online]",
+    //     fontFamily: "Bitter",
+    //     url: "https://fonts.googleapis.com/css?family=Bitter"
+    // },
+    // {
+    //     displayName: "Alegreya (serif) [online]",
+    //     fontFamily: "Alegreya",
+    //     url: "https://fonts.googleapis.com/css?family=Alegreya"
+    // },
+    // {
+    //     displayName: "Roboto Mono (sans-serif) [online]",
+    //     fontFamily: "Roboto Mono",
+    //     url: "https://fonts.googleapis.com/css?family=Roboto+Mono"
+    // }
 ];
 
 //////////////
