@@ -46,6 +46,8 @@ PeBL.extension.hardcodeLogin = {
 };
 
 window.Lightbox = {
+    lrsCredential: 'MTFkZWU2MDg1NTMyZGM4YzE4ZTQyMDFiMGY2YmE4NjE0NTBhMmI3NzoyMGFkNzM3NWE5YjcwYWY1OWJiYzM3ZWZhNjJlYTNlOGNlM2MyMGUw',
+    
     close : function() {
 	var lightBox = document.getElementById('lightBox');
 	var dimOverlay = document.getElementById('dimOverlay');
@@ -224,7 +226,7 @@ window.Lightbox = {
 			       endpoints : [
 				   {
     				       url: "https://lrs.peblproject.com/",
-    				       token: "MTFkZWU2MDg1NTMyZGM4YzE4ZTQyMDFiMGY2YmE4NjE0NTBhMmI3NzoyMGFkNzM3NWE5YjcwYWY1OWJiYzM3ZWZhNjJlYTNlOGNlM2MyMGUw"
+    				       token: lrsCredential
 				   }
 			       ],
                                registryEndpoint : {

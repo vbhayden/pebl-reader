@@ -800,8 +800,7 @@ Helpers){
         $('#about-dialog').on('hidden.bs.modal', function () {
             Keyboard.scope('library');
 
-            // FIXME AboutDialog Removed
-            // setTimeout(function(){ $("#aboutButt1").focus(); }, 50);
+            setTimeout(function(){ $("#aboutButt1").focus(); }, 50);
         });
         $('#about-dialog').on('shown.bs.modal', function(){
             Keyboard.scope('about');
