@@ -61,7 +61,7 @@ buildDev:
   # - git fetch origin
   # - git submodule sync
   # - git submodule update --init readium-js
-  - git submodule update --merge --remote --recursive
+  - npm run prepare:all
   
   - npm install
   - npm run dist
