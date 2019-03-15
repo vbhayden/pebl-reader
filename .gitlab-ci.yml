@@ -1,0 +1,204 @@
+variables:
+   USERNAME: deployment
+   SERVER_IP: 10.1.100.225
+
+image: node:11
+
+cache:
+    paths:
+    - node_modules/
+
+stages:
+   - build
+   - deploy
+
+### BUILDS
+
+buildProd:
+  stage: build
+
+  only:
+    - master
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --init --recursive readium-js    
+  script:
+  - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
+  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json    
+  # Yaml doesn't like ':<space>' wrap command in quotes
+  # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_LRS_AUTH\'/g\" src/mixins/config.js"
+  # - "sed -i \"s/production: false/production: true/g\" src/mixins/config.js"
+
+  - npm run prepare:all
+  - npm run dist
+  artifacts:
+    paths:
+    - dist/cloud-reader
+
+buildQA:
+  stage: build 
+
+  only:
+    - QA
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --init --recursive readium-js    
+  script:  
+  - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
+  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
+  
+  - npm run prepare:all
+  - npm run dist
+  artifacts:
+    paths:
+    - dist/cloud-reader
+
+buildDev:
+  stage: build
+  only:
+    - Dev
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --init --recursive readium-js
+  script:
+  - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
+  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
+
+  - npm run prepare:all
+  - npm run dist
+  artifacts:
+    paths:
+    - dist/cloud-reader
+
+### DEPLOYMENTS
+
+prodDeploy:
+  stage: deploy
+  only:
+    - master
+  script:
+    ## Pull down apt-get install repos
+   - apt-get update -y
+   - apt-get install openssh-client -y
+
+   ##
+   ## Run ssh-agent (inside the build environment)
+   ##
+   - eval $(ssh-agent -s)
+
+   ##
+   ## Create the SSH directory and give it the right permissions
+   ##
+   - mkdir -p ~/.ssh
+   - chmod 700 ~/.ssh
+
+   ##
+   ## Assuming you created the SSH_KNOWN_HOSTS variable, uncomment the
+   ## following two lines. NOTE the $SSH_KNOWN_HOSTS variable should be added
+   ## in the gitlab interface and not here
+   ##
+   - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+   - chmod 644 ~/.ssh/known_hosts
+
+   ## NOTE the $STAGINT_PRIVATE_KEY variable should be added
+   ## in the gitlab interface and not here
+   ##
+   - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+
+   ## Build commands
+   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/htmlOrgReaderProd/epub_content /var/www/bookTempDeployment/prodBookshelf"      
+   - ssh -p22 $USERNAME@$SERVER_IP "rm -rf /var/www/htmlOrgReaderProd/*"
+   - scp -P22 -r dist/cloud-reader/* $USERNAME@$SERVER_IP:/var/www/htmlOrgReaderProd/
+   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/bookTempDeployment/prodBookshelf /var/www/htmlOrgReaderProd/epub_content"
+   
+### ----------------------
+
+qaDeploy:
+  stage: deploy
+  only:
+    - QA
+    
+  script:
+   - apt-get update -y
+   - apt-get install openssh-client -y
+   ##
+   ## Install ssh-agent if not already installed, it is required by Docker.
+   ## (change apt-get to yum if you use an RPM-based image)
+   ##
+   - 'which ssh-agent || apt-get install openssh-client -y'
+
+   ##
+   ## Run ssh-agent (inside the build environment)
+   ##
+   - eval $(ssh-agent -s)
+
+   ##
+   ## Create the SSH directory and give it the right permissions
+   ##
+   - mkdir -p ~/.ssh
+   - chmod 700 ~/.ssh
+
+   ##
+   ## Assuming you created the SSH_KNOWN_HOSTS variable, uncomment the
+   ## following two lines. NOTE the $SSH_KNOWN_HOSTS variable should be added
+   ## in the gitlab interface and not here
+   ##
+   - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+   - chmod 644 ~/.ssh/known_hosts
+
+   ## NOTE the $STAGINT_PRIVATE_KEY variable should be added
+   ## in the gitlab interface and not here
+   ##
+   - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+
+   ## Build commands
+   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/htmlOrgReaderQa/epub_content /var/www/bookTempDeployment/qaBookshelf"   
+   - ssh -p22 $USERNAME@$SERVER_IP "rm -rf /var/www/htmlOrgReaderQa/*"
+   - scp -P22 -r dist/cloud-reader/* $USERNAME@$SERVER_IP:/var/www/htmlOrgReaderQa/
+   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/bookTempDeployment/qaBookshelf /var/www/htmlOrgReaderQa/epub_content"
+
+### ----------------------
+
+devDeploy:
+  stage: deploy
+  only:
+    - Dev
+  script:
+   ## Pull down apt-get install repos
+   - apt-get update -y
+   - apt-get install openssh-client -y
+   ##
+   ## Install ssh-agent if not already installed, it is required by Docker.
+   ## (change apt-get to yum if you use an RPM-based image)
+   ##
+   - 'which ssh-agent || apt-get install openssh-client -y'
+
+   ##
+   ## Run ssh-agent (inside the build environment)
+   ##
+   - eval $(ssh-agent -s)
+
+   ##
+   ## Create the SSH directory and give it the right permissions
+   ##
+   - mkdir -p ~/.ssh
+   - chmod 700 ~/.ssh
+
+   ##
+   ## Assuming you created the SSH_KNOWN_HOSTS variable, uncomment the
+   ## following two lines. NOTE the $SSH_KNOWN_HOSTS variable should be added
+   ## in the gitlab interface and not here
+   ##
+   - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+   - chmod 644 ~/.ssh/known_hosts
+
+   ## NOTE the $STAGINT_PRIVATE_KEY variable should be added
+   ## in the gitlab interface and not here
+   ##
+   - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+
+   ## Build commands
+   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/htmlOrgReaderDev/epub_content /var/www/bookTempDeployment/devBookshelf"
+   - ssh -p22 $USERNAME@$SERVER_IP "rm -rf /var/www/htmlOrgReaderDev/*"
+   - scp -P22 -r dist/cloud-reader/* $USERNAME@$SERVER_IP:/var/www/htmlOrgReaderDev/
+   - ssh -p22 $USERNAME@$SERVER_IP "mv /var/www/bookTempDeployment/devBookshelf /var/www/htmlOrgReaderDev/epub_content"
