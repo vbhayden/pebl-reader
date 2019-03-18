@@ -2198,8 +2198,6 @@ define([
                     $('#reading-area').removeClass("contentFocus");
                 });
 
-                readium.reader.addIFrameEventListener('touchstart', {});
-
                 SettingsDialog.initDialog(readium.reader);
 
                 $('#settings-dialog').on('hidden.bs.modal', function() {
