@@ -1574,18 +1574,20 @@ define([
             var iframeDocument = iframeWindow.document;
 
             if (iframeDocument) {
-                var activeElement = iframeDocument.activeElement;
-                if ($(activeElement).is('input') || $(activeElement).is('textarea')) {
-                    var input = iframeDocument.getElementById('iosKeyboardClearInput');
-                    if (input) {
-                        $(input).show();
-                        input.focus();
-                        input.blur();
-                        $(input).hide();
-                    }
+                var input = iframeDocument.getElementById('iosKeyboardClearInput');
+                if (input) {
+                    $(input).show();
+                    input.focus();
+                    input.blur();
+                    $(input).hide();
                 }
             }
-        }
+        };
+
+        window.document.addEventListener('focusout', function(e) {
+            console.log('focusout');
+            clearIosKeyboard();
+        });
 
 
         var nextPage = function() {
