@@ -226,7 +226,7 @@ window.Lightbox = {
 			       endpoints : [
 				   {
     				       url: "https://lrs.peblproject.com/",
-    				       token: lrsCredential
+    				       token: window.Lightbox.lrsCredential
 				   }
 			       ],
                                registryEndpoint : {
