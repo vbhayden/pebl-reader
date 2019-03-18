@@ -1566,52 +1566,24 @@ define([
             }
         };
 
-        var isInputFocused = function() {
-            const isIos = () => {
-                const userAgent = window.navigator.userAgent.toLowerCase();
-                return /iphone|ipad|ipod/.test( userAgent );
-            }
-            if (isIos()) {
-                var iframe = $("#epub-reader-frame iframe")[0];
-                var iframeWindow = iframe.contentWindow || iframe.contentDocument;
-                var iframeDocument = iframeWindow.document;
-
-                if (iframeDocument) {
-                    var activeElement = iframeDocument.activeElement;
-                    if ($(activeElement).is('input') || $(activeElement).is('textarea')) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
         var nextPage = function() {
-            if (isInputFocused()) {
-                window.alert('Please close the keyboard before turning the page.')
-            } else {
-                readium.reader.openPageRight();
+            readium.reader.openPageRight();
 
-                PeBL.emitEvent(PeBL.events.eventNextPage, {
-                    firstCfi: readium.reader.getFirstVisibleCfi(),
-                    lastCfi: readium.reader.getLastVisibleCfi()
-                });
-            }
+            PeBL.emitEvent(PeBL.events.eventNextPage, {
+                firstCfi: readium.reader.getFirstVisibleCfi(),
+                lastCfi: readium.reader.getLastVisibleCfi()
+            });
 
             return false;
         };
 
         var prevPage = function() {
-            if (isInputFocused()) {
-                window.alert('Please close the keyboard before turning the page.')
-            } else {
-                readium.reader.openPageLeft();
+            readium.reader.openPageLeft();
 
-                PeBL.emitEvent(PeBL.events.eventPrevPage, {
-                    firstCfi: readium.reader.getFirstVisibleCfi(),
-                    lastCfi: readium.reader.getLastVisibleCfi()
-                });
-            }
+            PeBL.emitEvent(PeBL.events.eventPrevPage, {
+                firstCfi: readium.reader.getFirstVisibleCfi(),
+                lastCfi: readium.reader.getLastVisibleCfi()
+            });
 
             return false;
         };
