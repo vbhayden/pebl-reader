@@ -45,6 +45,27 @@ define(['readium_shared_js/globals', 'jquery','jquery_hammer','hammerjs'], funct
                 delete Hammer.defaults.cssProps.userSelect;
                 
                 var hammer = new Hammer(iframe[0].contentDocument.body);
+
+                // Focus a hidden input in the content and blur it immediately to clear the iOS keyboard.
+                // This function is also in EpubReader.js
+                var clearIosKeyboard = function() {
+                    var iframe = $("#epub-reader-frame iframe")[0];
+                    var iframeWindow = iframe.contentWindow || iframe.contentDocument;
+                    var iframeDocument = iframeWindow.document;
+
+                    if (iframeDocument) {
+                        var activeElement = iframeDocument.activeElement;
+                        if ($(activeElement).is('input') || $(activeElement).is('textarea')) {
+                            var input = iframeDocument.getElementById('iosKeyboardClearInput');
+                            if (input) {
+                                $(input).show();
+                                input.focus();
+                                input.blur();
+                                $(input).hide();
+                            }
+                        }
+                    }
+                }
                 
                 //set hammer's document root
                 // Hammer.DOCUMENT = iframe.contents();
@@ -57,11 +78,13 @@ define(['readium_shared_js/globals', 'jquery','jquery_hammer','hammerjs'], funct
                 // var swipingOptions = {prevent_mouseevents: true};
                 hammer.on("swipeleft", function (event) {
                     if (event.pointerType === 'touch') {
+                        clearIosKeyboard();
                         reader.openPageLeft();
                     }
                 });
                 hammer.on("swiperight", function (event) {
                     if (event.pointerType === 'touch') {
+                        clearIosKeyboard();
                         reader.openPageRight();
                     }
                 });

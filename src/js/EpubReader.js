@@ -1566,7 +1566,31 @@ define([
             }
         };
 
+        // Focus a hidden input in the content and blur it immediately to clear the iOS keyboard.
+        // This function is also in gestures.js
+        var clearIosKeyboard = function() {
+            var iframe = $("#epub-reader-frame iframe")[0];
+            var iframeWindow = iframe.contentWindow || iframe.contentDocument;
+            var iframeDocument = iframeWindow.document;
+
+            if (iframeDocument) {
+                var activeElement = iframeDocument.activeElement;
+                if ($(activeElement).is('input') || $(activeElement).is('textarea')) {
+                    var input = iframeDocument.getElementById('iosKeyboardClearInput');
+                    if (input) {
+                        $(input).show();
+                        input.focus();
+                        input.blur();
+                        $(input).hide();
+                    }
+                }
+            }
+        }
+
+
         var nextPage = function() {
+            clearIosKeyboard();
+
             readium.reader.openPageRight();
 
             PeBL.emitEvent(PeBL.events.eventNextPage, {
@@ -1578,6 +1602,8 @@ define([
         };
 
         var prevPage = function() {
+            clearIosKeyboard();
+
             readium.reader.openPageLeft();
 
             PeBL.emitEvent(PeBL.events.eventPrevPage, {
