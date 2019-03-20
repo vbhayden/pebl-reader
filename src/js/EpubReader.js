@@ -1573,7 +1573,10 @@ define([
             var iframeWindow = iframe.contentWindow || iframe.contentDocument;
             var iframeDocument = iframeWindow.document;
 
-            if (iframeDocument) {
+            var activeElement = iframeDocument.activeElement;
+            var parentActiveElement = window.document.activeElement;
+
+            if (iframeDocument && ($(activeElement).is('input') || $(activeElement).is('textarea') || $(parentActiveElement).is('input') || $(parentActiveElement).is('textarea'))) {
                 var input = iframeDocument.getElementById('iosKeyboardClearInput');
                 if (input) {
                     $(input).show();
