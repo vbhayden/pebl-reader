@@ -77,16 +77,16 @@ define(['readium_shared_js/globals', 'jquery','jquery_hammer','hammerjs'], funct
                 //swiping handlers
                 // var swipingOptions = {prevent_mouseevents: true};
                 hammer.on("swipeleft", function (event) {
-                    //if (event.pointerType === 'touch') {
+                    if (event.pointerType === 'touch') {
                         clearIosKeyboard();
                         reader.openPageRight();
-                    //}
+                    }
                 });
                 hammer.on("swiperight", function (event) {
-                    //if (event.pointerType === 'touch') {
+                    if (event.pointerType === 'touch') {
                         clearIosKeyboard();
                         reader.openPageLeft();
-                    //}
+                    }
                 });
                 
                 // Hammer(Hammer.DOCUMENT,swipingOptions).on("swipeleft", function() {
