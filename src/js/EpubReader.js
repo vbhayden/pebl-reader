@@ -1595,13 +1595,14 @@ define([
                         $(input).hide();
                     }
                 }
+                
+                clearingKeyboard = false;
             }
         };
 
         window.document.addEventListener('focusout', function(e) {
             console.log('focusout');
             clearIosKeyboard();
-            clearingKeyboard = false;
         });
 
 
