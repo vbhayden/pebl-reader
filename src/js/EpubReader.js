@@ -1592,11 +1592,10 @@ define([
             }
         };
 
-        window.document.addEventListener('focusout', function(e) {
-            console.log('focusout');
+        $(document).on('blur', 'input, textarea', function() {
+            console.log('blur');
             clearIosKeyboard();
         });
-
 
         var nextPage = function() {
             clearIosKeyboard();
