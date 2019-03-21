@@ -1572,11 +1572,13 @@ define([
         }
 
         var inIos = isIos();
+        var clearingKeyboard = false;
 
         // Focus a hidden input in the content and blur it immediately to clear the iOS keyboard.
         // This function is also in gestures.js
         var clearIosKeyboard = function() {
-            if (inIos) {
+            if (inIos && !clearingKeyboard) {
+                clearingKeyboard = true;
                 var iframe = $("#epub-reader-frame iframe")[0];
                 var iframeWindow = iframe.contentWindow || iframe.contentDocument;
                 var iframeDocument = iframeWindow.document;
@@ -1599,6 +1601,7 @@ define([
         window.document.addEventListener('focusout', function(e) {
             console.log('focusout');
             clearIosKeyboard();
+            clearingKeyboard = false;
         });
 
 
