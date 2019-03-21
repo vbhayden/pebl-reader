@@ -17,6 +17,7 @@ define([
         'hgn!readium_js_viewer_html_templates/reader-body-page-btns.html',
         'hgn!readium_js_viewer_html_templates/add-bookmark-dialog.html',
         'hgn!readium_js_viewer_html_templates/add-note-dialog.html',
+        'hgn!readium_js_viewer_html_templates/fullscreen-image-dialog.html',
         'Analytics',
         'screenfull',
         './Keyboard',
@@ -48,6 +49,7 @@ define([
         ReaderBodyPageButtons,
         AddBookmarkDialog,
         AddNoteDialog,
+        FullScreenImageDialog,
         Analytics,
         screenfull,
         Keyboard,
@@ -1965,6 +1967,7 @@ define([
             $('nav').append(ReaderNavbar({ strings: Strings, dialogs: Dialogs, keyboard: Keyboard }));
             $appContainer.append(AddBookmarkDialog({ strings: Strings }));
             $appContainer.append(AddNoteDialog({ strings: Strings }));
+            $appContainer.append(FullScreenImageDialog({ strings: Strings }));
             installReaderEventHandlers();
             document.title = "PeBL Reader";
             $('#zoom-fit-width a').on('click', setFitWidth);
@@ -2185,6 +2188,23 @@ define([
                 $(window).on('keyup', function(e) {
                     if (e.keyCode === 9 || e.which === 9) {
                         unhideUI();
+                    }
+                });
+
+                readium.reader.addIFrameEventListener('touchstart', function(e) {
+                    if ($(e.target).is('img')) {
+                        e.preventDefault();
+                    }
+                });
+
+                readium.reader.addIFrameEventListener('click', function(e) {
+                    console.log(e);
+                    if ($(e.target).is('img')) {
+                        $('#fullscreenImage').attr('src', e.target.src);
+                        if (e.target.alt)
+                            $('#fullscreen-image-label').text(e.target.alt);
+
+                        $('#fullscreen-image-dialog').modal('show');
                     }
                 });
 
