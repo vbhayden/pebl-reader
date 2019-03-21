@@ -17,6 +17,7 @@ define([
         'hgn!readium_js_viewer_html_templates/reader-body-page-btns.html',
         'hgn!readium_js_viewer_html_templates/add-bookmark-dialog.html',
         'hgn!readium_js_viewer_html_templates/add-note-dialog.html',
+        'hgn!readium_js_viewer_html_templates/fullscreen-image-dialog.html',
         'Analytics',
         'screenfull',
         './Keyboard',
@@ -48,6 +49,7 @@ define([
         ReaderBodyPageButtons,
         AddBookmarkDialog,
         AddNoteDialog,
+        FullScreenImageDialog,
         Analytics,
         screenfull,
         Keyboard,
@@ -1566,32 +1568,36 @@ define([
             }
         };
 
+        var isIos = function() {
+          var userAgent = window.navigator.userAgent.toLowerCase();
+          return /iphone|ipad|ipod/.test( userAgent );
+        }
+
+        var inIos = isIos();
+        var clearingKeyboard = false;
+
         // Focus a hidden input in the content and blur it immediately to clear the iOS keyboard.
         // This function is also in gestures.js
         var clearIosKeyboard = function() {
-            var iframe = $("#epub-reader-frame iframe")[0];
-            var iframeWindow = iframe.contentWindow || iframe.contentDocument;
-            var iframeDocument = iframeWindow.document;
+            if (inIos && !clearingKeyboard) {
+                clearingKeyboard = true;
 
-            var activeElement = iframeDocument.activeElement;
-            var parentActiveElement = window.document.activeElement;
-
-            if (iframeDocument && ($(activeElement).is('input') || $(activeElement).is('textarea') || $(parentActiveElement).is('input') || $(parentActiveElement).is('textarea'))) {
-                var input = iframeDocument.getElementById('iosKeyboardClearInput');
+                var input = document.getElementById('iosKeyboardClearInput');
                 if (input) {
                     $(input).show();
                     input.focus();
                     input.blur();
                     $(input).hide();
                 }
+
+                clearingKeyboard = false;
             }
         };
 
-        window.document.addEventListener('focusout', function(e) {
-            console.log('focusout');
+        $(document).on('blur', 'input, textarea', function() {
+            console.log('blur');
             clearIosKeyboard();
         });
-
 
         var nextPage = function() {
             clearIosKeyboard();
@@ -1961,6 +1967,7 @@ define([
             $('nav').append(ReaderNavbar({ strings: Strings, dialogs: Dialogs, keyboard: Keyboard }));
             $appContainer.append(AddBookmarkDialog({ strings: Strings }));
             $appContainer.append(AddNoteDialog({ strings: Strings }));
+            $appContainer.append(FullScreenImageDialog({ strings: Strings }));
             installReaderEventHandlers();
             document.title = "PeBL Reader";
             $('#zoom-fit-width a').on('click', setFitWidth);
@@ -2181,6 +2188,17 @@ define([
                 $(window).on('keyup', function(e) {
                     if (e.keyCode === 9 || e.which === 9) {
                         unhideUI();
+                    }
+                });
+
+                readium.reader.addIFrameEventListener('click', function(e) {
+                    console.log(e);
+                    if (!inIos && $(e.target).is('img')) {
+                        $('#fullscreenImage').attr('src', e.target.src);
+                        if (e.target.alt)
+                            $('#fullscreen-image-label').text(e.target.alt);
+
+                        $('#fullscreen-image-dialog').modal('show');
                     }
                 });
 
