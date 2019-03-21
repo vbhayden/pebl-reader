@@ -1566,23 +1566,32 @@ define([
             }
         };
 
+        var isIos = function() {
+          var userAgent = window.navigator.userAgent.toLowerCase();
+          return /iphone|ipad|ipod/.test( userAgent );
+        }
+
+        var inIos = isIos();
+
         // Focus a hidden input in the content and blur it immediately to clear the iOS keyboard.
         // This function is also in gestures.js
         var clearIosKeyboard = function() {
-            var iframe = $("#epub-reader-frame iframe")[0];
-            var iframeWindow = iframe.contentWindow || iframe.contentDocument;
-            var iframeDocument = iframeWindow.document;
+            if (inIos) {
+                var iframe = $("#epub-reader-frame iframe")[0];
+                var iframeWindow = iframe.contentWindow || iframe.contentDocument;
+                var iframeDocument = iframeWindow.document;
 
-            var activeElement = iframeDocument.activeElement;
-            var parentActiveElement = window.document.activeElement;
+                var activeElement = iframeDocument.activeElement;
+                var parentActiveElement = window.document.activeElement;
 
-            if (iframeDocument && ($(activeElement).is('input') || $(activeElement).is('textarea') || $(parentActiveElement).is('input') || $(parentActiveElement).is('textarea'))) {
-                var input = iframeDocument.getElementById('iosKeyboardClearInput');
-                if (input) {
-                    $(input).show();
-                    input.focus();
-                    input.blur();
-                    $(input).hide();
+                if (iframeDocument && ($(activeElement).is('input') || $(activeElement).is('textarea') || $(parentActiveElement).is('input') || $(parentActiveElement).is('textarea'))) {
+                    var input = document.getElementById('iosKeyboardClearInput');
+                    if (input) {
+                        $(input).show();
+                        input.focus();
+                        input.blur();
+                        $(input).hide();
+                    }
                 }
             }
         };

@@ -46,17 +46,26 @@ define(['readium_shared_js/globals', 'jquery','jquery_hammer','hammerjs'], funct
                 
                 var hammer = new Hammer(iframe[0].contentDocument);
 
+                var isIos = function() {
+                  var userAgent = window.navigator.userAgent.toLowerCase();
+                  return /iphone|ipad|ipod/.test( userAgent );
+                }
+
+                var inIos = isIos();
+
                 // Focus a hidden input in the content and blur it immediately to clear the iOS keyboard.
                 // This function is also in EpubReader.js
                 var clearIosKeyboard = function() {
-                    var iframe = $("#epub-reader-frame iframe")[0];
-                    var iframeWindow = iframe.contentWindow || iframe.contentDocument;
-                    var iframeDocument = iframeWindow.document;
+                    if (inIos) {
+                        var iframe = $("#epub-reader-frame iframe")[0];
+                        var iframeWindow = iframe.contentWindow || iframe.contentDocument;
+                        var iframeDocument = iframeWindow.document;
 
-                    if (iframeDocument) {
                         var activeElement = iframeDocument.activeElement;
-                        if ($(activeElement).is('input') || $(activeElement).is('textarea')) {
-                            var input = iframeDocument.getElementById('iosKeyboardClearInput');
+                        var parentActiveElement = window.document.activeElement;
+
+                        if (iframeDocument && ($(activeElement).is('input') || $(activeElement).is('textarea') || $(parentActiveElement).is('input') || $(parentActiveElement).is('textarea'))) {
+                            var input = document.getElementById('iosKeyboardClearInput');
                             if (input) {
                                 $(input).show();
                                 input.focus();
