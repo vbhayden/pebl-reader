@@ -57,21 +57,12 @@ define(['readium_shared_js/globals', 'jquery','jquery_hammer','hammerjs'], funct
                 // This function is also in EpubReader.js
                 var clearIosKeyboard = function() {
                     if (inIos) {
-                        var iframe = $("#epub-reader-frame iframe")[0];
-                        var iframeWindow = iframe.contentWindow || iframe.contentDocument;
-                        var iframeDocument = iframeWindow.document;
-
-                        var activeElement = iframeDocument.activeElement;
-                        var parentActiveElement = window.document.activeElement;
-
-                        if (iframeDocument && ($(activeElement).is('input') || $(activeElement).is('textarea') || $(parentActiveElement).is('input') || $(parentActiveElement).is('textarea'))) {
-                            var input = document.getElementById('iosKeyboardClearInput');
-                            if (input) {
-                                $(input).show();
-                                input.focus();
-                                input.blur();
-                                $(input).hide();
-                            }
+                        var input = document.getElementById('iosKeyboardClearInput');
+                        if (input) {
+                            $(input).show();
+                            input.focus();
+                            input.blur();
+                            $(input).hide();
                         }
                     }
                 }

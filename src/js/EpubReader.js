@@ -1579,23 +1579,15 @@ define([
         var clearIosKeyboard = function() {
             if (inIos && !clearingKeyboard) {
                 clearingKeyboard = true;
-                var iframe = $("#epub-reader-frame iframe")[0];
-                var iframeWindow = iframe.contentWindow || iframe.contentDocument;
-                var iframeDocument = iframeWindow.document;
 
-                var activeElement = iframeDocument.activeElement;
-                var parentActiveElement = window.document.activeElement;
-
-                if (iframeDocument && ($(activeElement).is('input') || $(activeElement).is('textarea') || $(parentActiveElement).is('input') || $(parentActiveElement).is('textarea'))) {
-                    var input = document.getElementById('iosKeyboardClearInput');
-                    if (input) {
-                        $(input).show();
-                        input.focus();
-                        input.blur();
-                        $(input).hide();
-                    }
+                var input = document.getElementById('iosKeyboardClearInput');
+                if (input) {
+                    $(input).show();
+                    input.focus();
+                    input.blur();
+                    $(input).hide();
                 }
-                
+
                 clearingKeyboard = false;
             }
         };
