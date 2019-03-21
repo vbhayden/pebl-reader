@@ -2191,15 +2191,9 @@ define([
                     }
                 });
 
-                readium.reader.addIFrameEventListener('touchstart', function(e) {
-                    if ($(e.target).is('img')) {
-                        e.preventDefault();
-                    }
-                });
-
                 readium.reader.addIFrameEventListener('click', function(e) {
                     console.log(e);
-                    if ($(e.target).is('img')) {
+                    if (!inIos && $(e.target).is('img')) {
                         $('#fullscreenImage').attr('src', e.target.src);
                         if (e.target.alt)
                             $('#fullscreen-image-label').text(e.target.alt);
