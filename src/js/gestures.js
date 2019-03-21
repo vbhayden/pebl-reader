@@ -44,7 +44,7 @@ define(['readium_shared_js/globals', 'jquery','jquery_hammer','hammerjs'], funct
 
                 delete Hammer.defaults.cssProps.userSelect;
                 
-                var hammer = new Hammer(iframe[0].contentDocument.body);
+                var hammer = new Hammer(iframe[0].contentDocument);
 
                 // Focus a hidden input in the content and blur it immediately to clear the iOS keyboard.
                 // This function is also in EpubReader.js
@@ -79,13 +79,13 @@ define(['readium_shared_js/globals', 'jquery','jquery_hammer','hammerjs'], funct
                 hammer.on("swipeleft", function (event) {
                     if (event.pointerType === 'touch') {
                         clearIosKeyboard();
-                        reader.openPageLeft();
+                        reader.openPageRight();
                     }
                 });
                 hammer.on("swiperight", function (event) {
                     if (event.pointerType === 'touch') {
                         clearIosKeyboard();
-                        reader.openPageRight();
+                        reader.openPageLeft();
                     }
                 });
                 
