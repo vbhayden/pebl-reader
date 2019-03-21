@@ -466,6 +466,26 @@ var UserProfile = /** @class */ (function () {
             }
         if (this.homePage == null)
             this.homePage = "acct:keycloak-server";
+        if (raw.firstName)
+            this.firstName = raw.firstName;
+        if (raw.lastName)
+            this.lastName = raw.lastName;
+        if (raw.avatar)
+            this.avatar = raw.avatar;
+        if (raw.email)
+            this.email = raw.email;
+        if (raw.phoneNumber)
+            this.phoneNumber = raw.phoneNumber;
+        if (raw.streetAddress)
+            this.streetAddress = raw.streetAddress;
+        if (raw.city)
+            this.city = raw.city;
+        if (raw.state)
+            this.state = raw.state;
+        if (raw.zipCode)
+            this.zipCode = raw.zipCode;
+        if (raw.country)
+            this.country = raw.country;
     }
     UserProfile.prototype.toObject = function () {
         var urls = {};
@@ -482,11 +502,20 @@ var UserProfile = /** @class */ (function () {
             "metadata": {},
             "registryEndpoint": this.registryEndpoint,
             "currentTeam": this.currentTeam,
-            "currentClass": this.currentClass
+            "currentClass": this.currentClass,
+            "firstName": this.firstName,
+            "lastName": this.lastName,
+            "avatar": this.avatar,
+            "email": this.email,
+            "phoneNumber": this.phoneNumber,
+            "streetAddress": this.streetAddress,
+            "city": this.city,
+            "state": this.state,
+            "zipCode": this.zipCode,
+            "country": this.country
         };
-        if (this.metadata) {
+        if (this.metadata)
             obj.metadata = this.metadata;
-        }
         return obj;
     };
     return UserProfile;
@@ -820,7 +849,7 @@ var CURRENT_USER = "peblCurrentUser";
 var storage_IndexedDBStorageAdapter = /** @class */ (function () {
     function IndexedDBStorageAdapter(callback) {
         this.invocationQueue = [];
-        var request = window.indexedDB.open("pebl", 18);
+        var request = window.indexedDB.open("pebl", 19);
         var self = this;
         request.onupgradeneeded = function () {
             var db = request.result;
@@ -2822,11 +2851,13 @@ var syncing_LLSyncAction = /** @class */ (function () {
                             if (activity) {
                                 self.pebl.storage.removeOutgoingActivity(userProfile, activity);
                                 self.pebl.storage.removeActivity(userProfile, activity.id, activity.type);
-                                //TODO: This probably won't remove other user's memberships to this program..
                                 if (activity_Program.is(activity)) {
                                     var program = new activity_Program(activity);
                                     activity_Program.iterateMembers(program, function (key, membership) {
-                                        self.pebl.emitEvent(self.pebl.events.removedMembership, membership.id);
+                                        self.pebl.emitEvent(self.pebl.events.modifiedMembership, {
+                                            oldMembership: membership,
+                                            newMembership: null
+                                        });
                                     });
                                     self.pebl.emitEvent(self.pebl.events.removedProgram, program);
                                 }
@@ -3895,11 +3926,11 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                     self.pebl.storage.removeGroupMembership(newUserProfile_1, oldMembership.id);
                 self.pebl.emitEvent(self.pebl.events.incomingMembership, [m]);
                 // Then send out a new one
-                var exts_3 = {
-                    role: newMembership.role,
-                    activityType: newMembership.activityType
-                };
                 if (newMembership) {
+                    var exts_3 = {
+                        role: newMembership.role,
+                        activityType: newMembership.activityType
+                    };
                     self.pebl.storage.getCurrentActivity(function (activity) {
                         self.pebl.storage.getCurrentBook(function (book) {
                             xapiNew.id = newMembership.id;
