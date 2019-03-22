@@ -2192,7 +2192,6 @@ define([
                 });
 
                 readium.reader.addIFrameEventListener('click', function(e) {
-                    console.log(e);
                     if (!inIos && $(e.target).is('img')) {
                         $('#fullscreenImage').attr('src', e.target.src);
                         if (e.target.alt)
