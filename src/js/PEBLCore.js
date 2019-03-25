@@ -2740,7 +2740,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                         var id = _c[_b];
                         cleanSharedAnnotations.push(sharedAnnotations[id]);
                     }
-                    if (cleanAnnotations.length > 0) {
+                    if (cleanSharedAnnotations.length > 0) {
                         cleanSharedAnnotations.sort();
                         self.pebl.storage.saveSharedAnnotations(userProfile, cleanSharedAnnotations);
                         self.pebl.emitEvent(self.pebl.events.incomingSharedAnnotations, cleanSharedAnnotations);
