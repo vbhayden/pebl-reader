@@ -883,7 +883,7 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             outgoingXApiStore.createIndex(MASTER_INDEX, "identity");
             groupStore.createIndex(MASTER_INDEX, "identity");
             messageStore.createIndex(MASTER_INDEX, ["identity", "thread"]);
-            queuedReferences.createIndex(MASTER_INDEX, "identity");
+            queuedReferences.createIndex(MASTER_INDEX, ["identity", "book"]);
             notificationStore.createIndex(MASTER_INDEX, "identity");
             tocStore.createIndex(MASTER_INDEX, ["identity", "book"]);
         };
@@ -1603,17 +1603,17 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             });
         }
     };
-    IndexedDBStorageAdapter.prototype.getQueuedReference = function (userProfile, callback) {
+    IndexedDBStorageAdapter.prototype.getQueuedReference = function (userProfile, currentBook, callback) {
         if (this.db) {
             var os = this.db.transaction(["queuedReferences"], "readonly").objectStore("queuedReferences");
             var index_3 = os.index(MASTER_INDEX);
-            var request_5 = index_3.openCursor(IDBKeyRange.only(userProfile.identity));
+            var request_5 = index_3.openCursor(IDBKeyRange.only([userProfile.identity, currentBook]));
             request_5.onerror = function (e) {
                 console.log(e);
             };
             request_5.onsuccess = function () {
                 if (request_5.result == null) {
-                    var req = index_3.openCursor(IDBKeyRange.only([userProfile.identity]));
+                    var req = index_3.openCursor(IDBKeyRange.only([userProfile.identity, currentBook]));
                     req.onerror = function (e) {
                         console.log(e);
                     };
@@ -1633,7 +1633,7 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
         else {
             var self_35 = this;
             this.invocationQueue.push(function () {
-                self_35.getQueuedReference(userProfile, callback);
+                self_35.getQueuedReference(userProfile, currentBook, callback);
             });
         }
     };
@@ -2979,52 +2979,59 @@ var network_Network = /** @class */ (function () {
         var self = this;
         self.pebl.user.getUser(function (userProfile) {
             if (userProfile && userProfile.registryEndpoint) {
-                self.pebl.storage.getQueuedReference(userProfile, function (ref) {
-                    if (ref) {
-                        self.pebl.storage.getToc(userProfile, ref.book, function (toc) {
-                            //Wait to add resources until the static TOC has been initialized, otherwise it never gets intialized
-                            if (toc.length > 0) {
-                                var xhr = new XMLHttpRequest();
-                                xhr.addEventListener("load", function () {
-                                    self.pebl.storage.saveNotification(userProfile, ref);
-                                    var tocEntry = {
-                                        "url": ref.url,
-                                        "documentName": ref.name,
-                                        "section": ref.location,
-                                        "pageKey": ref.id,
-                                        "docType": ref.docType,
-                                        "card": ref.card,
-                                        "externalURL": ref.externalURL
-                                    };
-                                    self.pebl.storage.saveToc(userProfile, ref.book, tocEntry);
-                                    self.pebl.emitEvent(self.pebl.events.incomingNotification, ref);
-                                    self.pebl.storage.removeQueuedReference(userProfile, ref.id);
-                                    if (self.running)
+                self.pebl.storage.getCurrentBook(function (currentBook) {
+                    if (currentBook) {
+                        self.pebl.storage.getQueuedReference(userProfile, currentBook, function (ref) {
+                            if (ref) {
+                                self.pebl.storage.getToc(userProfile, ref.book, function (toc) {
+                                    //Wait to add resources until the static TOC has been initialized, otherwise it never gets intialized
+                                    if (toc.length > 0) {
+                                        var xhr = new XMLHttpRequest();
+                                        xhr.addEventListener("load", function () {
+                                            self.pebl.storage.saveNotification(userProfile, ref);
+                                            var tocEntry = {
+                                                "url": ref.url,
+                                                "documentName": ref.name,
+                                                "section": ref.location,
+                                                "pageKey": ref.id,
+                                                "docType": ref.docType,
+                                                "card": ref.card,
+                                                "externalURL": ref.externalURL
+                                            };
+                                            self.pebl.storage.saveToc(userProfile, ref.book, tocEntry);
+                                            self.pebl.emitEvent(self.pebl.events.incomingNotification, ref);
+                                            self.pebl.storage.removeQueuedReference(userProfile, ref.id);
+                                            if (self.running)
+                                                self.pullAssetTimeout = setTimeout(self.pullAsset.bind(self), 5000);
+                                        });
+                                        xhr.addEventListener("error", function () {
+                                            self.pebl.storage.saveNotification(userProfile, ref);
+                                            self.pebl.emitEvent(self.pebl.events.incomingNotification, ref);
+                                            self.pebl.storage.removeQueuedReference(userProfile, ref.id);
+                                            if (self.running)
+                                                self.pullAssetTimeout = setTimeout(self.pullAsset.bind(self), 5000);
+                                        });
+                                        var url = userProfile.registryEndpoint && userProfile.registryEndpoint.url;
+                                        if (url) {
+                                            xhr.open("GET", url + ref.url);
+                                            xhr.send();
+                                        }
+                                        else if (self.running)
+                                            self.pullAssetTimeout = setTimeout(self.pullAsset.bind(self), 5000);
+                                    }
+                                    else {
                                         self.pullAssetTimeout = setTimeout(self.pullAsset.bind(self), 5000);
+                                    }
                                 });
-                                xhr.addEventListener("error", function () {
-                                    self.pebl.storage.saveNotification(userProfile, ref);
-                                    self.pebl.emitEvent(self.pebl.events.incomingNotification, ref);
-                                    self.pebl.storage.removeQueuedReference(userProfile, ref.id);
-                                    if (self.running)
-                                        self.pullAssetTimeout = setTimeout(self.pullAsset.bind(self), 5000);
-                                });
-                                var url = userProfile.registryEndpoint && userProfile.registryEndpoint.url;
-                                if (url) {
-                                    xhr.open("GET", url + ref.url);
-                                    xhr.send();
-                                }
-                                else if (self.running)
-                                    self.pullAssetTimeout = setTimeout(self.pullAsset.bind(self), 5000);
                             }
                             else {
-                                self.pullAssetTimeout = setTimeout(self.pullAsset.bind(self), 5000);
+                                if (self.running)
+                                    self.pullAssetTimeout = setTimeout(self.pullAsset.bind(self), 5000);
                             }
                         });
                     }
-                    else {
-                        if (self.running)
-                            self.pullAssetTimeout = setTimeout(self.pullAsset.bind(self), 5000);
+                    else if (self.running) {
+                        self.pullAssetTimeout = setTimeout(self.pullAsset.bind(self), 5000);
                     }
                 });
             }
