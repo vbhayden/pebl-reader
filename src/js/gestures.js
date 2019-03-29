@@ -15,8 +15,8 @@ define(['readium_shared_js/globals', 'jquery','jquery_hammer','hammerjs'], funct
 
     var gesturesHandler = function(reader, viewport){
         
-        // this.initialize= function(){};
-        // return; // TODO upgrade to Hammer API v2
+        this.initialize= function(){};
+        return; // TODO disabled gestures for now
         
         // var onSwipeLeft = function(){
         //     reader.openPageRight();
