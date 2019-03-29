@@ -2192,7 +2192,7 @@ define([
                 });
 
                 readium.reader.addIFrameEventListener('click', function(e) {
-                    if (!inIos && $(e.target).is('img')) {
+                    if (!inIos && $(e.target).is('img') && $(e.target).hasClass('zoomable')) {
                         $('#fullscreenImage').attr('src', e.target.src);
                         if (e.target.alt)
                             $('#fullscreen-image-label').text(e.target.alt);
