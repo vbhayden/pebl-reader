@@ -17,6 +17,7 @@ define([
         'hgn!readium_js_viewer_html_templates/reader-body-page-btns.html',
         'hgn!readium_js_viewer_html_templates/add-bookmark-dialog.html',
         'hgn!readium_js_viewer_html_templates/add-note-dialog.html',
+        'hgn!readium_js_viewer_html_templates/fullscreen-image-dialog.html',
         'Analytics',
         'screenfull',
         './Keyboard',
@@ -48,6 +49,7 @@ define([
         ReaderBodyPageButtons,
         AddBookmarkDialog,
         AddNoteDialog,
+        FullScreenImageDialog,
         Analytics,
         screenfull,
         Keyboard,
@@ -1566,52 +1568,59 @@ define([
             }
         };
 
-        var isInputFocused = function() {
-            const isIos = () => {
-                const userAgent = window.navigator.userAgent.toLowerCase();
-                return /iphone|ipad|ipod/.test( userAgent );
-            }
-            if (isIos()) {
-                var iframe = $("#epub-reader-frame iframe")[0];
-                var iframeWindow = iframe.contentWindow || iframe.contentDocument;
-                var iframeDocument = iframeWindow.document;
-
-                if (iframeDocument) {
-                    var activeElement = iframeDocument.activeElement;
-                    if ($(activeElement).is('input') || $(activeElement).is('textarea')) {
-                        return true;
-                    }
-                }
-            }
-            return false;
+        var isIos = function() {
+          var userAgent = window.navigator.userAgent.toLowerCase();
+          return /iphone|ipad|ipod/.test( userAgent );
         }
 
-        var nextPage = function() {
-            if (isInputFocused()) {
-                window.alert('Please close the keyboard before turning the page.')
-            } else {
-                readium.reader.openPageRight();
+        var inIos = isIos();
+        var clearingKeyboard = false;
 
-                PeBL.emitEvent(PeBL.events.eventNextPage, {
-                    firstCfi: readium.reader.getFirstVisibleCfi(),
-                    lastCfi: readium.reader.getLastVisibleCfi()
-                });
+        // Focus a hidden input in the content and blur it immediately to clear the iOS keyboard.
+        // This function is also in gestures.js
+        var clearIosKeyboard = function() {
+            if (inIos && !clearingKeyboard) {
+                clearingKeyboard = true;
+
+                var input = document.getElementById('iosKeyboardClearInput');
+                if (input) {
+                    $(input).show();
+                    input.focus();
+                    input.blur();
+                    $(input).hide();
+                }
+
+                clearingKeyboard = false;
             }
+        };
+
+        $(document).on('blur', 'input, textarea', function() {
+            console.log('blur');
+            clearIosKeyboard();
+        });
+
+        var nextPage = function() {
+            clearIosKeyboard();
+
+            readium.reader.openPageRight();
+
+            PeBL.emitEvent(PeBL.events.eventNextPage, {
+                firstCfi: readium.reader.getFirstVisibleCfi(),
+                lastCfi: readium.reader.getLastVisibleCfi()
+            });
 
             return false;
         };
 
         var prevPage = function() {
-            if (isInputFocused()) {
-                window.alert('Please close the keyboard before turning the page.')
-            } else {
-                readium.reader.openPageLeft();
+            clearIosKeyboard();
 
-                PeBL.emitEvent(PeBL.events.eventPrevPage, {
-                    firstCfi: readium.reader.getFirstVisibleCfi(),
-                    lastCfi: readium.reader.getLastVisibleCfi()
-                });
-            }
+            readium.reader.openPageLeft();
+
+            PeBL.emitEvent(PeBL.events.eventPrevPage, {
+                firstCfi: readium.reader.getFirstVisibleCfi(),
+                lastCfi: readium.reader.getLastVisibleCfi()
+            });
 
             return false;
         };
@@ -1958,6 +1967,7 @@ define([
             $('nav').append(ReaderNavbar({ strings: Strings, dialogs: Dialogs, keyboard: Keyboard }));
             $appContainer.append(AddBookmarkDialog({ strings: Strings }));
             $appContainer.append(AddNoteDialog({ strings: Strings }));
+            $appContainer.append(FullScreenImageDialog({ strings: Strings }));
             installReaderEventHandlers();
             document.title = "PeBL Reader";
             $('#zoom-fit-width a').on('click', setFitWidth);
@@ -2178,6 +2188,16 @@ define([
                 $(window).on('keyup', function(e) {
                     if (e.keyCode === 9 || e.which === 9) {
                         unhideUI();
+                    }
+                });
+
+                readium.reader.addIFrameEventListener('click', function(e) {
+                    if (!inIos && $(e.target).is('img')) {
+                        $('#fullscreenImage').attr('src', e.target.src);
+                        if (e.target.alt)
+                            $('#fullscreen-image-label').text(e.target.alt);
+
+                        $('#fullscreen-image-dialog').modal('show');
                     }
                 });
 

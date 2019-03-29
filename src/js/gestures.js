@@ -44,7 +44,28 @@ define(['readium_shared_js/globals', 'jquery','jquery_hammer','hammerjs'], funct
 
                 delete Hammer.defaults.cssProps.userSelect;
                 
-                var hammer = new Hammer(iframe[0].contentDocument.body);
+                var hammer = new Hammer(iframe[0].contentDocument);
+
+                var isIos = function() {
+                  var userAgent = window.navigator.userAgent.toLowerCase();
+                  return /iphone|ipad|ipod/.test( userAgent );
+                }
+
+                var inIos = isIos();
+
+                // Focus a hidden input in the content and blur it immediately to clear the iOS keyboard.
+                // This function is also in EpubReader.js
+                var clearIosKeyboard = function() {
+                    if (inIos) {
+                        var input = document.getElementById('iosKeyboardClearInput');
+                        if (input) {
+                            $(input).show();
+                            input.focus();
+                            input.blur();
+                            $(input).hide();
+                        }
+                    }
+                }
                 
                 //set hammer's document root
                 // Hammer.DOCUMENT = iframe.contents();
@@ -57,12 +78,14 @@ define(['readium_shared_js/globals', 'jquery','jquery_hammer','hammerjs'], funct
                 // var swipingOptions = {prevent_mouseevents: true};
                 hammer.on("swipeleft", function (event) {
                     if (event.pointerType === 'touch') {
-                        reader.openPageLeft();
+                        clearIosKeyboard();
+                        reader.openPageRight();
                     }
                 });
                 hammer.on("swiperight", function (event) {
                     if (event.pointerType === 'touch') {
-                        reader.openPageRight();
+                        clearIosKeyboard();
+                        reader.openPageLeft();
                     }
                 });
                 

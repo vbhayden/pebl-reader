@@ -437,7 +437,7 @@ var ProgramAction = /** @class */ (function (_super) {
     ProgramAction.is = function (x) {
         var verb = x.verb.display["en-US"];
         return (verb == "programLevelUp") || (verb == "programLevelDown") || (verb == "programInvited") || (verb == "programUninvited")
-            || (verb == "programExpelled") || (verb == "programJoined") || (verb == "programActivityLaunched");
+            || (verb == "programExpelled") || (verb == "programJoined") || (verb == "programActivityLaunched") || (verb == "programActivityCompleted") || (verb == "programActivityTeamCompleted");
     };
     return ProgramAction;
 }(XApiStatement));
@@ -466,6 +466,26 @@ var UserProfile = /** @class */ (function () {
             }
         if (this.homePage == null)
             this.homePage = "acct:keycloak-server";
+        if (raw.firstName)
+            this.firstName = raw.firstName;
+        if (raw.lastName)
+            this.lastName = raw.lastName;
+        if (raw.avatar)
+            this.avatar = raw.avatar;
+        if (raw.email)
+            this.email = raw.email;
+        if (raw.phoneNumber)
+            this.phoneNumber = raw.phoneNumber;
+        if (raw.streetAddress)
+            this.streetAddress = raw.streetAddress;
+        if (raw.city)
+            this.city = raw.city;
+        if (raw.state)
+            this.state = raw.state;
+        if (raw.zipCode)
+            this.zipCode = raw.zipCode;
+        if (raw.country)
+            this.country = raw.country;
     }
     UserProfile.prototype.toObject = function () {
         var urls = {};
@@ -482,11 +502,20 @@ var UserProfile = /** @class */ (function () {
             "metadata": {},
             "registryEndpoint": this.registryEndpoint,
             "currentTeam": this.currentTeam,
-            "currentClass": this.currentClass
+            "currentClass": this.currentClass,
+            "firstName": this.firstName,
+            "lastName": this.lastName,
+            "avatar": this.avatar,
+            "email": this.email,
+            "phoneNumber": this.phoneNumber,
+            "streetAddress": this.streetAddress,
+            "city": this.city,
+            "state": this.state,
+            "zipCode": this.zipCode,
+            "country": this.country
         };
-        if (this.metadata) {
+        if (this.metadata)
             obj.metadata = this.metadata;
-        }
         return obj;
     };
     return UserProfile;
@@ -820,7 +849,7 @@ var CURRENT_USER = "peblCurrentUser";
 var storage_IndexedDBStorageAdapter = /** @class */ (function () {
     function IndexedDBStorageAdapter(callback) {
         this.invocationQueue = [];
-        var request = window.indexedDB.open("pebl", 18);
+        var request = window.indexedDB.open("pebl", 19);
         var self = this;
         request.onupgradeneeded = function () {
             var db = request.result;
@@ -2711,7 +2740,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                         var id = _c[_b];
                         cleanSharedAnnotations.push(sharedAnnotations[id]);
                     }
-                    if (cleanAnnotations.length > 0) {
+                    if (cleanSharedAnnotations.length > 0) {
                         cleanSharedAnnotations.sort();
                         self.pebl.storage.saveSharedAnnotations(userProfile, cleanSharedAnnotations);
                         self.pebl.emitEvent(self.pebl.events.incomingSharedAnnotations, cleanSharedAnnotations);
@@ -2822,11 +2851,13 @@ var syncing_LLSyncAction = /** @class */ (function () {
                             if (activity) {
                                 self.pebl.storage.removeOutgoingActivity(userProfile, activity);
                                 self.pebl.storage.removeActivity(userProfile, activity.id, activity.type);
-                                //TODO: This probably won't remove other user's memberships to this program..
                                 if (activity_Program.is(activity)) {
                                     var program = new activity_Program(activity);
                                     activity_Program.iterateMembers(program, function (key, membership) {
-                                        self.pebl.emitEvent(self.pebl.events.removedMembership, membership.id);
+                                        self.pebl.emitEvent(self.pebl.events.modifiedMembership, {
+                                            oldMembership: membership,
+                                            newMembership: null
+                                        });
                                     });
                                     self.pebl.emitEvent(self.pebl.events.removedProgram, program);
                                 }
@@ -3153,6 +3184,8 @@ var EventSet = /** @class */ (function () {
         this.eventProgramJoined = "eventProgramJoined";
         this.eventProgramExpelled = "eventProgramExpelled";
         this.eventProgramActivityLaunched = "eventProgramActivityLaunched";
+        this.eventProgramActivityCompleted = "eventProgramActivityCompleted";
+        this.eventProgramActivityTeamCompleted = "eventProgramActivityTeamCompleted";
     }
     return EventSet;
 }());
@@ -3895,11 +3928,11 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                     self.pebl.storage.removeGroupMembership(newUserProfile_1, oldMembership.id);
                 self.pebl.emitEvent(self.pebl.events.incomingMembership, [m]);
                 // Then send out a new one
-                var exts_3 = {
-                    role: newMembership.role,
-                    activityType: newMembership.activityType
-                };
                 if (newMembership) {
+                    var exts_3 = {
+                        role: newMembership.role,
+                        activityType: newMembership.activityType
+                    };
                     self.pebl.storage.getCurrentActivity(function (activity) {
                         self.pebl.storage.getCurrentBook(function (book) {
                             xapiNew.id = newMembership.id;
@@ -4614,6 +4647,46 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             if (userProfile) {
                 self.xapiGen.addId(xapi);
                 self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programActivityLaunched", "programActivityLaunched");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, eventHandlers_PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                var pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, pa);
+            }
+        });
+    };
+    PEBLEventHandlers.prototype.eventProgramActivityCompleted = function (event) {
+        var payload = event.detail;
+        var xapi = {};
+        var self = this;
+        var exts = {
+            newValue: payload.newValue,
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programActivityCompleted", "programActivityCompleted");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, eventHandlers_PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                var pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, pa);
+            }
+        });
+    };
+    PEBLEventHandlers.prototype.eventProgramActivityTeamCompleted = function (event) {
+        var payload = event.detail;
+        var xapi = {};
+        var self = this;
+        var exts = {
+            newValue: payload.newValue,
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programActivityTeamCompleted", "programActivityTeamCompleted");
                 self.xapiGen.addTimestamp(xapi);
                 self.xapiGen.addActorAccount(xapi, userProfile);
                 self.xapiGen.addObject(xapi, eventHandlers_PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
