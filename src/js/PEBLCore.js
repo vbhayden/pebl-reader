@@ -849,7 +849,7 @@ var CURRENT_USER = "peblCurrentUser";
 var storage_IndexedDBStorageAdapter = /** @class */ (function () {
     function IndexedDBStorageAdapter(callback) {
         this.invocationQueue = [];
-        var request = window.indexedDB.open("pebl", 19);
+        var request = window.indexedDB.open("pebl", 20);
         var self = this;
         request.onupgradeneeded = function () {
             var db = request.result;
@@ -878,7 +878,7 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             eventStore.createIndex(MASTER_INDEX, ["identity", "book"]);
             annotationStore.createIndex(MASTER_INDEX, ["identity", "book"]);
             competencyStore.createIndex(MASTER_INDEX, "identity");
-            generalAnnotationStore.createIndex(MASTER_INDEX, ["identity", "book"]);
+            generalAnnotationStore.createIndex(MASTER_INDEX, "book");
             outgoingActivityStore.createIndex(MASTER_INDEX, "identity");
             outgoingXApiStore.createIndex(MASTER_INDEX, "identity");
             groupStore.createIndex(MASTER_INDEX, "identity");
@@ -993,7 +993,7 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
     IndexedDBStorageAdapter.prototype.getSharedAnnotations = function (userProfile, book, callback) {
         if (this.db) {
             var index = this.db.transaction(["sharedAnnotations"], "readonly").objectStore("sharedAnnotations").index(MASTER_INDEX);
-            var param = [userProfile.identity, book];
+            var param = book;
             this.getAll(index, IDBKeyRange.only(param), callback);
         }
         else {
@@ -1005,7 +1005,7 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
     };
     IndexedDBStorageAdapter.prototype.removeSharedAnnotation = function (userProfile, id, callback) {
         if (this.db) {
-            var request = this.db.transaction(["sharedAnnotations"], "readwrite").objectStore("sharedAnnotations").delete(IDBKeyRange.only([userProfile.identity, id]));
+            var request = this.db.transaction(["sharedAnnotations"], "readwrite").objectStore("sharedAnnotations").delete(IDBKeyRange.only(id));
             request.onerror = function (e) {
                 console.log(e);
             };
