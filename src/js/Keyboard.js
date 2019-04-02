@@ -434,50 +434,50 @@ define(['i18nStrings', 'keymaster', 'Settings'], function(Strings, key, Settings
         },
         defaultOptions:  {},
         accesskeys: {}, // single key strokes are dynamically populated, based on the full shortcuts below:
-        ShowSettingsModal: 'o', //accesskey'ed
+        ShowSettingsModal: '', //accesskey'ed
 
-        SettingsModalSave: 's', //accesskey'ed
-        SettingsModalClose: 'c', //accesskey'ed
+        SettingsModalSave: '', //accesskey'ed
+        SettingsModalClose: '', //accesskey'ed
 
-        PagePrevious: 'left', // ALT BELOW
-        PageNext: 'right', // ALT BELOW
-        PagePreviousAlt: '1', //accesskey'ed
-        PageNextAlt: '2', //accesskey'ed
+        PagePrevious: '', // ALT BELOW
+        PageNext: '', // ALT BELOW
+        PagePreviousAlt: '', //accesskey'ed
+        PageNextAlt: '', //accesskey'ed
 
-        ToolbarShow: 'v', //accesskey'ed
-        ToolbarHide: 'x', //accesskey'ed
+        ToolbarShow: '', //accesskey'ed
+        ToolbarHide: '', //accesskey'ed
 
-        FullScreenToggle: 'h', //accesskey'ed
+        FullScreenToggle: '', //accesskey'ed
 
-        SwitchToLibrary: 'b', //accesskey'ed
+        SwitchToLibrary: '', //accesskey'ed
 
-        TocShowHideToggle: 't', //accesskey'ed
+        TocShowHideToggle: '', //accesskey'ed
 
-        NightTheme: 'n', //accesskey'ed
+        NightTheme: '', //accesskey'ed
 
-        MediaOverlaysEscape: 'r', //accesskey'ed
+        MediaOverlaysEscape: '', //accesskey'ed
 
         //MediaOverlaysPlayPauseAlt: 'p', // ALT BELOW
-        MediaOverlaysPlayPause: 'm', //accesskey'ed
+        MediaOverlaysPlayPause: '', //accesskey'ed
 
-        MediaOverlaysRateIncrease: 'l', //accesskey'ed
-        MediaOverlaysRateDecrease: 'j', //accesskey'ed
+        MediaOverlaysRateIncrease: '', //accesskey'ed
+        MediaOverlaysRateDecrease: '', //accesskey'ed
         //MediaOverlaysRateIncreaseAlt: 'F8', //??
         //MediaOverlaysRateDecreaseAlt: 'shift+F8', //??
-        MediaOverlaysRateReset: 'k', //accesskey'ed
+        MediaOverlaysRateReset: '', //accesskey'ed
 
-        MediaOverlaysVolumeIncrease: 'w', //accesskey'ed
-        MediaOverlaysVolumeDecrease: 'q', //accesskey'ed
+        MediaOverlaysVolumeIncrease: '', //accesskey'ed
+        MediaOverlaysVolumeDecrease: '', //accesskey'ed
         //MediaOverlaysVolumeIncreaseAlt: 'F7', //??
         //MediaOverlaysVolumeDecreaseAlt: 'shift+F7', //??
-        MediaOverlaysVolumeMuteToggle: 'a', //accesskey'ed
+        MediaOverlaysVolumeMuteToggle: '', //accesskey'ed
 
-        MediaOverlaysPrevious: 'y', //accesskey'ed
-        MediaOverlaysNext: 'u', //accesskey'ed
+        MediaOverlaysPrevious: '', //accesskey'ed
+        MediaOverlaysNext: '', //accesskey'ed
 
-        MediaOverlaysAdvancedPanelShowHide: 'g', //accesskey'ed
+        MediaOverlaysAdvancedPanelShowHide: '', //accesskey'ed
 
-        BackgroundAudioPlayPause: 'd'
+        BackgroundAudioPlayPause: ''
     };
 
     try
