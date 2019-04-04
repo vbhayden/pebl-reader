@@ -1561,10 +1561,18 @@ define([
                     goto: { value: gotoParam ? gotoParam : " ", verbatim: true }
                 });
 
-                history.replaceState({ epub: ebookURL, epubs: (epubs ? epubs : undefined) },
-                    "Readium Viewer",
-                    url
-                );
+                // debugger;
+
+                if ((bookmark.contentCFI) && (history.state.url !== url)) {
+
+                    var obj = {
+                        epub: ebookURL,
+                        epubs: (epubs ? epubs : undefined),
+                        url: url
+                    };
+
+                    history.pushState(obj, "Readium Viewer", url);
+                }
             }
         };
 
