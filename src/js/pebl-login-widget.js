@@ -14,6 +14,12 @@ document.addEventListener("eventLogin", function () {
     $('#loginButt').attr("aria-label", "Logout");
 });
 
+$(document).ready(function() {
+	if (window.Lightbox.useLinkedIn) {
+		window.Lightbox.linkedInLogin();
+	}
+});
+
 PeBL.extension.hardcodeLogin = {
     hookLoginButton: function (elementName, loginFn, logoutFn) {
         PeBL.user.getUser(function (userProfile) {
@@ -47,7 +53,8 @@ PeBL.extension.hardcodeLogin = {
 
 window.Lightbox = {
     lrsCredential: 'MTFkZWU2MDg1NTMyZGM4YzE4ZTQyMDFiMGY2YmE4NjE0NTBhMmI3NzoyMGFkNzM3NWE5YjcwYWY1OWJiYzM3ZWZhNjJlYTNlOGNlM2MyMGUw',
-    
+    useLinkedIn: true,
+
     close : function() {
 	var lightBox = document.getElementById('lightBox');
 	var dimOverlay = document.getElementById('dimOverlay');
@@ -162,7 +169,7 @@ window.Lightbox = {
 
 	var lightBoxContent = document.getElementById('lightBoxContent');
 	var lightBoxContentSecondary = document.getElementById('lightBoxContentSecondary');
-	
+
 	var selects = $('<br/>Select your username:<br/><br/><select id="loginUserNameSelector"><option>Learner</option><option>Learner1</option><option>Learner2</option><option>Learner3</option><option>Learner5</option><option>Learner7</option></select>');
 	lightBoxContent.appendChild(selects[0]);
 	lightBoxContent.appendChild(selects[1]);
@@ -180,30 +187,6 @@ window.Lightbox = {
 	lightBoxContent.appendChild(login[0]);
 	lightBoxContent.appendChild(login[1]);
 	lightBoxContent.appendChild(login[2]);
-
-
-
-	var lrsSettingsButton = $('<button id="lrsSettingsButton" onclick="window.Lightbox.displayLRSSettings();">LRS Settings</button>');
-	lightBoxContent.appendChild(lrsSettingsButton[0]);
-
-	var lrsSettingsHeader = $('<h4>Enter either a username and password, or a token.</h4>');
-	var lrsURLInput = $('<p>LRS URL: <textarea id="lrsURLInput" rows="1" cols="50"></textarea></p>');
-	var lrsUsernameInput = $('<p>LRS Username: <input type="text" id="lrsUsernameInput" size="30" /></p>');
-	var lrsPasswordInput = $('<p>LRS Password: <input type="password" id="lrsPasswordInput" size="30" /></p><p>OR</p>');
-	var lrsTokenInput = $('<p>LRS Token: <textarea type="text" rows="5" cols="50" id="lrsTokenInput"></textarea></p>');
-	var lrsCancelButton = $('<button id="lrsCancelButton" onclick="window.Lightbox.closeLRSSettings();">Cancel</button>');
-	var lrsSaveButton = $('<button id="lrsSaveButton" onclick="window.Lightbox.saveLRSSettings();window.Lightbox.closeLRSSettings();">Save</button>');
-	var lrsDefaultButton = $('<button id="lrsDefaultButton" onclick="window.Lightbox.initDefaultLRSSettings(true);window.Lightbox.displayLRSSettings();">Load Defaults</button>');
-
-	lightBoxContentSecondary.appendChild(lrsSettingsHeader[0]);
-	lightBoxContentSecondary.appendChild(lrsURLInput[0]);
-	lightBoxContentSecondary.appendChild(lrsUsernameInput[0]);
-	lightBoxContentSecondary.appendChild(lrsPasswordInput[0]);
-	lightBoxContentSecondary.appendChild(lrsPasswordInput[1]);
-	lightBoxContentSecondary.appendChild(lrsTokenInput[0]);
-	lightBoxContentSecondary.appendChild(lrsCancelButton[0]);
-	lightBoxContentSecondary.appendChild(lrsSaveButton[0]);
-	lightBoxContentSecondary.appendChild(lrsDefaultButton[0]);
 
 	$("#loginUserNameSubmit").click(function () {
 		var currentTeam = null;
@@ -237,7 +220,198 @@ window.Lightbox = {
 			   });
 	    Lightbox.close();
 	});
+
+	if (window.Lightbox.useLinkedIn) {
+		var linkedInButton = document.createElement('button');
+		linkedInButton.textContent = 'Sign in with LinkedIn';
+		linkedInButton.addEventListener('click', function() {
+			window.Lightbox.linkedInSignIn();
+		});
+
+		lightBoxContent.appendChild(linkedInButton);
+	}
+	
+	
+
+
+
+	var lrsSettingsButton = $('<button id="lrsSettingsButton" onclick="window.Lightbox.displayLRSSettings();">LRS Settings</button>');
+	lightBoxContent.appendChild(lrsSettingsButton[0]);
+
+	var lrsSettingsHeader = $('<h4>Enter either a username and password, or a token.</h4>');
+	var lrsURLInput = $('<p>LRS URL: <textarea id="lrsURLInput" rows="1" cols="50"></textarea></p>');
+	var lrsUsernameInput = $('<p>LRS Username: <input type="text" id="lrsUsernameInput" size="30" /></p>');
+	var lrsPasswordInput = $('<p>LRS Password: <input type="password" id="lrsPasswordInput" size="30" /></p><p>OR</p>');
+	var lrsTokenInput = $('<p>LRS Token: <textarea type="text" rows="5" cols="50" id="lrsTokenInput"></textarea></p>');
+	var lrsCancelButton = $('<button id="lrsCancelButton" onclick="window.Lightbox.closeLRSSettings();">Cancel</button>');
+	var lrsSaveButton = $('<button id="lrsSaveButton" onclick="window.Lightbox.saveLRSSettings();window.Lightbox.closeLRSSettings();">Save</button>');
+	var lrsDefaultButton = $('<button id="lrsDefaultButton" onclick="window.Lightbox.initDefaultLRSSettings(true);window.Lightbox.displayLRSSettings();">Load Defaults</button>');
+
+	lightBoxContentSecondary.appendChild(lrsSettingsHeader[0]);
+	lightBoxContentSecondary.appendChild(lrsURLInput[0]);
+	lightBoxContentSecondary.appendChild(lrsUsernameInput[0]);
+	lightBoxContentSecondary.appendChild(lrsPasswordInput[0]);
+	lightBoxContentSecondary.appendChild(lrsPasswordInput[1]);
+	lightBoxContentSecondary.appendChild(lrsTokenInput[0]);
+	lightBoxContentSecondary.appendChild(lrsCancelButton[0]);
+	lightBoxContentSecondary.appendChild(lrsSaveButton[0]);
+	lightBoxContentSecondary.appendChild(lrsDefaultButton[0]);
+
+	
     },
+
+    uuidv4: function () {
+        return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
+    },
+    buildLinkedInAuthCodeUrl: function (scope, clientId, redirectUri, state) {
+        return 'https://www.linkedin.com/oauth/v2/authorization?scope=' + scope + '&' +
+            'response_type=code&' +
+            'client_id=' + clientId + '&' +
+            'redirect_uri=' + redirectUri + '&' +
+            'state=' + state;
+    },
+    apiGetAuthToken: function (clientId, scope, redirectUri) {
+        var state = window.Lightbox.uuidv4();
+        localStorage.setItem('linkedInOauthState', state);
+        window.location.replace(window.Lightbox.buildLinkedInAuthCodeUrl(scope,
+            clientId,
+            redirectUri,
+            state));
+    },
+    apiGetAccessToken: function (application, authToken, success, failure) {
+        var xhr = new XMLHttpRequest();
+        xhr.addEventListener('load', function () {
+            console.log('success', xhr);
+            if (success) {
+                success(JSON.parse(xhr.response));
+                localStorage.removeItem('linkedInOauthState');
+            }
+        });
+        xhr.addEventListener('error', function (e) {
+            console.log('error', xhr);
+            if (failure) {
+                failure(e);
+                localStorage.removeItem('linkedInOauthState');
+            }
+        });
+        xhr.open('GET',
+            'https://project.oauth.eduworks.com' +
+                 '/oauth2/' + application + '/linkedin?authToken=' + authToken + '&d=' + Date.now());
+        xhr.send();
+    },
+    apiGetProfile: function (accessToken, success, failure) {
+        var xhr = new XMLHttpRequest();
+        xhr.addEventListener('load', function () {
+            console.log('success', xhr);
+            if (success) {
+                success(JSON.parse(xhr.response), accessToken);
+            }
+        });
+        xhr.addEventListener('error', function (e) {
+            console.log('error', xhr);
+            if (failure) {
+                failure(e);
+            }
+        });
+        xhr.open('GET', 'https://project.oauth.eduworks.com/pebl/linkedin/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams),address,organizations,phoneNumbers)');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send();
+    },
+    apiGetOtherProfile: function (accessToken, userId, success, failure) {
+        var xhr = new XMLHttpRequest();
+        xhr.addEventListener('load', function () {
+            console.log('success', xhr);
+            if (success) {
+                success(JSON.parse(xhr.response), accessToken);
+            }
+        });
+        xhr.addEventListener('error', function (e) {
+            console.log('error', xhr);
+            if (failure) {
+                failure(e);
+            }
+        });
+        xhr.open('GET', 'https://project.oath.eduworks.com/pebl/linkedin/people/(id:{' + userId + '})');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send();
+    },
+
+    linkedInSignIn: function () {
+        window.Lightbox.apiGetAuthToken('86ujpjdo6nv82l',
+            'r_liteprofile',
+            location.origin);
+    },
+
+    linkedInLogin : function() {
+	    var self = this;
+	    window.PeBL.user.isLoggedIn(function (loggedIn) {
+	        if (loggedIn) {
+
+	        } else {
+	        	var urlParams = new URLSearchParams(window.location.search);
+	            var authToken = urlParams.get('code');
+	            var stateToken = urlParams.get('state');
+
+	            if (authToken && stateToken) {
+	                if (localStorage.getItem('linkedInOauthState') === stateToken) {
+	                    localStorage.removeItem('linkedInOauthState');
+	                    var loginUser = function (profile, accessToken) {
+	                        var name = profile.firstName.localized['en_US'] + ' ' +
+	                            profile.lastName.localized['en_US'];
+	                        var profilePictures = null;
+	                        if (profile.profilePicture && profile.profilePicture['displayImage~']) {
+	                            profilePictures = profile.profilePicture['displayImage~'].elements;
+	                        }
+
+	                        var imageToUse = null;
+	                        if (profilePictures) {
+	                            imageToUse = profilePictures[0].identifiers[0].identifier;
+	                        }
+
+	                        var userProfile = {
+	                            identity: profile.id,
+	                            name: name,
+	                            preferredName: name,
+	                            firstName: profile.firstName.localized['en_US'],
+	                            lastName: profile.lastName.localized['en_US'],
+	                            avatar: imageToUse,
+	                            homePage: 'acct:LinkedIn',
+	                            endpoints: [{
+	                                url: 'https://lrs.peblproject.com/',
+	                                token: window.Lightbox.lrsCredential
+	                            }],
+	                            registryEndpoint: {
+	                                url: 'https://peblproject.com/registry/api/downloadContent?guid='
+	                            },
+	                            metadata: {
+	                                linkedInToken: accessToken
+	                            }
+	                        };
+	                        window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
+	                        window.Lightbox.close();
+	                    };
+
+	                    window.Lightbox.apiGetAccessToken('pebl',
+	                        authToken,
+	                        function (authObj) {
+	                            window.Lightbox.apiGetProfile(authObj.access_token,
+	                                loginUser,
+	                                function (error) {
+	                                    console.log(error);
+	                                });
+	                        },
+	                        function (error) {
+	                            console.log(error);
+	                        });
+	                }
+	            }
+	        }
+	    });
+	},
 
     openIDLogin : function () {
 
@@ -487,5 +661,7 @@ function useOpenIDLoginButton(elementName) {
     
     Lightbox.createLoginButton(elementName);
 }
+
+
 
 // Lightbox.initDefaultLRSSettings();
