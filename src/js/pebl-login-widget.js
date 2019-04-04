@@ -392,6 +392,7 @@ window.Lightbox = {
 	                            }
 	                        };
 	                        window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
+	                        window.Lightbox.close();
 	                    };
 
 	                    window.Lightbox.apiGetAccessToken('pebl',
