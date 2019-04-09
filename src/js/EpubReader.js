@@ -789,7 +789,7 @@ define([
                 PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
                 annotationsShowHideToggle(true);
             } else {
-                window.alert('First select some text, then click this button to highlight it.');
+                window.alert('No text has been selected yet, or selected text is ineligible for highlighting.');
                 throw new Error("Nothing selected");
             }
         };
