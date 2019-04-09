@@ -1977,7 +1977,7 @@ define([
             $appContainer.append(AddNoteDialog({ strings: Strings }));
             $appContainer.append(FullScreenImageDialog({ strings: Strings }));
             installReaderEventHandlers();
-            document.title = "PeBL Reader";
+            document.title = Strings.i18n_pebl_reader;
             $('#zoom-fit-width a').on('click', setFitWidth);
             $('#zoom-fit-screen a').on('click', setFitScreen);
             $('#zoom-custom a').on('click', enableCustom);

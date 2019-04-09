@@ -122,7 +122,13 @@
     },
     "i18n_pebl_library" : {
 	"message" : "PeBL Library"
-    },    
+    },
+    "i18n_pebl_reader" : {
+    "message" : "PeBL Reader"
+    },
+    "i18n_pebl_title" : {
+    "message" : ""
+    },
     "i18n_loading" : {
 	"message" : "Loading Library"
     },
