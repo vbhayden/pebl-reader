@@ -225,6 +225,7 @@ window.Lightbox = {
 		var linkedInButton = document.createElement('button');
 		linkedInButton.textContent = 'Sign in with LinkedIn';
 		linkedInButton.addEventListener('click', function() {
+			window.localStorage.setItem('loginRedirect', window.location.href);
 			window.Lightbox.linkedInSignIn();
 		});
 
@@ -393,6 +394,11 @@ window.Lightbox = {
 	                        };
 	                        window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
 	                        window.Lightbox.close();
+	                        var loginRedirect = localStorage.getItem('loginRedirect');
+	                        if (loginRedirect) {
+	                        	localStorage.removeItem('loginRedirect');
+	                        	window.location.href = loginRedirect;
+	                        }
 	                    };
 
 	                    window.Lightbox.apiGetAccessToken('pebl',

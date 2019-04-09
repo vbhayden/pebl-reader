@@ -789,7 +789,7 @@ define([
                 PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
                 annotationsShowHideToggle(true);
             } else {
-                window.alert('First select some text, then click this button to highlight it.');
+                window.alert('No text has been selected yet, or selected text is ineligible for highlighting.');
                 throw new Error("Nothing selected");
             }
         };
@@ -1977,7 +1977,7 @@ define([
             $appContainer.append(AddNoteDialog({ strings: Strings }));
             $appContainer.append(FullScreenImageDialog({ strings: Strings }));
             installReaderEventHandlers();
-            document.title = "PeBL Reader";
+            document.title = Strings.i18n_pebl_reader;
             $('#zoom-fit-width a').on('click', setFitWidth);
             $('#zoom-fit-screen a').on('click', setFitScreen);
             $('#zoom-custom a').on('click', enableCustom);
