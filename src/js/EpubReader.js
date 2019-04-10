@@ -2436,6 +2436,8 @@ define([
             $('.book-title-header').remove();
 
             $(document.body).removeClass('hide-ui');
+
+            spin(false);
         }
 
         var applyKeyboardSettingsAndLoadUi = function(data) {

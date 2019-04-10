@@ -225,7 +225,10 @@ window.Lightbox = {
 		var linkedInButton = document.createElement('button');
 		linkedInButton.textContent = 'Sign in with LinkedIn';
 		linkedInButton.addEventListener('click', function() {
-			window.localStorage.setItem('loginRedirect', window.location.href);
+			var urlParams = new URLSearchParams(window.location.search);
+			if (urlParams.get('epub'))
+				window.localStorage.setItem('loginRedirect', window.location.href);
+			
 			window.Lightbox.linkedInSignIn();
 		});
 
