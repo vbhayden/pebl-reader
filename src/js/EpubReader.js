@@ -1175,6 +1175,7 @@ define([
                 }
 
                 savePlace();
+                saveHistory();
                 updateUI(pageChangeData);
 
                 spin(false);
@@ -1539,6 +1540,10 @@ define([
             // Note: automatically JSON.stringify's the passed value!
             // ... and bookmarkCurrentPage() is already JSON.toString'ed, so that's twice!
             Settings.put(ebookURL_filepath, bookmarkString, $.noop);
+        };
+
+        var saveHistory = function() {
+            var bookmarkString = readium.reader.bookmarkCurrentPage();
 
             if (!isChromeExtensionPackagedApp // History API is disabled in packaged apps
                 &&
@@ -1563,7 +1568,7 @@ define([
 
                 // debugger;
 
-                if ((bookmark.contentCFI) && (history.state.url !== url)) {
+                if ((bookmark.contentCFI || bookmark.idref) && (history.state.url !== url)) {
 
                     var obj = {
                         epub: ebookURL,
@@ -1574,7 +1579,7 @@ define([
                     history.pushState(obj, "Readium Viewer", url);
                 }
             }
-        };
+        }
 
         var isIos = function() {
           var userAgent = window.navigator.userAgent.toLowerCase();
