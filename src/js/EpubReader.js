@@ -1563,7 +1563,7 @@ define([
 
                 // debugger;
 
-                if ((bookmark.contentCFI) && (history.state.url !== url)) {
+                if ((bookmark.contentCFI || bookmark.idref) && (history.state.url !== url)) {
 
                     var obj = {
                         epub: ebookURL,
