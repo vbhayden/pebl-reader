@@ -384,6 +384,20 @@ define([
             slider.step = '0.001';
             slider.value = currentPageIndex;
 
+
+            // Clear selection to prevent blue border bug that prevent slider from working
+            slider.ondragstart = function() {
+                if (window.getSelection) {
+                    if (window.getSelection().empty) {
+                        window.getSelection().empty();
+                    } else if (window.getSelection().removeAllRanges) {
+                        window.getSelection().removeAllRanges();
+                    }
+                } else if (document.selection && document.selection.empty) {
+                    document.selection.empty();
+                }
+            }
+
             slider.oninput = function() {
                 var val = Math.round(this.value);
                 //Show either the page or the chapter while dragging the slider
