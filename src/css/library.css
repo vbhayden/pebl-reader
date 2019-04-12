@@ -278,4 +278,5 @@ body.list-view .details{
     color: #fff;
     background-color: #da5243;
     border-color: #da5243;
+    display: none;
 }
