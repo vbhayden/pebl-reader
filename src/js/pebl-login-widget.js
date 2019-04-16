@@ -170,98 +170,95 @@ window.Lightbox = {
 	var lightBoxContent = document.getElementById('lightBoxContent');
 	var lightBoxContentSecondary = document.getElementById('lightBoxContentSecondary');
 
-	var selects = $('<br/>Select your username:<br/><br/><select id="loginUserNameSelector"><option>Learner</option><option>Learner1</option><option>Learner2</option><option>Learner3</option><option>Learner5</option><option>Learner7</option></select>');
-	lightBoxContent.appendChild(selects[0]);
-	lightBoxContent.appendChild(selects[1]);
-	lightBoxContent.appendChild(selects[2]);
-	lightBoxContent.appendChild(selects[3]);
-	lightBoxContent.appendChild(selects[4]);
-
-	var classSelect = $('<br/><br/><p>Class ID: <input type="text" id="loginClassSelect"></input></p>');
-	$(lightBoxContent).append(classSelect);
-
-	var teamSelect = $('<br/><br/><p>Team: <input type="text" id="loginTeamSelect"></input></p>');
-	$(lightBoxContent).append(teamSelect);
-
-	var login = $('<br/><br/><input type="button" value="Login" id="loginUserNameSubmit" />');
-	lightBoxContent.appendChild(login[0]);
-	lightBoxContent.appendChild(login[1]);
-	lightBoxContent.appendChild(login[2]);
-
-	$("#loginUserNameSubmit").click(function () {
-		var currentTeam = null;
-		if ($('#loginTeamSelect').length > 0) {
-	    	if ($('#loginTeamSelect').val().trim().length > 0)
-	    		currentTeam = $('#loginTeamSelect').val();
-	    }
-	    var currentClass = null;
-	    if ($('#loginClassSelect').length > 0) {
-	    	if ($('#loginClassSelect').val().trim().length > 0) {
-	    		currentClass = $('#loginClassSelect').val();
-	    	}
-	    }
-	    var identity = $("#loginUserNameSelector").val();
-	    if (currentClass)
-	    	identity += ('-' + currentClass);
-	    PeBL.emitEvent(PeBL.events.eventLoggedIn,
-			   {
-			       identity : identity,
-			       endpoints : [
-				   {
-    				       url: "https://lrs.peblproject.com/",
-    				       token: window.Lightbox.lrsCredential
-				   }
-			       ],
-                               registryEndpoint : {
-    				   url: "https://peblproject.com/registry/api/downloadContent?guid="
-			       },
-			       currentTeam: currentTeam,
-			       currentClass: currentClass
-			   });
-	    Lightbox.close();
-	});
+	
 
 	if (window.Lightbox.useLinkedIn) {
 		var linkedInButton = document.createElement('button');
+		linkedInButton.classList.add('linkedInButton');
 		linkedInButton.textContent = 'Sign in with LinkedIn';
 		linkedInButton.addEventListener('click', function() {
 			var urlParams = new URLSearchParams(window.location.search);
 			if (urlParams.get('epub'))
 				window.localStorage.setItem('loginRedirect', window.location.href);
-			
+
 			window.Lightbox.linkedInSignIn();
 		});
 
 		lightBoxContent.appendChild(linkedInButton);
+	} else {
+		var selects = $('<br/>Select your username:<br/><br/><select id="loginUserNameSelector"><option>Learner</option><option>Learner1</option><option>Learner2</option><option>Learner3</option><option>Learner5</option><option>Learner7</option></select>');
+		lightBoxContent.appendChild(selects[0]);
+		lightBoxContent.appendChild(selects[1]);
+		lightBoxContent.appendChild(selects[2]);
+		lightBoxContent.appendChild(selects[3]);
+		lightBoxContent.appendChild(selects[4]);
+
+		var classSelect = $('<br/><br/><p>Class ID: <input type="text" id="loginClassSelect"></input></p>');
+		$(lightBoxContent).append(classSelect);
+
+		var teamSelect = $('<br/><br/><p>Team: <input type="text" id="loginTeamSelect"></input></p>');
+		$(lightBoxContent).append(teamSelect);
+
+		var login = $('<br/><br/><input type="button" value="Login" id="loginUserNameSubmit" />');
+		lightBoxContent.appendChild(login[0]);
+		lightBoxContent.appendChild(login[1]);
+		lightBoxContent.appendChild(login[2]);
+
+		$("#loginUserNameSubmit").click(function () {
+			var currentTeam = null;
+			if ($('#loginTeamSelect').length > 0) {
+		    	if ($('#loginTeamSelect').val().trim().length > 0)
+		    		currentTeam = $('#loginTeamSelect').val();
+		    }
+		    var currentClass = null;
+		    if ($('#loginClassSelect').length > 0) {
+		    	if ($('#loginClassSelect').val().trim().length > 0) {
+		    		currentClass = $('#loginClassSelect').val();
+		    	}
+		    }
+		    var identity = $("#loginUserNameSelector").val();
+		    if (currentClass)
+		    	identity += ('-' + currentClass);
+		    PeBL.emitEvent(PeBL.events.eventLoggedIn,
+				   {
+				       identity : identity,
+				       endpoints : [
+					   {
+	    				       url: "https://lrs.peblproject.com/",
+	    				       token: window.Lightbox.lrsCredential
+					   }
+				       ],
+	                               registryEndpoint : {
+	    				   url: "https://peblproject.com/registry/api/downloadContent?guid="
+				       },
+				       currentTeam: currentTeam,
+				       currentClass: currentClass
+				   });
+		    Lightbox.close();
+		});
+
+		var lrsSettingsButton = $('<button id="lrsSettingsButton" onclick="window.Lightbox.displayLRSSettings();">LRS Settings</button>');
+		lightBoxContent.appendChild(lrsSettingsButton[0]);
+
+		var lrsSettingsHeader = $('<h4>Enter either a username and password, or a token.</h4>');
+		var lrsURLInput = $('<p>LRS URL: <textarea id="lrsURLInput" rows="1" cols="50"></textarea></p>');
+		var lrsUsernameInput = $('<p>LRS Username: <input type="text" id="lrsUsernameInput" size="30" /></p>');
+		var lrsPasswordInput = $('<p>LRS Password: <input type="password" id="lrsPasswordInput" size="30" /></p><p>OR</p>');
+		var lrsTokenInput = $('<p>LRS Token: <textarea type="text" rows="5" cols="50" id="lrsTokenInput"></textarea></p>');
+		var lrsCancelButton = $('<button id="lrsCancelButton" onclick="window.Lightbox.closeLRSSettings();">Cancel</button>');
+		var lrsSaveButton = $('<button id="lrsSaveButton" onclick="window.Lightbox.saveLRSSettings();window.Lightbox.closeLRSSettings();">Save</button>');
+		var lrsDefaultButton = $('<button id="lrsDefaultButton" onclick="window.Lightbox.initDefaultLRSSettings(true);window.Lightbox.displayLRSSettings();">Load Defaults</button>');
+
+		lightBoxContentSecondary.appendChild(lrsSettingsHeader[0]);
+		lightBoxContentSecondary.appendChild(lrsURLInput[0]);
+		lightBoxContentSecondary.appendChild(lrsUsernameInput[0]);
+		lightBoxContentSecondary.appendChild(lrsPasswordInput[0]);
+		lightBoxContentSecondary.appendChild(lrsPasswordInput[1]);
+		lightBoxContentSecondary.appendChild(lrsTokenInput[0]);
+		lightBoxContentSecondary.appendChild(lrsCancelButton[0]);
+		lightBoxContentSecondary.appendChild(lrsSaveButton[0]);
+		lightBoxContentSecondary.appendChild(lrsDefaultButton[0]);
 	}
-	
-	
-
-
-
-	var lrsSettingsButton = $('<button id="lrsSettingsButton" onclick="window.Lightbox.displayLRSSettings();">LRS Settings</button>');
-	lightBoxContent.appendChild(lrsSettingsButton[0]);
-
-	var lrsSettingsHeader = $('<h4>Enter either a username and password, or a token.</h4>');
-	var lrsURLInput = $('<p>LRS URL: <textarea id="lrsURLInput" rows="1" cols="50"></textarea></p>');
-	var lrsUsernameInput = $('<p>LRS Username: <input type="text" id="lrsUsernameInput" size="30" /></p>');
-	var lrsPasswordInput = $('<p>LRS Password: <input type="password" id="lrsPasswordInput" size="30" /></p><p>OR</p>');
-	var lrsTokenInput = $('<p>LRS Token: <textarea type="text" rows="5" cols="50" id="lrsTokenInput"></textarea></p>');
-	var lrsCancelButton = $('<button id="lrsCancelButton" onclick="window.Lightbox.closeLRSSettings();">Cancel</button>');
-	var lrsSaveButton = $('<button id="lrsSaveButton" onclick="window.Lightbox.saveLRSSettings();window.Lightbox.closeLRSSettings();">Save</button>');
-	var lrsDefaultButton = $('<button id="lrsDefaultButton" onclick="window.Lightbox.initDefaultLRSSettings(true);window.Lightbox.displayLRSSettings();">Load Defaults</button>');
-
-	lightBoxContentSecondary.appendChild(lrsSettingsHeader[0]);
-	lightBoxContentSecondary.appendChild(lrsURLInput[0]);
-	lightBoxContentSecondary.appendChild(lrsUsernameInput[0]);
-	lightBoxContentSecondary.appendChild(lrsPasswordInput[0]);
-	lightBoxContentSecondary.appendChild(lrsPasswordInput[1]);
-	lightBoxContentSecondary.appendChild(lrsTokenInput[0]);
-	lightBoxContentSecondary.appendChild(lrsCancelButton[0]);
-	lightBoxContentSecondary.appendChild(lrsSaveButton[0]);
-	lightBoxContentSecondary.appendChild(lrsDefaultButton[0]);
-
-	
     },
 
     uuidv4: function () {
