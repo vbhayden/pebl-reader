@@ -153,6 +153,8 @@ define([
             } else {
                 $('<h2 class="book-title-header"></h2>').insertAfter('.navbar').text(title);
             }
+
+            $('#aboutButt1').text(title);
         };
 
         var _debugBookmarkData_goto = undefined;
@@ -566,7 +568,6 @@ define([
 
                     wasFixed = readium.reader.isCurrentViewFixedLayout();
                     var metadata = options.metadata;
-
                     setBookTitle(metadata.title);
 
                     initializeSlider();
