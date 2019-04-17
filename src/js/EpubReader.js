@@ -879,7 +879,7 @@ define([
                     } else {
                         var infoContainer = document.createElement('div');
                         var info = document.createElement('span');
-                        info.textContent = 'Shared by ' + annotation.owner;
+                        info.textContent = 'Shared by ' + annotation.actor.name;
                         infoContainer.appendChild(info);
                         buttonWrapper.appendChild(infoContainer);
                     }
