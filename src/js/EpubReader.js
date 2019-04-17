@@ -154,7 +154,7 @@ define([
                 $('<h2 class="book-title-header"></h2>').insertAfter('.navbar').text(title);
             }
 
-            $('#aboutButt1').text(title);
+            $('#webreaderTitle').text(title);
         };
 
         var _debugBookmarkData_goto = undefined;

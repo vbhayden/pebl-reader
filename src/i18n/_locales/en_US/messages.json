@@ -129,6 +129,9 @@
     "i18n_pebl_title" : {
     "message" : ""
     },
+    "i18n_pebl_webreader_logo": {
+    "message": "../images/webreader_logo_eduworks.png"
+    },
     "i18n_loading" : {
 	"message" : "Loading Library"
     },
