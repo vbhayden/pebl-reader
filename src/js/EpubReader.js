@@ -153,6 +153,8 @@ define([
             } else {
                 $('<h2 class="book-title-header"></h2>').insertAfter('.navbar').text(title);
             }
+
+            $('#webreaderTitle').text(title);
         };
 
         var _debugBookmarkData_goto = undefined;
@@ -384,6 +386,20 @@ define([
             slider.step = '0.001';
             slider.value = currentPageIndex;
 
+
+            // Clear selection to prevent blue border bug that prevent slider from working
+            slider.ondragstart = function() {
+                if (window.getSelection) {
+                    if (window.getSelection().empty) {
+                        window.getSelection().empty();
+                    } else if (window.getSelection().removeAllRanges) {
+                        window.getSelection().removeAllRanges();
+                    }
+                } else if (document.selection && document.selection.empty) {
+                    document.selection.empty();
+                }
+            }
+
             slider.oninput = function() {
                 var val = Math.round(this.value);
                 //Show either the page or the chapter while dragging the slider
@@ -552,7 +568,6 @@ define([
 
                     wasFixed = readium.reader.isCurrentViewFixedLayout();
                     var metadata = options.metadata;
-
                     setBookTitle(metadata.title);
 
                     initializeSlider();
@@ -789,7 +804,7 @@ define([
                 PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
                 annotationsShowHideToggle(true);
             } else {
-                window.alert('First select some text, then click this button to highlight it.');
+                window.alert('No text has been selected yet, or selected text is ineligible for highlighting.');
                 throw new Error("Nothing selected");
             }
         };
@@ -864,7 +879,7 @@ define([
                     } else {
                         var infoContainer = document.createElement('div');
                         var info = document.createElement('span');
-                        info.textContent = 'Shared by ' + annotation.owner;
+                        info.textContent = 'Shared by ' + annotation.actor.name;
                         infoContainer.appendChild(info);
                         buttonWrapper.appendChild(infoContainer);
                     }
@@ -1175,6 +1190,7 @@ define([
                 }
 
                 savePlace();
+                saveHistory();
                 updateUI(pageChangeData);
 
                 spin(false);
@@ -1539,6 +1555,10 @@ define([
             // Note: automatically JSON.stringify's the passed value!
             // ... and bookmarkCurrentPage() is already JSON.toString'ed, so that's twice!
             Settings.put(ebookURL_filepath, bookmarkString, $.noop);
+        };
+
+        var saveHistory = function() {
+            var bookmarkString = readium.reader.bookmarkCurrentPage();
 
             if (!isChromeExtensionPackagedApp // History API is disabled in packaged apps
                 &&
@@ -1561,12 +1581,20 @@ define([
                     goto: { value: gotoParam ? gotoParam : " ", verbatim: true }
                 });
 
-                history.replaceState({ epub: ebookURL, epubs: (epubs ? epubs : undefined) },
-                    "Readium Viewer",
-                    url
-                );
+                // debugger;
+
+                if ((bookmark.contentCFI || bookmark.idref) && (history.state.url !== url)) {
+
+                    var obj = {
+                        epub: ebookURL,
+                        epubs: (epubs ? epubs : undefined),
+                        url: url
+                    };
+
+                    history.pushState(obj, "Readium Viewer", url);
+                }
             }
-        };
+        }
 
         var isIos = function() {
           var userAgent = window.navigator.userAgent.toLowerCase();
@@ -1969,7 +1997,7 @@ define([
             $appContainer.append(AddNoteDialog({ strings: Strings }));
             $appContainer.append(FullScreenImageDialog({ strings: Strings }));
             installReaderEventHandlers();
-            document.title = "PeBL Reader";
+            document.title = Strings.i18n_pebl_reader;
             $('#zoom-fit-width a').on('click', setFitWidth);
             $('#zoom-fit-screen a').on('click', setFitScreen);
             $('#zoom-custom a').on('click', enableCustom);
@@ -2428,6 +2456,8 @@ define([
             $('.book-title-header').remove();
 
             $(document.body).removeClass('hide-ui');
+
+            spin(false);
         }
 
         var applyKeyboardSettingsAndLoadUi = function(data) {
