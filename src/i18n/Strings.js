@@ -21,8 +21,9 @@ define(['text!readium_js_viewer_i18n/_locales/de/messages.json',
         'text!readium_js_viewer_i18n/_locales/ko/messages.json',
         'text!readium_js_viewer_i18n/_locales/pt_BR/messages.json',
         'text!readium_js_viewer_i18n/_locales/zh_CN/messages.json',
-        'text!readium_js_viewer_i18n/_locales/zh_TW/messages.json'],
-function(de, es, en_US, fr, it, id, ja, ko, pt_BR, zh_CN, zh_TW){
+        'text!readium_js_viewer_i18n/_locales/zh_TW/messages.json',
+        'text!readium_js_viewer_i18n/_locales/en_US/skinning.json'],
+function(de, es, en_US, fr, it, id, ja, ko, pt_BR, zh_CN, zh_TW, en_USSkinning){
     var Strings = {};
 
     Strings['de'] = de;
@@ -48,13 +49,21 @@ function(de, es, en_US, fr, it, id, ja, ko, pt_BR, zh_CN, zh_TW){
 
     var i18nObj = JSON.parse(i18nStr);
     var i18nObj_en = i18nStr === en_US ? i18nObj : JSON.parse(en_US);
-
+             
     for(var prop in i18nObj_en){
         var okay = prop in i18nObj;
         if (!okay) console.log("Language [" + language + "], missing string: [" + prop + "]");
 
         i18nObj[prop] = okay ? i18nObj[prop].message : (allowEnglishFallback ? ("*"+i18nObj_en[prop].message) : "");
     }
+
+    var skinningObj = JSON.parse(en_USSkinning);
+    for(var prop in skinningObj) {
+        if (!i18nObj[prop]) {
+            i18nObj[prop] = skinningObj[prop].message;
+        }
+    }
+    
     return i18nObj;
 
 });

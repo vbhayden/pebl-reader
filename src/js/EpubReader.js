@@ -153,6 +153,8 @@ define([
             } else {
                 $('<h2 class="book-title-header"></h2>').insertAfter('.navbar').text(title);
             }
+
+            $('#webreaderTitle').text(title);
         };
 
         var _debugBookmarkData_goto = undefined;
@@ -566,7 +568,6 @@ define([
 
                     wasFixed = readium.reader.isCurrentViewFixedLayout();
                     var metadata = options.metadata;
-
                     setBookTitle(metadata.title);
 
                     initializeSlider();
@@ -878,7 +879,7 @@ define([
                     } else {
                         var infoContainer = document.createElement('div');
                         var info = document.createElement('span');
-                        info.textContent = 'Shared by ' + annotation.owner;
+                        info.textContent = 'Shared by ' + annotation.actor.name;
                         infoContainer.appendChild(info);
                         buttonWrapper.appendChild(infoContainer);
                     }
