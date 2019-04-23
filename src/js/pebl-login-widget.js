@@ -15,7 +15,7 @@ document.addEventListener("eventLogin", function () {
 });
 
 $(document).ready(function() {
-	if (window.Lightbox.useLinkedIn) {
+	if (window.Configuration.useLinkedIn) {
 		window.Lightbox.linkedInLogin();
 	}
 });
@@ -52,9 +52,6 @@ PeBL.extension.hardcodeLogin = {
 };
 
 window.Lightbox = {
-    lrsCredential: 'MTFkZWU2MDg1NTMyZGM4YzE4ZTQyMDFiMGY2YmE4NjE0NTBhMmI3NzoyMGFkNzM3NWE5YjcwYWY1OWJiYzM3ZWZhNjJlYTNlOGNlM2MyMGUw',
-    useLinkedIn: true,
-
     close : function() {
 	var lightBox = document.getElementById('lightBox');
 	var dimOverlay = document.getElementById('dimOverlay');
@@ -106,9 +103,9 @@ window.Lightbox = {
     },
 
     initDefaultLRSSettings : function(reset) {
-    	var lrsURL = "https://lrs.peblproject.org/";
+    	var lrsURL = window.Configuration.lrsUrl;
     	var lrsPassword = null;
-    	var lrsToken = "MTFkZWU2MDg1NTMyZGM4YzE4ZTQyMDFiMGY2YmE4NjE0NTBhMmI3NzoyMGFkNzM3NWE5YjcwYWY1OWJiYzM3ZWZhNjJlYTNlOGNlM2MyMGUw";
+    	var lrsToken = window.Configuration.lrsCredential;
 	var lrsUsername = null;
     	var currentSettings = window.Lightbox.getLRSSettings();
 
@@ -172,7 +169,7 @@ window.Lightbox = {
 
 	
 
-	if (window.Lightbox.useLinkedIn) {
+	if (window.Configuration.useLinkedIn) {
 		var linkedInButton = document.createElement('button');
 		linkedInButton.classList.add('linkedInButton');
 		linkedInButton.textContent = 'Sign in with LinkedIn';
@@ -224,8 +221,8 @@ window.Lightbox = {
 				       identity : identity,
 				       endpoints : [
 					   {
-	    				       url: "https://lrs.peblproject.com/",
-	    				       token: window.Lightbox.lrsCredential
+	    				       url: window.Configuration.lrsUrl,
+	    				       token: window.Configuration.lrsCredential
 					   }
 				       ],
 	                               registryEndpoint : {
@@ -382,8 +379,8 @@ window.Lightbox = {
 	                            avatar: imageToUse,
 	                            homePage: 'acct:LinkedIn',
 	                            endpoints: [{
-	                                url: 'https://lrs.peblproject.com/',
-	                                token: window.Lightbox.lrsCredential
+	                                url: window.Configuration.lrsUrl,
+	                                token: window.Configuration.lrsCredential
 	                            }],
 	                            registryEndpoint: {
 	                                url: 'https://peblproject.com/registry/api/downloadContent?guid='

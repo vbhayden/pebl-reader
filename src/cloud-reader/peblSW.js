@@ -19,6 +19,7 @@ var FILES_TO_CACHE = [
     "./scripts/zip/deflate.js",
     "./scripts/zip/inflate.js",
     "./scripts/zip/z-worker.js",
+    "./scripts/config.js",
 
     
     "./font-faces/fonts.js",
