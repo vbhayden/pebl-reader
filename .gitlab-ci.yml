@@ -35,12 +35,13 @@ buildProdExtension:
   - echo "window.Configuration = {};" > src/cloud-reader/config.js
   - echo "window.Configuration.lrsUrl = '$PROD_EXTENSION_LRS_URL';" >> src/cloud-reader/config.js
   - echo "window.Configuration.lrsCredential = '$PROD_EXTENSION_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
-  - echo "window.Configuration.useLinkedIn = true;" >> src/cloud-reader/config.js  
+  - echo "window.Configuration.useLinkedIn = true;" >> src/cloud-reader/config.js
+  - echo "window.Configuration.favicon = 'images/eXtension-icon_small.png';" >> src/cloud-reader/config.js
 
   - echo "{" > src/i18n/_locales/en_US/skinning.json
 
-  - "echo '\"i18n_pebl_library\" : { \"message\" : \"PeBL Library\" },' >> src/i18n/_locales/en_US/skinning.json"
-  - "echo '\"i18n_pebl_reader\" : { \"message\" : \"PeBL Reader\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_library\" : { \"message\" : \"eXtension Library\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_reader\" : { \"message\" : \"eXtension Reader\" },' >> src/i18n/_locales/en_US/skinning.json"
   - "echo '\"i18n_pebl_title\" : { \"message\" : \"eXtension Foundation\" },' >> src/i18n/_locales/en_US/skinning.json"
   - "echo '\"i18n_pebl_webreader_logo\" : { \"message\" : \"images/eXtension-icon_small.png\" }' >> src/i18n/_locales/en_US/skinning.json"
   

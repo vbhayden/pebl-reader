@@ -6,7 +6,7 @@
 
         <link rel="manifest" href="manifest.json" />
         
-        <link href="images/PEBL-icon-16.ico" rel="shortcut icon"/>
+        <link id="readerFavicon" href="" rel="shortcut icon"/>
         <link href="images/PEBL-icon-144.png" rel="apple-touch-icon"/>
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -31,6 +31,7 @@
 
         <link rel="stylesheet" type="text/css" href="css/readium-all.css">
         <link rel="stylesheet" type="text/css" href="css/pebl-discussion-widget.css">
+        <link rel="stylesheet" type="text/css" href="css/pebl-login-widget.css">
 
         <script type="text/javascript" src="scripts/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="scripts/config.js"></script>
@@ -40,7 +41,8 @@
         <script type="text/javascript" src="font-faces/fonts.js"> </script>
 
         <script type="text/javascript">
-         
+         document.getElementById('readerFavicon').setAttribute('href', window.Configuration.favicon);
+
          if (navigator.serviceWorker) {
              navigator.serviceWorker.register('peblSW.js').then(function (reg) {
                  console.log("Service worker registered", reg.scope);
