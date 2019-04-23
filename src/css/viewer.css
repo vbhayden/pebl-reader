@@ -248,6 +248,10 @@ direction: rtl;
     background-color: #4d4d4d;
 }
 
+.navbar-left {
+  width: 50%;
+}
+
 .book-title-header{
   position: absolute;
   top: 0px;

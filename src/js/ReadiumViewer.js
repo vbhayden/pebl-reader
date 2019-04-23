@@ -135,7 +135,7 @@ define(['jquery', './EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 
         
         var func = _initialLoad ? replaceState : pushState;
         func(
-            {epub: epub, epubs: epubs},
+            {epub: epub, epubs: epubs, url: urlState },
             "Readium Viewer",
             urlState
         );
