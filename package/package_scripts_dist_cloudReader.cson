@@ -91,6 +91,10 @@
             dist/cloud-reader/css/
         &&
         npm run cpy
+            src/css/pebl-login-widget.css
+            dist/cloud-reader/css/
+        &&
+        npm run cpy
             src/js/pebl-login-widget.js
             dist/cloud-reader/scripts/
         &&

@@ -55,8 +55,10 @@ window.Lightbox = {
     close : function() {
 	var lightBox = document.getElementById('lightBox');
 	var dimOverlay = document.getElementById('dimOverlay');
-	lightBox.parentNode.removeChild(lightBox);
-	dimOverlay.parentNode.removeChild(dimOverlay);
+	if (lightBox)
+		lightBox.parentNode.removeChild(lightBox);
+	if (dimOverlay)
+		dimOverlay.parentNode.removeChild(dimOverlay);
     },
 
     addElement : function (element) {
@@ -234,27 +236,27 @@ window.Lightbox = {
 		    Lightbox.close();
 		});
 
-		var lrsSettingsButton = $('<button id="lrsSettingsButton" onclick="window.Lightbox.displayLRSSettings();">LRS Settings</button>');
-		lightBoxContent.appendChild(lrsSettingsButton[0]);
+		// var lrsSettingsButton = $('<button id="lrsSettingsButton" onclick="window.Lightbox.displayLRSSettings();">LRS Settings</button>');
+		// lightBoxContent.appendChild(lrsSettingsButton[0]);
 
-		var lrsSettingsHeader = $('<h4>Enter either a username and password, or a token.</h4>');
-		var lrsURLInput = $('<p>LRS URL: <textarea id="lrsURLInput" rows="1" cols="50"></textarea></p>');
-		var lrsUsernameInput = $('<p>LRS Username: <input type="text" id="lrsUsernameInput" size="30" /></p>');
-		var lrsPasswordInput = $('<p>LRS Password: <input type="password" id="lrsPasswordInput" size="30" /></p><p>OR</p>');
-		var lrsTokenInput = $('<p>LRS Token: <textarea type="text" rows="5" cols="50" id="lrsTokenInput"></textarea></p>');
-		var lrsCancelButton = $('<button id="lrsCancelButton" onclick="window.Lightbox.closeLRSSettings();">Cancel</button>');
-		var lrsSaveButton = $('<button id="lrsSaveButton" onclick="window.Lightbox.saveLRSSettings();window.Lightbox.closeLRSSettings();">Save</button>');
-		var lrsDefaultButton = $('<button id="lrsDefaultButton" onclick="window.Lightbox.initDefaultLRSSettings(true);window.Lightbox.displayLRSSettings();">Load Defaults</button>');
+		// var lrsSettingsHeader = $('<h4>Enter either a username and password, or a token.</h4>');
+		// var lrsURLInput = $('<p>LRS URL: <textarea id="lrsURLInput" rows="1" cols="50"></textarea></p>');
+		// var lrsUsernameInput = $('<p>LRS Username: <input type="text" id="lrsUsernameInput" size="30" /></p>');
+		// var lrsPasswordInput = $('<p>LRS Password: <input type="password" id="lrsPasswordInput" size="30" /></p><p>OR</p>');
+		// var lrsTokenInput = $('<p>LRS Token: <textarea type="text" rows="5" cols="50" id="lrsTokenInput"></textarea></p>');
+		// var lrsCancelButton = $('<button id="lrsCancelButton" onclick="window.Lightbox.closeLRSSettings();">Cancel</button>');
+		// var lrsSaveButton = $('<button id="lrsSaveButton" onclick="window.Lightbox.saveLRSSettings();window.Lightbox.closeLRSSettings();">Save</button>');
+		// var lrsDefaultButton = $('<button id="lrsDefaultButton" onclick="window.Lightbox.initDefaultLRSSettings(true);window.Lightbox.displayLRSSettings();">Load Defaults</button>');
 
-		lightBoxContentSecondary.appendChild(lrsSettingsHeader[0]);
-		lightBoxContentSecondary.appendChild(lrsURLInput[0]);
-		lightBoxContentSecondary.appendChild(lrsUsernameInput[0]);
-		lightBoxContentSecondary.appendChild(lrsPasswordInput[0]);
-		lightBoxContentSecondary.appendChild(lrsPasswordInput[1]);
-		lightBoxContentSecondary.appendChild(lrsTokenInput[0]);
-		lightBoxContentSecondary.appendChild(lrsCancelButton[0]);
-		lightBoxContentSecondary.appendChild(lrsSaveButton[0]);
-		lightBoxContentSecondary.appendChild(lrsDefaultButton[0]);
+		// lightBoxContentSecondary.appendChild(lrsSettingsHeader[0]);
+		// lightBoxContentSecondary.appendChild(lrsURLInput[0]);
+		// lightBoxContentSecondary.appendChild(lrsUsernameInput[0]);
+		// lightBoxContentSecondary.appendChild(lrsPasswordInput[0]);
+		// lightBoxContentSecondary.appendChild(lrsPasswordInput[1]);
+		// lightBoxContentSecondary.appendChild(lrsTokenInput[0]);
+		// lightBoxContentSecondary.appendChild(lrsCancelButton[0]);
+		// lightBoxContentSecondary.appendChild(lrsSaveButton[0]);
+		// lightBoxContentSecondary.appendChild(lrsDefaultButton[0]);
 	}
     },
 
