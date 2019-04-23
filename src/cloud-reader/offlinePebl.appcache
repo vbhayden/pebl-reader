@@ -8,6 +8,7 @@ index.html
 css/readium-all.css
 css/annotations.css
 css/pebl-discussion-widget.css
+css/pebl-login-widget.css
 
 # scripts
 scripts/jquery-3.3.1.min.js

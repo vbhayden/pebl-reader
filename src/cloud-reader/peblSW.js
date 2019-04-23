@@ -7,6 +7,7 @@ var FILES_TO_CACHE = [
     
     "./css/readium-all.css",
     "./css/pebl-discussion-widget.css",
+    "./css/pebl-login-widget.css",
     "./css/annotations.css",
 
     
