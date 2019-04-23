@@ -74,7 +74,8 @@ var FILES_TO_CACHE = [
     "./images/PEBL-icon-144.png",
     "./images/PEBL-icon-192.png",
     "./images/webreader_logo_eduworks.png",
-    "./images/about_readium_logo.png"
+    "./images/about_readium_logo.png",
+    "./images/eXtension-icon_small.png"
 ];
 
 self.addEventListener('install',
