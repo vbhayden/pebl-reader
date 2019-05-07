@@ -47,6 +47,7 @@ html#simpleViewer .icon-library{
   overflow: auto;
   background: #f3f3f3;
   border-right: solid 2px rgba(0,0,0,.15);
+  resize: horizontal;
 }
 
 #annotations-body{
@@ -54,6 +55,7 @@ html#simpleViewer .icon-library{
   overflow: auto;
   background: #f3f3f3;
   border-right: solid 2px rgba(0,0,0,.15);
+  resize: horizontal;
 }
 
 #bookmarks-body{
@@ -61,6 +63,7 @@ html#simpleViewer .icon-library{
   overflow: auto;
   background: #f3f3f3;
   border-right: solid 2px rgba(0,0,0,.15);
+  resize: horizontal;
 }
 
 

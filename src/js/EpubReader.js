@@ -1933,11 +1933,42 @@ define([
                 $('#bookmarks-body').height(appHeight);
             };
 
+            var tocBody = $('#readium-toc-body');
+            var annotationsBody = $('#annotations-body');
+            var bookmarksBody = $('#bookmarks-body');
+            var readingArea = $('#reading-area');
+
+            var setReaderSize = function() {
+                var readingAreaOffset = readingArea.css('left');
+                if (tocBody.is(':visible')) {
+                    var tocBodyWidth = tocBody.width();
+                    if (readingAreaOffset !== tocBodyWidth) {
+                        readingArea.css('left', tocBodyWidth);
+                        window.dispatchEvent(new Event('resize'));
+                    }
+                } else if (annotationsBody.is(':visible')) {
+                    var annotationsBodyWidth = annotationsBody.width();
+                    if (readingAreaOffset !== annotationsBodyWidth) {
+                        readingArea.css('left', annotationsBodyWidth);
+                        window.dispatchEvent(new Event('resize'));
+                    }
+                } else if (bookmarksBody.is(':visible')) {
+                    var bookmarksBodyWidth = bookmarksBody.width();
+                    if (readingAreaOffset !== bookmarksBodyWidth) {
+                        readingArea.css('left', bookmarksBodyWidth);
+                        window.dispatchEvent(new Event('resize'));
+                    }
+                } else if (readingAreaOffset !== '0px') {
+                    readingArea.css('left', '0px');
+                }
+            }
+
             Keyboard.on(Keyboard.ShowSettingsModal, 'reader', function() { $('#settings-dialog').modal("show") });
 
             $('#app-navbar').on('mousemove', hideLoop);
 
             $(window).on('resize', setTocSize);
+            setInterval(setReaderSize, 200);
             setTocSize();
 
             hideLoop();
