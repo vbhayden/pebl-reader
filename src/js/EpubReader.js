@@ -79,6 +79,24 @@ define([
         // (variable not actually used anywhere here, but top-level to indicate that its lifespan is that of the reader object (not to be garbage-collected))
         var gesturesHandler = undefined;
 
+        var readerUtils = {};
+
+        window.readerUtils = readerUtils;
+
+        readerUtils.setTocHrefCompleted = function (href) {
+            $('#readium-toc-body').find('a[href="' + href + '"]').each(function() {
+                $(this).addClass('complete');
+            });
+        }
+
+        readerUtils.setTocIdrefCompleted = function (idref) {
+            var spine = ReadiumSDK.reader.spine().getItemById(idref);
+            if (spine && spine.href)
+                readerUtils.setTocHrefCompleted(spine.href);
+            else
+                console.error('No spine item found with idref: ' + idref);
+        }
+
 
         // TODO: is this variable actually used anywhere here??
         // (bad naming convention, hard to find usages of "el")

@@ -124,6 +124,22 @@ direction: rtl;
   padding-left: 20px;
 }
 
+#readium-toc-body a.complete,
+#readium-toc-body a.complete ~ ol a {
+  color: #037b05;
+}
+
+#readium-toc-body a.complete::before,
+#readium-toc-body a.complete ~ ol a::before {
+  content: "\2713 ";
+  width: 1em;
+  display: inline-block;
+  font-weight: 700!important;
+  position: relative;
+  left: -.5rem;
+  margin-left: -1rem;
+}
+
 .toc-visible #readium-toc-body{
   display: inline-block;
   width: 30%;
