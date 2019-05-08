@@ -5055,26 +5055,30 @@ var pebl_PEBL = /** @class */ (function () {
     };
     PEBL.prototype.unsubscribeEvent = function (eventName, once, callback) {
         var i = 0;
-        for (var _i = 0, _a = this.subscribedEventHandlers[eventName]; _i < _a.length; _i++) {
-            var pack = _a[_i];
-            if ((pack.once == once) && (pack.fn == callback)) {
-                document.removeEventListener(eventName, pack.modifiedFn);
-                this.subscribedEventHandlers[eventName].splice(i, 1);
-                return;
+        if (this.subscribedEventHandlers[eventName]) {
+            for (var _i = 0, _a = this.subscribedEventHandlers[eventName]; _i < _a.length; _i++) {
+                var pack = _a[_i];
+                if ((pack.once == once) && (pack.fn == callback)) {
+                    document.removeEventListener(eventName, pack.modifiedFn);
+                    this.subscribedEventHandlers[eventName].splice(i, 1);
+                    return;
+                }
+                i++;
             }
-            i++;
         }
     };
     PEBL.prototype.unsubscribeThread = function (thread, once, callback) {
         var i = 0;
-        for (var _i = 0, _a = this.subscribedThreadHandlers[thread]; _i < _a.length; _i++) {
-            var pack = _a[_i];
-            if ((pack.once == once) && (pack.fn == callback)) {
-                document.removeEventListener(thread, pack.modifiedFn);
-                this.subscribedThreadHandlers[thread].splice(i, 1);
-                return;
+        if (this.subscribedThreadHandlers[thread]) {
+            for (var _i = 0, _a = this.subscribedThreadHandlers[thread]; _i < _a.length; _i++) {
+                var pack = _a[_i];
+                if ((pack.once == once) && (pack.fn == callback)) {
+                    document.removeEventListener(thread, pack.modifiedFn);
+                    this.subscribedThreadHandlers[thread].splice(i, 1);
+                    return;
+                }
+                i++;
             }
-            i++;
         }
     };
     PEBL.prototype.subscribeEvent = function (eventName, once, callback) {
