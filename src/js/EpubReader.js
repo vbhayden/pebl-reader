@@ -79,6 +79,24 @@ define([
         // (variable not actually used anywhere here, but top-level to indicate that its lifespan is that of the reader object (not to be garbage-collected))
         var gesturesHandler = undefined;
 
+        var readerUtils = {};
+
+        window.readerUtils = readerUtils;
+
+        readerUtils.setTocHrefCompleted = function (href) {
+            $('#readium-toc-body').find('a[href="' + href + '"]').each(function() {
+                $(this).addClass('complete');
+            });
+        }
+
+        readerUtils.setTocIdrefCompleted = function (idref) {
+            var spine = ReadiumSDK.reader.spine().getItemById(idref);
+            if (spine && spine.href)
+                readerUtils.setTocHrefCompleted(spine.href);
+            else
+                console.error('No spine item found with idref: ' + idref);
+        }
+
 
         // TODO: is this variable actually used anywhere here??
         // (bad naming convention, hard to find usages of "el")
@@ -1933,11 +1951,42 @@ define([
                 $('#bookmarks-body').height(appHeight);
             };
 
+            var tocBody = $('#readium-toc-body');
+            var annotationsBody = $('#annotations-body');
+            var bookmarksBody = $('#bookmarks-body');
+            var readingArea = $('#reading-area');
+
+            var setReaderSize = function() {
+                var readingAreaOffset = readingArea.css('left');
+                if (tocBody.is(':visible')) {
+                    var tocBodyWidth = tocBody.width();
+                    if (readingAreaOffset !== tocBodyWidth) {
+                        readingArea.css('left', tocBodyWidth);
+                        window.dispatchEvent(new Event('resize'));
+                    }
+                } else if (annotationsBody.is(':visible')) {
+                    var annotationsBodyWidth = annotationsBody.width();
+                    if (readingAreaOffset !== annotationsBodyWidth) {
+                        readingArea.css('left', annotationsBodyWidth);
+                        window.dispatchEvent(new Event('resize'));
+                    }
+                } else if (bookmarksBody.is(':visible')) {
+                    var bookmarksBodyWidth = bookmarksBody.width();
+                    if (readingAreaOffset !== bookmarksBodyWidth) {
+                        readingArea.css('left', bookmarksBodyWidth);
+                        window.dispatchEvent(new Event('resize'));
+                    }
+                } else if (readingAreaOffset !== '0px') {
+                    readingArea.css('left', '0px');
+                }
+            }
+
             Keyboard.on(Keyboard.ShowSettingsModal, 'reader', function() { $('#settings-dialog').modal("show") });
 
             $('#app-navbar').on('mousemove', hideLoop);
 
             $(window).on('resize', setTocSize);
+            setInterval(setReaderSize, 200);
             setTocSize();
 
             hideLoop();
