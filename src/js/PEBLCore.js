@@ -3596,6 +3596,19 @@ var utils_Utils = /** @class */ (function () {
             }
         });
     };
+    Utils.prototype.getMessages = function (thread, callback) {
+        var self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getMessages(userProfile, thread, function (messages) {
+                    callback(messages);
+                });
+            }
+            else {
+                callback([]);
+            }
+        });
+    };
     return Utils;
 }());
 
