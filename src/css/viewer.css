@@ -248,6 +248,10 @@ direction: rtl;
     background-color: #4d4d4d;
 }
 
+#aboutButt1 {
+  width: auto;
+}
+
 .navbar
 {
   background: #4d4d4d;
@@ -269,6 +273,8 @@ direction: rtl;
 
 .navbar-left {
   width: 50%;
+  overflow: hidden;
+  height: 35px;
 }
 
 .book-title-header{
@@ -496,6 +502,10 @@ html[data-theme=night-theme] #right-page-btn:hover
 
 .embedded .navbar .btn-group > .btn.icon-full-screen{
   float: right;
+}
+
+.btn.icon-full-screen {
+  display: none !important;
 }
 
 /*

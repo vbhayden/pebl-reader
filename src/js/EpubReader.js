@@ -1180,7 +1180,11 @@ define([
                         function(stmts) {
                             for (var stmt of stmts) {
                                 if (stmt.type == 2) {
-                                    readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, "user-highlight");
+                                    try {
+                                        readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, "user-highlight");
+                                    } catch (e) {
+                                        console.error(e);
+                                    }
                                 } else if (stmt.target) {
                                     readium.reader.plugins.highlights.removeHighlight(stmt.target);
                                     $("#annotation-" + stmt.target).remove();
@@ -1195,7 +1199,11 @@ define([
                             for (var stmt of stmts) {
                                 PeBL.storage.getCurrentUser(function(identity) {
                                     if (stmt.type == 3) {
-                                        readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, identity == stmt.owner ? 'shared-my-highlight' : 'shared-highlight');
+                                        try {
+                                            readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, identity == stmt.owner ? 'shared-my-highlight' : 'shared-highlight');
+                                        } catch (e) {
+                                            console.error(e);
+                                        }
                                     } else if (stmt.target) {
                                         readium.reader.plugins.highlights.removeHighlight(stmt.target);
                                         $("#annotation-" + stmt.target).remove();
@@ -1228,8 +1236,11 @@ define([
                     for (var stmt of stmts) {
                         if (stmt.type === 2) {
                             // console.log(stmt);
-
-                            readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, 'user-highlight');
+                            try {
+                                readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, 'user-highlight');
+                            } catch (e) {
+                                console.error(e);
+                            }
                         }
                     }
                 });
@@ -1243,7 +1254,11 @@ define([
                                 if (stmt.owner === userName)
                                     highlightType = 'shared-my-highlight';
 
-                                readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, highlightType);
+                                try {
+                                    readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, highlightType);
+                                } catch (e) {
+                                    console.error(e);
+                                }
                             }
                         }
                     });
