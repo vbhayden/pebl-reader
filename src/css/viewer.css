@@ -504,6 +504,10 @@ html[data-theme=night-theme] #right-page-btn:hover
   float: right;
 }
 
+.btn.icon-full-screen {
+  display: none !important;
+}
+
 /*
 .embedded .navbar .btn-group > .btn, .embedded .navbar .btn-group > .btn:hover, .embedded .navbar .btn-group > .btn:active, .embedded .navbar .btn-group > .btn:focus{
   background-color: rgba(0,0,0,0.2);
