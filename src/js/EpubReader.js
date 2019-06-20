@@ -854,6 +854,7 @@ define([
         var showAnnotationContextMenu = function(event, annotation) {
             $('#annotationContextMenu').remove();
             $('#clickOutOverlay').remove();
+            var appWidth = $('#app-container').width();
             var readerFrameOffset = $('#reading-area').position().left;
             var readerPosition = $('#reflowable-book-frame').position();
             var iframe = $("#epub-reader-frame iframe")[0];
@@ -863,7 +864,21 @@ define([
             var menu = document.createElement('div');
             menu.id = 'annotationContextMenu';
             //Try to center it on the mouse, take into account the offset of the reader view relative to the page as a whole
-            menu.style.left = (event.pageX + readerPosition.left - 50 < 0 ? 0 : event.pageX + readerPosition.left - 50) + readerFrameOffset + 'px';
+            
+            var left = event.pageX + readerPosition.left - 50;
+            if (left < 0) {
+                left = 0;
+            } else {
+                left += readerFrameOffset;
+            }
+
+            if (left > appWidth) {
+                left = appWidth - 250;
+            }
+
+            left += 'px';
+
+            menu.style.left = left;
             menu.style.top = (event.pageY - 10 < 40 ? event.pageY + 60 : event.pageY - 10) + 'px';
 
             var buttonWrapper = document.createElement('div');
