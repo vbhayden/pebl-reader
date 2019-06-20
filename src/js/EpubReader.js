@@ -2001,7 +2001,7 @@ define([
             $('#app-navbar').on('mousemove', hideLoop);
 
             $(window).on('resize', setTocSize);
-            //setInterval(setReaderSize, 200);
+            setInterval(setReaderSize, 200);
             setTocSize();
 
             hideLoop();
