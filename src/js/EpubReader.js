@@ -872,7 +872,7 @@ define([
                 left += readerFrameOffset;
             }
 
-            if (left > appWidth) {
+            if ((left + 250) > appWidth) {
                 left = appWidth - 250;
             }
 
