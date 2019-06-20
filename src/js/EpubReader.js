@@ -1974,19 +1974,19 @@ define([
             var setReaderSize = function() {
                 var readingAreaOffset = readingArea.css('left');
                 if (tocBody.is(':visible')) {
-                    var tocBodyWidth = tocBody.width();
+                    var tocBodyWidth = tocBody.css('width');
                     if (readingAreaOffset !== tocBodyWidth) {
                         readingArea.css('left', tocBodyWidth);
                         window.dispatchEvent(new Event('resize'));
                     }
                 } else if (annotationsBody.is(':visible')) {
-                    var annotationsBodyWidth = annotationsBody.width();
+                    var annotationsBodyWidth = annotationsBody.css('width');
                     if (readingAreaOffset !== annotationsBodyWidth) {
                         readingArea.css('left', annotationsBodyWidth);
                         window.dispatchEvent(new Event('resize'));
                     }
                 } else if (bookmarksBody.is(':visible')) {
-                    var bookmarksBodyWidth = bookmarksBody.width();
+                    var bookmarksBodyWidth = bookmarksBody.css('width');
                     if (readingAreaOffset !== bookmarksBodyWidth) {
                         readingArea.css('left', bookmarksBodyWidth);
                         window.dispatchEvent(new Event('resize'));
@@ -2001,7 +2001,7 @@ define([
             $('#app-navbar').on('mousemove', hideLoop);
 
             $(window).on('resize', setTocSize);
-            setInterval(setReaderSize, 200);
+            //setInterval(setReaderSize, 200);
             setTocSize();
 
             hideLoop();
