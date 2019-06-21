@@ -1058,7 +1058,7 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
     };
     IndexedDBStorageAdapter.prototype.removeSharedAnnotation = function (userProfile, id, callback) {
         if (this.db) {
-            var request = this.db.transaction(["sharedAnnotations"], "readwrite").objectStore("sharedAnnotations").delete(IDBKeyRange.only(id));
+            var request = this.db.transaction(["sharedAnnotations"], "readwrite").objectStore("sharedAnnotations").delete(IDBKeyRange.only([userProfile.identity, id]));
             request.onerror = function (e) {
                 console.log(e);
             };
