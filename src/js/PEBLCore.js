@@ -476,6 +476,7 @@ var ModuleRating = /** @class */ (function (_super) {
         var _this = _super.call(this, raw) || this;
         var extensions = _this.object.definition.extensions;
         _this.rating = _this.object.definition.name["en-US"];
+        _this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
         _this.programId = extensions[PREFIX_PEBL_EXTENSION + "programId"];
         return _this;
     }
@@ -493,6 +494,7 @@ var ModuleFeedback = /** @class */ (function (_super) {
         var extensions = _this.object.definition.extensions;
         _this.feedback = _this.object.definition.name["en-US"];
         _this.willingToDiscuss = extensions[PREFIX_PEBL_EXTENSION + "willingToDiscuss"];
+        _this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
         _this.programId = extensions[PREFIX_PEBL_EXTENSION + "programId"];
         return _this;
     }
@@ -5004,6 +5006,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         var xapi = {};
         var self = this;
         var exts = {
+            idref: payload.idref,
             programId: payload.programId
         };
         this.pebl.storage.getCurrentBook(function (book) {
@@ -5030,6 +5033,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         var self = this;
         var exts = {
             willingToDiscuss: payload.willingToDiscuss,
+            idref: payload.idref,
             programId: payload.programId
         };
         this.pebl.storage.getCurrentBook(function (book) {
