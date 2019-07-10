@@ -521,6 +521,11 @@ var ModuleExample = /** @class */ (function (_super) {
         _this.example = _this.object.definition.name["en-US"];
         _this.description = _this.object.definition.description["en-US"];
         _this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
+        _this.youtubeUrl = extensions[PREFIX_PEBL_EXTENSION + "youtubeUrl"];
+        _this.imageUrl = extensions[PREFIX_PEBL_EXTENSION + "imageUrl"];
+        _this.websiteUrl = extensions[PREFIX_PEBL_EXTENSION + "websiteUrl"];
+        _this.quotedPerson = extensions[PREFIX_PEBL_EXTENSION + "quotedPerson"];
+        _this.quotedTeam = extensions[PREFIX_PEBL_EXTENSION + "quotedTeam"];
         return _this;
     }
     ModuleExample.is = function (x) {
@@ -538,6 +543,7 @@ var ModuleExampleRating = /** @class */ (function (_super) {
         _this.rating = _this.object.definition.name["en-US"];
         _this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
         _this.programId = extensions[PREFIX_PEBL_EXTENSION + "programId"];
+        _this.exampleId = extensions[PREFIX_PEBL_EXTENSION + "exampleId"];
         return _this;
     }
     ModuleExampleRating.is = function (x) {
@@ -5642,7 +5648,12 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         var xapi = {};
         var self = this;
         var exts = {
-            idref: payload.idref
+            idref: payload.idref,
+            youtubeUrl: payload.youtubeUrl,
+            imageUrl: payload.imageUrl,
+            websiteUrl: payload.websiteUrl,
+            quotedPerson: payload.quotedPerson,
+            quotedTeam: payload.quotedTeam
         };
         this.pebl.storage.getCurrentBook(function (book) {
             self.pebl.storage.getCurrentActivity(function (activity) {
@@ -5668,7 +5679,8 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         var self = this;
         var exts = {
             idref: payload.idref,
-            programId: payload.programId
+            programId: payload.programId,
+            exampleId: payload.exampleId
         };
         this.pebl.storage.getCurrentBook(function (book) {
             self.pebl.storage.getCurrentActivity(function (activity) {
