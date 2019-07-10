@@ -4146,6 +4146,24 @@ var utils_Utils = /** @class */ (function () {
             }
         });
     };
+    Utils.prototype.getModuleEvents = function (idref, callback, type) {
+        var self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getModuleEvent(idref, function (moduleEvents) {
+                    if (type) {
+                        callback(moduleEvents.filter(function (event) { return event.verb.display['en-US'] === type; }));
+                    }
+                    else {
+                        callback(moduleEvents);
+                    }
+                });
+            }
+            else {
+                callback([]);
+            }
+        });
+    };
     return Utils;
 }());
 
