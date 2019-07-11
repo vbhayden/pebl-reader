@@ -1185,7 +1185,7 @@ var CURRENT_USER = "peblCurrentUser";
 var storage_IndexedDBStorageAdapter = /** @class */ (function () {
     function IndexedDBStorageAdapter(callback) {
         this.invocationQueue = [];
-        var request = window.indexedDB.open("pebl", 20);
+        var request = window.indexedDB.open("pebl", 21);
         var self = this;
         request.onupgradeneeded = function () {
             var db = request.result;
