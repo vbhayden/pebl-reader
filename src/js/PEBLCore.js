@@ -439,7 +439,7 @@ var ProgramAction = /** @class */ (function (_super) {
         return (verb == "programLevelUp") || (verb == "programLevelDown") || (verb == "programInvited") || (verb == "programUninvited")
             || (verb == "programExpelled") || (verb == "programJoined") || (verb == "programActivityLaunched")
             || (verb == "programActivityCompleted") || (verb == "programActivityTeamCompleted") || (verb == "programModified")
-            || (verb == "programDeleted");
+            || (verb == "programDeleted") || (verb == "programCompleted");
     };
     return ProgramAction;
 }(XApiStatement));
@@ -551,6 +551,25 @@ var ModuleExampleRating = /** @class */ (function (_super) {
         return (verb == "moduleExampleRating");
     };
     return ModuleExampleRating;
+}(ModuleEvent));
+
+var ModuleExampleFeedback = /** @class */ (function (_super) {
+    __extends(ModuleExampleFeedback, _super);
+    function ModuleExampleFeedback(raw) {
+        var _this = _super.call(this, raw) || this;
+        var extensions = _this.object.definition.extensions;
+        _this.feedback = _this.object.definition.name["en-US"];
+        _this.willingToDiscuss = extensions[PREFIX_PEBL_EXTENSION + "willingToDiscuss"];
+        _this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
+        _this.programId = extensions[PREFIX_PEBL_EXTENSION + "programId"];
+        _this.exampleId = extensions[PREFIX_PEBL_EXTENSION + "exampleId"];
+        return _this;
+    }
+    ModuleExampleFeedback.is = function (x) {
+        var verb = x.verb.display["en-US"];
+        return (verb == "moduleExampleFeedback");
+    };
+    return ModuleExampleFeedback;
 }(ModuleEvent));
 
 
@@ -762,6 +781,10 @@ var Activity = /** @class */ (function () {
         if ((oldActivity.delete && oldActivity.delete == true) || (newActivity.delete && newActivity.delete == true)) {
             mergedActivity.delete = true;
         }
+        // If either is flagged as completed, that should not be changed.
+        if ((oldActivity.completed && oldActivity.completed == true) || (newActivity.completed && newActivity.completed == true)) {
+            mergedActivity.completed = true;
+        }
         return mergedActivity;
     };
     return Activity;
@@ -875,6 +898,7 @@ var activity_Program = /** @class */ (function (_super) {
         _this.programAvatar = raw.programAvatar;
         _this.programTeamName = raw.programTeamName;
         _this.programFocus = raw.programFocus;
+        _this.completed = raw.completed;
         _this.members = typeof (raw.members) === "string" ? JSON.parse(decodeURIComponent(raw.members)) : (raw.members) ? raw.members : [];
         return _this;
     }
@@ -906,6 +930,7 @@ var activity_Program = /** @class */ (function (_super) {
         obj.programFocus = this.programFocus;
         obj.programCommunities = this.programCommunities;
         obj.programInstitutions = this.programInstitutions;
+        obj.completed = this.completed;
         obj.members = encodeURIComponent(JSON.stringify(this.members));
         return obj;
     };
@@ -3177,6 +3202,10 @@ var syncing_LLSyncAction = /** @class */ (function () {
                             var mer = new ModuleExampleRating(xapi);
                             moduleEvents[mer.id] = mer;
                         }
+                        else if (ModuleExampleFeedback.is(xapi)) {
+                            var mef = new ModuleExampleFeedback(xapi);
+                            moduleEvents[mef.id] = mef;
+                        }
                         else {
                             new Error("Unknown Statement type");
                         }
@@ -3736,10 +3765,12 @@ var EventSet = /** @class */ (function () {
         this.eventProgramActivityTeamCompleted = "eventProgramActivityTeamCompleted";
         this.eventProgramModified = "eventProgramModified";
         this.eventProgramDeleted = "eventProgramDeleted";
+        this.eventProgramCompleted = "eventProgramCompleted";
         this.eventModuleRating = "eventModuleRating";
         this.eventModuleFeedback = "eventModuleFeedback";
         this.eventModuleExample = "eventModuleExample";
         this.eventModuleExampleRating = "eventModuleExampleRating";
+        this.eventModuleExampleFeedback = "eventModuleExampleFeedback";
     }
     return EventSet;
 }());
@@ -5549,6 +5580,25 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             }
         });
     };
+    PEBLEventHandlers.prototype.eventProgramCompleted = function (event) {
+        var payload = event.detail;
+        var xapi = {};
+        var self = this;
+        var exts = {
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programCompleted", "programCompleted");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, eventHandlers_PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                var pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, pa);
+            }
+        });
+    };
     // -------------------------------
     PEBLEventHandlers.prototype.eventLogin = function (event) {
         var userProfile = event.detail;
@@ -5700,6 +5750,34 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var mer = new ModuleExampleRating(xapi);
                         self.pebl.storage.saveOutgoingXApi(userProfile, mer);
+                    }
+                });
+            });
+        });
+    };
+    PEBLEventHandlers.prototype.eventModuleExampleFeedback = function (event) {
+        var payload = event.detail;
+        var xapi = {};
+        var self = this;
+        var exts = {
+            willingToDiscuss: payload.willingToDiscuss,
+            idref: payload.idref,
+            programId: payload.programId,
+            exampleId: payload.exampleId
+        };
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentActivity(function (activity) {
+                self.pebl.user.getUser(function (userProfile) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#moduleExampleFeedback", "moduleExampleFeedback");
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.feedback, payload.description, self.xapiGen.addExtensions(exts));
+                        if (activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        var mef = new ModuleExampleFeedback(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, mef);
                     }
                 });
             });
