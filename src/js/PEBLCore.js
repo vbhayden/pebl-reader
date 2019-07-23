@@ -1,4 +1,4 @@
-(function(e, a) { for(var i in a) e[i] = a[i]; }(/******/ (function(modules) { // webpackBootstrap
+/******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -98,7 +98,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    };
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -711,7 +711,7 @@ var activity_extends = (undefined && undefined.__extends) || (function () {
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    };
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -765,10 +765,14 @@ var Activity = /** @class */ (function () {
     ;
     Activity.merge = function (oldActivity, newActivity) {
         var mergedActivity = {};
-        Object.keys(oldActivity).forEach(function (key) {
+        var oldKeys = Object.keys(oldActivity);
+        var newKeys = Object.keys(newActivity);
+        for (var _i = 0, oldKeys_1 = oldKeys; _i < oldKeys_1.length; _i++) {
+            var key = oldKeys_1[_i];
             mergedActivity[key] = oldActivity[key];
-        });
-        Object.keys(newActivity).forEach(function (key) {
+        }
+        for (var _a = 0, newKeys_1 = newKeys; _a < newKeys_1.length; _a++) {
+            var key = newKeys_1[_a];
             // Null properties were set for a reason and should not be changed.
             if (mergedActivity[key] == null) {
                 // Leave it
@@ -776,7 +780,7 @@ var Activity = /** @class */ (function () {
             else {
                 mergedActivity[key] = newActivity[key];
             }
-        });
+        }
         // If either is flagged for deletion, that should not be changed.
         if ((oldActivity.delete && oldActivity.delete == true) || (newActivity.delete && newActivity.delete == true)) {
             mergedActivity.delete = true;
@@ -871,21 +875,23 @@ var activity_Program = /** @class */ (function (_super) {
         // Translate legacy member format to new format
         var members = [];
         if (raw.members)
-            members = typeof (raw.members) === "string" ? JSON.parse(decodeURIComponent(raw.members)) : (raw.members) ? raw.members : [];
+            members = typeof (raw.members) === "string" ? JSON.parse(decodeURIComponent(raw.members)) : (raw.members ? raw.members : []);
         if (members.length > 0) {
             for (var _i = 0, members_1 = members; _i < members_1.length; _i++) {
                 var member = members_1[_i];
                 self.addMember(member);
             }
         }
-        Object.keys(raw).forEach(function (key) {
+        var rawKeys = Object.keys(raw);
+        for (var _a = 0, rawKeys_1 = rawKeys; _a < rawKeys_1.length; _a++) {
+            var key = rawKeys_1[_a];
             if (key.indexOf('member-') !== -1) {
-                var member = typeof (raw[key]) === "string" ? JSON.parse(decodeURIComponent(raw[key])) : (raw[key]) ? raw[key] : null;
+                var member = typeof (raw[key]) === "string" ? JSON.parse(decodeURIComponent(raw[key])) : (raw[key] ? raw[key] : null);
                 if (member == null || (XApiStatement.is(member) && Membership.is(member)) || TempMembership.is(member)) {
                     self[key] = member;
                 }
             }
-        });
+        }
         _this.programLevelStepsComplete = raw.programLevelStepsComplete || 0;
         _this.programLevels = raw.programLevels || [];
         _this.programTitle = raw.programTitle || "";
@@ -898,8 +904,31 @@ var activity_Program = /** @class */ (function (_super) {
         _this.programAvatar = raw.programAvatar;
         _this.programTeamName = raw.programTeamName;
         _this.programFocus = raw.programFocus;
-        _this.completed = raw.completed;
-        _this.members = typeof (raw.members) === "string" ? JSON.parse(decodeURIComponent(raw.members)) : (raw.members) ? raw.members : [];
+        _this.completed = raw.completed ? new Date(raw.completed) : undefined;
+        _this.created = raw.created ? new Date(raw.created) : undefined;
+        // Estimate created time to backfill older programs, find oldest member and use their timestamp
+        if (!_this.created) {
+            if (_this.isNew) {
+                _this.created = new Date();
+            }
+            else {
+                var oldestMember = null;
+                var keys = Object.keys(_this);
+                for (var _b = 0, keys_1 = keys; _b < keys_1.length; _b++) {
+                    var key = keys_1[_b];
+                    if (key.indexOf('member-') !== -1) {
+                        var member = typeof (_this[key]) === "string" ? JSON.parse(decodeURIComponent(_this[key])) : (_this[key] ? _this[key] : null);
+                        if (member && XApiStatement.is(member) && Membership.is(member)) {
+                            if (!oldestMember || (new Date(member.timestamp) < new Date(oldestMember.timestamp)))
+                                oldestMember = member;
+                        }
+                    }
+                }
+                if (oldestMember)
+                    _this.created = new Date(oldestMember.timestamp);
+            }
+        }
+        _this.members = typeof (raw.members) === "string" ? JSON.parse(decodeURIComponent(raw.members)) : (raw.members ? raw.members : []);
         return _this;
     }
     Program.is = function (raw) {
@@ -908,7 +937,9 @@ var activity_Program = /** @class */ (function (_super) {
     Program.prototype.toTransportFormat = function () {
         var obj = _super.prototype.toTransportFormat.call(this);
         var self = this;
-        Object.keys(this).forEach(function (key) {
+        var keys = Object.keys(this);
+        for (var _i = 0, keys_2 = keys; _i < keys_2.length; _i++) {
+            var key = keys_2[_i];
             if (key.indexOf('member-') !== -1) {
                 if (self[key] == null) {
                     obj[key] = self[key];
@@ -917,7 +948,7 @@ var activity_Program = /** @class */ (function (_super) {
                     obj[key] = encodeURIComponent(JSON.stringify(self[key]));
                 }
             }
-        });
+        }
         obj.programLevelStepsComplete = this.programLevelStepsComplete;
         obj.programLevels = this.programLevels;
         obj.programTitle = this.programTitle;
@@ -930,15 +961,18 @@ var activity_Program = /** @class */ (function (_super) {
         obj.programFocus = this.programFocus;
         obj.programCommunities = this.programCommunities;
         obj.programInstitutions = this.programInstitutions;
-        obj.completed = this.completed;
-        obj.members = encodeURIComponent(JSON.stringify(this.members));
+        obj.completed = this.completed ? this.completed.toISOString() : undefined,
+            obj.created = this.created ? this.created.toISOString() : undefined,
+            obj.members = encodeURIComponent(JSON.stringify(this.members));
         return obj;
     };
     Program.prototype.addMember = function (membership) {
         this['member-' + membership.id] = membership;
     };
     Program.iterateMembers = function (program, callback) {
-        Object.keys(program).forEach(function (key) {
+        var keys = Object.keys(program);
+        for (var _i = 0, keys_3 = keys; _i < keys_3.length; _i++) {
+            var key = keys_3[_i];
             if (key.indexOf('member-') !== -1 && program[key]) {
                 if (XApiStatement.is(program[key]) && Membership.is(program[key])) {
                     callback(key, program[key]);
@@ -947,26 +981,43 @@ var activity_Program = /** @class */ (function (_super) {
                     callback(key, program[key]);
                 }
             }
-        });
+        }
+    };
+    Program.getMembers = function (program) {
+        var members = [];
+        var keys = Object.keys(program);
+        for (var _i = 0, keys_4 = keys; _i < keys_4.length; _i++) {
+            var key = keys_4[_i];
+            if (key.indexOf('member-') !== -1 && program[key]) {
+                if (XApiStatement.is(program[key]) && Membership.is(program[key])) {
+                    members.push(program[key]);
+                }
+            }
+        }
+        return members;
     };
     Program.isMember = function (program, userIdentity) {
         var isMember = false;
-        Object.keys(program).forEach(function (key) {
+        var keys = Object.keys(program);
+        for (var _i = 0, keys_5 = keys; _i < keys_5.length; _i++) {
+            var key = keys_5[_i];
             if (key.indexOf('member-') !== -1 && program[key]) {
                 if (program[key].identity === userIdentity) {
                     isMember = true;
                 }
             }
-        });
+        }
         return isMember;
     };
     Program.isNew = function (program) {
         var isNew = true;
-        Object.keys(program).forEach(function (key) {
+        var keys = Object.keys(program);
+        for (var _i = 0, keys_6 = keys; _i < keys_6.length; _i++) {
+            var key = keys_6[_i];
             if (key.indexOf('member-') !== -1) {
                 isNew = false;
             }
-        });
+        }
         return isNew;
     };
     return Program;
@@ -979,20 +1030,22 @@ var activity_Institution = /** @class */ (function (_super) {
         raw.type = "institution";
         _this = _super.call(this, raw) || this;
         var self = _this;
-        Object.keys(raw).forEach(function (key) {
+        var rawKeys = Object.keys(raw);
+        for (var _i = 0, rawKeys_2 = rawKeys; _i < rawKeys_2.length; _i++) {
+            var key = rawKeys_2[_i];
             if (key.indexOf('member-') !== -1) {
-                var member = typeof (raw[key]) === "string" ? JSON.parse(decodeURIComponent(raw[key])) : (raw[key]) ? raw[key] : null;
+                var member = typeof (raw[key]) === "string" ? JSON.parse(decodeURIComponent(raw[key])) : (raw[key] ? raw[key] : null);
                 if (member == null || (XApiStatement.is(member) && Membership.is(member)) || TempMembership.is(member)) {
                     self[key] = member;
                 }
             }
             else if (key.indexOf('program-') !== -1) {
-                var program = typeof (raw[key]) === "string" ? JSON.parse(decodeURIComponent(raw[key])) : (raw[key]) ? raw[key] : null;
+                var program = typeof (raw[key]) === "string" ? JSON.parse(decodeURIComponent(raw[key])) : (raw[key] ? raw[key] : null);
                 if (program == null || (activity_Program.is(program))) {
                     self[key] = program;
                 }
             }
-        });
+        }
         _this.institutionName = raw.institutionName || "";
         _this.institutionDescription = raw.institutionDescription || "";
         _this.institutionAvatar = raw.institutionAvatar;
@@ -1004,7 +1057,9 @@ var activity_Institution = /** @class */ (function (_super) {
     Institution.prototype.toTransportFormat = function () {
         var obj = _super.prototype.toTransportFormat.call(this);
         var self = this;
-        Object.keys(this).forEach(function (key) {
+        var keys = Object.keys(this);
+        for (var _i = 0, keys_7 = keys; _i < keys_7.length; _i++) {
+            var key = keys_7[_i];
             if (key.indexOf('member-') !== -1) {
                 if (self[key] == null) {
                     obj[key] = self[key];
@@ -1021,10 +1076,10 @@ var activity_Institution = /** @class */ (function (_super) {
                     obj[key] = encodeURIComponent(JSON.stringify(self[key]));
                 }
             }
-        });
+        }
         obj.institutionName = this.institutionName;
         obj.institutionDescription = this.institutionDescription;
-        obj.instititionAvatar = this.institutionAvatar;
+        obj.institutionAvatar = this.institutionAvatar;
         return obj;
     };
     Institution.prototype.addMember = function (membership) {
@@ -1034,7 +1089,9 @@ var activity_Institution = /** @class */ (function (_super) {
         this['program-' + program.id] = program;
     };
     Institution.iterateMembers = function (institution, callback) {
-        Object.keys(institution).forEach(function (key) {
+        var keys = Object.keys(institution);
+        for (var _i = 0, keys_8 = keys; _i < keys_8.length; _i++) {
+            var key = keys_8[_i];
             if (key.indexOf('member-') !== -1 && institution[key]) {
                 if (XApiStatement.is(institution[key]) && Membership.is(institution[key])) {
                     callback(key, institution[key]);
@@ -1043,46 +1100,54 @@ var activity_Institution = /** @class */ (function (_super) {
                     callback(key, institution[key]);
                 }
             }
-        });
+        }
     };
     Institution.isMember = function (institution, userIdentity) {
         var isMember = false;
-        Object.keys(institution).forEach(function (key) {
+        var keys = Object.keys(institution);
+        for (var _i = 0, keys_9 = keys; _i < keys_9.length; _i++) {
+            var key = keys_9[_i];
             if (key.indexOf('member-') !== -1 && institution[key]) {
                 if (institution[key].identity === userIdentity) {
                     isMember = true;
                 }
             }
-        });
+        }
         return isMember;
     };
     Institution.iteratePrograms = function (institution, callback) {
-        Object.keys(institution).forEach(function (key) {
+        var keys = Object.keys(institution);
+        for (var _i = 0, keys_10 = keys; _i < keys_10.length; _i++) {
+            var key = keys_10[_i];
             if (key.indexOf('program-') !== -1 && institution[key]) {
                 if (activity_Program.is(institution[key])) {
                     callback(key, institution[key]);
                 }
             }
-        });
+        }
     };
     Institution.isProgram = function (institution, programId) {
         var isProgram = false;
-        Object.keys(institution).forEach(function (key) {
+        var keys = Object.keys(institution);
+        for (var _i = 0, keys_11 = keys; _i < keys_11.length; _i++) {
+            var key = keys_11[_i];
             if (key.indexOf('program-') !== -1 && institution[key]) {
                 if (institution[key].id === programId) {
                     isProgram = true;
                 }
             }
-        });
+        }
         return isProgram;
     };
     Institution.isNew = function (institution) {
         var isNew = true;
-        Object.keys(institution).forEach(function (key) {
+        var keys = Object.keys(institution);
+        for (var _i = 0, keys_12 = keys; _i < keys_12.length; _i++) {
+            var key = keys_12[_i];
             if (key.indexOf('member-') !== -1) {
                 isNew = false;
             }
-        });
+        }
         return isNew;
     };
     return Institution;
@@ -1095,14 +1160,16 @@ var activity_System = /** @class */ (function (_super) {
         raw.type = "system";
         _this = _super.call(this, raw) || this;
         var self = _this;
-        Object.keys(raw).forEach(function (key) {
+        var rawKeys = Object.keys(raw);
+        for (var _i = 0, rawKeys_3 = rawKeys; _i < rawKeys_3.length; _i++) {
+            var key = rawKeys_3[_i];
             if (key.indexOf('member-') !== -1) {
-                var member = typeof (raw[key]) === "string" ? JSON.parse(decodeURIComponent(raw[key])) : (raw[key]) ? raw[key] : null;
+                var member = typeof (raw[key]) === "string" ? JSON.parse(decodeURIComponent(raw[key])) : (raw[key] ? raw[key] : null);
                 if (member == null || (XApiStatement.is(member) && Membership.is(member)) || TempMembership.is(member)) {
                     self[key] = member;
                 }
             }
-        });
+        }
         _this.systemName = raw.systemName || "";
         _this.systemDescription = raw.systemDescription || "";
         return _this;
@@ -1113,7 +1180,9 @@ var activity_System = /** @class */ (function (_super) {
     System.prototype.toTransportFormat = function () {
         var obj = _super.prototype.toTransportFormat.call(this);
         var self = this;
-        Object.keys(this).forEach(function (key) {
+        var keys = Object.keys(this);
+        for (var _i = 0, keys_13 = keys; _i < keys_13.length; _i++) {
+            var key = keys_13[_i];
             if (key.indexOf('member-') !== -1) {
                 if (self[key] == null) {
                     obj[key] = self[key];
@@ -1122,7 +1191,7 @@ var activity_System = /** @class */ (function (_super) {
                     obj[key] = encodeURIComponent(JSON.stringify(self[key]));
                 }
             }
-        });
+        }
         obj.systemName = this.systemName;
         obj.systemDescription = this.systemDescription;
         return obj;
@@ -1131,7 +1200,9 @@ var activity_System = /** @class */ (function (_super) {
         this['member-' + membership.id] = membership;
     };
     System.iterateMembers = function (system, callback) {
-        Object.keys(system).forEach(function (key) {
+        var keys = Object.keys(system);
+        for (var _i = 0, keys_14 = keys; _i < keys_14.length; _i++) {
+            var key = keys_14[_i];
             if (key.indexOf('member-') !== -1 && system[key]) {
                 if (XApiStatement.is(system[key]) && Membership.is(system[key])) {
                     callback(key, system[key]);
@@ -1140,26 +1211,30 @@ var activity_System = /** @class */ (function (_super) {
                     callback(key, system[key]);
                 }
             }
-        });
+        }
     };
     System.isMember = function (system, userIdentity) {
         var isMember = false;
-        Object.keys(system).forEach(function (key) {
+        var keys = Object.keys(system);
+        for (var _i = 0, keys_15 = keys; _i < keys_15.length; _i++) {
+            var key = keys_15[_i];
             if (key.indexOf('member-') !== -1 && system[key]) {
                 if (system[key].identity === userIdentity) {
                     isMember = true;
                 }
             }
-        });
+        }
         return isMember;
     };
     System.isNew = function (system) {
         var isNew = true;
-        Object.keys(system).forEach(function (key) {
+        var keys = Object.keys(system);
+        for (var _i = 0, keys_16 = keys; _i < keys_16.length; _i++) {
+            var key = keys_16[_i];
             if (key.indexOf('member-') !== -1) {
                 isNew = false;
             }
-        });
+        }
         return isNew;
     };
     return System;
@@ -2340,6 +2415,24 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             });
         }
     };
+    IndexedDBStorageAdapter.prototype.removeModuleEvent = function (idref, xId, callback) {
+        if (this.db) {
+            var request = this.db.transaction(["moduleEvents"], "readwrite").objectStore("moduleEvents").delete(IDBKeyRange.only([xId, idref]));
+            request.onerror = function (e) {
+                console.log(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            var self_57 = this;
+            this.invocationQueue.push(function () {
+                self_57.removeModuleEvent(idref, xId, callback);
+            });
+        }
+    };
     // -------------------------------
     IndexedDBStorageAdapter.prototype.saveActivity = function (userProfile, stmts, callback) {
         if (this.db) {
@@ -2360,13 +2453,13 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             else {
                 var objectStore_9 = this.db.transaction(["activity"], "readwrite").objectStore("activity");
                 var stmtsCopy_8 = stmts.slice(0);
-                var self_57 = this;
+                var self_58 = this;
                 var processCallback_10 = function () {
                     var record = stmtsCopy_8.pop();
                     if (record) {
                         var clone = record;
                         clone.identity = userProfile.identity;
-                        var request = objectStore_9.put(self_57.cleanRecord(clone));
+                        var request = objectStore_9.put(self_58.cleanRecord(clone));
                         request.onerror = processCallback_10;
                         request.onsuccess = processCallback_10;
                     }
@@ -2379,9 +2472,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             }
         }
         else {
-            var self_58 = this;
+            var self_59 = this;
             this.invocationQueue.push(function () {
-                self_58.saveActivity(userProfile, stmts, callback);
+                self_59.saveActivity(userProfile, stmts, callback);
             });
         }
     };
@@ -2390,13 +2483,13 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             var os = this.db.transaction(["activity"], "readonly").objectStore("activity");
             var index = os.index(MASTER_INDEX);
             var param = [userProfile.identity, activityType];
-            var self_59 = this;
-            self_59.getAll(index, IDBKeyRange.only(param), callback);
+            var self_60 = this;
+            self_60.getAll(index, IDBKeyRange.only(param), callback);
         }
         else {
-            var self_60 = this;
+            var self_61 = this;
             this.invocationQueue.push(function () {
-                self_60.getActivity(userProfile, activityType, callback);
+                self_61.getActivity(userProfile, activityType, callback);
             });
         }
     };
@@ -2416,9 +2509,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_61 = this;
+            var self_62 = this;
             this.invocationQueue.push(function () {
-                self_61.getActivityById(userProfile, activityType, activityId, callback);
+                self_62.getActivityById(userProfile, activityType, activityId, callback);
             });
         }
     };
@@ -2434,9 +2527,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_62 = this;
+            var self_63 = this;
             this.invocationQueue.push(function () {
-                self_62.removeActivity(userProfile, xId, activityType, callback);
+                self_63.removeActivity(userProfile, xId, activityType, callback);
             });
         }
     };
@@ -2455,9 +2548,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_63 = this;
+            var self_64 = this;
             this.invocationQueue.push(function () {
-                self_63.saveOutgoingActivity(userProfile, stmt, callback);
+                self_64.saveOutgoingActivity(userProfile, stmt, callback);
             });
         }
     };
@@ -2466,18 +2559,18 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             var os = this.db.transaction(["outgoingActivity"], "readonly").objectStore("outgoingActivity");
             var index_8 = os.index(MASTER_INDEX);
             var param_7 = userProfile.identity;
-            var self_64 = this;
+            var self_65 = this;
             this.getAll(index_8, IDBKeyRange.only(param_7), function (arr) {
                 if (arr.length == 0)
-                    self_64.getAll(index_8, IDBKeyRange.only([param_7]), callback);
+                    self_65.getAll(index_8, IDBKeyRange.only([param_7]), callback);
                 else
                     callback(arr);
             });
         }
         else {
-            var self_65 = this;
+            var self_66 = this;
             this.invocationQueue.push(function () {
-                self_65.getOutgoingActivity(userProfile, callback);
+                self_66.getOutgoingActivity(userProfile, callback);
             });
         }
     };
@@ -2491,9 +2584,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             }
         }
         else {
-            var self_66 = this;
+            var self_67 = this;
             this.invocationQueue.push(function () {
-                self_66.removeOutgoingActivity(userProfile, toClear, callback);
+                self_67.removeOutgoingActivity(userProfile, toClear, callback);
             });
         }
     };
@@ -2616,6 +2709,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
     LLSyncAction.prototype.pullActivity = function (activity, profileId, callback) {
         var self = this;
         var presence = new XMLHttpRequest();
+        var profileIdToUse;
         presence.addEventListener("load", function () {
             if ((presence.status >= 200) && (presence.status <= 209)) {
                 var activityEvent_1;
@@ -2629,6 +2723,17 @@ var syncing_LLSyncAction = /** @class */ (function () {
                         p.etag = s;
                     }
                     activityObj_1 = [p];
+                    // If passed an array of profileIds, pull them one by one.
+                    if (profileId && Array.isArray(profileId) && profileId.length > 0) {
+                        self.pullActivity(activity, profileId, callback);
+                    }
+                }
+                else if (activity == "program" && Array.isArray(jsonObj)) {
+                    // First call without a profileId returns an array of all profileIds, use that to start getting them one by one.
+                    self.pullActivity(activity, jsonObj, callback);
+                    if (callback)
+                        callback(jsonObj);
+                    return;
                 }
                 else if (activity == "learnlet" && Learnlet.is(jsonObj)) {
                     activityEvent_1 = self.pebl.events.incomingLearnlet;
@@ -2714,7 +2819,15 @@ var syncing_LLSyncAction = /** @class */ (function () {
                 callback();
             }
         });
-        presence.open("GET", self.endpoint.url + "data/xapi/activities/profile?activityId=" + encodeURIComponent(PEBL_THREAD_PREFIX + activity + "s") + "&profileId=" + encodeURIComponent(profileId) + "&t=" + Date.now(), true);
+        if (profileId) {
+            if (Array.isArray(profileId)) {
+                profileIdToUse = profileId.pop();
+            }
+            else {
+                profileIdToUse = profileId;
+            }
+        }
+        presence.open("GET", self.endpoint.url + "data/xapi/activities/profile?activityId=" + encodeURIComponent(PEBL_THREAD_PREFIX + activity + "s") + (profileIdToUse ? ("&profileId=" + encodeURIComponent(profileIdToUse)) : '') + "&t=" + Date.now(), true);
         presence.setRequestHeader("X-Experience-API-Version", "1.0.3");
         presence.setRequestHeader("Authorization", "Basic " + self.endpoint.token);
         presence.send();
@@ -3113,7 +3226,11 @@ var syncing_LLSyncAction = /** @class */ (function () {
                             "statement.verb.id": {
                                 "$in": [
                                     "http://adlnet.gov/expapi/verbs/shared",
-                                    "http://www.peblproject.com/definitions.html#moduleExample"
+                                    "http://www.peblproject.com/definitions.html#moduleRating",
+                                    "http://www.peblproject.com/definitions.html#moduleFeedback",
+                                    "http://www.peblproject.com/definitions.html#moduleExample",
+                                    "http://www.peblproject.com/definitions.html#moduleExampleRating",
+                                    "http://www.peblproject.com/definitions.html#moduleExampleFeedback"
                                 ]
                             }
                         }
@@ -3731,6 +3848,7 @@ var EventSet = /** @class */ (function () {
         this.removedLearnlet = "removedLearnlet";
         this.removedProgram = "removedProgram";
         this.removedMessage = "removedMessage";
+        this.removedModuleEvent = "removedModuleEvent";
         this.eventLoggedIn = "eventLoggedIn";
         this.eventLoggedOut = "eventLoggedOut";
         this.eventLogin = "eventLogin";
@@ -3996,6 +4114,9 @@ var utils_Utils = /** @class */ (function () {
     Utils.prototype.newEmptyInstitution = function (callback) {
         callback(new activity_Institution({}));
     };
+    Utils.prototype.newEmptySystem = function (callback) {
+        callback(new activity_System({}));
+    };
     Utils.prototype.getGroupMemberships = function (callback) {
         var self = this;
         this.pebl.user.getUser(function (userProfile) {
@@ -4141,6 +4262,9 @@ var utils_Utils = /** @class */ (function () {
     Utils.prototype.iterateProgramMembers = function (program, callback) {
         activity_Program.iterateMembers(program, callback);
     };
+    Utils.prototype.getProgramMembers = function (program) {
+        return activity_Program.getMembers(program);
+    };
     Utils.prototype.iterateInstitutionMembers = function (institution, callback) {
         activity_Institution.iterateMembers(institution, callback);
     };
@@ -4203,6 +4327,14 @@ var utils_Utils = /** @class */ (function () {
             }
             else {
                 callback([]);
+            }
+        });
+    };
+    Utils.prototype.removeModuleEvent = function (idref, id) {
+        var self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.removeModuleEvent(idref, id);
             }
         });
     };
@@ -5783,6 +5915,28 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             });
         });
     };
+    PEBLEventHandlers.prototype.removedModuleEvent = function (event) {
+        var xId = event.detail;
+        var xapi = {};
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/voided", "voided");
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addStatementRef(xapi, xId);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        if (activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        var voided = new Voided(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, voided);
+                    });
+                });
+            }
+        });
+    };
     return PEBLEventHandlers;
 }());
 
@@ -6016,4 +6170,4 @@ if (typeof window !== 'undefined') {
 
 
 /***/ })
-/******/ ])));
+/******/ ]);
