@@ -2730,6 +2730,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                 }
                 else if (activity == "program" && Array.isArray(jsonObj)) {
                     // First call without a profileId returns an array of all profileIds, use that to start getting them one by one.
+                    // FIXME: this should be a separate code path
                     self.pullActivity(activity, jsonObj, callback);
                     if (callback)
                         callback(jsonObj);
@@ -3831,6 +3832,7 @@ var EventSet = /** @class */ (function () {
         this.saveProgramError = "saveProgramError";
         this.saveInstitution = "saveInstitution";
         this.saveSystem = "saveSystem";
+        this.newBookNoReset = "newBookNoReset";
         this.newLearnlet = "newLearnlet";
         this.newBook = "newBook";
         this.newMessage = "newMessage";
@@ -4556,6 +4558,26 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 });
                 self.pebl.unsubscribeAllEvents();
                 self.pebl.unsubscribeAllThreads();
+                self.pebl.storage.saveCurrentBook(book);
+            }
+            else {
+                self.pebl.emitEvent(self.pebl.events.eventJumpPage, {});
+            }
+        });
+    };
+    PEBLEventHandlers.prototype.newBookNoReset = function (event) {
+        var book = event.detail;
+        var self = this;
+        if (book.indexOf("/") != -1)
+            book = book.substring(book.lastIndexOf("/") + 1);
+        this.pebl.storage.getCurrentBook(function (currentBook) {
+            if (currentBook != book) {
+                if (currentBook)
+                    self.pebl.emitEvent(self.pebl.events.eventTerminated, currentBook);
+                self.pebl.storage.removeCurrentActivity();
+                self.pebl.emitEvent(self.pebl.events.eventInteracted, {
+                    activity: book
+                });
                 self.pebl.storage.saveCurrentBook(book);
             }
             else {
