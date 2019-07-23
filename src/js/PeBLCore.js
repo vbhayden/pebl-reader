@@ -2632,8 +2632,8 @@ var PEBL_THREAD_USER_PREFIX = "peblThread://" + USER_PREFIX;
 var PEBL_THREAD_GROUP_PREFIX = "peblThread://" + GROUP_PREFIX;
 var THREAD_POLL_INTERVAL = 4000;
 var BOOK_POLL_INTERVAL = 6000;
-var PRESENCE_POLL_INTERVAL = 120000;
-var LEARNLET_POLL_INTERVAL = 60000;
+// const PRESENCE_POLL_INTERVAL = 120000;
+// const LEARNLET_POLL_INTERVAL = 60000;
 var PROGRAM_POLL_INTERVAL = 60000;
 var INSTITUTION_POLL_INTERVAL = 60000;
 var SYSTEM_POLL_INTERVAL = 60000;
@@ -3165,6 +3165,9 @@ var syncing_LLSyncAction = /** @class */ (function () {
                                 cleanMemberships.sort();
                                 self.pebl.storage.saveGroupMembership(userProfile, cleanMemberships);
                                 self.pebl.emitEvent(thread, cleanMemberships);
+                                self.pullActivitiesFromMemberships("program", cleanMemberships);
+                                self.pullActivitiesFromMemberships("institution", cleanMemberships);
+                                self.pullActivitiesFromMemberships("system", cleanMemberships);
                             }
                         }
                         for (var _d = 0, _e = Object.keys(buckets); _d < _e.length; _d++) {
@@ -3392,11 +3395,31 @@ var syncing_LLSyncAction = /** @class */ (function () {
         this.clearTimeouts();
         this.bookPollingCallback();
         this.threadPollingCallback();
-        this.startActivityPull("presence", PRESENCE_POLL_INTERVAL);
+        // this.startActivityPull("presence", PRESENCE_POLL_INTERVAL);
+        // this.startActivityPull("learnlet", LEARNLET_POLL_INTERVAL);
         this.startActivityPull("program", PROGRAM_POLL_INTERVAL);
-        this.startActivityPull("learnlet", LEARNLET_POLL_INTERVAL);
         this.startActivityPull("institution", INSTITUTION_POLL_INTERVAL);
         this.startActivityPull("system", SYSTEM_POLL_INTERVAL);
+    };
+    LLSyncAction.prototype.pullActivitiesFromMemberships = function (activityType, memberships) {
+        var self = this;
+        var queuedMembership = [];
+        if (memberships) {
+            for (var _i = 0, memberships_2 = memberships; _i < memberships_2.length; _i++) {
+                var membership = memberships_2[_i];
+                if (membership.activityType == activityType)
+                    queuedMembership.push(membership);
+            }
+        }
+        var callbackProcessor = function () {
+            if (queuedMembership.length > 0) {
+                var member = queuedMembership.pop();
+                if (member) {
+                    self.pullActivity(activityType, member.membershipId, callbackProcessor);
+                }
+            }
+        };
+        callbackProcessor();
     };
     LLSyncAction.prototype.startActivityPull = function (activityType, interval) {
         var self = this;
@@ -3404,8 +3427,8 @@ var syncing_LLSyncAction = /** @class */ (function () {
             self.pebl.utils.getGroupMemberships(function (memberships) {
                 var queuedMembership = [];
                 if (memberships) {
-                    for (var _i = 0, memberships_2 = memberships; _i < memberships_2.length; _i++) {
-                        var membership = memberships_2[_i];
+                    for (var _i = 0, memberships_3 = memberships; _i < memberships_3.length; _i++) {
+                        var membership = memberships_3[_i];
                         if (membership.activityType == activityType)
                             queuedMembership.push(membership);
                     }
@@ -3425,29 +3448,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                 callbackProcessor();
             });
         };
-        this.pebl.utils.getGroupMemberships(function (memberships) {
-            var queuedMembership = [];
-            if (memberships) {
-                for (var _i = 0, memberships_3 = memberships; _i < memberships_3.length; _i++) {
-                    var membership = memberships_3[_i];
-                    if (membership.activityType == activityType)
-                        queuedMembership.push(membership);
-                }
-            }
-            var callbackProcessor = function () {
-                if (queuedMembership.length == 0) {
-                    if (self.running)
-                        self.activityPolls[activityType] = setTimeout(groupGetter.bind(self), interval);
-                }
-                else {
-                    var member = queuedMembership.pop();
-                    if (member) {
-                        self.pullActivity(activityType, member.membershipId, callbackProcessor);
-                    }
-                }
-            };
-            callbackProcessor();
-        });
+        groupGetter();
     };
     LLSyncAction.prototype.push = function (outgoing, callback) {
         var xhr = new XMLHttpRequest();

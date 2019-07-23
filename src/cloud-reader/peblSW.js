@@ -12,7 +12,7 @@ var FILES_TO_CACHE = [
 
     
     "./scripts/jquery-3.3.1.min.js",
-    "./scripts/PEBLCore.js",
+    "./scripts/PeBLCore.js",
     "./scripts/readium-js-viewer_all.js",
     "./scripts/pebl-login-widget.js",
     "./scripts/readium-js-viewer_CLOUDAPP-WORKER.js",
