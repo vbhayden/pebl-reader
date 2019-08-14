@@ -167,18 +167,21 @@ window.Lightbox = {
 	var lightBoxContent = document.getElementById('lightBoxContent');
 	var lightBoxContentSecondary = document.getElementById('lightBoxContentSecondary');
 
-	var linkedInButton = document.createElement('button');
-	linkedInButton.classList.add('linkedInButton');
-	linkedInButton.textContent = 'Sign in with LinkedIn';
-	linkedInButton.addEventListener('click', function() {
-		var urlParams = new URLSearchParams(window.location.search);
-		if (urlParams.get('epub'))
-			window.localStorage.setItem('loginRedirect', window.location.href);
+    if (window.Configuration.useLinkedIn) {
+        var linkedInButton = document.createElement('button');
+        linkedInButton.classList.add('linkedInButton');
+        linkedInButton.textContent = 'Sign in with LinkedIn';
+        linkedInButton.addEventListener('click', function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('epub'))
+                window.localStorage.setItem('loginRedirect', window.location.href);
 
-		window.Lightbox.linkedInSignIn();
-	});
+            window.Lightbox.linkedInSignIn();
+        });
 
-	lightBoxContent.appendChild(linkedInButton);
+        lightBoxContent.appendChild(linkedInButton);
+    }
+    
 	if (!window.Configuration.useLinkedIn) {
 		var selects = $('<br/>Select your username:<br/><br/><select id="loginUserNameSelector"><option>Learner</option><option>Learner1</option><option>Learner2</option><option>Learner3</option><option>Learner5</option><option>Learner7</option></select>');
 		lightBoxContent.appendChild(selects[0]);
