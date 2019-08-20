@@ -71,7 +71,7 @@ buildProd:
   - echo "window.Configuration = {};" > src/cloud-reader/config.js
   - echo "window.Configuration.lrsUrl = '$PROD_LRS_URL';" >> src/cloud-reader/config.js
   - echo "window.Configuration.lrsCredential = '$PROD_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
-  - echo "window.Configuration.useLinkedIn = true;" >> src/cloud-reader/config.js
+  - echo "window.Configuration.useLinkedIn = false;" >> src/cloud-reader/config.js
 
   - npm run prepare:all
   - npm run dist
