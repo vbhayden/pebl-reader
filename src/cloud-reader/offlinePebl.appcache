@@ -8,10 +8,11 @@ index.html
 css/readium-all.css
 css/annotations.css
 css/pebl-discussion-widget.css
+css/pebl-login-widget.css
 
 # scripts
 scripts/jquery-3.3.1.min.js
-scripts/PEBLCore.js
+scripts/PeBLCore.js
 scripts/readium-js-viewer_all.js
 scripts/config.js
 scripts/readium-js-viewer_CLOUDAPP-WORKER.js
@@ -50,6 +51,7 @@ images/PEBL-icon-48.png
 images/PEBL-icon-144.png
 images/webreader_logo_eduworks.png
 images/PEBL-icon-192.png
+images/eXtension-icon_small.png
 
 manifest.json
 

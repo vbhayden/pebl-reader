@@ -1,4 +1,4 @@
-(function(e, a) { for(var i in a) e[i] = a[i]; }(/******/ (function(modules) { // webpackBootstrap
+/******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -98,7 +98,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    };
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -437,10 +437,140 @@ var ProgramAction = /** @class */ (function (_super) {
     ProgramAction.is = function (x) {
         var verb = x.verb.display["en-US"];
         return (verb == "programLevelUp") || (verb == "programLevelDown") || (verb == "programInvited") || (verb == "programUninvited")
-            || (verb == "programExpelled") || (verb == "programJoined") || (verb == "programActivityLaunched") || (verb == "programActivityCompleted") || (verb == "programActivityTeamCompleted") || (verb == "programModified");
+            || (verb == "programExpelled") || (verb == "programJoined") || (verb == "programActivityLaunched")
+            || (verb == "programActivityCompleted") || (verb == "programActivityTeamCompleted") || (verb == "programModified")
+            || (verb == "programDeleted") || (verb == "programCompleted");
     };
     return ProgramAction;
 }(XApiStatement));
+
+// -------------------------------
+var CompatibilityTest = /** @class */ (function (_super) {
+    __extends(CompatibilityTest, _super);
+    function CompatibilityTest(raw) {
+        var _this = _super.call(this, raw) || this;
+        var extensions = _this.object.definition.extensions;
+        _this.readerName = extensions[PREFIX_PEBL_EXTENSION + "readerName"];
+        _this.osName = extensions[PREFIX_PEBL_EXTENSION + "osName"];
+        _this.osVersion = extensions[PREFIX_PEBL_EXTENSION + "osVersion"];
+        _this.browserName = extensions[PREFIX_PEBL_EXTENSION + "browserName"];
+        _this.browserVersion = extensions[PREFIX_PEBL_EXTENSION + "browserVersion"];
+        _this.userAgent = extensions[PREFIX_PEBL_EXTENSION + "userAgent"];
+        _this.appVersion = extensions[PREFIX_PEBL_EXTENSION + "appVersion"];
+        _this.platform = extensions[PREFIX_PEBL_EXTENSION + "platform"];
+        _this.vendor = extensions[PREFIX_PEBL_EXTENSION + "vendor"];
+        _this.testResults = JSON.parse(extensions[PREFIX_PEBL_EXTENSION + "testResults"]);
+        return _this;
+    }
+    CompatibilityTest.is = function (x) {
+        var verb = x.verb.display["en-US"];
+        return (verb == "compatibilityTested");
+    };
+    return CompatibilityTest;
+}(XApiStatement));
+
+// -------------------------------
+var ModuleEvent = /** @class */ (function (_super) {
+    __extends(ModuleEvent, _super);
+    function ModuleEvent(raw) {
+        return _super.call(this, raw) || this;
+    }
+    return ModuleEvent;
+}(XApiStatement));
+
+var ModuleRating = /** @class */ (function (_super) {
+    __extends(ModuleRating, _super);
+    function ModuleRating(raw) {
+        var _this = _super.call(this, raw) || this;
+        var extensions = _this.object.definition.extensions;
+        _this.rating = _this.object.definition.name["en-US"];
+        _this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
+        _this.programId = extensions[PREFIX_PEBL_EXTENSION + "programId"];
+        return _this;
+    }
+    ModuleRating.is = function (x) {
+        var verb = x.verb.display["en-US"];
+        return (verb == "moduleRating");
+    };
+    return ModuleRating;
+}(ModuleEvent));
+
+var ModuleFeedback = /** @class */ (function (_super) {
+    __extends(ModuleFeedback, _super);
+    function ModuleFeedback(raw) {
+        var _this = _super.call(this, raw) || this;
+        var extensions = _this.object.definition.extensions;
+        _this.feedback = _this.object.definition.name["en-US"];
+        _this.willingToDiscuss = extensions[PREFIX_PEBL_EXTENSION + "willingToDiscuss"];
+        _this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
+        _this.programId = extensions[PREFIX_PEBL_EXTENSION + "programId"];
+        return _this;
+    }
+    ModuleFeedback.is = function (x) {
+        var verb = x.verb.display["en-US"];
+        return (verb == "moduleFeedback");
+    };
+    return ModuleFeedback;
+}(ModuleEvent));
+
+var ModuleExample = /** @class */ (function (_super) {
+    __extends(ModuleExample, _super);
+    function ModuleExample(raw) {
+        var _this = _super.call(this, raw) || this;
+        var extensions = _this.object.definition.extensions;
+        _this.example = _this.object.definition.name["en-US"];
+        _this.description = _this.object.definition.description["en-US"];
+        _this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
+        _this.youtubeUrl = extensions[PREFIX_PEBL_EXTENSION + "youtubeUrl"];
+        _this.imageUrl = extensions[PREFIX_PEBL_EXTENSION + "imageUrl"];
+        _this.websiteUrl = extensions[PREFIX_PEBL_EXTENSION + "websiteUrl"];
+        _this.quotedPerson = extensions[PREFIX_PEBL_EXTENSION + "quotedPerson"];
+        _this.quotedTeam = extensions[PREFIX_PEBL_EXTENSION + "quotedTeam"];
+        return _this;
+    }
+    ModuleExample.is = function (x) {
+        var verb = x.verb.display["en-US"];
+        return (verb == "moduleExample");
+    };
+    return ModuleExample;
+}(ModuleEvent));
+
+var ModuleExampleRating = /** @class */ (function (_super) {
+    __extends(ModuleExampleRating, _super);
+    function ModuleExampleRating(raw) {
+        var _this = _super.call(this, raw) || this;
+        var extensions = _this.object.definition.extensions;
+        _this.rating = _this.object.definition.name["en-US"];
+        _this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
+        _this.programId = extensions[PREFIX_PEBL_EXTENSION + "programId"];
+        _this.exampleId = extensions[PREFIX_PEBL_EXTENSION + "exampleId"];
+        return _this;
+    }
+    ModuleExampleRating.is = function (x) {
+        var verb = x.verb.display["en-US"];
+        return (verb == "moduleExampleRating");
+    };
+    return ModuleExampleRating;
+}(ModuleEvent));
+
+var ModuleExampleFeedback = /** @class */ (function (_super) {
+    __extends(ModuleExampleFeedback, _super);
+    function ModuleExampleFeedback(raw) {
+        var _this = _super.call(this, raw) || this;
+        var extensions = _this.object.definition.extensions;
+        _this.feedback = _this.object.definition.name["en-US"];
+        _this.willingToDiscuss = extensions[PREFIX_PEBL_EXTENSION + "willingToDiscuss"];
+        _this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
+        _this.programId = extensions[PREFIX_PEBL_EXTENSION + "programId"];
+        _this.exampleId = extensions[PREFIX_PEBL_EXTENSION + "exampleId"];
+        return _this;
+    }
+    ModuleExampleFeedback.is = function (x) {
+        var verb = x.verb.display["en-US"];
+        return (verb == "moduleExampleFeedback");
+    };
+    return ModuleExampleFeedback;
+}(ModuleEvent));
 
 
 // CONCATENATED MODULE: ./src/models.ts
@@ -581,7 +711,7 @@ var activity_extends = (undefined && undefined.__extends) || (function () {
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    };
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -635,10 +765,14 @@ var Activity = /** @class */ (function () {
     ;
     Activity.merge = function (oldActivity, newActivity) {
         var mergedActivity = {};
-        Object.keys(oldActivity).forEach(function (key) {
+        var oldKeys = Object.keys(oldActivity);
+        var newKeys = Object.keys(newActivity);
+        for (var _i = 0, oldKeys_1 = oldKeys; _i < oldKeys_1.length; _i++) {
+            var key = oldKeys_1[_i];
             mergedActivity[key] = oldActivity[key];
-        });
-        Object.keys(newActivity).forEach(function (key) {
+        }
+        for (var _a = 0, newKeys_1 = newKeys; _a < newKeys_1.length; _a++) {
+            var key = newKeys_1[_a];
             // Null properties were set for a reason and should not be changed.
             if (mergedActivity[key] == null) {
                 // Leave it
@@ -646,10 +780,14 @@ var Activity = /** @class */ (function () {
             else {
                 mergedActivity[key] = newActivity[key];
             }
-        });
+        }
         // If either is flagged for deletion, that should not be changed.
         if ((oldActivity.delete && oldActivity.delete == true) || (newActivity.delete && newActivity.delete == true)) {
             mergedActivity.delete = true;
+        }
+        // If either is flagged as completed, that should not be changed.
+        if ((oldActivity.completed && oldActivity.completed == true) || (newActivity.completed && newActivity.completed == true)) {
+            mergedActivity.completed = true;
         }
         return mergedActivity;
     };
@@ -737,21 +875,23 @@ var activity_Program = /** @class */ (function (_super) {
         // Translate legacy member format to new format
         var members = [];
         if (raw.members)
-            members = typeof (raw.members) === "string" ? JSON.parse(decodeURIComponent(raw.members)) : (raw.members) ? raw.members : [];
+            members = typeof (raw.members) === "string" ? JSON.parse(decodeURIComponent(raw.members)) : (raw.members ? raw.members : []);
         if (members.length > 0) {
             for (var _i = 0, members_1 = members; _i < members_1.length; _i++) {
                 var member = members_1[_i];
                 self.addMember(member);
             }
         }
-        Object.keys(raw).forEach(function (key) {
+        var rawKeys = Object.keys(raw);
+        for (var _a = 0, rawKeys_1 = rawKeys; _a < rawKeys_1.length; _a++) {
+            var key = rawKeys_1[_a];
             if (key.indexOf('member-') !== -1) {
-                var member = typeof (raw[key]) === "string" ? JSON.parse(decodeURIComponent(raw[key])) : (raw[key]) ? raw[key] : null;
+                var member = typeof (raw[key]) === "string" ? JSON.parse(decodeURIComponent(raw[key])) : (raw[key] ? raw[key] : null);
                 if (member == null || (XApiStatement.is(member) && Membership.is(member)) || TempMembership.is(member)) {
                     self[key] = member;
                 }
             }
-        });
+        }
         _this.programLevelStepsComplete = raw.programLevelStepsComplete || 0;
         _this.programLevels = raw.programLevels || [];
         _this.programTitle = raw.programTitle || "";
@@ -764,7 +904,31 @@ var activity_Program = /** @class */ (function (_super) {
         _this.programAvatar = raw.programAvatar;
         _this.programTeamName = raw.programTeamName;
         _this.programFocus = raw.programFocus;
-        _this.members = typeof (raw.members) === "string" ? JSON.parse(decodeURIComponent(raw.members)) : (raw.members) ? raw.members : [];
+        _this.completed = raw.completed ? new Date(raw.completed) : undefined;
+        _this.created = raw.created ? new Date(raw.created) : undefined;
+        // Estimate created time to backfill older programs, find oldest member and use their timestamp
+        if (!_this.created) {
+            if (_this.isNew) {
+                _this.created = new Date();
+            }
+            else {
+                var oldestMember = null;
+                var keys = Object.keys(_this);
+                for (var _b = 0, keys_1 = keys; _b < keys_1.length; _b++) {
+                    var key = keys_1[_b];
+                    if (key.indexOf('member-') !== -1) {
+                        var member = typeof (_this[key]) === "string" ? JSON.parse(decodeURIComponent(_this[key])) : (_this[key] ? _this[key] : null);
+                        if (member && XApiStatement.is(member) && Membership.is(member)) {
+                            if (!oldestMember || (new Date(member.timestamp) < new Date(oldestMember.timestamp)))
+                                oldestMember = member;
+                        }
+                    }
+                }
+                if (oldestMember)
+                    _this.created = new Date(oldestMember.timestamp);
+            }
+        }
+        _this.members = typeof (raw.members) === "string" ? JSON.parse(decodeURIComponent(raw.members)) : (raw.members ? raw.members : []);
         return _this;
     }
     Program.is = function (raw) {
@@ -773,7 +937,9 @@ var activity_Program = /** @class */ (function (_super) {
     Program.prototype.toTransportFormat = function () {
         var obj = _super.prototype.toTransportFormat.call(this);
         var self = this;
-        Object.keys(this).forEach(function (key) {
+        var keys = Object.keys(this);
+        for (var _i = 0, keys_2 = keys; _i < keys_2.length; _i++) {
+            var key = keys_2[_i];
             if (key.indexOf('member-') !== -1) {
                 if (self[key] == null) {
                     obj[key] = self[key];
@@ -782,7 +948,7 @@ var activity_Program = /** @class */ (function (_super) {
                     obj[key] = encodeURIComponent(JSON.stringify(self[key]));
                 }
             }
-        });
+        }
         obj.programLevelStepsComplete = this.programLevelStepsComplete;
         obj.programLevels = this.programLevels;
         obj.programTitle = this.programTitle;
@@ -795,14 +961,18 @@ var activity_Program = /** @class */ (function (_super) {
         obj.programFocus = this.programFocus;
         obj.programCommunities = this.programCommunities;
         obj.programInstitutions = this.programInstitutions;
-        obj.members = encodeURIComponent(JSON.stringify(this.members));
+        obj.completed = this.completed ? this.completed.toISOString() : undefined,
+            obj.created = this.created ? this.created.toISOString() : undefined,
+            obj.members = encodeURIComponent(JSON.stringify(this.members));
         return obj;
     };
     Program.prototype.addMember = function (membership) {
         this['member-' + membership.id] = membership;
     };
     Program.iterateMembers = function (program, callback) {
-        Object.keys(program).forEach(function (key) {
+        var keys = Object.keys(program);
+        for (var _i = 0, keys_3 = keys; _i < keys_3.length; _i++) {
+            var key = keys_3[_i];
             if (key.indexOf('member-') !== -1 && program[key]) {
                 if (XApiStatement.is(program[key]) && Membership.is(program[key])) {
                     callback(key, program[key]);
@@ -811,9 +981,263 @@ var activity_Program = /** @class */ (function (_super) {
                     callback(key, program[key]);
                 }
             }
-        });
+        }
+    };
+    Program.getMembers = function (program) {
+        var members = [];
+        var keys = Object.keys(program);
+        for (var _i = 0, keys_4 = keys; _i < keys_4.length; _i++) {
+            var key = keys_4[_i];
+            if (key.indexOf('member-') !== -1 && program[key]) {
+                if (XApiStatement.is(program[key]) && Membership.is(program[key])) {
+                    members.push(program[key]);
+                }
+            }
+        }
+        return members;
+    };
+    Program.isMember = function (program, userIdentity) {
+        var isMember = false;
+        var keys = Object.keys(program);
+        for (var _i = 0, keys_5 = keys; _i < keys_5.length; _i++) {
+            var key = keys_5[_i];
+            if (key.indexOf('member-') !== -1 && program[key]) {
+                if (program[key].identity === userIdentity) {
+                    isMember = true;
+                }
+            }
+        }
+        return isMember;
+    };
+    Program.isNew = function (program) {
+        var isNew = true;
+        var keys = Object.keys(program);
+        for (var _i = 0, keys_6 = keys; _i < keys_6.length; _i++) {
+            var key = keys_6[_i];
+            if (key.indexOf('member-') !== -1) {
+                isNew = false;
+            }
+        }
+        return isNew;
     };
     return Program;
+}(Activity));
+
+var activity_Institution = /** @class */ (function (_super) {
+    activity_extends(Institution, _super);
+    function Institution(raw) {
+        var _this = this;
+        raw.type = "institution";
+        _this = _super.call(this, raw) || this;
+        var self = _this;
+        var rawKeys = Object.keys(raw);
+        for (var _i = 0, rawKeys_2 = rawKeys; _i < rawKeys_2.length; _i++) {
+            var key = rawKeys_2[_i];
+            if (key.indexOf('member-') !== -1) {
+                var member = typeof (raw[key]) === "string" ? JSON.parse(decodeURIComponent(raw[key])) : (raw[key] ? raw[key] : null);
+                if (member == null || (XApiStatement.is(member) && Membership.is(member)) || TempMembership.is(member)) {
+                    self[key] = member;
+                }
+            }
+            else if (key.indexOf('program-') !== -1) {
+                var program = typeof (raw[key]) === "string" ? JSON.parse(decodeURIComponent(raw[key])) : (raw[key] ? raw[key] : null);
+                if (program == null || (activity_Program.is(program))) {
+                    self[key] = program;
+                }
+            }
+        }
+        _this.institutionName = raw.institutionName || "";
+        _this.institutionDescription = raw.institutionDescription || "";
+        _this.institutionAvatar = raw.institutionAvatar;
+        return _this;
+    }
+    Institution.is = function (raw) {
+        return raw.type == "institution";
+    };
+    Institution.prototype.toTransportFormat = function () {
+        var obj = _super.prototype.toTransportFormat.call(this);
+        var self = this;
+        var keys = Object.keys(this);
+        for (var _i = 0, keys_7 = keys; _i < keys_7.length; _i++) {
+            var key = keys_7[_i];
+            if (key.indexOf('member-') !== -1) {
+                if (self[key] == null) {
+                    obj[key] = self[key];
+                }
+                else if ((XApiStatement.is(self[key]) && Membership.is(self[key])) || TempMembership.is(self[key])) {
+                    obj[key] = encodeURIComponent(JSON.stringify(self[key]));
+                }
+            }
+            else if (key.indexOf('member-') !== -1) {
+                if (self[key] == null) {
+                    obj[key] = self[key];
+                }
+                else if (activity_Program.is(self[key])) {
+                    obj[key] = encodeURIComponent(JSON.stringify(self[key]));
+                }
+            }
+        }
+        obj.institutionName = this.institutionName;
+        obj.institutionDescription = this.institutionDescription;
+        obj.institutionAvatar = this.institutionAvatar;
+        return obj;
+    };
+    Institution.prototype.addMember = function (membership) {
+        this['member-' + membership.id] = membership;
+    };
+    Institution.prototype.addProgram = function (program) {
+        this['program-' + program.id] = program;
+    };
+    Institution.iterateMembers = function (institution, callback) {
+        var keys = Object.keys(institution);
+        for (var _i = 0, keys_8 = keys; _i < keys_8.length; _i++) {
+            var key = keys_8[_i];
+            if (key.indexOf('member-') !== -1 && institution[key]) {
+                if (XApiStatement.is(institution[key]) && Membership.is(institution[key])) {
+                    callback(key, institution[key]);
+                }
+                else if (TempMembership.is(institution[key])) {
+                    callback(key, institution[key]);
+                }
+            }
+        }
+    };
+    Institution.isMember = function (institution, userIdentity) {
+        var isMember = false;
+        var keys = Object.keys(institution);
+        for (var _i = 0, keys_9 = keys; _i < keys_9.length; _i++) {
+            var key = keys_9[_i];
+            if (key.indexOf('member-') !== -1 && institution[key]) {
+                if (institution[key].identity === userIdentity) {
+                    isMember = true;
+                }
+            }
+        }
+        return isMember;
+    };
+    Institution.iteratePrograms = function (institution, callback) {
+        var keys = Object.keys(institution);
+        for (var _i = 0, keys_10 = keys; _i < keys_10.length; _i++) {
+            var key = keys_10[_i];
+            if (key.indexOf('program-') !== -1 && institution[key]) {
+                if (activity_Program.is(institution[key])) {
+                    callback(key, institution[key]);
+                }
+            }
+        }
+    };
+    Institution.isProgram = function (institution, programId) {
+        var isProgram = false;
+        var keys = Object.keys(institution);
+        for (var _i = 0, keys_11 = keys; _i < keys_11.length; _i++) {
+            var key = keys_11[_i];
+            if (key.indexOf('program-') !== -1 && institution[key]) {
+                if (institution[key].id === programId) {
+                    isProgram = true;
+                }
+            }
+        }
+        return isProgram;
+    };
+    Institution.isNew = function (institution) {
+        var isNew = true;
+        var keys = Object.keys(institution);
+        for (var _i = 0, keys_12 = keys; _i < keys_12.length; _i++) {
+            var key = keys_12[_i];
+            if (key.indexOf('member-') !== -1) {
+                isNew = false;
+            }
+        }
+        return isNew;
+    };
+    return Institution;
+}(Activity));
+
+var activity_System = /** @class */ (function (_super) {
+    activity_extends(System, _super);
+    function System(raw) {
+        var _this = this;
+        raw.type = "system";
+        _this = _super.call(this, raw) || this;
+        var self = _this;
+        var rawKeys = Object.keys(raw);
+        for (var _i = 0, rawKeys_3 = rawKeys; _i < rawKeys_3.length; _i++) {
+            var key = rawKeys_3[_i];
+            if (key.indexOf('member-') !== -1) {
+                var member = typeof (raw[key]) === "string" ? JSON.parse(decodeURIComponent(raw[key])) : (raw[key] ? raw[key] : null);
+                if (member == null || (XApiStatement.is(member) && Membership.is(member)) || TempMembership.is(member)) {
+                    self[key] = member;
+                }
+            }
+        }
+        _this.systemName = raw.systemName || "";
+        _this.systemDescription = raw.systemDescription || "";
+        return _this;
+    }
+    System.is = function (raw) {
+        return raw.type == "system";
+    };
+    System.prototype.toTransportFormat = function () {
+        var obj = _super.prototype.toTransportFormat.call(this);
+        var self = this;
+        var keys = Object.keys(this);
+        for (var _i = 0, keys_13 = keys; _i < keys_13.length; _i++) {
+            var key = keys_13[_i];
+            if (key.indexOf('member-') !== -1) {
+                if (self[key] == null) {
+                    obj[key] = self[key];
+                }
+                else if ((XApiStatement.is(self[key]) && Membership.is(self[key])) || TempMembership.is(self[key])) {
+                    obj[key] = encodeURIComponent(JSON.stringify(self[key]));
+                }
+            }
+        }
+        obj.systemName = this.systemName;
+        obj.systemDescription = this.systemDescription;
+        return obj;
+    };
+    System.prototype.addMember = function (membership) {
+        this['member-' + membership.id] = membership;
+    };
+    System.iterateMembers = function (system, callback) {
+        var keys = Object.keys(system);
+        for (var _i = 0, keys_14 = keys; _i < keys_14.length; _i++) {
+            var key = keys_14[_i];
+            if (key.indexOf('member-') !== -1 && system[key]) {
+                if (XApiStatement.is(system[key]) && Membership.is(system[key])) {
+                    callback(key, system[key]);
+                }
+                else if (TempMembership.is(system[key])) {
+                    callback(key, system[key]);
+                }
+            }
+        }
+    };
+    System.isMember = function (system, userIdentity) {
+        var isMember = false;
+        var keys = Object.keys(system);
+        for (var _i = 0, keys_15 = keys; _i < keys_15.length; _i++) {
+            var key = keys_15[_i];
+            if (key.indexOf('member-') !== -1 && system[key]) {
+                if (system[key].identity === userIdentity) {
+                    isMember = true;
+                }
+            }
+        }
+        return isMember;
+    };
+    System.isNew = function (system) {
+        var isNew = true;
+        var keys = Object.keys(system);
+        for (var _i = 0, keys_16 = keys; _i < keys_16.length; _i++) {
+            var key = keys_16[_i];
+            if (key.indexOf('member-') !== -1) {
+                isNew = false;
+            }
+        }
+        return isNew;
+    };
+    return System;
 }(Activity));
 
 // -------------------------------
@@ -840,6 +1264,12 @@ function toActivity(obj) {
     else if (Learnlet.is(obj)) {
         act = new Presence(obj);
     }
+    else if (activity_Institution.is(obj)) {
+        act = new activity_Institution(obj);
+    }
+    else if (activity_System.is(obj)) {
+        act = new activity_System(obj);
+    }
     else
         new Error("Unknown activity type");
     return act;
@@ -855,7 +1285,7 @@ var CURRENT_USER = "peblCurrentUser";
 var storage_IndexedDBStorageAdapter = /** @class */ (function () {
     function IndexedDBStorageAdapter(callback) {
         this.invocationQueue = [];
-        var request = window.indexedDB.open("pebl", 20);
+        var request = window.indexedDB.open("pebl", 21);
         var self = this;
         request.onupgradeneeded = function () {
             var db = request.result;
@@ -879,8 +1309,10 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             db.createObjectStore("lrsAuth", { keyPath: "id" });
             var activityStore = db.createObjectStore("activity", { keyPath: ["identity", "type", "id"] });
             var activityEventStore = db.createObjectStore("activityEvents", { keyPath: ["id", "programId"] });
+            var moduleEventStore = db.createObjectStore("moduleEvents", { keyPath: ["id", "idref"] });
             activityStore.createIndex(MASTER_INDEX, ["identity", "type"]);
             activityEventStore.createIndex(MASTER_INDEX, ["programId"]);
+            moduleEventStore.createIndex(MASTER_INDEX, ["idref"]);
             eventStore.createIndex(MASTER_INDEX, ["identity", "book"]);
             annotationStore.createIndex(MASTER_INDEX, ["identity", "book"]);
             competencyStore.createIndex(MASTER_INDEX, "identity");
@@ -1011,7 +1443,7 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
     };
     IndexedDBStorageAdapter.prototype.removeSharedAnnotation = function (userProfile, id, callback) {
         if (this.db) {
-            var request = this.db.transaction(["sharedAnnotations"], "readwrite").objectStore("sharedAnnotations").delete(IDBKeyRange.only(id));
+            var request = this.db.transaction(["sharedAnnotations"], "readwrite").objectStore("sharedAnnotations").delete(IDBKeyRange.only([userProfile.identity, id]));
             request.onerror = function (e) {
                 console.log(e);
             };
@@ -1921,6 +2353,87 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
         }
     };
     // -------------------------------
+    IndexedDBStorageAdapter.prototype.getModuleEvent = function (idref, callback) {
+        if (this.db) {
+            var os = this.db.transaction(["moduleEvents"], "readonly").objectStore("moduleEvents");
+            var index_7 = os.index(MASTER_INDEX);
+            var param_6 = idref;
+            var self_53 = this;
+            this.getAll(index_7, IDBKeyRange.only(param_6), function (arr) {
+                if (arr.length == 0)
+                    self_53.getAll(index_7, IDBKeyRange.only([param_6]), callback);
+                else
+                    callback(arr);
+            });
+        }
+        else {
+            var self_54 = this;
+            this.invocationQueue.push(function () {
+                self_54.getModuleEvent(idref, callback);
+            });
+        }
+    };
+    IndexedDBStorageAdapter.prototype.saveModuleEvent = function (userProfile, stmts, callback) {
+        if (this.db) {
+            if (stmts instanceof ModuleEvent) {
+                var ga = stmts;
+                ga.identity = ga.actor.account.name;
+                var request = this.db.transaction(["moduleEvents"], "readwrite").objectStore("moduleEvents").put(ga);
+                request.onerror = function (e) {
+                    console.log(e);
+                };
+                request.onsuccess = function () {
+                    if (callback)
+                        callback();
+                };
+            }
+            else {
+                var objectStore_8 = this.db.transaction(["moduleEvents"], "readwrite").objectStore("moduleEvents");
+                var stmtsCopy_7 = stmts.slice(0);
+                var self_55 = this;
+                var processCallback_9 = function () {
+                    var record = stmtsCopy_7.pop();
+                    if (record) {
+                        var clone = record;
+                        clone.identity = clone.actor.account.name;
+                        var request = objectStore_8.put(self_55.cleanRecord(clone));
+                        request.onerror = processCallback_9;
+                        request.onsuccess = processCallback_9;
+                    }
+                    else {
+                        if (callback)
+                            callback();
+                    }
+                };
+                processCallback_9();
+            }
+        }
+        else {
+            var self_56 = this;
+            this.invocationQueue.push(function () {
+                self_56.saveModuleEvent(userProfile, stmts, callback);
+            });
+        }
+    };
+    IndexedDBStorageAdapter.prototype.removeModuleEvent = function (idref, xId, callback) {
+        if (this.db) {
+            var request = this.db.transaction(["moduleEvents"], "readwrite").objectStore("moduleEvents").delete(IDBKeyRange.only([xId, idref]));
+            request.onerror = function (e) {
+                console.log(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            var self_57 = this;
+            this.invocationQueue.push(function () {
+                self_57.removeModuleEvent(idref, xId, callback);
+            });
+        }
+    };
+    // -------------------------------
     IndexedDBStorageAdapter.prototype.saveActivity = function (userProfile, stmts, callback) {
         if (this.db) {
             if ((stmts instanceof Activity) || Activity.is(stmts)) {
@@ -1938,30 +2451,30 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
                 }
             }
             else {
-                var objectStore_8 = this.db.transaction(["activity"], "readwrite").objectStore("activity");
-                var stmtsCopy_7 = stmts.slice(0);
-                var self_53 = this;
-                var processCallback_9 = function () {
-                    var record = stmtsCopy_7.pop();
+                var objectStore_9 = this.db.transaction(["activity"], "readwrite").objectStore("activity");
+                var stmtsCopy_8 = stmts.slice(0);
+                var self_58 = this;
+                var processCallback_10 = function () {
+                    var record = stmtsCopy_8.pop();
                     if (record) {
                         var clone = record;
                         clone.identity = userProfile.identity;
-                        var request = objectStore_8.put(self_53.cleanRecord(clone));
-                        request.onerror = processCallback_9;
-                        request.onsuccess = processCallback_9;
+                        var request = objectStore_9.put(self_58.cleanRecord(clone));
+                        request.onerror = processCallback_10;
+                        request.onsuccess = processCallback_10;
                     }
                     else {
                         if (callback)
                             callback();
                     }
                 };
-                processCallback_9();
+                processCallback_10();
             }
         }
         else {
-            var self_54 = this;
+            var self_59 = this;
             this.invocationQueue.push(function () {
-                self_54.saveActivity(userProfile, stmts, callback);
+                self_59.saveActivity(userProfile, stmts, callback);
             });
         }
     };
@@ -1970,13 +2483,13 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             var os = this.db.transaction(["activity"], "readonly").objectStore("activity");
             var index = os.index(MASTER_INDEX);
             var param = [userProfile.identity, activityType];
-            var self_55 = this;
-            self_55.getAll(index, IDBKeyRange.only(param), callback);
+            var self_60 = this;
+            self_60.getAll(index, IDBKeyRange.only(param), callback);
         }
         else {
-            var self_56 = this;
+            var self_61 = this;
             this.invocationQueue.push(function () {
-                self_56.getActivity(userProfile, activityType, callback);
+                self_61.getActivity(userProfile, activityType, callback);
             });
         }
     };
@@ -1996,9 +2509,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_57 = this;
+            var self_62 = this;
             this.invocationQueue.push(function () {
-                self_57.getActivityById(userProfile, activityType, activityId, callback);
+                self_62.getActivityById(userProfile, activityType, activityId, callback);
             });
         }
     };
@@ -2014,9 +2527,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_58 = this;
+            var self_63 = this;
             this.invocationQueue.push(function () {
-                self_58.removeActivity(userProfile, xId, activityType, callback);
+                self_63.removeActivity(userProfile, xId, activityType, callback);
             });
         }
     };
@@ -2035,29 +2548,29 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_59 = this;
+            var self_64 = this;
             this.invocationQueue.push(function () {
-                self_59.saveOutgoingActivity(userProfile, stmt, callback);
+                self_64.saveOutgoingActivity(userProfile, stmt, callback);
             });
         }
     };
     IndexedDBStorageAdapter.prototype.getOutgoingActivity = function (userProfile, callback) {
         if (this.db) {
             var os = this.db.transaction(["outgoingActivity"], "readonly").objectStore("outgoingActivity");
-            var index_7 = os.index(MASTER_INDEX);
-            var param_6 = userProfile.identity;
-            var self_60 = this;
-            this.getAll(index_7, IDBKeyRange.only(param_6), function (arr) {
+            var index_8 = os.index(MASTER_INDEX);
+            var param_7 = userProfile.identity;
+            var self_65 = this;
+            this.getAll(index_8, IDBKeyRange.only(param_7), function (arr) {
                 if (arr.length == 0)
-                    self_60.getAll(index_7, IDBKeyRange.only([param_6]), callback);
+                    self_65.getAll(index_8, IDBKeyRange.only([param_7]), callback);
                 else
                     callback(arr);
             });
         }
         else {
-            var self_61 = this;
+            var self_66 = this;
             this.invocationQueue.push(function () {
-                self_61.getOutgoingActivity(userProfile, callback);
+                self_66.getOutgoingActivity(userProfile, callback);
             });
         }
     };
@@ -2071,9 +2584,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             }
         }
         else {
-            var self_62 = this;
+            var self_67 = this;
             this.invocationQueue.push(function () {
-                self_62.removeOutgoingActivity(userProfile, toClear, callback);
+                self_67.removeOutgoingActivity(userProfile, toClear, callback);
             });
         }
     };
@@ -2119,9 +2632,12 @@ var PEBL_THREAD_USER_PREFIX = "peblThread://" + USER_PREFIX;
 var PEBL_THREAD_GROUP_PREFIX = "peblThread://" + GROUP_PREFIX;
 var THREAD_POLL_INTERVAL = 4000;
 var BOOK_POLL_INTERVAL = 6000;
-var PRESENCE_POLL_INTERVAL = 120000;
-var LEARNLET_POLL_INTERVAL = 60000;
+// const PRESENCE_POLL_INTERVAL = 120000;
+// const LEARNLET_POLL_INTERVAL = 60000;
 var PROGRAM_POLL_INTERVAL = 60000;
+var INSTITUTION_POLL_INTERVAL = 60000;
+var SYSTEM_POLL_INTERVAL = 60000;
+
 
 
 var syncing_LLSyncAction = /** @class */ (function () {
@@ -2193,6 +2709,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
     LLSyncAction.prototype.pullActivity = function (activity, profileId, callback) {
         var self = this;
         var presence = new XMLHttpRequest();
+        var profileIdToUse;
         presence.addEventListener("load", function () {
             if ((presence.status >= 200) && (presence.status <= 209)) {
                 var activityEvent_1;
@@ -2206,6 +2723,18 @@ var syncing_LLSyncAction = /** @class */ (function () {
                         p.etag = s;
                     }
                     activityObj_1 = [p];
+                    // If passed an array of profileIds, pull them one by one.
+                    if (profileId && Array.isArray(profileId) && profileId.length > 0) {
+                        self.pullActivity(activity, profileId, callback);
+                    }
+                }
+                else if (activity == "program" && Array.isArray(jsonObj)) {
+                    // First call without a profileId returns an array of all profileIds, use that to start getting them one by one.
+                    // FIXME: this should be a separate code path
+                    self.pullActivity(activity, jsonObj, callback);
+                    if (callback)
+                        callback(jsonObj);
+                    return;
                 }
                 else if (activity == "learnlet" && Learnlet.is(jsonObj)) {
                     activityEvent_1 = self.pebl.events.incomingLearnlet;
@@ -2225,6 +2754,24 @@ var syncing_LLSyncAction = /** @class */ (function () {
                         p.etag = s;
                     }
                 }
+                else if (activity == "institution" && activity_Institution.is(jsonObj)) {
+                    activityEvent_1 = self.pebl.events.incomingInstitution;
+                    var i = new activity_Institution(jsonObj);
+                    activityObj_1 = [i];
+                    var s = presence.getResponseHeader("etag");
+                    if (s) {
+                        i.etag = s;
+                    }
+                }
+                else if (activity == "system" && activity_System.is(jsonObj)) {
+                    activityEvent_1 = self.pebl.events.incomingSystem;
+                    var sys = new activity_System(jsonObj);
+                    activityObj_1 = [sys];
+                    var s = presence.getResponseHeader("etag");
+                    if (s) {
+                        sys.etag = s;
+                    }
+                }
                 else {
                     console.log(jsonObj);
                     activityObj_1 = [];
@@ -2239,6 +2786,12 @@ var syncing_LLSyncAction = /** @class */ (function () {
                             else if (activity == "learnlet") {
                             }
                             else if (activity == "presense") {
+                            }
+                            else if (activity == "institution") {
+                                self.pebl.storage.saveActivity(userProfile, activityObj_1[0]);
+                            }
+                            else if (activity == "system") {
+                                self.pebl.storage.saveActivity(userProfile, activityObj_1[0]);
                             }
                             if (activityEvent_1) {
                                 self.pebl.emitEvent(activityEvent_1, activityObj_1);
@@ -2267,7 +2820,15 @@ var syncing_LLSyncAction = /** @class */ (function () {
                 callback();
             }
         });
-        presence.open("GET", self.endpoint.url + "data/xapi/activities/profile?activityId=" + encodeURIComponent(PEBL_THREAD_PREFIX + activity + "s") + "&profileId=" + encodeURIComponent(profileId) + "&t=" + Date.now(), true);
+        if (profileId) {
+            if (Array.isArray(profileId)) {
+                profileIdToUse = profileId.pop();
+            }
+            else {
+                profileIdToUse = profileId;
+            }
+        }
+        presence.open("GET", self.endpoint.url + "data/xapi/activities/profile?activityId=" + encodeURIComponent(PEBL_THREAD_PREFIX + activity + "s") + (profileIdToUse ? ("&profileId=" + encodeURIComponent(profileIdToUse)) : '') + "&t=" + Date.now(), true);
         presence.setRequestHeader("X-Experience-API-Version", "1.0.3");
         presence.setRequestHeader("Authorization", "Basic " + self.endpoint.token);
         presence.send();
@@ -2283,6 +2844,14 @@ var syncing_LLSyncAction = /** @class */ (function () {
         else if (Learnlet.is(activity)) {
             activity = new Learnlet(activity);
             jsObj = JSON.stringify(new Learnlet(activity).toTransportFormat());
+        }
+        else if (activity_Institution.is(activity)) {
+            activity = new activity_Institution(activity);
+            jsObj = JSON.stringify(activity.toTransportFormat());
+        }
+        else if (activity_System.is(activity)) {
+            activity = new activity_System(activity);
+            jsObj = JSON.stringify(activity.toTransportFormat());
         }
         else
             new Error("Unknown activity format");
@@ -2322,7 +2891,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
     LLSyncAction.prototype.deleteActivity = function (activity, callback) {
         var xhr = new XMLHttpRequest();
         var self = this;
-        if (!activity_Program.is(activity) && !Learnlet.is(activity)) {
+        if (!activity_Program.is(activity) && !Learnlet.is(activity) && !activity_Institution.is(activity) && !activity_System.is(activity)) {
             new Error("Unknown activity format");
         }
         xhr.addEventListener("load", function () {
@@ -2597,6 +3166,9 @@ var syncing_LLSyncAction = /** @class */ (function () {
                                 cleanMemberships.sort();
                                 self.pebl.storage.saveGroupMembership(userProfile, cleanMemberships);
                                 self.pebl.emitEvent(thread, cleanMemberships);
+                                self.pullActivitiesFromMemberships("program", cleanMemberships);
+                                self.pullActivitiesFromMemberships("institution", cleanMemberships);
+                                self.pullActivitiesFromMemberships("system", cleanMemberships);
                             }
                         }
                         for (var _d = 0, _e = Object.keys(buckets); _d < _e.length; _d++) {
@@ -2655,7 +3227,16 @@ var syncing_LLSyncAction = /** @class */ (function () {
                             "statement.stored": {
                                 "$gt": lastSynced.toISOString()
                             },
-                            "statement.verb.id": "http://adlnet.gov/expapi/verbs/shared"
+                            "statement.verb.id": {
+                                "$in": [
+                                    "http://adlnet.gov/expapi/verbs/shared",
+                                    "http://www.peblproject.com/definitions.html#moduleRating",
+                                    "http://www.peblproject.com/definitions.html#moduleFeedback",
+                                    "http://www.peblproject.com/definitions.html#moduleExample",
+                                    "http://www.peblproject.com/definitions.html#moduleExampleRating",
+                                    "http://www.peblproject.com/definitions.html#moduleExampleFeedback"
+                                ]
+                            }
                         }
                     ]
                 }
@@ -2685,6 +3266,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                     var annotations = {};
                     var sharedAnnotations = {};
                     var events = {};
+                    var moduleEvents = {};
                     var deleted = [];
                     for (var i = 0; i < stmts.length; i++) {
                         var xapi = stmts[i];
@@ -2724,6 +3306,26 @@ var syncing_LLSyncAction = /** @class */ (function () {
                             var r = new Reference(xapi);
                             events[r.id] = r;
                             self.pebl.network.queueReference(r);
+                        }
+                        else if (ModuleRating.is(xapi)) {
+                            var mr = new ModuleRating(xapi);
+                            moduleEvents[mr.id] = mr;
+                        }
+                        else if (ModuleFeedback.is(xapi)) {
+                            var mf = new ModuleFeedback(xapi);
+                            moduleEvents[mf.id] = mf;
+                        }
+                        else if (ModuleExample.is(xapi)) {
+                            var me = new ModuleExample(xapi);
+                            moduleEvents[me.id] = me;
+                        }
+                        else if (ModuleExampleRating.is(xapi)) {
+                            var mer = new ModuleExampleRating(xapi);
+                            moduleEvents[mer.id] = mer;
+                        }
+                        else if (ModuleExampleFeedback.is(xapi)) {
+                            var mef = new ModuleExampleFeedback(xapi);
+                            moduleEvents[mef.id] = mef;
                         }
                         else {
                             new Error("Unknown Statement type");
@@ -2772,6 +3374,16 @@ var syncing_LLSyncAction = /** @class */ (function () {
                         self.pebl.storage.saveEvent(userProfile, cleanEvents);
                         self.pebl.emitEvent(self.pebl.events.incomingEvents, cleanEvents);
                     }
+                    var cleanModuleEvents = [];
+                    for (var _f = 0, _g = Object.keys(moduleEvents); _f < _g.length; _f++) {
+                        var id = _g[_f];
+                        cleanModuleEvents.push(moduleEvents[id]);
+                    }
+                    if (cleanModuleEvents.length > 0) {
+                        cleanModuleEvents.sort();
+                        self.pebl.storage.saveModuleEvent(userProfile, cleanModuleEvents);
+                        self.pebl.emitEvent(self.pebl.events.incomingModuleEvents, cleanModuleEvents);
+                    }
                     self.pebl.storage.saveUserProfile(userProfile);
                     if (self.running)
                         self.bookPoll = setTimeout(self.bookPollingCallback.bind(self), BOOK_POLL_INTERVAL);
@@ -2784,9 +3396,31 @@ var syncing_LLSyncAction = /** @class */ (function () {
         this.clearTimeouts();
         this.bookPollingCallback();
         this.threadPollingCallback();
-        this.startActivityPull("presence", PRESENCE_POLL_INTERVAL);
+        // this.startActivityPull("presence", PRESENCE_POLL_INTERVAL);
+        // this.startActivityPull("learnlet", LEARNLET_POLL_INTERVAL);
         this.startActivityPull("program", PROGRAM_POLL_INTERVAL);
-        this.startActivityPull("learnlet", LEARNLET_POLL_INTERVAL);
+        this.startActivityPull("institution", INSTITUTION_POLL_INTERVAL);
+        this.startActivityPull("system", SYSTEM_POLL_INTERVAL);
+    };
+    LLSyncAction.prototype.pullActivitiesFromMemberships = function (activityType, memberships) {
+        var self = this;
+        var queuedMembership = [];
+        if (memberships) {
+            for (var _i = 0, memberships_2 = memberships; _i < memberships_2.length; _i++) {
+                var membership = memberships_2[_i];
+                if (membership.activityType == activityType)
+                    queuedMembership.push(membership);
+            }
+        }
+        var callbackProcessor = function () {
+            if (queuedMembership.length > 0) {
+                var member = queuedMembership.pop();
+                if (member) {
+                    self.pullActivity(activityType, member.membershipId, callbackProcessor);
+                }
+            }
+        };
+        callbackProcessor();
     };
     LLSyncAction.prototype.startActivityPull = function (activityType, interval) {
         var self = this;
@@ -2794,8 +3428,8 @@ var syncing_LLSyncAction = /** @class */ (function () {
             self.pebl.utils.getGroupMemberships(function (memberships) {
                 var queuedMembership = [];
                 if (memberships) {
-                    for (var _i = 0, memberships_2 = memberships; _i < memberships_2.length; _i++) {
-                        var membership = memberships_2[_i];
+                    for (var _i = 0, memberships_3 = memberships; _i < memberships_3.length; _i++) {
+                        var membership = memberships_3[_i];
                         if (membership.activityType == activityType)
                             queuedMembership.push(membership);
                     }
@@ -2815,29 +3449,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                 callbackProcessor();
             });
         };
-        this.pebl.utils.getGroupMemberships(function (memberships) {
-            var queuedMembership = [];
-            if (memberships) {
-                for (var _i = 0, memberships_3 = memberships; _i < memberships_3.length; _i++) {
-                    var membership = memberships_3[_i];
-                    if (membership.activityType == activityType)
-                        queuedMembership.push(membership);
-                }
-            }
-            var callbackProcessor = function () {
-                if (queuedMembership.length == 0) {
-                    if (self.running)
-                        self.activityPolls[activityType] = setTimeout(groupGetter.bind(self), interval);
-                }
-                else {
-                    var member = queuedMembership.pop();
-                    if (member) {
-                        self.pullActivity(activityType, member.membershipId, callbackProcessor);
-                    }
-                }
-            };
-            callbackProcessor();
-        });
+        groupGetter();
     };
     LLSyncAction.prototype.push = function (outgoing, callback) {
         var xhr = new XMLHttpRequest();
@@ -2871,16 +3483,54 @@ var syncing_LLSyncAction = /** @class */ (function () {
                                 if (activity_Program.is(activity)) {
                                     var program = new activity_Program(activity);
                                     activity_Program.iterateMembers(program, function (key, membership) {
-                                        self.pebl.emitEvent(self.pebl.events.modifiedMembership, {
-                                            oldMembership: membership,
-                                            newMembership: null
-                                        });
+                                        if (!TempMembership.is(membership)) {
+                                            self.pebl.emitEvent(self.pebl.events.modifiedMembership, {
+                                                oldMembership: membership,
+                                                newMembership: null
+                                            });
+                                        }
                                     });
                                     self.pebl.emitEvent(self.pebl.events.removedProgram, program);
-                                    self.pebl.emitEvent(self.pebl.events.eventProgramModified, {
+                                    self.pebl.emitEvent(self.pebl.events.eventProgramDeleted, {
                                         programId: program.id,
                                         action: 'deleted',
                                         previousValue: null,
+                                        newValue: null
+                                    });
+                                }
+                                else if (activity_Institution.is(activity)) {
+                                    var institution = new activity_Institution(activity);
+                                    activity_Institution.iterateMembers(institution, function (key, membership) {
+                                        if (!TempMembership.is(membership)) {
+                                            self.pebl.emitEvent(self.pebl.events.modifiedMembership, {
+                                                oldMembership: membership,
+                                                newMembership: null
+                                            });
+                                        }
+                                    });
+                                    self.pebl.emitEvent(self.pebl.events.removedInstitution, institution);
+                                    self.pebl.emitEvent(self.pebl.events.eventInstitutionDeleted, {
+                                        institutionId: institution.id,
+                                        action: 'deleted',
+                                        previousvalue: null,
+                                        newValue: null
+                                    });
+                                }
+                                else if (activity_System.is(activity)) {
+                                    var system = new activity_System(activity);
+                                    activity_System.iterateMembers(system, function (key, membership) {
+                                        if (!TempMembership.is(membership)) {
+                                            self.pebl.emitEvent(self.pebl.events.modifiedMembership, {
+                                                oldMembership: membership,
+                                                newMembership: null
+                                            });
+                                        }
+                                    });
+                                    self.pebl.emitEvent(self.pebl.events.removedSystem, system);
+                                    self.pebl.emitEvent(self.pebl.events.eventSystemDeleted, {
+                                        institutionId: system.id,
+                                        action: 'deleted',
+                                        previousvalue: null,
                                         newValue: null
                                     });
                                 }
@@ -2913,8 +3563,15 @@ var syncing_LLSyncAction = /** @class */ (function () {
                 else {
                     self.postActivity(activity, function (success, oldActivity, newActivity) {
                         if (success) {
-                            if (activity) //typechecker
+                            if (activity) { //typechecker
                                 self.pebl.storage.removeOutgoingActivity(userProfile, activity);
+                                self.pebl.emitEvent(self.pebl.events.eventProgramModified, {
+                                    programId: activity.id,
+                                    action: 'modified',
+                                    previousValue: null,
+                                    newValue: null
+                                });
+                            }
                             if (outgoing.length == 0)
                                 callback();
                             else {
@@ -3162,14 +3819,20 @@ var EventSet = /** @class */ (function () {
         this.incomingPresence = "incomingPresence";
         this.incomingLearnlet = "incomingLearnlet";
         this.incomingProgram = "incomingProgram";
+        this.incomingInstitution = "incomingInstitution";
+        this.incomingSystem = "incomingSystem";
         this.incomingArtifact = "incomingArtifact";
         this.incomingMembership = "incomingMembership";
         this.incomingActivityEvents = "incomingActivityEvents";
+        this.incomingModuleEvents = "incomingModuleEvents";
         this.incomingErrors = "incomingErrors";
         this.saveProgram = "saveProgram";
         this.saveProgramConflict = "saveProgramConflict";
         this.saveProgramSuccess = "saveProgramSuccess";
         this.saveProgramError = "saveProgramError";
+        this.saveInstitution = "saveInstitution";
+        this.saveSystem = "saveSystem";
+        this.newBookNoReset = "newBookNoReset";
         this.newLearnlet = "newLearnlet";
         this.newBook = "newBook";
         this.newMessage = "newMessage";
@@ -3188,6 +3851,7 @@ var EventSet = /** @class */ (function () {
         this.removedLearnlet = "removedLearnlet";
         this.removedProgram = "removedProgram";
         this.removedMessage = "removedMessage";
+        this.removedModuleEvent = "removedModuleEvent";
         this.eventLoggedIn = "eventLoggedIn";
         this.eventLoggedOut = "eventLoggedOut";
         this.eventLogin = "eventLogin";
@@ -3221,6 +3885,13 @@ var EventSet = /** @class */ (function () {
         this.eventProgramActivityCompleted = "eventProgramActivityCompleted";
         this.eventProgramActivityTeamCompleted = "eventProgramActivityTeamCompleted";
         this.eventProgramModified = "eventProgramModified";
+        this.eventProgramDeleted = "eventProgramDeleted";
+        this.eventProgramCompleted = "eventProgramCompleted";
+        this.eventModuleRating = "eventModuleRating";
+        this.eventModuleFeedback = "eventModuleFeedback";
+        this.eventModuleExample = "eventModuleExample";
+        this.eventModuleExampleRating = "eventModuleExampleRating";
+        this.eventModuleExampleFeedback = "eventModuleExampleFeedback";
     }
     return EventSet;
 }());
@@ -3343,6 +4014,36 @@ var utils_Utils = /** @class */ (function () {
                 });
         });
     };
+    Utils.prototype.pullProgram = function (programId, callback) {
+        var self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                var network = self.pebl.network;
+                if (network && network.syncingProcess && network.syncingProcess.length > 0) {
+                    network.syncingProcess[0].pullActivity('program', programId, function (activity) {
+                        if (activity) {
+                            callback(activity);
+                        }
+                        else {
+                            callback();
+                        }
+                    });
+                }
+            }
+        });
+    };
+    Utils.prototype.mergePrograms = function (oldProgram, newProgram) {
+        var mergedProgram = activity_Program.merge(oldProgram, newProgram);
+        return mergedProgram;
+    };
+    Utils.prototype.mergeInstitutions = function (oldInstitution, newInstitution) {
+        var mergedInstitution = activity_Institution.merge(oldInstitution, newInstitution);
+        return mergedInstitution;
+    };
+    Utils.prototype.mergeSystems = function (oldSystem, newSystem) {
+        var mergedSystem = activity_System.merge(oldSystem, newSystem);
+        return mergedSystem;
+    };
     Utils.prototype.getProgram = function (programId, callback) {
         var self = this;
         this.pebl.user.getUser(function (userProfile) {
@@ -3356,6 +4057,44 @@ var utils_Utils = /** @class */ (function () {
             }
         });
     };
+    Utils.prototype.getInstitution = function (institutionId, callback) {
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getActivityById(userProfile, "institution", institutionId, function (activity) {
+                    if (activity)
+                        callback(activity);
+                    else
+                        callback();
+                });
+            }
+        });
+    };
+    Utils.prototype.getSystem = function (systemId, callback) {
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getActivityById(userProfile, "system", systemId, function (activity) {
+                    if (activity)
+                        callback(activity);
+                    else
+                        callback();
+                });
+            }
+        });
+    };
+    Utils.prototype.isProgramMember = function (program, userIdentity) {
+        return activity_Program.isMember(program, userIdentity);
+    };
+    Utils.prototype.isInstitutionMember = function (institution, userIdentity) {
+        return activity_Institution.isMember(institution, userIdentity);
+    };
+    Utils.prototype.isProgramMemberOfInstitution = function (institution, programId) {
+        return activity_Institution.isProgram(institution, programId);
+    };
+    Utils.prototype.isSystemMember = function (system, userIdentity) {
+        return activity_System.isMember(system, userIdentity);
+    };
     Utils.prototype.removeProgram = function (programId, callback) {
         var self = this;
         this.pebl.user.getUser(function (userProfile) {
@@ -3364,8 +4103,22 @@ var utils_Utils = /** @class */ (function () {
             }
         });
     };
+    Utils.prototype.removeInstitution = function (institutionId, callback) {
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.removeActivity(userProfile, institutionId, 'institution', callback);
+            }
+        });
+    };
     Utils.prototype.newEmptyProgram = function (callback) {
         callback(new activity_Program({}));
+    };
+    Utils.prototype.newEmptyInstitution = function (callback) {
+        callback(new activity_Institution({}));
+    };
+    Utils.prototype.newEmptySystem = function (callback) {
+        callback(new activity_System({}));
     };
     Utils.prototype.getGroupMemberships = function (callback) {
         var self = this;
@@ -3395,11 +4148,43 @@ var utils_Utils = /** @class */ (function () {
                 callback(null);
         });
     };
+    Utils.prototype.removeGroupMembership = function (groupId, callback) {
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.removeGroupMembership(userProfile, groupId, callback);
+            }
+        });
+    };
     Utils.prototype.getPrograms = function (callback) {
         var self = this;
         this.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
                 self.pebl.storage.getActivity(userProfile, "program", function (activities) {
+                    callback(activities);
+                });
+            }
+            else
+                callback([]);
+        });
+    };
+    Utils.prototype.getInstitutions = function (callback) {
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getActivity(userProfile, "institution", function (activities) {
+                    callback(activities);
+                });
+            }
+            else
+                callback([]);
+        });
+    };
+    Utils.prototype.getSystems = function (callback) {
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getActivity(userProfile, "system", function (activities) {
                     callback(activities);
                 });
             }
@@ -3480,6 +4265,18 @@ var utils_Utils = /** @class */ (function () {
     Utils.prototype.iterateProgramMembers = function (program, callback) {
         activity_Program.iterateMembers(program, callback);
     };
+    Utils.prototype.getProgramMembers = function (program) {
+        return activity_Program.getMembers(program);
+    };
+    Utils.prototype.iterateInstitutionMembers = function (institution, callback) {
+        activity_Institution.iterateMembers(institution, callback);
+    };
+    Utils.prototype.iterateInstitutionPrograms = function (institution, callback) {
+        activity_Institution.iteratePrograms(institution, callback);
+    };
+    Utils.prototype.iterateSystemMembers = function (system, callback) {
+        activity_System.iterateMembers(system, callback);
+    };
     Utils.prototype.newTempMember = function (obj, callback) {
         var tm = new TempMembership(obj);
         callback(tm);
@@ -3502,6 +4299,45 @@ var utils_Utils = /** @class */ (function () {
         self.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
                 self.pebl.storage.removeNotification(userProfile, notificationId);
+            }
+        });
+    };
+    Utils.prototype.getMessages = function (thread, callback) {
+        var self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getMessages(userProfile, thread, function (messages) {
+                    callback(messages);
+                });
+            }
+            else {
+                callback([]);
+            }
+        });
+    };
+    Utils.prototype.getModuleEvents = function (idref, callback, type) {
+        var self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getModuleEvent(idref, function (moduleEvents) {
+                    if (type) {
+                        callback(moduleEvents.filter(function (event) { return event.verb.display['en-US'] === type; }));
+                    }
+                    else {
+                        callback(moduleEvents);
+                    }
+                });
+            }
+            else {
+                callback([]);
+            }
+        });
+    };
+    Utils.prototype.removeModuleEvent = function (idref, id) {
+        var self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.removeModuleEvent(idref, id);
             }
         });
     };
@@ -3729,6 +4565,26 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             }
         });
     };
+    PEBLEventHandlers.prototype.newBookNoReset = function (event) {
+        var book = event.detail;
+        var self = this;
+        if (book.indexOf("/") != -1)
+            book = book.substring(book.lastIndexOf("/") + 1);
+        this.pebl.storage.getCurrentBook(function (currentBook) {
+            if (currentBook != book) {
+                if (currentBook)
+                    self.pebl.emitEvent(self.pebl.events.eventTerminated, currentBook);
+                self.pebl.storage.removeCurrentActivity();
+                self.pebl.emitEvent(self.pebl.events.eventInteracted, {
+                    activity: book
+                });
+                self.pebl.storage.saveCurrentBook(book);
+            }
+            else {
+                self.pebl.emitEvent(self.pebl.events.eventJumpPage, {});
+            }
+        });
+    };
     PEBLEventHandlers.prototype.newActivity = function (event) {
         var payload = event.detail;
         var self = this;
@@ -3858,49 +4714,94 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         var self = this;
         this.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
-                self.pebl.utils.getGroupMemberships(function (groups) {
-                    var role;
-                    for (var _i = 0, groups_1 = groups; _i < groups_1.length; _i++) {
-                        var group = groups_1[_i];
-                        if (group.membershipId == prog.id) {
-                            role = group.role;
-                            break;
+                var exts_1 = {
+                    role: "owner",
+                    activityType: "program"
+                };
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        if (activity_Program.isNew(prog)) {
+                            self.xapiGen.addId(xapi);
+                            self.xapiGen.addTimestamp(xapi);
+                            self.xapiGen.addActorAccount(xapi, userProfile);
+                            self.xapiGen.addObject(xapi, eventHandlers_PEBL_THREAD_USER_PREFIX + userProfile.identity, prog.id, prog.programShortDescription, self.xapiGen.addExtensions(exts_1));
+                            self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#joined", "joined");
+                            if (book || activity)
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
+                            var m = new Membership(xapi);
+                            prog.addMember(m);
+                            self.pebl.storage.saveGroupMembership(userProfile, m);
+                            self.pebl.storage.saveOutgoingXApi(userProfile, m);
                         }
-                    }
-                    var exts = {
-                        role: "owner",
-                        activityType: "program"
-                    };
-                    // let prog = new Program({
-                    //     p: payload.name,
-                    //     longDescription: payload.longDescription,
-                    //     progressLevel: payload.progressLevel,
-                    //     shortDescription: payload.shortDescription,
-                    //     issues: payload.issues,
-                    //     targetCommunities: payload.targetedCommunities,
-                    //     associatedOrganizations: payload.associatedOrganizations,
-                    //     programAvatar: payload.programAvatar,
-                    //     members: []
-                    // });
-                    self.pebl.storage.getCurrentActivity(function (activity) {
-                        self.pebl.storage.getCurrentBook(function (book) {
-                            if (!role) {
-                                self.xapiGen.addId(xapi);
-                                self.xapiGen.addTimestamp(xapi);
-                                self.xapiGen.addActorAccount(xapi, userProfile);
-                                self.xapiGen.addObject(xapi, eventHandlers_PEBL_THREAD_USER_PREFIX + userProfile.identity, prog.id, prog.programShortDescription, self.xapiGen.addExtensions(exts));
-                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#joined", "joined");
-                                if (book || activity)
-                                    self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
-                                var m = new Membership(xapi);
-                                prog.addMember(m);
-                                self.pebl.storage.saveGroupMembership(userProfile, m);
-                                self.pebl.storage.saveOutgoingXApi(userProfile, m);
-                            }
-                            self.pebl.storage.saveOutgoingActivity(userProfile, prog);
-                            self.pebl.storage.saveActivity(userProfile, prog);
-                            self.pebl.emitEvent(self.pebl.events.incomingProgram, [prog]);
-                        });
+                        self.pebl.storage.saveOutgoingActivity(userProfile, prog);
+                        self.pebl.storage.saveActivity(userProfile, prog);
+                        self.pebl.emitEvent(self.pebl.events.incomingProgram, [prog]);
+                    });
+                });
+            }
+        });
+    };
+    PEBLEventHandlers.prototype.saveInstitution = function (event) {
+        var inst = event.detail;
+        var xapi = {};
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                var exts_2 = {
+                    role: "owner",
+                    activityType: "institution"
+                };
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        if (activity_Institution.isNew(inst)) {
+                            self.xapiGen.addId(xapi);
+                            self.xapiGen.addTimestamp(xapi);
+                            self.xapiGen.addActorAccount(xapi, userProfile);
+                            self.xapiGen.addObject(xapi, eventHandlers_PEBL_THREAD_USER_PREFIX + userProfile.identity, inst.id, inst.description, self.xapiGen.addExtensions(exts_2));
+                            self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#joined", "joined");
+                            if (book || activity)
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
+                            var m = new Membership(xapi);
+                            inst.addMember(m);
+                            self.pebl.storage.saveGroupMembership(userProfile, m);
+                            self.pebl.storage.saveOutgoingXApi(userProfile, m);
+                        }
+                        self.pebl.storage.saveOutgoingActivity(userProfile, inst);
+                        self.pebl.storage.saveActivity(userProfile, inst);
+                        self.pebl.emitEvent(self.pebl.events.incomingInstitition, [inst]);
+                    });
+                });
+            }
+        });
+    };
+    PEBLEventHandlers.prototype.saveSystem = function (event) {
+        var system = event.detail;
+        var xapi = {};
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                var exts_3 = {
+                    role: "owner",
+                    activityType: "system"
+                };
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        if (activity_System.isNew(system)) {
+                            self.xapiGen.addId(xapi);
+                            self.xapiGen.addTimestamp(xapi);
+                            self.xapiGen.addActorAccount(xapi, userProfile);
+                            self.xapiGen.addObject(xapi, eventHandlers_PEBL_THREAD_USER_PREFIX + userProfile.identity, system.id, system.description, self.xapiGen.addExtensions(exts_3));
+                            self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#joined", "joined");
+                            if (book || activity)
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
+                            var m = new Membership(xapi);
+                            system.addMember(m);
+                            self.pebl.storage.saveGroupMembership(userProfile, m);
+                            self.pebl.storage.saveOutgoingXApi(userProfile, m);
+                        }
+                        self.pebl.storage.saveOutgoingActivity(userProfile, system);
+                        self.pebl.storage.saveActivity(userProfile, system);
+                        self.pebl.emitEvent(self.pebl.events.incomingSystem, [system]);
                     });
                 });
             }
@@ -3912,7 +4813,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         var self = this;
         this.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
-                var exts_1 = {
+                var exts_4 = {
                     role: payload.role
                 };
                 self.pebl.storage.getCurrentActivity(function (activity) {
@@ -3920,7 +4821,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_THREAD_ARTIFACT_PREFIX + payload.thread, payload.artifactId, payload.artifactDescription, self.xapiGen.addExtensions(exts_1));
+                        self.xapiGen.addObject(xapi, PEBL_THREAD_ARTIFACT_PREFIX + payload.thread, payload.artifactId, payload.artifactDescription, self.xapiGen.addExtensions(exts_4));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#artifactCreated", "artifactCreated");
                         if (book || activity)
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
@@ -3938,7 +4839,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         var self = this;
         this.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
-                var exts_2 = {
+                var exts_5 = {
                     role: payload.role,
                     activityType: payload.activityType
                 };
@@ -3947,7 +4848,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, eventHandlers_PEBL_THREAD_USER_PREFIX + payload.thread, payload.groupId, payload.groupDescription, self.xapiGen.addExtensions(exts_2));
+                        self.xapiGen.addObject(xapi, eventHandlers_PEBL_THREAD_USER_PREFIX + payload.thread, payload.groupId, payload.groupDescription, self.xapiGen.addExtensions(exts_5));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#joined", "joined");
                         if (book || activity)
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
@@ -3993,7 +4894,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.pebl.emitEvent(self.pebl.events.incomingMembership, [m]);
                 // Then send out a new one
                 if (newMembership) {
-                    var exts_3 = {
+                    var exts_6 = {
                         role: newMembership.role,
                         activityType: newMembership.activityType
                     };
@@ -4002,7 +4903,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                             xapiNew.id = newMembership.id;
                             self.xapiGen.addTimestamp(xapiNew);
                             self.xapiGen.addActorAccount(xapiNew, newUserProfile_1);
-                            self.xapiGen.addObject(xapiNew, eventHandlers_PEBL_THREAD_USER_PREFIX + newUserProfile_1.identity, newMembership.membershipId, newMembership.groupDescription, self.xapiGen.addExtensions(exts_3));
+                            self.xapiGen.addObject(xapiNew, eventHandlers_PEBL_THREAD_USER_PREFIX + newUserProfile_1.identity, newMembership.membershipId, newMembership.groupDescription, self.xapiGen.addExtensions(exts_6));
                             self.xapiGen.addVerb(xapiNew, "http://www.peblproject.com/definitions.html#joined", "joined");
                             if (book || activity)
                                 self.xapiGen.addParentActivity(xapiNew, PEBL_PREFIX + (book || activity));
@@ -4046,7 +4947,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         var self = this;
         self.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
-                var exts_4 = {
+                var exts_7 = {
                     type: payload.type,
                     cfi: payload.cfi,
                     idRef: payload.idRef,
@@ -4058,7 +4959,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/commented", "commented");
                         self.xapiGen.addTimestamp(xapi);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.title, payload.text, self.xapiGen.addExtensions(exts_4));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.title, payload.text, self.xapiGen.addExtensions(exts_7));
                         self.xapiGen.addActorAccount(xapi, userProfile);
                         var annotation = new Annotation(xapi);
                         self.pebl.storage.saveAnnotations(userProfile, annotation);
@@ -4075,7 +4976,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         var self = this;
         this.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
-                var exts_5 = {
+                var exts_8 = {
                     type: payload.type,
                     cfi: payload.cfi,
                     idRef: payload.idRef,
@@ -4087,7 +4988,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/shared", "shared");
                         self.xapiGen.addTimestamp(xapi);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.title, payload.text, self.xapiGen.addExtensions(exts_5));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.title, payload.text, self.xapiGen.addExtensions(exts_8));
                         self.xapiGen.addActorAccount(xapi, userProfile);
                         var annotation = new SharedAnnotation(xapi);
                         self.pebl.storage.saveSharedAnnotations(userProfile, annotation);
@@ -4501,6 +5402,38 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         });
     };
     PEBLEventHandlers.prototype.eventCompatibilityTested = function (event) {
+        var payload = event.detail;
+        var xapi = {};
+        var self = this;
+        var exts = {
+            readerName: payload.readerName,
+            osName: payload.osName,
+            osVersion: payload.osVersion,
+            browserName: payload.browserName,
+            browserVersion: payload.browserVersion,
+            userAgent: payload.userAgent,
+            appVersion: payload.appVersion,
+            platform: payload.platform,
+            vendor: payload.vendor,
+            testResults: payload.testResults
+        };
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentActivity(function (activity) {
+                self.pebl.user.getUser(function (userProfile) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addExtensions(exts));
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#compatibilityTested", "compatibilityTested");
+                        if (activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        var test = new CompatibilityTest(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, test);
+                    }
+                });
+            });
+        });
     };
     PEBLEventHandlers.prototype.eventChecklisted = function (event) {
     };
@@ -4781,6 +5714,46 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             }
         });
     };
+    PEBLEventHandlers.prototype.eventProgramDeleted = function (event) {
+        var payload = event.detail;
+        var xapi = {};
+        var self = this;
+        var exts = {
+            previousValue: payload.previousValue,
+            newValue: payload.newValue,
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programDeleted", "programDeleted");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, eventHandlers_PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                var pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, pa);
+            }
+        });
+    };
+    PEBLEventHandlers.prototype.eventProgramCompleted = function (event) {
+        var payload = event.detail;
+        var xapi = {};
+        var self = this;
+        var exts = {
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programCompleted", "programCompleted");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, eventHandlers_PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                var pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, pa);
+            }
+        });
+    };
     // -------------------------------
     PEBLEventHandlers.prototype.eventLogin = function (event) {
         var userProfile = event.detail;
@@ -4822,6 +5795,167 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                     self.pebl.storage.saveEvent(userProfile, session);
                     self.pebl.storage.saveOutgoingXApi(userProfile, session);
                     self.pebl.storage.removeCurrentUser();
+                });
+            }
+        });
+    };
+    // -------------------------------
+    PEBLEventHandlers.prototype.eventModuleRating = function (event) {
+        var payload = event.detail;
+        var xapi = {};
+        var self = this;
+        var exts = {
+            idref: payload.idref,
+            programId: payload.programId
+        };
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentActivity(function (activity) {
+                self.pebl.user.getUser(function (userProfile) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#moduleRating", "moduleRating");
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.rating, payload.description, self.xapiGen.addExtensions(exts));
+                        if (activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        var mr = new ModuleRating(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, mr);
+                    }
+                });
+            });
+        });
+    };
+    PEBLEventHandlers.prototype.eventModuleFeedback = function (event) {
+        var payload = event.detail;
+        var xapi = {};
+        var self = this;
+        var exts = {
+            willingToDiscuss: payload.willingToDiscuss,
+            idref: payload.idref,
+            programId: payload.programId
+        };
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentActivity(function (activity) {
+                self.pebl.user.getUser(function (userProfile) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#moduleFeedback", "moduleFeedback");
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.feedback, payload.description, self.xapiGen.addExtensions(exts));
+                        if (activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        var mf = new ModuleFeedback(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, mf);
+                    }
+                });
+            });
+        });
+    };
+    PEBLEventHandlers.prototype.eventModuleExample = function (event) {
+        var payload = event.detail;
+        var xapi = {};
+        var self = this;
+        var exts = {
+            idref: payload.idref,
+            youtubeUrl: payload.youtubeUrl,
+            imageUrl: payload.imageUrl,
+            websiteUrl: payload.websiteUrl,
+            quotedPerson: payload.quotedPerson,
+            quotedTeam: payload.quotedTeam
+        };
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentActivity(function (activity) {
+                self.pebl.user.getUser(function (userProfile) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#moduleExample", "moduleExample");
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.example, payload.description, self.xapiGen.addExtensions(exts));
+                        if (activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        var me = new ModuleExample(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, me);
+                    }
+                });
+            });
+        });
+    };
+    PEBLEventHandlers.prototype.eventModuleExampleRating = function (event) {
+        var payload = event.detail;
+        var xapi = {};
+        var self = this;
+        var exts = {
+            idref: payload.idref,
+            programId: payload.programId,
+            exampleId: payload.exampleId
+        };
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentActivity(function (activity) {
+                self.pebl.user.getUser(function (userProfile) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#moduleExampleRating", "moduleExampleRating");
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.rating, payload.description, self.xapiGen.addExtensions(exts));
+                        if (activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        var mer = new ModuleExampleRating(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, mer);
+                    }
+                });
+            });
+        });
+    };
+    PEBLEventHandlers.prototype.eventModuleExampleFeedback = function (event) {
+        var payload = event.detail;
+        var xapi = {};
+        var self = this;
+        var exts = {
+            willingToDiscuss: payload.willingToDiscuss,
+            idref: payload.idref,
+            programId: payload.programId,
+            exampleId: payload.exampleId
+        };
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentActivity(function (activity) {
+                self.pebl.user.getUser(function (userProfile) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#moduleExampleFeedback", "moduleExampleFeedback");
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.feedback, payload.description, self.xapiGen.addExtensions(exts));
+                        if (activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        var mef = new ModuleExampleFeedback(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, mef);
+                    }
+                });
+            });
+        });
+    };
+    PEBLEventHandlers.prototype.removedModuleEvent = function (event) {
+        var xId = event.detail;
+        var xapi = {};
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/voided", "voided");
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addStatementRef(xapi, xId);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        if (activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        var voided = new Voided(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, voided);
+                    });
                 });
             }
         });
@@ -4932,26 +6066,30 @@ var pebl_PEBL = /** @class */ (function () {
     };
     PEBL.prototype.unsubscribeEvent = function (eventName, once, callback) {
         var i = 0;
-        for (var _i = 0, _a = this.subscribedEventHandlers[eventName]; _i < _a.length; _i++) {
-            var pack = _a[_i];
-            if ((pack.once == once) && (pack.fn == callback)) {
-                document.removeEventListener(eventName, pack.modifiedFn);
-                this.subscribedEventHandlers[eventName].splice(i, 1);
-                return;
+        if (this.subscribedEventHandlers[eventName]) {
+            for (var _i = 0, _a = this.subscribedEventHandlers[eventName]; _i < _a.length; _i++) {
+                var pack = _a[_i];
+                if ((pack.once == once) && (pack.fn == callback)) {
+                    document.removeEventListener(eventName, pack.modifiedFn);
+                    this.subscribedEventHandlers[eventName].splice(i, 1);
+                    return;
+                }
+                i++;
             }
-            i++;
         }
     };
     PEBL.prototype.unsubscribeThread = function (thread, once, callback) {
         var i = 0;
-        for (var _i = 0, _a = this.subscribedThreadHandlers[thread]; _i < _a.length; _i++) {
-            var pack = _a[_i];
-            if ((pack.once == once) && (pack.fn == callback)) {
-                document.removeEventListener(thread, pack.modifiedFn);
-                this.subscribedThreadHandlers[thread].splice(i, 1);
-                return;
+        if (this.subscribedThreadHandlers[thread]) {
+            for (var _i = 0, _a = this.subscribedThreadHandlers[thread]; _i < _a.length; _i++) {
+                var pack = _a[_i];
+                if ((pack.once == once) && (pack.fn == callback)) {
+                    document.removeEventListener(thread, pack.modifiedFn);
+                    this.subscribedThreadHandlers[thread].splice(i, 1);
+                    return;
+                }
+                i++;
             }
-            i++;
         }
     };
     PEBL.prototype.subscribeEvent = function (eventName, once, callback) {
@@ -5055,4 +6193,4 @@ if (typeof window !== 'undefined') {
 
 
 /***/ })
-/******/ ])));
+/******/ ]);

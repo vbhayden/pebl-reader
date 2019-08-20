@@ -79,7 +79,7 @@
             dist/cloud-reader/
         &&
         npm run cpy
-            src/js/PEBLCore.js
+            src/js/PeBLCore.js
             dist/cloud-reader/scripts/
         &&
         npm run cpy
@@ -88,6 +88,10 @@
         &&
         npm run cpy
             src/css/pebl-discussion-widget.css
+            dist/cloud-reader/css/
+        &&
+        npm run cpy
+            src/css/pebl-login-widget.css
             dist/cloud-reader/css/
         &&
         npm run cpy
