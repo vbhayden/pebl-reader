@@ -47,6 +47,7 @@ html#simpleViewer .icon-library{
   overflow: auto;
   background: #f3f3f3;
   border-right: solid 2px rgba(0,0,0,.15);
+  resize: horizontal;
 }
 
 #annotations-body{
@@ -54,6 +55,7 @@ html#simpleViewer .icon-library{
   overflow: auto;
   background: #f3f3f3;
   border-right: solid 2px rgba(0,0,0,.15);
+  resize: horizontal;
 }
 
 #bookmarks-body{
@@ -61,6 +63,7 @@ html#simpleViewer .icon-library{
   overflow: auto;
   background: #f3f3f3;
   border-right: solid 2px rgba(0,0,0,.15);
+  resize: horizontal;
 }
 
 
@@ -119,6 +122,22 @@ direction: rtl;
   list-style-type: none;
   margin-top: 10px;
   padding-left: 20px;
+}
+
+#readium-toc-body a.complete,
+#readium-toc-body a.complete ~ ol a {
+  color: #037b05;
+}
+
+#readium-toc-body a.complete::before,
+#readium-toc-body a.complete ~ ol a::before {
+  content: "\2713 ";
+  width: 1em;
+  display: inline-block;
+  font-weight: 700!important;
+  position: relative;
+  left: -.5rem;
+  margin-left: -1rem;
 }
 
 .toc-visible #readium-toc-body{
@@ -229,6 +248,10 @@ direction: rtl;
     background-color: #4d4d4d;
 }
 
+#aboutButt1 {
+  width: auto;
+}
+
 .navbar
 {
   background: #4d4d4d;
@@ -250,6 +273,8 @@ direction: rtl;
 
 .navbar-left {
   width: 50%;
+  overflow: hidden;
+  height: 35px;
 }
 
 .book-title-header{
@@ -477,6 +502,10 @@ html[data-theme=night-theme] #right-page-btn:hover
 
 .embedded .navbar .btn-group > .btn.icon-full-screen{
   float: right;
+}
+
+.btn.icon-full-screen {
+  display: none !important;
 }
 
 /*
