@@ -208,7 +208,13 @@ define([
         var initializeSlider = function() {
             currentPackageDocument.generateTocListDOM(function(dom) {
                 var chaptersArray = [];
-                var nav = dom.getElementById('toc');
+                var nav;
+                if (dom.getElementById) {
+                    nav = dom.getElementById('toc');
+                } else {
+                    // NCX toc returns an ol element
+                    nav = dom;
+                }
                 var currentChapterTitle = null;
                 var currentIdref = null;
 
