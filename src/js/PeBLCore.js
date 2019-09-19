@@ -441,7 +441,7 @@ var ProgramAction = /** @class */ (function (_super) {
         return (verb == "programLevelUp") || (verb == "programLevelDown") || (verb == "programInvited") || (verb == "programUninvited")
             || (verb == "programExpelled") || (verb == "programJoined") || (verb == "programActivityLaunched")
             || (verb == "programActivityCompleted") || (verb == "programActivityTeamCompleted") || (verb == "programModified")
-            || (verb == "programDeleted") || (verb == "programCompleted") || (verb == "programCopied");
+            || (verb == "programDeleted") || (verb == "programCompleted") || (verb == "programCopied") || (verb == "programDiscussed");
     };
     return ProgramAction;
 }(XApiStatement));
@@ -3936,6 +3936,7 @@ var EventSet = /** @class */ (function () {
         this.eventProgramDeleted = "eventProgramDeleted";
         this.eventProgramCompleted = "eventProgramCompleted";
         this.eventProgramCopied = "eventProgramCopied";
+        this.eventProgramDiscussed = "eventProgramDiscussed";
         this.eventModuleRating = "eventModuleRating";
         this.eventModuleFeedback = "eventModuleFeedback";
         this.eventModuleExample = "eventModuleExample";
@@ -5830,6 +5831,27 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             }
         });
     };
+    PEBLEventHandlers.prototype.eventProgramDiscussed = function (event) {
+        var payload = event.detail;
+        var xapi = {};
+        var self = this;
+        var exts = {
+            previousValue: payload.previousValue,
+            newValue: payload.newValue,
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programDiscussed", "programDiscussed");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, eventHandlers_PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                var pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, pa);
+            }
+        });
+    };
     // -------------------------------
     PEBLEventHandlers.prototype.eventLogin = function (event) {
         var userProfile = event.detail;
@@ -5954,6 +5976,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var me = new ModuleExample(xapi);
                         self.pebl.storage.saveOutgoingXApi(userProfile, me);
+                        self.pebl.emitEvent(self.pebl.events.incomingModuleEvents, [me]);
                     }
                 });
             });
