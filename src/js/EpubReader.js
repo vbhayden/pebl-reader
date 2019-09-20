@@ -208,7 +208,13 @@ define([
         var initializeSlider = function() {
             currentPackageDocument.generateTocListDOM(function(dom) {
                 var chaptersArray = [];
-                var nav = dom.getElementById('toc');
+                var nav;
+                if (dom.getElementById) {
+                    nav = dom.getElementById('toc');
+                } else {
+                    // NCX toc returns an ol element
+                    nav = dom;
+                }
                 var currentChapterTitle = null;
                 var currentIdref = null;
 
@@ -1936,6 +1942,7 @@ define([
                         window.extensionDashboard.programID = data.programID;
                         window.extensionDashboard.userProfile = data.userProfile;
                         window.extensionDashboard.programTitle = data.programTitle;
+                        window.extensionDashboard.isAdmin = data.isAdmin;
                         if (data.userProfile) {
                             PeBL.emitEvent(PeBL.events.eventLoggedIn, data.userProfile);
                             window.Lightbox.close();
