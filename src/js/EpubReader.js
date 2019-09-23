@@ -686,9 +686,9 @@ define([
             if (embedded) {
                 hideLoop(null, true);
             } else if (readium.reader.handleViewportResize) {
-
-                readium.reader.handleViewportResize(bookmark);
-
+                setTimeout(function () {
+                    readium.reader.handleViewportResize(bookmark);
+                }, 200);
                 // setTimeout(function()
                 // {
                 //     readium.reader.openSpineItemElementCfi(bookmark.idref, bookmark.contentCFI, readium.reader);
@@ -802,8 +802,9 @@ define([
             if (embedded) {
                 hideLoop(null, true);
             } else if (readium.reader.handleViewportResize) {
-
-                readium.reader.handleViewportResize(bookmark);
+                setTimeout(function () {
+                    readium.reader.handleViewportResize(bookmark);
+                }, 200);
 
                 // setTimeout(function()
                 // {
@@ -1053,8 +1054,9 @@ define([
             if (embedded) {
                 hideLoop(null, true);
             } else if (readium.reader.handleViewportResize) {
-
-                readium.reader.handleViewportResize(bookmark);
+                setTimeout(function () {
+                    readium.reader.handleViewportResize(bookmark);
+                }, 200);
 
             }
         };
