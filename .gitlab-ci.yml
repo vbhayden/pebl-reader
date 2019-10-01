@@ -90,6 +90,11 @@ buildQA:
   script:  
   - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
   - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
+
+  - echo "window.Configuration = {};" > src/cloud-reader/config.js
+  - echo "window.Configuration.lrsUrl = '$QA_LRS_URL';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.lrsCredential = '$QA_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.useLinkedIn = true;" >> src/cloud-reader/config.js
   
   - npm run prepare:all
   - npm run dist
