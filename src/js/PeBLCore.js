@@ -2744,13 +2744,14 @@ var syncing_LLSyncAction = /** @class */ (function () {
                     activityObj_1 = [p];
                     // If passed an array of profileIds, pull them one by one.
                     if (profileId && Array.isArray(profileId) && profileId.length > 0) {
-                        self.pullActivity(activity, profileId, callback);
+                        self.pullActivity(activity, jsonObj.id, callback);
                     }
                 }
                 else if (activity == "program" && Array.isArray(jsonObj)) {
                     // First call without a profileId returns an array of all profileIds, use that to start getting them one by one.
                     // FIXME: this should be a separate code path
-                    self.pullActivity(activity, jsonObj, callback);
+                    if (jsonObj.length > 0)
+                        self.pullActivity(activity, jsonObj, callback);
                     if (callback)
                         callback(jsonObj);
                     return;
@@ -2784,14 +2785,15 @@ var syncing_LLSyncAction = /** @class */ (function () {
                     activityObj_1 = [i];
                     // If passed an array of profileIds, pull them one by one.
                     if (profileId && Array.isArray(profileId) && profileId.length > 0) {
-                        self.pullActivity(activity, profileId, callback);
+                        self.pullActivity(activity, jsonObj.id, callback);
                     }
                 }
                 else if (activity == "institution" && Array.isArray(jsonObj)) {
                     // First call without a profileId returns an array of all profileIds, use that to start getting them one by one.
                     // FIXME: this should be a separate code path
                     self.pebl.emitEvent(self.pebl.events.totalInstitutionActivities, jsonObj);
-                    self.pullActivity(activity, jsonObj, callback);
+                    if (jsonObj.length > 0)
+                        self.pullActivity(activity, jsonObj, callback);
                     if (callback)
                         callback(jsonObj);
                     return;
@@ -2842,6 +2844,17 @@ var syncing_LLSyncAction = /** @class */ (function () {
             }
             else {
                 console.log("Failed to pull", activity);
+                if (presence.status === 404) {
+                    // Activity must have been deleted, remove group membership
+                    if (profileId && typeof profileId === 'string') {
+                        self.pebl.utils.getSpecificGroupMembership(profileId, function (membership) {
+                            if (membership) {
+                                console.log('Removing membership to deleted activity', membership);
+                                self.pebl.emitEvent(self.pebl.events.removedMembership, membership.id);
+                            }
+                        });
+                    }
+                }
                 if (callback) {
                     callback();
                 }
