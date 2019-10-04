@@ -2842,6 +2842,17 @@ var syncing_LLSyncAction = /** @class */ (function () {
             }
             else {
                 console.log("Failed to pull", activity);
+                if (presence.status === 404) {
+                    // Activity must have been deleted, remove group membership
+                    if (profileId && typeof profileId === 'string') {
+                        self.pebl.utils.getSpecificGroupMembership(profileId, function (membership) {
+                            if (membership) {
+                                console.log('Removing membership to deleted activity', membership);
+                                self.pebl.emitEvent(self.pebl.events.removedMembership, membership.id);
+                            }
+                        });
+                    }
+                }
                 if (callback) {
                     callback();
                 }
