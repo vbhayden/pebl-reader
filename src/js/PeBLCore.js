@@ -2744,7 +2744,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                     activityObj_1 = [p];
                     // If passed an array of profileIds, pull them one by one.
                     if (profileId && Array.isArray(profileId) && profileId.length > 0) {
-                        self.pullActivity(activity, profileId, callback);
+                        self.pullActivity(activity, jsonObj.id, callback);
                     }
                 }
                 else if (activity == "program" && Array.isArray(jsonObj)) {
@@ -2784,7 +2784,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                     activityObj_1 = [i];
                     // If passed an array of profileIds, pull them one by one.
                     if (profileId && Array.isArray(profileId) && profileId.length > 0) {
-                        self.pullActivity(activity, profileId, callback);
+                        self.pullActivity(activity, jsonObj.id, callback);
                     }
                 }
                 else if (activity == "institution" && Array.isArray(jsonObj)) {
@@ -2842,6 +2842,17 @@ var syncing_LLSyncAction = /** @class */ (function () {
             }
             else {
                 console.log("Failed to pull", activity);
+                if (presence.status === 404) {
+                    // Activity must have been deleted, remove group membership
+                    if (profileId && typeof profileId === 'string') {
+                        self.pebl.utils.getSpecificGroupMembership(profileId, function (membership) {
+                            if (membership) {
+                                console.log('Removing membership to deleted activity', membership);
+                                self.pebl.emitEvent(self.pebl.events.removedMembership, membership.id);
+                            }
+                        });
+                    }
+                }
                 if (callback) {
                     callback();
                 }
