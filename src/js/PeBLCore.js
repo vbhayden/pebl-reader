@@ -2744,7 +2744,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                     activityObj_1 = [p];
                     // If passed an array of profileIds, pull them one by one.
                     if (profileId && Array.isArray(profileId) && profileId.length > 0) {
-                        self.pullActivity(activity, jsonObj.id, callback);
+                        self.pullActivity(activity, profileId, callback);
                     }
                 }
                 else if (activity == "program" && Array.isArray(jsonObj)) {
@@ -2785,7 +2785,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                     activityObj_1 = [i];
                     // If passed an array of profileIds, pull them one by one.
                     if (profileId && Array.isArray(profileId) && profileId.length > 0) {
-                        self.pullActivity(activity, jsonObj.id, callback);
+                        self.pullActivity(activity, profileId, callback);
                     }
                 }
                 else if (activity == "institution" && Array.isArray(jsonObj)) {
