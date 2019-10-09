@@ -357,7 +357,7 @@ define([
             var pageDiff = null;
             var estimatedSliderPosition = null;
             for (var i = chapterStart; i <= point2; i++) {
-                if (!pageDiff || (Math.abs(currentPage - newChapters[i].pageNumber) <= pageDiff)) {
+                if (!pageDiff || (currentPage - newChapters[i].pageNumber <= pageDiff && currentPage - newChapters[i].pageNumber >= 0)) {
                     pageDiff = Math.abs(currentPage - newChapters[i].pageNumber);
                     estimatedSliderPosition = i;
                 }
@@ -517,7 +517,7 @@ define([
             sliderContainer.appendChild(slider);
 
             //Add the chapter title and page nyumber under the slider
-            $('#readium-page-count').text(newChapters[chapterStart].title + ': Page ' + currentPage);
+            //$('#readium-page-count').text(newChapters[chapterStart].title + ': Page ' + currentPage);
 
             $('#readium-slider').prepend($(sliderContainer));
             $('#readium-slider').append($(sliderInfoContainer));
