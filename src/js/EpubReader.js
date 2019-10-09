@@ -344,26 +344,44 @@ define([
                 }
 
                 //There was no match for this filler page, add the filler page
-                if (!chapterMatch) {
-                    newChapters.splice(insertIndex, 0, inChapterPageObject);
-                    insertIndex++;
-                    point2++;
-                }
+                // if (!chapterMatch) {
+                //     newChapters.splice(insertIndex, 0, inChapterPageObject);
+                //     insertIndex++;
+                //     point2++;
+                // }
             }
 
 
             //Find out where to put the slider button for the current page
+            var foundPage = false;
+            var pageDiff = null;
+            var estimatedSliderPosition = null;
             for (var i = chapterStart; i <= point2; i++) {
+                if (!pageDiff || (Math.abs(currentPage - newChapters[i].pageNumber) <= pageDiff)) {
+                    pageDiff = Math.abs(currentPage - newChapters[i].pageNumber);
+                    estimatedSliderPosition = i;
+                }
+                currentPageIndex = i;
                 if (newChapters[i].pageNumber === currentPage) {
-                    currentPageIndex = i;
+                    foundPage = true;
                     break;
                 }
             }
 
+            if (!foundPage && estimatedSliderPosition) {
+                currentPageIndex = estimatedSliderPosition;
+            }
+
+            var chaptersWithoutFiller = newChapters.filter(function (page) {
+                if (!page.inChapterPageObject)
+                    return true;
+                else
+                    return false;
+            });
 
             //Calculate the percentage of the slider that the pages in this chapter occupy
-            var percent1 = Math.floor((point1 / newChapters.length) * 100);
-            var percent2 = Math.floor(((point2 + 1) / newChapters.length) * 100);
+            var percent1 = Math.floor((point1 / chaptersWithoutFiller.length) * 100);
+            var percent2 = Math.floor(((point2 + 1) / chaptersWithoutFiller.length) * 100);
 
             //TODO: Need style strings and rules for all browsers
 
@@ -406,7 +424,7 @@ define([
             var slider = document.createElement('input');
             slider.type = 'range';
             slider.min = '0';
-            slider.max = newChapters.length - 1;
+            slider.max = chaptersWithoutFiller.length - 1;
             slider.step = '0.001';
             slider.value = currentPageIndex;
 
@@ -1054,6 +1072,7 @@ define([
             if (embedded) {
                 hideLoop(null, true);
             } else if (readium.reader.handleViewportResize) {
+
                 setTimeout(function () {
                     readium.reader.handleViewportResize(bookmark);
                 }, 200);
