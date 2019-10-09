@@ -1902,6 +1902,11 @@ define([
                 return false;
             });
 
+            $('#aboutButt1').on('click', function() {
+                loadlibrary();
+                return false;
+            });
+
             // $('.icon-help').on('click', function() {
             //     PeBL.emitEvent(PeBL.events.eventHelped, {});
             // });
