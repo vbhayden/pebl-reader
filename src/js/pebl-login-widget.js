@@ -35,9 +35,7 @@ PeBL.extension.hardcodeLogin = {
         $('#' + elementName).on("click", function () {
             PeBL.user.isLoggedIn(function (loggedIn) {
                 if (loggedIn) {
-                    PeBL.emitEvent(PeBL.events.eventLoggedOut);
-                    if (loginFn)
-                        loginFn();
+                    window.Lightbox.confirmLogout(loginFn, logoutFn);
                 } else {
                     Lightbox.createLoginForm();
                     if (logoutFn)
