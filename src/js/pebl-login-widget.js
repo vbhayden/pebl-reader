@@ -35,9 +35,7 @@ PeBL.extension.hardcodeLogin = {
         $('#' + elementName).on("click", function () {
             PeBL.user.isLoggedIn(function (loggedIn) {
                 if (loggedIn) {
-                    PeBL.emitEvent(PeBL.events.eventLoggedOut);
-                    if (loginFn)
-                        loginFn();
+                    window.Lightbox.confirmLogout(loginFn, logoutFn);
                 } else {
                     Lightbox.createLoginForm();
                     if (logoutFn)
@@ -610,47 +608,78 @@ window.Lightbox = {
     },
     
     create : function (lightBoxType, allowClickOut) {
-	var lightBox,
-            lightBoxContent,
-            lightBoxContentSecondary,
-            dimOverlay;
+        window.Lightbox.close();
+    	var lightBox,
+        lightBoxContent,
+        lightBoxContentSecondary,
+        dimOverlay;
 
-	lightBox = document.createElement('div');
-	lightBox.id = 'lightBox';
-	if (lightBoxType === 'discussion') {
-            lightBox.classList.add('lightBox');
-	} else if (lightBoxType ==='image') {
-            lightBox.classList.add('lightBoxImage');
-	} else if (lightBoxType ==='login') {
-	    lightBox.classList.add('lightBox');
-	    lightBox.classList.add('lightBoxLoginForm');
-	}
-	
-	lightBoxContent = document.createElement('div');
-	lightBoxContent.classList.add('lightBoxContent');
-	lightBoxContentSecondary = document.createElement('div');
-	lightBoxContentSecondary.id = 'lightBoxContentSecondary';
-	lightBoxContentSecondary.style.display = 'none';
-	if (lightBoxType === 'image') {
-            lightBoxContent.classList.add('lightBoxContentImage');
-	}
-	lightBoxContent.id = 'lightBoxContent';
-	lightBox.appendChild(lightBoxContent);
-	lightBox.appendChild(lightBoxContentSecondary);
+    	lightBox = document.createElement('div');
+    	lightBox.id = 'lightBox';
+    	if (lightBoxType === 'discussion') {
+                lightBox.classList.add('lightBox');
+    	} else if (lightBoxType ==='image') {
+                lightBox.classList.add('lightBoxImage');
+    	} else if (lightBoxType ==='login') {
+    	    lightBox.classList.add('lightBox');
+    	    lightBox.classList.add('lightBoxLoginForm');
+    	}
+    	
+    	lightBoxContent = document.createElement('div');
+    	lightBoxContent.classList.add('lightBoxContent');
+    	lightBoxContentSecondary = document.createElement('div');
+    	lightBoxContentSecondary.id = 'lightBoxContentSecondary';
+    	lightBoxContentSecondary.style.display = 'none';
+    	if (lightBoxType === 'image') {
+                lightBoxContent.classList.add('lightBoxContentImage');
+    	}
+    	lightBoxContent.id = 'lightBoxContent';
+    	lightBox.appendChild(lightBoxContent);
+    	lightBox.appendChild(lightBoxContentSecondary);
 
-	dimOverlay = document.createElement('div');
-	dimOverlay.id = 'dimOverlay';
-	dimOverlay.classList.add('dimOverlay');
+    	dimOverlay = document.createElement('div');
+    	dimOverlay.id = 'dimOverlay';
+    	dimOverlay.classList.add('dimOverlay');
 
-	document.body.appendChild(dimOverlay);
-	document.body.appendChild(lightBox);
+    	document.body.appendChild(dimOverlay);
+    	document.body.appendChild(lightBox);
 
-	$('.dimOverlay').on('click', function() {
-            if ($('#lightBox').is(':visible')) {
-		if (allowClickOut)
-		    window.Lightbox.close();
-            }
-	});
+    	$('.dimOverlay').on('click', function() {
+                if ($('#lightBox').is(':visible')) {
+    		if (allowClickOut)
+    		    window.Lightbox.close();
+                }
+    	});
+    },
+
+    confirmLogout : function(loginFn, logoutFn) {
+        Lightbox.create('login', true);
+        var lightBoxContent = document.getElementById('lightBoxContent');
+
+        var message = document.createElement('h3');
+        message.classList.add('confirmLogoutMessage');
+        message.textContent = 'Are you sure you want to logout?';
+
+        var buttonContainer = document.createElement('div');
+        buttonContainer.classList.add('confirmLogoutButtonContainer');
+
+        var cancel = document.createElement('button');
+        cancel.textContent = 'Cancel';
+        cancel.addEventListener('click', window.Lightbox.close);
+
+        var confirm = document.createElement('button');
+        confirm.textContent = 'Logout';
+        confirm.addEventListener('click', function() {
+            PeBL.emitEvent(PeBL.events.eventLoggedOut);
+            if (loginFn)
+                loginFn();
+        });
+
+        buttonContainer.appendChild(cancel);
+        buttonContainer.appendChild(confirm);
+
+        lightBoxContent.appendChild(message);
+        lightBoxContent.appendChild(buttonContainer);
     }
 }
 
