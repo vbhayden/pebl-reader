@@ -186,6 +186,7 @@ define([
             var title = ebookURL.replace('epub_content/bookshelf/', '');
             if (!(title.slice(-5) === '.epub'))
                 title = title + '.epub';
+            title = title.replace(/(-v[0-9]+_[0-9]+.epub)/g, '.epub');
             return title;
         };
 
