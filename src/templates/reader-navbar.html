@@ -24,7 +24,6 @@
   
 
   <div id="backgroundAudioTrack-div">
-
     <button tabindex="1" id="backgroundAudioTrack-button-play" type="button" class="btn icon-play-audio-background"  title="{{strings.i18n_audio_play_background}} [{{keyboard.BackgroundAudioPlayPause}}]"  aria-label="{{strings.i18n_audio_play_background}} [{{keyboard.BackgroundAudioPlayPause}}]" accesskey="{{keyboard.accesskeys.BackgroundAudioPlayPause}}">
       <span class="glyphicon glyphicon-music" aria-hidden="true"></span>
     </button>
@@ -152,9 +151,6 @@
         <button tabindex="1" id="btn-playback-scroll-disable" type="button" class="btn icon-playback-scroll-disable" title="{{strings.i18n_playback_scroll_disable}}" aria-label="{{strings.i18n_playback_scroll_disable}}" >
           <span id="icon-playback-scroll-on" class="glyphicon glyphicon-sort" aria-hidden="true"></span>
         </button>
-
-
-
         <button tabindex="1" id="btn-auto-page-turn-enable" type="button" class="btn icon-auto-page-turn-enable" title="{{strings.i18n_auto_page_turn_enable}}" aria-label="{{strings.i18n_auto_page_turn_enable}}" >
           <span id="icon-auto-page-turn-off" class="glyphicon glyphicon-sound-stereo" aria-hidden="true"></span>
         </button>
@@ -186,43 +182,54 @@
         </div>
     </div> 
     <!--Audioplayer Controls END-->
-    
-    
-    
-    <div class="bookmark-wrapper dropdown">
+    <!--
+        <div class="bookmark-wrapper dropdown">
         <a tabindex="1" href="#" data-toggle="dropdown"><button type="button" class="btn" title="{{strings.bookmark}}" aria-label="{{strings.bookmark}}"><span class="glyphicon glyphicon-bookmark" aria-hidden="true"></span></button></a>
         <ul id="bookmark-menu" class="dropdown-menu" role="menu">
             <li id="bookmark-page"><span tabindex="1">Bookmark Page</a></li>
             <li id="bookmark-show"><span tabindex="1">View Bookmarks</a></li>
         </ul>
     </div>
-    <button tabindex="1" type="button" class="btn icon-library" title="{{strings.view_library}}" aria-label="{{strings.view_library}} [{{keyboard.SwitchToLibrary}}]" accesskey="{{keyboard.accesskeys.SwitchToLibrary}}">
+    -->
+    <!--
+        <button tabindex="1" type="button" class="btn icon-library" title="{{strings.view_library}}" aria-label="{{strings.view_library}} [{{keyboard.SwitchToLibrary}}]" accesskey="{{keyboard.accesskeys.SwitchToLibrary}}">
         <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
     </button>
-<!--     <button tabindex="1" type="button" class="btn icon-show-bookmarks" title="{{strings.show_bookmarks}}" aria-label="{{strings.show_bookmarks}}">
+    -->
+    <!-- 
+    <button tabindex="1" type="button" class="btn icon-show-bookmarks" title="{{strings.show_bookmarks}}" aria-label="{{strings.show_bookmarks}}">
         <span class="glyphicon glyphicon-bookmark" aria-hidden="true"></span>
-    </button> -->
-    <button tabindex="1" type="button" class="btn icon-show-annotations" title="{{strings.show_annotations}}" aria-label="{{strings.show_annotations}}">
-        <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
-    </button>        
+    </button>
+    -->
+    <button id="tocButt" tabindex="1" type="button" class="btn icon-toc" title="{{strings.toc}}" aria-label="{{strings.toc}} [{{keyboard.TocShowHideToggle}}]" accesskey="{{keyboard.accesskeys.TocShowHideToggle}}">
+        <img src="images/pebl-icons-wip_toc.svg" aria-hidden="true" height="24px" />
+    </button>
     <button tabindex="1" type="button" class="btn icon-annotations" title="{{strings.highlight_selection}}" aria-label="{{strings.highlight_selection}}">
-        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+        <img src="images/pebl-icons-wip_new-highlight.svg" aria-hidden="true" height="24px" />
     </button>
     <!-- <button tabindex="1" type="button" class="btn icon-shareUrl" title="{{strings.share_url}}" aria-label="{{strings.share_url}}"> -->
     <!--     <span class="glyphicon glyphicon-link" aria-hidden="true"></span> -->
     <!-- </button> -->
     <button id="loginButt" tabindex="1" type="button" class="btn icon-log-in" title="{{strings.i18n_log_in}}" aria-label="{{strings.i18n_log_in}}">
-        <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+        <img src="images/pebl-icons-wip_highlight-list.svg" aria-hidden="true" height="24px" />
     </button>
-    <button id="tocButt" tabindex="1" type="button" class="btn icon-toc" title="{{strings.toc}}" aria-label="{{strings.toc}} [{{keyboard.TocShowHideToggle}}]" accesskey="{{keyboard.accesskeys.TocShowHideToggle}}">
-        <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+    <button type="button" class="btn icon-annotations"
+        title="higlight selected" [{{keyboard.FullScreenToggle}}]"
+        aria-label="higlight selected"
+        accesskey="{{keyboard.accesskeys.highlight_selection}}">
+        <img src="images/pebl-icons-wip_new-bookmark.svg"aria-hidden="true" height="24px" />
+    </button>
+    <button type="button" class="btn icon-annotations"
+        title="View annotations"
+        aria-label="View annotations"
+        accesskey="{{keyboard.accesskeys.annotations}}">
+        <img src="images/pebl-icons-wip_bookmark-list.svg" aria-hidden="true" height="24px" />
     </button>
     <button id="settbutt1" tabindex="1" type="button" class="btn icon-settings" data-toggle="modal" data-target="#settings-dialog" title="{{strings.settings}}" aria-label="{{strings.settings}} [{{keyboard.ShowSettingsModal}}]" accesskey="{{keyboard.accesskeys.ShowSettingsModal}}">
-        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+        <img src="images/pebl-icons-wip_settings.svg" aria-hidden="true" height="24px" />
     </button>
-    
-    <button tabindex="1" id="buttFullScreenToggle" type="button" class="btn icon-full-screen" title="{{strings.enter_fullscreen}} [{{keyboard.FullScreenToggle}}]" aria-label="{{strings.enter_fullscreen}} [{{keyboard.FullScreenToggle}}]" accesskey="{{keyboard.accesskeys.FullScreenToggle}}">
-        <span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span>
+    <button id="loginButt" tabindex="1" type="button" class="btn icon-log-in" title="{{strings.i18n_log_in}}" aria-label="{{strings.i18n_log_in}}">
+        <img src="images/pebl-icons-wip_login.svg" aria-hidden="true" height="24px" />
     </button>
 
     <!-- <button tabindex="1" type="button" class="btn icon-help" title="{{strings.help}} [{{keyboard.help}}]" aria-label="{{strings.help}} [{{keyboard.help}}]" accesskey="{{keyboard.accesskeys.help}}">
@@ -231,4 +238,3 @@
     
     <!-- <button type="button" class="btn btn-default icon icon-bookmark"></button>-->
 </div>
-
