@@ -210,26 +210,26 @@
     <!-- <button tabindex="1" type="button" class="btn icon-shareUrl" title="{{strings.share_url}}" aria-label="{{strings.share_url}}"> -->
     <!--     <span class="glyphicon glyphicon-link" aria-hidden="true"></span> -->
     <!-- </button> -->
-    <button id="loginButt" tabindex="1" type="button" class="btn icon-log-in" title="{{strings.i18n_log_in}}" aria-label="{{strings.i18n_log_in}}">
+    <button type="button" class="btn" title="{{strings.show_annotations}}" aria-label="{{strings.show_annotations}}">
         <img src="images/pebl-icons-wip_highlight-list.svg" aria-hidden="true" height="24px" />
     </button>
     <button type="button" class="btn icon-annotations"
-        title="higlight selected" [{{keyboard.FullScreenToggle}}]"
+        title="higlight selected"
         aria-label="higlight selected"
-        accesskey="{{keyboard.accesskeys.highlight_selection}}">
+        accesskey="{{strings.bookmark}}">
         <img src="images/pebl-icons-wip_new-bookmark.svg"aria-hidden="true" height="24px" />
     </button>
     <button type="button" class="btn icon-annotations"
-        title="View annotations"
-        aria-label="View annotations"
-        accesskey="{{keyboard.accesskeys.annotations}}">
+        title="{{strings.bookmark}}"
+        aria-label="{{strings.bookmark}}"
+        accesskey="{{strings.bookmark}}">
         <img src="images/pebl-icons-wip_bookmark-list.svg" aria-hidden="true" height="24px" />
     </button>
     <button id="settbutt1" tabindex="1" type="button" class="btn icon-settings" data-toggle="modal" data-target="#settings-dialog" title="{{strings.settings}}" aria-label="{{strings.settings}} [{{keyboard.ShowSettingsModal}}]" accesskey="{{keyboard.accesskeys.ShowSettingsModal}}">
         <img src="images/pebl-icons-wip_settings.svg" aria-hidden="true" height="24px" />
     </button>
     <button id="loginButt" tabindex="1" type="button" class="btn icon-log-in" title="{{strings.i18n_log_in}}" aria-label="{{strings.i18n_log_in}}">
-        <img src="images/pebl-icons-wip_login.svg" aria-hidden="true" height="24px" />
+            <img src="images/pebl-icons-wip_login.svg" aria-hidden="true" height="24px" />
     </button>
 
     <!-- <button tabindex="1" type="button" class="btn icon-help" title="{{strings.help}} [{{keyboard.help}}]" aria-label="{{strings.help}} [{{keyboard.help}}]" accesskey="{{keyboard.accesskeys.help}}">

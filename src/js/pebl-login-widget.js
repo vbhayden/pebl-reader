@@ -194,7 +194,8 @@ window.Lightbox = {
 
         if (!window.Configuration.useLinkedIn) {
             var selects = $(`
-            <div class="select-username"/>
+            <div class="login__form-section">
+            <div class="select-username">
                 <label>Select your username:</label>
             </div>
             <div class="select-wrapper">
@@ -206,12 +207,13 @@ window.Lightbox = {
                 <option>Learner5</option>
                 <option>Learner7</option>
             </select>
+            </div?
         `);
-            lightBoxContent.appendChild(selects[0]);
-            lightBoxContent.appendChild(selects[1]);
-            lightBoxContent.appendChild(selects[2]);
-            lightBoxContent.appendChild(selects[3]);
-            lightBoxContent.appendChild(selects[4]);
+            $(lightBoxContent).append(selects);
+            //lightBoxContent.appendChild(selects[1]);
+            //lightBoxContent.appendChild(selects[2]);
+            //lightBoxContent.appendChild(selects[3]);
+            //lightBoxContent.appendChild(selects[4]);
 
             var classSelect = $(`
             <div class="login__input-wrapper">
@@ -648,6 +650,35 @@ window.Lightbox = {
 
         var login = $('<br/><br/><input type="button" value="Login" id="loginUserNameSubmit" /><br/>');
         lightBoxContent.append(login);
+    },
+
+    confirmLogout : function(loginFn, logoutFn) {
+        Lightbox.create('login', true);
+        var lightBoxContent = document.getElementById('lightBoxContent');
+
+        var message = document.createElement('h3');
+        message.classList.add('confirmLogoutMessage');
+        message.textContent = 'Are you sure you want to logout?';
+
+        var buttonContainer = document.createElement('div');
+        buttonContainer.classList.add('confirmLogoutButtonContainer');
+
+        var cancel = document.createElement('button');
+        cancel.textContent = 'Cancel';
+        cancel.addEventListener('click', window.Lightbox.close);
+
+        var confirm = document.createElement('button');
+        confirm.textContent = 'Logout';
+        confirm.addEventListener('click', function() {
+            PeBL.emitEvent(PeBL.events.eventLoggedOut);
+            if (loginFn)
+                loginFn();
+        });
+        buttonContainer.appendChild(cancel);
+        buttonContainer.appendChild(confirm);
+        lightBoxContent.appendChild(message);
+        lightBoxContent.appendChild(buttonContainer);
+        
     },
 
     create: function (lightBoxType, allowClickOut) {

@@ -174,5 +174,12 @@ label {
 }
 
 
-@media screen and (orientation:portrait) { … }
- @media screen and (orientation:landscape) { … }
+@media screen and (orientation:portrait) {
+    
+ }
+ @media screen and (orientation:landscape) { 
+    .login__header {
+        width: 50%;
+        display: inline-block;
+    }
+  }
