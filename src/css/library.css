@@ -138,6 +138,11 @@ body.list-view #app-container .library-item{
     display: table-row;
 }
 
+.info-wrap {
+    overflow: hidden;
+    position: relative;
+}
+
 body:not(.list-view) #app-container .library-item .info-wrap .no-cover {
     border: 1px solid #efefef;
     border-radius: 3px;
@@ -175,6 +180,26 @@ body.list-view #app-container .library-item img{
 }
 */
 
+.latest-release .has-cover:before {
+    content: "Latest Release";
+    font-family: "Source Sans Pro";
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    margin: 0;
+    padding: 0;
+    width: 200px;
+    background: #e43;
+    position: absolute;
+    top: 25px;
+    left: -60px;
+    text-align: center;
+    line-height: 2em;
+    letter-spacing: 1px;
+    color: #f0f0f0;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    box-shadow: 0 0 3px rgba(0,0,0,.3);
+}
 .has-cover{
     background-repeat:no-repeat;
     background-position:center;
