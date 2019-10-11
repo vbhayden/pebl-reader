@@ -5,7 +5,8 @@
     -webkit-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
     box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
     left: 0;
-    top: 10%;
+    top: 5%;
+    top: 5%;
     width: 100%;
     overflow: hidden;
     background-color: rgb(240, 240, 240);
@@ -25,6 +26,8 @@
     padding: 0;
     width: 90%;
     display: flex;
+    max-height: 100vh;
+    overflow-y: scroll;
     justify-content: center;
     flex-direction: column;
 }
@@ -80,7 +83,7 @@
 .select-css option {
 	font-weight:normal;
 }
-h2 {
+h2, h3, h4 {
     text-align: center;
 }
 .login__header {
@@ -109,12 +112,12 @@ h2 {
     padding: .5rem 0rem;
 }
 .login__label {
-    width: 50%;
+    width: 49%;
     padding: .5rem 0rem;
     display: inline-block;
 }
 .login__input {
-    width: 50%;
+    width: 49%;
     display: inline-block;
 }
 .login__input input {
@@ -130,7 +133,45 @@ label {
     height: 36px;
 }
 
-@media (max-width: 768px) { 
+.login__button, .confirm-button, .cancel-button {
+    max-width: 160px;
+    border-radius: .5rem;
+    background-color: #3A85E2;
+    width: 100%;
+    height: 48px;
+    color: white;
+    float:right;
+    font-size: 2rem;
+}
+.confirmLogoutButtonContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.cancel-button {
+    max-width: 160px;
+    border-radius: .5rem;
+    background-color: #747474;
+    width: 100%;
+    height: 48px;
+    color: white;
+    float:right;
+    font-size: 2rem;
+}
+.confirm-button {
+    max-width: 160px;
+    border-radius: .5rem;
+    background-color: #3A85E2;
+    width: 100%;
+    height: 48px;
+    color: white;
+    float:right;
+    font-size: 2rem;
+}
+
+@media screen and (orientation:portrait) and (max-height: 768px) {
+  
     .login__label {
         width: 100%;
         display: block;
@@ -156,12 +197,6 @@ label {
 
     }
     
-    .lightBoxLoginForm .lightBoxContent {
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-    }
-    
     .lightBoxLoginForm .linkedInButton {
         left: 0;
         right: 0;
@@ -173,13 +208,31 @@ label {
     }
 }
 
-
-@media screen and (orientation:portrait) {
-    
- }
- @media screen and (orientation:landscape) { 
-    .login__header {
-        width: 50%;
-        display: inline-block;
+@media screen and (orientation:landscape) and (max-width: 1025px){ 
+    h2, h3, h4 {
+        text-align: left;
     }
-  }
+    .lightBoxLoginForm .lightBoxContent {
+        flex-direction: row;
+    }
+    .login__header {
+        width: 33%;
+    }
+    .login__form-section {
+        width: 66%;
+    }
+    .lightBoxLoginForm {
+        left: 0;
+        right: 0;
+        top:0;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 100%;
+        height: 100%;
+        position:absolute;
+        border-radius: 0px;
+
+    }
+   
+}
+

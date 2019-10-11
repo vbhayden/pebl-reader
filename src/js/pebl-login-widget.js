@@ -164,15 +164,12 @@ window.Lightbox = {
 
         var lightBoxContent = document.getElementById('lightBoxContent');
         var lightBoxContentSecondary = document.getElementById('lightBoxContentSecondary');
-        var loginHeader = $(`
-        <div class="login__header">
-            <div class="login__image">
-                <img  src="images/PEBL-icon-512.png"></img>
+        var loginHeader = $(
+            `<div class="login__header">
+                <div class="login__image">
+                    <img  src="images/PEBL-icon-512.png"></img>
+                </div>
             </div>
-            <div>
-                <h2> login to continue</h2>
-            </div>
-        </div>
         `);
 
         $(lightBoxContent).append(loginHeader);
@@ -193,23 +190,32 @@ window.Lightbox = {
         }
 
         if (!window.Configuration.useLinkedIn) {
-            var selects = $(`
+            var form = $(`
             <div class="login__form-section">
-            <div class="select-username">
-                <label>Select your username:</label>
+                <div>
+                <h2>Welcome to PeBL</h2>
+                <h4>Login to continue</h4>
+                </div>
             </div>
-            <div class="select-wrapper">
-                <select class="select-css" id="loginUserNameSelector">
-                <option>Learner</option>
-                <option>Learner1</option>
-                <option>Learner2</option>
-                <option>Learner3</option>
-                <option>Learner5</option>
-                <option>Learner7</option>
-            </select>
-            </div?
+            `);
+           
+            var selects = $(`
+            <div class="login__input-wrapper">
+                <div class="login__label">
+                    <label>Username:</label>
+                </div>
+                <div class="login__input">
+                    <select class="select-css" id="loginUserNameSelector">
+                    <option>Learner</option>
+                    <option>Learner1</option>
+                    <option>Learner2</option>
+                    <option>Learner3</option>
+                    <option>Learner5</option>
+                    <option>Learner7</option>
+                </select>
+            </div>
         `);
-            $(lightBoxContent).append(selects);
+            $(form).append(selects);
             //lightBoxContent.appendChild(selects[1]);
             //lightBoxContent.appendChild(selects[2]);
             //lightBoxContent.appendChild(selects[3]);
@@ -225,7 +231,7 @@ window.Lightbox = {
                 </div>
             </div>
             `);
-            $(lightBoxContent).append(classSelect);
+            $(form).append(classSelect);
 
             var teamSelect = $(`
                 <div class="login__input-wrapper">
@@ -237,13 +243,14 @@ window.Lightbox = {
                     </div>
                 </div>
             `);
-            $(lightBoxContent).append(teamSelect);
-
-            var login = $('<br/><br/><input type="button" value="Login" id="loginUserNameSubmit" />');
-            lightBoxContent.appendChild(login[0]);
-            lightBoxContent.appendChild(login[1]);
-            lightBoxContent.appendChild(login[2]);
-
+            $(form).append(teamSelect);
+            var login = $(`
+                <div class="login__input-wrapper">
+                    <input class="login__button" type="button" value="Login" id="loginUserNameSubmit" />
+                </div>
+            `);
+            $(form).append(login);
+            $(lightBoxContent).append(form);
             $("#loginUserNameSubmit").click(function () {
                 var currentTeam = null;
                 if ($('#loginTeamSelect').length > 0) {
@@ -665,14 +672,18 @@ window.Lightbox = {
 
         var cancel = document.createElement('button');
         cancel.textContent = 'Cancel';
+        cancel.classList.add('cancel-button');
         cancel.addEventListener('click', window.Lightbox.close);
 
         var confirm = document.createElement('button');
         confirm.textContent = 'Logout';
+        confirm.classList.add('confirm-button');
+        confirm.addEventListener('click', window.Lightbox.close);
         confirm.addEventListener('click', function() {
             PeBL.emitEvent(PeBL.events.eventLoggedOut);
             if (loginFn)
                 loginFn();
+                removeChild
         });
         buttonContainer.appendChild(cancel);
         buttonContainer.appendChild(confirm);
