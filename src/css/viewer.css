@@ -255,7 +255,7 @@ direction: rtl;
 .navbar
 {
   background: #ffffff;
-  box-shadow: 0px 1px 5px #333;
+  /*box-shadow: 0px 1px 5px #333;*/
   border-radius: 0px;
   min-height: 36px;
   margin-bottom: 0px;
@@ -318,7 +318,9 @@ html[data-theme=night-theme] .modal
 /*.icon-settings, .icon-settings:active{
   background-image: url('../images/glyphicons_136_cogwheel.png');
 }*/
-
+#webreaderTitle {
+    color: grey;
+}
 .navbar .icon-logo, .navbar .icon-logo:active{
   background-image: url('../images/webreader_logo_eduworks.png');
   width: 130px; 
