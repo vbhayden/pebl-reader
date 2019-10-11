@@ -245,7 +245,7 @@ direction: rtl;
   width: 48px;
   height: 36px;
   background: no-repeat center center;
-    background-color: #4d4d4d;
+    background-color: #ffffff;
 }
 
 #aboutButt1 {
@@ -254,8 +254,8 @@ direction: rtl;
 
 .navbar
 {
-  background: #4d4d4d;
-  box-shadow: 0px 1px 5px #333;
+  background: #ffffff;
+  /*box-shadow: 0px 1px 5px #333;*/
   border-radius: 0px;
   min-height: 36px;
   margin-bottom: 0px;
@@ -268,7 +268,7 @@ direction: rtl;
     margin-right: 0 !important;
     
     min-height: 36px;
-    background-color: #4d4d4d;
+    background-color: #ffffff;
 }
 
 .navbar-left {
@@ -318,7 +318,9 @@ html[data-theme=night-theme] .modal
 /*.icon-settings, .icon-settings:active{
   background-image: url('../images/glyphicons_136_cogwheel.png');
 }*/
-
+#webreaderTitle {
+    color: grey;
+}
 .navbar .icon-logo, .navbar .icon-logo:active{
   background-image: url('../images/webreader_logo_eduworks.png');
   width: 130px; 
