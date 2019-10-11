@@ -186,6 +186,7 @@ define([
             var title = ebookURL.replace('epub_content/bookshelf/', '');
             if (!(title.slice(-5) === '.epub'))
                 title = title + '.epub';
+            title = title.replace(/(-v[0-9]+_[0-9]+.epub)/g, '.epub');
             return title;
         };
 
@@ -2356,6 +2357,44 @@ define([
 
                 readium.reader.addIFrameEventListener('blur', function(e) {
                     $('#reading-area').removeClass("contentFocus");
+                });
+
+                readium.reader.addIFrameEventListener('mouseup', function(e) {
+                    var text = "";
+                    if (e.view) {
+                        if (typeof e.view.getSelection != "undefined") {
+                            text = e.view.getSelection().toString();
+                        } else if (typeof e.view.document.selection != "undefined" && e.view.document.selection.type == "Text") {
+                            text = e.view.document.selection.createRange().text;
+                        }   
+                    }
+                    
+                    if (text.length > 0) {
+                        console.log('Text is selected');
+                        // Show the highlight button
+                    } else {
+                        console.log('No text selected');
+                        // Hide the highlight button
+                    }
+                });
+
+                readium.reader.addIFrameEventListener('touchend', function(e) {
+                    var text = "";
+                    if (e.view) {
+                        if (typeof e.view.getSelection != "undefined") {
+                            text = e.view.getSelection().toString();
+                        } else if (typeof e.view.document.selection != "undefined" && e.view.document.selection.type == "Text") {
+                            text = e.view.document.selection.createRange().text;
+                        }   
+                    }
+                    
+                    if (text.length > 0) {
+                        console.log('Text is selected');
+                        // Show the highlight button
+                    } else {
+                        console.log('No text selected');
+                        // Hide the highlight button
+                    }
                 });
 
                 SettingsDialog.initDialog(readium.reader);
