@@ -1,5 +1,3 @@
-
-
 document.addEventListener("eventLogout", function() {
     $('#loginButt span').removeClass("glyphicon-log-out");
     $('#loginButt span').addClass("glyphicon-log-in");
@@ -165,6 +163,15 @@ window.Lightbox = {
 
         var lightBoxContent = document.getElementById('lightBoxContent');
         var lightBoxContentSecondary = document.getElementById('lightBoxContentSecondary');
+        var loginHeader = $(
+            '<div class="login__header">' +
+                '<div class="login__image">' +
+                    '<img  src="images/PEBL-icon-512.png"></img>' +
+                '</div>' +
+            '</div>'
+        );
+
+        $(lightBoxContent).append(loginHeader);
 
         if (window.Configuration.useLinkedIn) {
             var linkedInButton = document.createElement('button');
@@ -182,24 +189,69 @@ window.Lightbox = {
         }
 
         if (!window.Configuration.useLinkedIn) {
-            var selects = $('<br/>Select your username:<br/><br/><select id="loginUserNameSelector"><option>Learner</option><option>Learner1</option><option>Learner2</option><option>Learner3</option><option>Learner5</option><option>Learner7</option></select>');
-            lightBoxContent.appendChild(selects[0]);
-            lightBoxContent.appendChild(selects[1]);
-            lightBoxContent.appendChild(selects[2]);
-            lightBoxContent.appendChild(selects[3]);
-            lightBoxContent.appendChild(selects[4]);
+            var form = $(
+                '<div class="login__form-section">' +
+                '<div>' +
+                '<h2>Welcome to PeBL</h2>' +
+                '<h4>Login to continue</h4>' +
+                '</div>' +
+            '</div>'
+            );
 
-            var classSelect = $('<br/><br/><p>Class ID: <input type="text" id="loginClassSelect"></input></p>');
-            $(lightBoxContent).append(classSelect);
+            var selects = $(
+                '<div class="login__input-wrapper">' +
+                '<div class="login__label">' +
+                    '<label>Username:</label>' +
+                '</div>' +
+                '<div class="login__input">' +
+                    '<select class="select-css" id="loginUserNameSelector">' +
+                    '<option>Learner</option>' +
+                    '<option>Learner1</option>' +
+                    '<option>Learner2</option>' +
+                    '<option>Learner3</option>' +
+                    '<option>Learner5</option>' +
+                    '<option>Learner7</option>' +
+                '</select>' +
+            '</div>'
+            );
+            $(form).append(selects);
+            /*
+             *lightBoxContent.appendChild(selects[1]);
+             *lightBoxContent.appendChild(selects[2]);
+             *lightBoxContent.appendChild(selects[3]);
+             *lightBoxContent.appendChild(selects[4]);
+             */
 
-            var teamSelect = $('<br/><br/><p>Team: <input type="text" id="loginTeamSelect"></input></p>');
-            $(lightBoxContent).append(teamSelect);
+            var classSelect = $(
+                '<div class="login__input-wrapper">' +
+                '<div class="login__label">' +
+                    '<label>Class ID:</label>' +
+                '</div>' +
+                '<div class="login__input">' +
+                    '<input type="text" id="loginClassSelect"></input>' +
+                '</div>' +
+            '</div>'
+            );
+            $(form).append(classSelect);
 
-            var login = $('<br/><br/><input type="button" value="Login" id="loginUserNameSubmit" />');
-            lightBoxContent.appendChild(login[0]);
-            lightBoxContent.appendChild(login[1]);
-            lightBoxContent.appendChild(login[2]);
-
+            var teamSelect = $(
+                '<div class="login__input-wrapper">' +
+                    '<div class="login__label">'+
+                        '<label>Team:</label>'+
+                    '</div>' +
+                    '<div class="login__input">'+
+                        '<input type="text" id="loginTeamSelect"></input>' +
+                    '</div>' +
+                '</div>'
+            );
+            $(form).append(teamSelect);
+            var login = $(
+                '<div class="login__input-wrapper">' +
+                    '<input class="login__button" type="button" value="Login" id="loginUserNameSubmit" />' +
+                '</div>'
+            );
+            $(form).append(login);
+            $(lightBoxContent).append(form);
             $("#loginUserNameSubmit").click(function() {
                 var currentTeam = null;
                 if ($('#loginTeamSelect').length > 0) {
@@ -302,7 +354,7 @@ window.Lightbox = {
         });
         xhr.open('GET',
             'https://project.oauth.eduworks.com' +
-                 '/oauth2/' + application + '/linkedin?authToken=' + authToken + '&d=' + Date.now());
+            '/oauth2/' + application + '/linkedin?authToken=' + authToken + '&d=' + Date.now());
         xhr.send();
     },
     apiGetProfile: function(accessToken, success, failure) {
@@ -444,7 +496,7 @@ window.Lightbox = {
                     var username = null;
 
                     if (query.indexOf("?") != -1) {
-                        var keyValues = query.substring(query.indexOf("?")+1).split("&");
+                        var keyValues = query.substring(query.indexOf("?") + 1).split("&");
 
                         for (var i = 0; i < keyValues.length; i++) {
                             var kv = keyValues[i].split("=");
@@ -483,12 +535,12 @@ window.Lightbox = {
         var loginForm = $('#loginFormSubmit');
         if (loginForm.length == 0) {
             loginForm = $('<form id="loginFormSubmit" action="https://people.extension.org/opie" method="GET">' +
-               '<input type="hidden" name="openid.identity" value="http://specs.openid.net/auth/2.0/identifier_select"/>' +
-              '<input type="hidden" name="openid.claimed_id" value="http://specs.openid.net/auth/2.0/identifier_select"/>' +
-              '<input type="hidden" name="openid.mode" value="checkid_setup"/>' +
-              '<input type="hidden" name="openid.ns" value="http://specs.openid.net/auth/2.0" />' +
-              '<input type="hidden" name="openid.return_to" id="returnValue" value="" />' +
-              '</form>');
+                '<input type="hidden" name="openid.identity" value="http://specs.openid.net/auth/2.0/identifier_select"/>' +
+                '<input type="hidden" name="openid.claimed_id" value="http://specs.openid.net/auth/2.0/identifier_select"/>' +
+                '<input type="hidden" name="openid.mode" value="checkid_setup"/>' +
+                '<input type="hidden" name="openid.ns" value="http://specs.openid.net/auth/2.0" />' +
+                '<input type="hidden" name="openid.return_to" id="returnValue" value="" />' +
+                '</form>');
 
             $(loginFrame[0].contentDocument.body).append(loginForm);
             loginFrame[0].contentDocument.getElementById("returnValue").value = window.top.location.protocol + "//" + window.top.location.host;
@@ -528,7 +580,7 @@ window.Lightbox = {
                 var username = null;
 
                 if (query.indexOf("?") != -1) {
-                    var keyValues = query.substring(query.indexOf("?")+1).split("&");
+                    var keyValues = query.substring(query.indexOf("?") + 1).split("&");
 
                     for (var i = 0; i < keyValues.length; i++) {
                         var kv = keyValues[i].split("=");
@@ -571,12 +623,12 @@ window.Lightbox = {
             var loginForm = $('#loginFormSubmit');
             if (loginForm.length == 0) {
                 loginForm = $('<form id="loginFormSubmit" action="https://people.extension.org/opie" method="GET">' +
-                   '<input type="hidden" name="openid.identity" value="http://specs.openid.net/auth/2.0/identifier_select"/>' +
-                  '<input type="hidden" name="openid.claimed_id" value="http://specs.openid.net/auth/2.0/identifier_select"/>' +
-                  '<input type="hidden" name="openid.mode" value="checkid_setup"/>' +
-                  '<input type="hidden" name="openid.ns" value="http://specs.openid.net/auth/2.0" />' +
-                  '<input type="hidden" name="openid.return_to" id="returnValue" value="" />' +
-                  '</form>');
+                    '<input type="hidden" name="openid.identity" value="http://specs.openid.net/auth/2.0/identifier_select"/>' +
+                    '<input type="hidden" name="openid.claimed_id" value="http://specs.openid.net/auth/2.0/identifier_select"/>' +
+                    '<input type="hidden" name="openid.mode" value="checkid_setup"/>' +
+                    '<input type="hidden" name="openid.ns" value="http://specs.openid.net/auth/2.0" />' +
+                    '<input type="hidden" name="openid.return_to" id="returnValue" value="" />' +
+                    '</form>');
 
                 $(loginFrame[0].contentDocument.body).append(loginForm);
                 loginFrame[0].contentDocument.getElementById("returnValue").value = window.top.location.protocol + "//" + window.top.location.host;
@@ -613,8 +665,39 @@ window.Lightbox = {
         lightBoxContent.append(login);
     },
 
+    confirmLogout: function(loginFn, logoutFn) {
+        Lightbox.create('login', true);
+        var lightBoxContent = document.getElementById('lightBoxContent');
+
+        var message = document.createElement('h3');
+        message.classList.add('confirmLogoutMessage');
+        message.textContent = 'Are you sure you want to logout?';
+
+        var buttonContainer = document.createElement('div');
+        buttonContainer.classList.add('confirmLogoutButtonContainer');
+
+        var cancel = document.createElement('button');
+        cancel.textContent = 'Cancel';
+        cancel.classList.add('cancel-button');
+        cancel.addEventListener('click', window.Lightbox.close);
+
+        var confirm = document.createElement('button');
+        confirm.textContent = 'Logout';
+        confirm.classList.add('confirm-button');
+        confirm.addEventListener('click', window.Lightbox.close);
+        confirm.addEventListener('click', function() {
+            PeBL.emitEvent(PeBL.events.eventLoggedOut);
+            if (loginFn)
+                loginFn();
+            removeChild;
+        });
+        buttonContainer.appendChild(cancel);
+        buttonContainer.appendChild(confirm);
+        lightBoxContent.appendChild(message);
+        lightBoxContent.appendChild(buttonContainer);
+    },
+
     create: function(lightBoxType, allowClickOut) {
-        window.Lightbox.close();
         var lightBox;
         var lightBoxContent;
         var lightBoxContentSecondary;
@@ -624,9 +707,9 @@ window.Lightbox = {
         lightBox.id = 'lightBox';
         if (lightBoxType === 'discussion') {
             lightBox.classList.add('lightBox');
-        } else if (lightBoxType ==='image') {
+        } else if (lightBoxType === 'image') {
             lightBox.classList.add('lightBoxImage');
-        } else if (lightBoxType ==='login') {
+        } else if (lightBoxType === 'login') {
             lightBox.classList.add('lightBox');
             lightBox.classList.add('lightBoxLoginForm');
         }
@@ -656,36 +739,6 @@ window.Lightbox = {
                     window.Lightbox.close();
             }
         });
-    },
-
-    confirmLogout: function(loginFn, logoutFn) {
-        Lightbox.create('login', true);
-        var lightBoxContent = document.getElementById('lightBoxContent');
-
-        var message = document.createElement('h3');
-        message.classList.add('confirmLogoutMessage');
-        message.textContent = 'Are you sure you want to logout?';
-
-        var buttonContainer = document.createElement('div');
-        buttonContainer.classList.add('confirmLogoutButtonContainer');
-
-        var cancel = document.createElement('button');
-        cancel.textContent = 'Cancel';
-        cancel.addEventListener('click', window.Lightbox.close);
-
-        var confirm = document.createElement('button');
-        confirm.textContent = 'Logout';
-        confirm.addEventListener('click', function() {
-            PeBL.emitEvent(PeBL.events.eventLoggedOut);
-            if (loginFn)
-                loginFn();
-        });
-
-        buttonContainer.appendChild(cancel);
-        buttonContainer.appendChild(confirm);
-
-        lightBoxContent.appendChild(message);
-        lightBoxContent.appendChild(buttonContainer);
     }
 };
 
