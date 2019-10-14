@@ -166,7 +166,7 @@ window.Lightbox = {
         var loginHeader = $(
             '<div class="login__header">' +
                 '<div class="login__image">' +
-                    '<img  src="images/PEBL-icon-512.png"></img>' +
+                    '<img  src="' + window.Configuration.loginImage + '"></img>' +
                 '</div>' +
             '</div>'
         );
@@ -174,9 +174,27 @@ window.Lightbox = {
         $(lightBoxContent).append(loginHeader);
 
         if (window.Configuration.useLinkedIn) {
-            var linkedInButton = document.createElement('button');
+            var linkedInButtonWrapper = document.createElement('div');
+            linkedInButtonWrapper.classList.add('linkedin-button-wrapper');
+            var linkedInButton = document.createElement('div');
+            var linkedInLogo = document.createElement('img');
+            linkedInLogo.src = "./images/linkedin.svg";
+            linkedInLogo.height="36";
+
+            var linkedInCopy = document.createElement('p');
+            linkedInCopy.textContent = 'Sign in with LinkedIn';
+
+            var linkedInCopywright = document.createElement('p');
+            linkedInCopywright.textContent = '®';
+            linkedInCopywright.classList.add('registered-trademark');
+
+            linkedInButton.appendChild(linkedInCopy);
+            linkedInButton.appendChild(linkedInLogo);
+            linkedInButton.appendChild(linkedInCopywright);
+            linkedInButtonWrapper.appendChild(linkedInButton);
+
             linkedInButton.classList.add('linkedInButton');
-            linkedInButton.textContent = 'Sign in with LinkedIn';
+
             linkedInButton.addEventListener('click', function() {
                 var urlParams = new URLSearchParams(window.location.search);
                 if (urlParams.get('epub'))
@@ -185,7 +203,7 @@ window.Lightbox = {
                 window.Lightbox.linkedInSignIn();
             });
 
-            lightBoxContent.appendChild(linkedInButton);
+            lightBoxContent.appendChild(linkedInButtonWrapper);
         }
 
         if (!window.Configuration.useLinkedIn) {
