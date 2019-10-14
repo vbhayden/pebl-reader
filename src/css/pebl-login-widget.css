@@ -32,12 +32,30 @@
 }
 
 .lightBoxLoginForm .linkedInButton {
-    left: 0;
-    right: 0;
     margin-left: auto;
     margin-right: auto;
+    color: white;
+    font-size: 1.5rem;
+    width: fit-content;
+    padding: .5rem;
+    border-radius: .5rem;
+    background-color: #2867B2;
+    height: 5.5rem;
+    
+}
+.linkedInButton img, 
+.linkedInButton p {
+    display: inline-block;
+    margin: .5rem;
+    color:white;
 }
 
+ .registered-trademark {
+    vertical-align: bottom;
+    margin-left: 0 !important;
+    font-size: xx-small;
+
+}
 .lightBoxLoginForm #loginTeamSelect {
 }
 
@@ -195,7 +213,7 @@ label {
     }
     .login__image img {
         width: auto;
-        max-height: 200px;x
+        max-height: 200px;
     }
     .lightBoxLoginForm {
         left: 0;
@@ -211,14 +229,13 @@ label {
     }
     
     .lightBoxLoginForm .linkedInButton {
-        left: 0;
-        right: 0;
         margin-left: auto;
         margin-right: auto;
+        width: fit-content;
+        background-color: #2867B2;
+
     }
     
-    .lightBoxLoginForm #loginTeamSelect {
-    }
 }
 
 @media screen and (orientation:landscape) and (max-width: 768px), (max-height: 560px) and (max-width: 768px) {
@@ -250,6 +267,17 @@ label {
         border-radius: 0px;
 
     }
+    .linkedin-button-wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+    }
+    .login-image {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+    }
+
 }
 
 @media screen and (orientation:landscape) and (max-width: 1025px), (max-height: 560px) and (max-width: 1025px){
@@ -288,6 +316,16 @@ label {
         position:absolute;
         border-radius: 0px;
 
+    }
+    .linkedin-button-wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+    }
+    .login-image {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
     }
    
 }
