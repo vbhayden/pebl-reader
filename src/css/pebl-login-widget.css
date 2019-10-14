@@ -1,3 +1,16 @@
+.dimOverlay {
+    display: block;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0.4;
+}
+
+
 .lightBoxLoginForm {
     display: flex;
     position: fixed;
