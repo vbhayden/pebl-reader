@@ -16,16 +16,19 @@
 	"message" : "List View"
     },
     "thumbnail_view" : {
-	"message" : "Thumbnail View"
+	"message" : "Grid View"
     },
     "view_library": {
-	"message" : "Library"
+	"message" : "PeBL Library"
     },
     "highlight_selection" : {
 	"message" : "Highlight Selected Text"
     },
     "bookmark" : {
         "message" : "Bookmark"
+    },
+    "bookmark_list" : {
+        "message" : "Bookmark List"
     },
     "share_url" : {
 	"message" : "Share reader bookmark..."
@@ -40,10 +43,10 @@
 	"message" : "Settings"
     },
     "show_annotations" : {
-	"message" : "Annotations"
+	"message" : "Annotations List"
     },
     "bookmarks" : {
-	"message" : "Bookmarks"
+	"message" : "Bookmark List"
     },        
     "layout" : {
 	"message" : "Layout"

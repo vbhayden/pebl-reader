@@ -2,5 +2,5 @@
     "i18n_pebl_library" : { "message" : "PeBL Library" },
     "i18n_pebl_reader" : { "message" : "PeBL Reader" },
     "i18n_pebl_title" : { "message" : "" },
-    "i18n_pebl_webreader_logo": { "message": "images/webreader_logo_eduworks.png" }
+    "i18n_pebl_webreader_logo": { "message": "images/PEBL-Logo-Color-small.png" }
 }
