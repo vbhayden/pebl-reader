@@ -37,6 +37,7 @@ buildProdExtension:
   - echo "window.Configuration.lrsCredential = '$PROD_EXTENSION_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
   - echo "window.Configuration.useLinkedIn = true;" >> src/cloud-reader/config.js
   - echo "window.Configuration.favicon = 'images/eXtension-icon_small.png';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.loginImage = 'images/eXtension-black.png';" >> src/cloud-reader/config.js
 
   - echo "{" > src/i18n/_locales/en_US/skinning.json
 
@@ -72,6 +73,7 @@ buildProd:
   - echo "window.Configuration.lrsUrl = '$PROD_LRS_URL';" >> src/cloud-reader/config.js
   - echo "window.Configuration.lrsCredential = '$PROD_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
   - echo "window.Configuration.useLinkedIn = false;" >> src/cloud-reader/config.js
+  - echo "window.Configuration.loginImage = 'images/PEBL-Logo-Color-small.png';" >> src/cloud-reader/config.js
 
   - npm run prepare:all
   - npm run dist
@@ -95,6 +97,7 @@ buildQA:
   - echo "window.Configuration.lrsUrl = '$QA_LRS_URL';" >> src/cloud-reader/config.js
   - echo "window.Configuration.lrsCredential = '$QA_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
   - echo "window.Configuration.useLinkedIn = true;" >> src/cloud-reader/config.js
+  - echo "window.Configuration.loginImage = 'images/PEBL-Logo-Color-small.png';" >> src/cloud-reader/config.js
   
   - npm run prepare:all
   - npm run dist

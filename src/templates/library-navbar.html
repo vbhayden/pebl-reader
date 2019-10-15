@@ -1,31 +1,34 @@
 <div class="btn-group navbar-left">
-    <button id="aboutButt1" tabindex="1" type="button" class="btn" data-toggle="modal" data-target="#about-dialog" title="{{strings.about}}" aria-label="{{strings.about}}">
-        <img style="margin-right: 1em;width: auto;height: 26px;" src="{{strings.i18n_pebl_webreader_logo}}" />
+    <button id="aboutButt1" tabindex="1" type="button" class="btn" title="{{strings.view_library}}" aria-label="{{strings.view_library}}">
+        <img style="margin-right: 1em;width: auto;height: 26px;" src="{{strings.i18n_pebl_pebl_logo}}" />
         <span id="webreaderTitle">{{strings.i18n_pebl_title}}</span>
     </button>
 </div>
 <div class="btn-group navbar-right">
+    <!-- <button tabindex="1" type="button" class="btn icon-shareUrl" title="{{strings.share_url}}" aria-label="{{strings.share_url}}"> -->
+    <!--     <span class="glyphicon glyphicon-link" aria-hidden="true"></span> -->
+    <!-- </button> -->
     <button tabindex="1" type="button" class="btn icon-thumbnails" title="{{strings.thumbnail_view}}" aria-label="{{strings.thumbnail_view}}">
-        <span class="glyphicon glyphicon-th" aria-hidden="true"></span>
+        <img src="images/pebl-icons-wip_grid-view.svg" aria-hidden="true" height="18px" />
     </button>
     <button tabindex="1" type="button" class="btn icon-list-view" title="{{strings.list_view}}" aria-label="{{strings.list_view}}">
-        <span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span>
-    </button>
-    <button id="loginButt" tabindex="1" type="button" class="btn icon-log-in" title="{{strings.i18n_log_in}}" aria-label="{{strings.i18n_log_in}}">
-        <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
-    </button>
-    <button id="addbutt" tabindex="1" type="button" class="btn icon-add-epub" title="{{strings.i18n_add_book}}" aria-label="{{strings.i18n_add_book}}" data-toggle="modal" data-target="#add-epub-dialog">
-        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-    </button>
-    <button id="settbutt1" tabindex="1" type="button" class="btn icon-settings" title="{{strings.settings}}" aria-label="{{strings.settings}} [{{keyboard.ShowSettingsModal}}]" accesskey="{{keyboard.accesskeys.ShowSettingsModal}}" data-toggle="modal" data-target="#settings-dialog">
-        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+            <img src="images/pebl-icons-wip_list-view.svg" aria-hidden="true" height="18px" />
+        </button>
+    <button id="addbutt" tabindex="1" type="button" class="btn " title="{{strings.i18n_add_book}}" aria-label="{{strings.i18n_add_book}}" data-toggle="modal" data-target="#add-epub-dialog">
+            <img src="images/pebl-icons-wip_new-book.svg" aria-hidden="true" height="18px" />
+        </button>
+    <button id="settbutt1" tabindex="1" type="button" class="btn " title="{{strings.settings}}" aria-label="{{strings.settings}} [{{keyboard.ShowSettingsModal}}]" accesskey="{{keyboard.accesskeys.ShowSettingsModal}}" data-toggle="modal" data-target="#settings-dialog">
+        <img src="images/pebl-icons-wip_settings.svg" aria-hidden="true" height="18px" />
     </button>
     <button style="display: none;" id="installbutt" tabindex="1" type="button" class="btn icon-install" title="{{strings.install}}" aria-label="{{strings.install}}">
-        <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
+        <img src="images/pebl-icons-wip_download.svg" aria-hidden="true" height="18px" />
     </button>
     {{#inIos}}
-    <button id="installbutt2" tabindex="1" type="button" class="btn icon-install" title="{{strings.install}}" aria-label="{{strings.install}}">
-        <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
+    <button id="installbutt2" tabindex="1" type="button" class="btn " title="{{strings.install}}" aria-label="{{strings.install}}">
+        <img src="images/pebl-icons-wip_download.svg" aria-hidden="true" height="18px" />
     </button>
     {{/inIos}}
+    <button id="loginButt" tabindex="1" type="button" class="btn " title="{{strings.i18n_log_in}}" aria-label="{{strings.i18n_log_in}}">
+        <img src="images/pebl-icons-wip_login.svg" aria-hidden="true" height="18px" />
+    </button>
 </div>

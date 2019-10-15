@@ -186,6 +186,7 @@ define([
             var title = ebookURL.replace('epub_content/bookshelf/', '');
             if (!(title.slice(-5) === '.epub'))
                 title = title + '.epub';
+            title = title.replace(/(-v[0-9]+_[0-9]+.epub)/g, '.epub');
             return title;
         };
 
@@ -344,40 +345,58 @@ define([
                 }
 
                 //There was no match for this filler page, add the filler page
-                if (!chapterMatch) {
-                    newChapters.splice(insertIndex, 0, inChapterPageObject);
-                    insertIndex++;
-                    point2++;
-                }
+                // if (!chapterMatch) {
+                //     newChapters.splice(insertIndex, 0, inChapterPageObject);
+                //     insertIndex++;
+                //     point2++;
+                // }
             }
 
 
             //Find out where to put the slider button for the current page
+            var foundPage = false;
+            var pageDiff = null;
+            var estimatedSliderPosition = null;
             for (var i = chapterStart; i <= point2; i++) {
+                if (!pageDiff || (currentPage - newChapters[i].pageNumber <= pageDiff && currentPage - newChapters[i].pageNumber >= 0)) {
+                    pageDiff = Math.abs(currentPage - newChapters[i].pageNumber);
+                    estimatedSliderPosition = i;
+                }
+                currentPageIndex = i;
                 if (newChapters[i].pageNumber === currentPage) {
-                    currentPageIndex = i;
+                    foundPage = true;
                     break;
                 }
             }
 
+            if (!foundPage && estimatedSliderPosition) {
+                currentPageIndex = estimatedSliderPosition;
+            }
+
+            var chaptersWithoutFiller = newChapters.filter(function (page) {
+                if (!page.inChapterPageObject)
+                    return true;
+                else
+                    return false;
+            });
 
             //Calculate the percentage of the slider that the pages in this chapter occupy
-            var percent1 = Math.floor((point1 / newChapters.length) * 100);
-            var percent2 = Math.floor(((point2 + 1) / newChapters.length) * 100);
+            // var percent1 = Math.floor((point1 / chaptersWithoutFiller.length) * 100);
+            // var percent2 = Math.floor(((point2 + 1) / chaptersWithoutFiller.length) * 100);
 
             //TODO: Need style strings and rules for all browsers
 
             //Style the slider bar to show the section containing pages in this chapter
-            var styleString = 'linear-gradient(to right, rgba(236, 83, 83,0) ' + percent1 + '%, rgba(236, 83, 83,1) ' + percent1 + '%, rgba(236, 83, 83,1) ' + percent2 + '%, rgba(236, 83, 83,0) ' + percent2 + '%)';
+            // var styleString = 'linear-gradient(to right, rgba(236, 83, 83,0) ' + percent1 + '%, rgba(236, 83, 83,1) ' + percent1 + '%, rgba(236, 83, 83,1) ' + percent2 + '%, rgba(236, 83, 83,0) ' + percent2 + '%)';
 
             if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
                 addRule('input[type=range]::-moz-range-track', {
-                    background: styleString,
+                    // background: styleString,
                     height: '5px'
                 });
             } else {
                 addRule('input[type=range]::-webkit-slider-runnable-track', {
-                    background: styleString,
+                    // background: styleString,
                     height: '5px'
                 });
             }
@@ -406,7 +425,7 @@ define([
             var slider = document.createElement('input');
             slider.type = 'range';
             slider.min = '0';
-            slider.max = newChapters.length - 1;
+            slider.max = chaptersWithoutFiller.length - 1;
             slider.step = '0.001';
             slider.value = currentPageIndex;
 
@@ -499,7 +518,7 @@ define([
             sliderContainer.appendChild(slider);
 
             //Add the chapter title and page nyumber under the slider
-            $('#readium-page-count').text(newChapters[chapterStart].title + ': Page ' + currentPage);
+            //$('#readium-page-count').text(newChapters[chapterStart].title + ': Page ' + currentPage);
 
             $('#readium-slider').prepend($(sliderContainer));
             $('#readium-slider').append($(sliderInfoContainer));
@@ -1054,6 +1073,7 @@ define([
             if (embedded) {
                 hideLoop(null, true);
             } else if (readium.reader.handleViewportResize) {
+
                 setTimeout(function () {
                     readium.reader.handleViewportResize(bookmark);
                 }, 200);
@@ -1883,6 +1903,11 @@ define([
                 return false;
             });
 
+            $('#aboutButt1').on('click', function() {
+                loadlibrary();
+                return false;
+            });
+
             // $('.icon-help').on('click', function() {
             //     PeBL.emitEvent(PeBL.events.eventHelped, {});
             // });
@@ -2332,6 +2357,44 @@ define([
 
                 readium.reader.addIFrameEventListener('blur', function(e) {
                     $('#reading-area').removeClass("contentFocus");
+                });
+
+                readium.reader.addIFrameEventListener('mouseup', function(e) {
+                    var text = "";
+                    if (e.view) {
+                        if (typeof e.view.getSelection != "undefined") {
+                            text = e.view.getSelection().toString();
+                        } else if (typeof e.view.document.selection != "undefined" && e.view.document.selection.type == "Text") {
+                            text = e.view.document.selection.createRange().text;
+                        }   
+                    }
+                    
+                    if (text.length > 0) {
+                        console.log('Text is selected');
+                        // Show the highlight button
+                    } else {
+                        console.log('No text selected');
+                        // Hide the highlight button
+                    }
+                });
+
+                readium.reader.addIFrameEventListener('touchend', function(e) {
+                    var text = "";
+                    if (e.view) {
+                        if (typeof e.view.getSelection != "undefined") {
+                            text = e.view.getSelection().toString();
+                        } else if (typeof e.view.document.selection != "undefined" && e.view.document.selection.type == "Text") {
+                            text = e.view.document.selection.createRange().text;
+                        }   
+                    }
+                    
+                    if (text.length > 0) {
+                        console.log('Text is selected');
+                        // Show the highlight button
+                    } else {
+                        console.log('No text selected');
+                        // Hide the highlight button
+                    }
                 });
 
                 SettingsDialog.initDialog(readium.reader);
