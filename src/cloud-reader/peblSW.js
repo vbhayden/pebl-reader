@@ -6,7 +6,6 @@ var FILES_TO_CACHE = [
 
     
     "./css/readium-all.css",
-    "./css/pebl-discussion-widget.css",
     "./css/pebl-login-widget.css",
     "./css/annotations.css",
 
@@ -75,7 +74,19 @@ var FILES_TO_CACHE = [
     "./images/PEBL-icon-192.png",
     "./images/webreader_logo_eduworks.png",
     "./images/about_readium_logo.png",
-    "./images/eXtension-icon_small.png"
+    "./images/eXtension-icon_small.png",
+    "./images/pebl-icons-light_bookmark-list.svg",
+    "./images/pebl-icons-light_download.svg",
+    "./images/pebl-icons-light_grid-view.svg",
+    "./images/pebl-icons-light_highlight-list.svg",
+    "./images/pebl-icons-light_list-view.svg",
+    "./images/pebl-icons-light_login.svg",
+    "./images/pebl-icons-light_logout.svg",
+    "./images/pebl-icons-light_new-book.svg",
+    "./images/pebl-icons-light_new-bookmark.svg",
+    "./images/pebl-icons-light_new-highlight.svg",
+    "./images/pebl-icons-light_settings.svg",
+    "./images/pebl-icons-light_toc.svg"
 ];
 
 self.addEventListener('install',

@@ -767,6 +767,7 @@ Helpers){
             e.preventDefault();
             var deferredPrompt = e;
             $('#installbutt').show();
+            $('#installbutt2').hide();
             $('#installbutt')[0].addEventListener('click', function() {
                 $('#download-books-dialog').modal('show');
             });
