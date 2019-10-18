@@ -96,7 +96,7 @@ buildQA:
   - echo "window.Configuration = {};" > src/cloud-reader/config.js
   - echo "window.Configuration.lrsUrl = '$QA_LRS_URL';" >> src/cloud-reader/config.js
   - echo "window.Configuration.lrsCredential = '$QA_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
-  - echo "window.Configuration.useLinkedIn = true;" >> src/cloud-reader/config.js
+  - echo "window.Configuration.useLinkedIn = false;" >> src/cloud-reader/config.js
   - echo "window.Configuration.loginImage = 'images/PEBL-Logo-Color-small.png';" >> src/cloud-reader/config.js
   
   - npm run prepare:all
