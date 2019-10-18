@@ -6,7 +6,7 @@ variables:
    PROD_EXTENSION_SERVER_IP: 10.1.100.166
 
 
-image: node:11
+image: node:12-alpine
 
 cache:
     paths:
