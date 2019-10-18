@@ -896,13 +896,13 @@ Helpers){
             
         });
 
-        if (inIos && !inIosStandalone) {
-            $(document.body).on('click', '#installbutt2', function() {
-                $('#install-ios-reader-dialog').modal('show');
-            });
-        }
+        // if (inIos && !inIosStandalone) {
+            // $(document.body).on('click', '#installbutt2', function() {
+            //     $('#install-ios-reader-dialog').modal('show');
+            // });
+        //}
 
-        if (inIos && inIosStandalone) {
+        // if (inIos && inIosStandalone) {
             $(document.body).on('click', '#installbutt2', function() {
                 $('#download-books-dialog').modal('show');
             });
@@ -923,7 +923,7 @@ Helpers){
                     
                 });
             });
-        }
+        //}
         
 
         document.title = Strings.i18n_pebl_library;
