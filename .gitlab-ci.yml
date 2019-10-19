@@ -32,6 +32,7 @@ buildProdExtension:
   # Yaml doesn't like ':<space>' wrap command in quotes
   # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_EXTENSION_LRS_AUTH\'/g\" src/js/pebl-login-widget.js"
   # - "sed -i \"s/production: false/production: true/g\" src/mixins/config.js"
+  - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
   - echo "window.Configuration = {};" > src/cloud-reader/config.js
   - echo "window.Configuration.lrsUrl = '$PROD_EXTENSION_LRS_URL';" >> src/cloud-reader/config.js
   - echo "window.Configuration.lrsCredential = '$PROD_EXTENSION_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
