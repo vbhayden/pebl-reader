@@ -767,6 +767,7 @@ Helpers){
             e.preventDefault();
             var deferredPrompt = e;
             $('#installbutt').show();
+            $('#installbutt2').hide();
             $('#installbutt')[0].addEventListener('click', function() {
                 $('#download-books-dialog').modal('show');
             });
@@ -896,13 +897,13 @@ Helpers){
             
         });
 
-        if (inIos && !inIosStandalone) {
-            $(document.body).on('click', '#installbutt2', function() {
-                $('#install-ios-reader-dialog').modal('show');
-            });
-        }
+        // if (inIos && !inIosStandalone) {
+            // $(document.body).on('click', '#installbutt2', function() {
+            //     $('#install-ios-reader-dialog').modal('show');
+            // });
+        //}
 
-        if (inIos && inIosStandalone) {
+        // if (inIos && inIosStandalone) {
             $(document.body).on('click', '#installbutt2', function() {
                 $('#download-books-dialog').modal('show');
             });
@@ -923,7 +924,7 @@ Helpers){
                     
                 });
             });
-        }
+        //}
         
 
         document.title = Strings.i18n_pebl_library;
