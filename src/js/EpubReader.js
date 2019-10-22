@@ -859,7 +859,7 @@ define([
                 annotation.title = iframeWindow.getSelection().toString();
                 annotation.type = 2;
 
-                PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
+                PeBL.emitEvent(PeBL.events.eventAnnotated, annotation);
                 annotationsShowHideToggle(true);
             } else {
                 window.alert('No text has been selected yet, or selected text is ineligible for highlighting.');
@@ -1984,7 +1984,7 @@ define([
 
                 annotation.text = note;
                 if (annotation.type === 2) {
-                    PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
+                    PeBL.emitEvent(PeBL.events.eventAnnotated, annotation);
                 } else if (annotation.type === 3) {
                     PeBL.emitEvent(PeBL.events.newSharedAnnotation, annotation);
                 }
