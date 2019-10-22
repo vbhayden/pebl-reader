@@ -1179,6 +1179,13 @@ define([
                             // add to newly focused
                             event.target.setAttribute("tabindex", "60");
                         });
+                        $(this).on("click", function(event) {
+                            PeBL.emitEvent(PeBL.events.eventAccessed, {
+                                type: 'TOC',
+                                name: event.currentTarget.textContent,
+                                target: event.currentTarget.href
+                            });
+                        });
                     });
 
                 }

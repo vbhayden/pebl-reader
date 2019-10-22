@@ -5658,6 +5658,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         var exts = {
             idref: payload.idref,
             cfi: payload.cfi,
+            target: payload.target,
             type: payload.type
         };
         this.pebl.storage.getCurrentActivity(function (activity) {
