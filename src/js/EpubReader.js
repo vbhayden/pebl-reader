@@ -1017,7 +1017,7 @@ define([
             annotation.title = title;
             annotation.type = 1;
 
-            PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
+            PeBL.emitEvent(PeBL.events.eventBookmarked, annotation);
         };
 
         var bookmarksCallback = function(stmts) {
