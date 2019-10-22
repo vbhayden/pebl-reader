@@ -735,6 +735,13 @@ define([
                             annotationContainer.appendChild(note);
 
                             annotationContainer.addEventListener('click', function() {
+                                PeBL.emitEvent(PeBL.events.eventAccessed, {
+                                    type: 'annotation',
+                                    name: stmt.title,
+                                    description: stmt.text,
+                                    idref: stmt.idRef,
+                                    cfi: stmt.cfi
+                                });
                                 readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
                             });
 
