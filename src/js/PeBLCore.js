@@ -4658,9 +4658,9 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 if (currentBook)
                     self.pebl.emitEvent(self.pebl.events.eventTerminated, currentBook);
                 self.pebl.storage.removeCurrentActivity();
-                self.pebl.emitEvent(self.pebl.events.eventInteracted, {
-                    activity: book
-                });
+                // self.pebl.emitEvent(self.pebl.events.eventInteracted, {
+                //     activity: book
+                // });
                 self.pebl.unsubscribeAllEvents();
                 self.pebl.unsubscribeAllThreads();
                 self.pebl.storage.saveCurrentBook(book);
@@ -4668,6 +4668,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             else {
                 self.pebl.emitEvent(self.pebl.events.eventJumpPage, {});
             }
+            self.pebl.emitEvent(self.pebl.events.eventLaunched, {});
         });
     };
     PEBLEventHandlers.prototype.newBookNoReset = function (event) {
