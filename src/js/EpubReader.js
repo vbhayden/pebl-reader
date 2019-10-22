@@ -1028,6 +1028,12 @@ define([
                                     contentCFI: evt.currentTarget.getAttribute('data-CFI'),
                                     IDRef: evt.currentTarget.getAttribute('data-IDRef')
                                 }
+                                PeBL.emitEvent(PeBL.events.eventAccessed, {
+                                    type: 'bookmark',
+                                    name: stmt.title,
+                                    idref: bookmark.IDRef,
+                                    cfi: bookmark.contentCFI
+                                });
                                 readium.reader.openSpineItemElementCfi(bookmark.IDRef, bookmark.contentCFI);
                             });
                             bookmarkLink.classList.add('bookmarkLink');
