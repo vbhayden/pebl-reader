@@ -186,7 +186,7 @@ var Annotation = /** @class */ (function (_super) {
     }
     Annotation.is = function (x) {
         var verb = x.verb.display["en-US"];
-        return (verb == "commented") || (verb == "bookmarked") || (verb == "unbookmarked") || (verb == "annotated");
+        return (verb == "commented") || (verb == "bookmarked") || (verb == "annotated");
     };
     return Annotation;
 }(XApiStatement));
@@ -228,7 +228,7 @@ var Action = /** @class */ (function (_super) {
         var verb = x.verb.display["en-US"];
         return (verb == "preferred") || (verb == "morphed") || (verb == "interacted") || (verb == "experienced") || (verb == "disliked") ||
             (verb == "liked") || (verb == "accessed") || (verb == "hid") || (verb == "showed") || (verb == "displayed") || (verb == "undisplayed") ||
-            (verb == "searched") || (verb == "selected");
+            (verb == "searched") || (verb == "selected") || (verb == "unbookmarked");
     };
     return Action;
 }(XApiStatement));
@@ -5143,6 +5143,32 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         var payload = event.detail;
         var xapi = {};
         var self = this;
+        var exts = {
+            idref: payload.idref,
+            cfi: payload.cfi
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.user.getUser(function (userProfile) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addExtensions(exts));
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#unbookmarked", "unbookmarked");
+                        self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        var s = new Action(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, s);
+                        self.pebl.storage.saveEvent(userProfile, s);
+                    }
+                });
+            });
+        });
+    };
+    PEBLEventHandlers.prototype.eventAnnotated = function (event) {
+        var payload = event.detail;
+        var xapi = {};
+        var self = this;
         self.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
                 var exts_9 = {
@@ -5155,38 +5181,9 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                     self.pebl.storage.getCurrentBook(function (book) {
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
                         self.xapiGen.addId(xapi);
-                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#unbookmarked", "unbookmarked");
-                        self.xapiGen.addTimestamp(xapi);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.title, payload.text, self.xapiGen.addExtensions(exts_9));
-                        self.xapiGen.addActorAccount(xapi, userProfile);
-                        var annotation = new Annotation(xapi);
-                        self.pebl.storage.saveAnnotations(userProfile, annotation);
-                        self.pebl.storage.saveOutgoingXApi(userProfile, annotation);
-                        self.pebl.emitEvent(self.pebl.events.incomingAnnotations, [annotation]);
-                    });
-                });
-            }
-        });
-    };
-    PEBLEventHandlers.prototype.eventAnnotated = function (event) {
-        var payload = event.detail;
-        var xapi = {};
-        var self = this;
-        self.pebl.user.getUser(function (userProfile) {
-            if (userProfile) {
-                var exts_10 = {
-                    type: payload.type,
-                    cfi: payload.cfi,
-                    idRef: payload.idRef,
-                    style: payload.style
-                };
-                self.pebl.storage.getCurrentActivity(function (activity) {
-                    self.pebl.storage.getCurrentBook(function (book) {
-                        self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
-                        self.xapiGen.addId(xapi);
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#annotated", "annotated");
                         self.xapiGen.addTimestamp(xapi);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.title, payload.text, self.xapiGen.addExtensions(exts_10));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.title, payload.text, self.xapiGen.addExtensions(exts_9));
                         self.xapiGen.addActorAccount(xapi, userProfile);
                         var annotation = new Annotation(xapi);
                         self.pebl.storage.saveAnnotations(userProfile, annotation);
@@ -5203,7 +5200,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         var self = this;
         this.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
-                var exts_11 = {
+                var exts_10 = {
                     type: payload.type,
                     cfi: payload.cfi,
                     idRef: payload.idRef,
@@ -5215,7 +5212,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/shared", "shared");
                         self.xapiGen.addTimestamp(xapi);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.title, payload.text, self.xapiGen.addExtensions(exts_11));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.title, payload.text, self.xapiGen.addExtensions(exts_10));
                         self.xapiGen.addActorAccount(xapi, userProfile);
                         var annotation = new SharedAnnotation(xapi);
                         self.pebl.storage.saveSharedAnnotations(userProfile, annotation);
