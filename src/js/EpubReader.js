@@ -735,6 +735,13 @@ define([
                             annotationContainer.appendChild(note);
 
                             annotationContainer.addEventListener('click', function() {
+                                PeBL.emitEvent(PeBL.events.eventAccessed, {
+                                    type: 'annotation',
+                                    name: stmt.title,
+                                    description: stmt.text,
+                                    idref: stmt.idRef,
+                                    cfi: stmt.cfi
+                                });
                                 readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
                             });
 
@@ -766,6 +773,13 @@ define([
                                 annotationContainer.appendChild(note);
 
                                 annotationContainer.addEventListener('click', function() {
+                                    PeBL.emitEvent(PeBL.events.eventAccessed, {
+                                        type: 'annotation',
+                                        name: stmt.title,
+                                        description: stmt.text,
+                                        idref: stmt.idRef,
+                                        cfi: stmt.cfi
+                                    });
                                     readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
                                 });
 
@@ -845,7 +859,7 @@ define([
                 annotation.title = iframeWindow.getSelection().toString();
                 annotation.type = 2;
 
-                PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
+                PeBL.emitEvent(PeBL.events.eventAnnotated, annotation);
                 annotationsShowHideToggle(true);
             } else {
                 window.alert('No text has been selected yet, or selected text is ineligible for highlighting.');
@@ -1003,7 +1017,7 @@ define([
             annotation.title = title;
             annotation.type = 1;
 
-            PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
+            PeBL.emitEvent(PeBL.events.eventBookmarked, annotation);
         };
 
         var bookmarksCallback = function(stmts) {
@@ -1021,6 +1035,12 @@ define([
                                     contentCFI: evt.currentTarget.getAttribute('data-CFI'),
                                     IDRef: evt.currentTarget.getAttribute('data-IDRef')
                                 }
+                                PeBL.emitEvent(PeBL.events.eventAccessed, {
+                                    type: 'bookmark',
+                                    name: stmt.title,
+                                    idref: bookmark.IDRef,
+                                    cfi: bookmark.contentCFI
+                                });
                                 readium.reader.openSpineItemElementCfi(bookmark.IDRef, bookmark.contentCFI);
                             });
                             bookmarkLink.classList.add('bookmarkLink');
@@ -1031,6 +1051,12 @@ define([
                             var bookmarkDeleteButton = document.createElement('i');
                             bookmarkDeleteButton.classList.add('glyphicon', 'glyphicon-remove');
                             bookmarkDeleteButton.addEventListener('click', function() {
+                                PeBL.emitEvent(PeBL.events.eventUnbookmarked, {
+                                    cfi: stmt.cfi,
+                                    idref: stmt.idRef,
+                                    name: stmt.title,
+                                    description: stmt.text
+                                });
                                 PeBL.emitEvent(PeBL.events.removedAnnotation, stmt.id);
                                 $(bookmarkWrapper).remove();
                             });
@@ -1158,6 +1184,13 @@ define([
                             }
                             // add to newly focused
                             event.target.setAttribute("tabindex", "60");
+                        });
+                        $(this).on("click", function(event) {
+                            PeBL.emitEvent(PeBL.events.eventAccessed, {
+                                type: 'TOC',
+                                name: event.currentTarget.textContent,
+                                target: event.currentTarget.href
+                            });
                         });
                     });
 
@@ -1951,7 +1984,7 @@ define([
 
                 annotation.text = note;
                 if (annotation.type === 2) {
-                    PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
+                    PeBL.emitEvent(PeBL.events.eventAnnotated, annotation);
                 } else if (annotation.type === 3) {
                     PeBL.emitEvent(PeBL.events.newSharedAnnotation, annotation);
                 }
