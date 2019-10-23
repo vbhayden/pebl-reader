@@ -6555,6 +6555,7 @@ var pebl_PEBL = /** @class */ (function () {
     function PEBL(config, callback) {
         this.firedEvents = [];
         this.subscribedEventHandlers = {};
+        this.subscribedSingularEventHandlers = {};
         this.subscribedThreadHandlers = {};
         this.loaded = false;
         this.extension = {};
@@ -6630,6 +6631,14 @@ var pebl_PEBL = /** @class */ (function () {
             }
             delete this.subscribedEventHandlers[key];
         }
+        for (var _d = 0, _e = Object.keys(this.subscribedSingularEventHandlers); _d < _e.length; _d++) {
+            var key = _e[_d];
+            for (var _f = 0, _g = Object.keys(this.subscribedSingularEventHandlers[key]); _f < _g.length; _f++) {
+                var pack = _g[_f];
+                document.removeEventListener(key, this.subscribedSingularEventHandlers[key][pack].modifiedFn);
+            }
+            delete this.subscribedSingularEventHandlers[key];
+        }
     };
     PEBL.prototype.unsubscribeAllThreads = function () {
         for (var _i = 0, _a = Object.keys(this.subscribedEventHandlers); _i < _a.length; _i++) {
@@ -6653,6 +6662,12 @@ var pebl_PEBL = /** @class */ (function () {
                 }
                 i++;
             }
+        }
+    };
+    PEBL.prototype.unsubscribeSingularEvent = function (eventName, id) {
+        if (this.subscribedSingularEventHandlers[eventName] && this.subscribedSingularEventHandlers[eventName][id]) {
+            document.removeEventListener(eventName, this.subscribedSingularEventHandlers[eventName][id].modifiedFn);
+            delete this.subscribedSingularEventHandlers[eventName][id];
         }
     };
     PEBL.prototype.unsubscribeThread = function (thread, once, callback) {
@@ -6686,6 +6701,48 @@ var pebl_PEBL = /** @class */ (function () {
             var modifiedHandler = function (e) { callback(e.detail); };
             document.addEventListener(eventName, modifiedHandler);
             this.subscribedEventHandlers[eventName].push({ once: once, fn: callback, modifiedFn: modifiedHandler });
+        }
+        if (eventName == self.events.incomingAnnotations) {
+            self.utils.getAnnotations(function (annotations) {
+                callback(annotations);
+            });
+        }
+        else if (eventName == self.events.incomingSharedAnnotations) {
+            self.utils.getSharedAnnotations(function (annotations) {
+                callback(annotations);
+            });
+        }
+        else if (eventName == self.events.incomingPresence) {
+            self.network.retrievePresence();
+        }
+        else if (eventName == self.events.incomingProgram) {
+            self.utils.getPrograms(function (programs) {
+                callback(programs);
+            });
+        }
+        else if (eventName == self.events.incomingMembership) {
+            self.utils.getGroupMemberships(function (groups) {
+                callback(groups);
+            });
+        }
+    };
+    PEBL.prototype.subscribeSingularEvent = function (eventName, id, once, callback) {
+        this.unsubscribeSingularEvent(eventName, id);
+        if (!this.subscribedSingularEventHandlers[eventName])
+            this.subscribedSingularEventHandlers[eventName] = {};
+        var self = this;
+        if (once) {
+            var modifiedHandler = function (e) {
+                self.unsubscribeSingularEvent(eventName, id);
+                callback(e.detail);
+            };
+            document.addEventListener(eventName, modifiedHandler, { once: once });
+            this.subscribedSingularEventHandlers[eventName][id] = { once: once, fn: callback, modifiedFn: modifiedHandler };
+        }
+        else {
+            var modifiedHandler = function (e) { callback(e.detail); };
+            document.addEventListener(eventName, modifiedHandler);
+            this.subscribedSingularEventHandlers[eventName][id] = { once: once, fn: callback, modifiedFn: modifiedHandler };
         }
         if (eventName == self.events.incomingAnnotations) {
             self.utils.getAnnotations(function (annotations) {
