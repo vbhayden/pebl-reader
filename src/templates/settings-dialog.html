@@ -13,6 +13,7 @@
              <li class="active" role="presentation"><button id="tab-butt-style"  title="{{strings.style}}" aria-label="{{strings.style}}" role='tab' aria-controls="tab-style" data-toggle="tab" data-target="#tab-style" tabindex="0">{{strings.style}}</button></li>
              <li role="presentation"><button id="tab-butt-layout"  title="{{strings.layout}}" aria-label="{{strings.layout}}" role='tab' aria-controls="tab-layout" data-toggle="tab" data-target="#tab-layout" tabindex="-1">{{strings.layout}}</button></li>
              <li role="presentation"><button id="tab-butt-keys"  title="{{strings.i18n_keyboard_shortcuts}}" aria-label="{{strings.i18n_keyboard_shortcuts}}" role='tab' aria-controls="tab-keyboard" data-toggle="tab" data-target="#tab-keyboard" tabindex="-1">{{strings.i18n_keyboard_shortcuts}}</button></li>
+             <li role="presentation"><button id="tab-butt-about"  title="{{strings.about}}" aria-label="{{strings.about}}" role='tab' aria-controls="tab-about" data-toggle="tab" data-target="#tab-about" tabindex="-1">{{strings.about}}</button></li>
            </ul>
 
 
@@ -208,6 +209,12 @@
                         <ul id="keyboard-list">
                         </ul>
                     </div>
+                     </div>
+
+                     <div id="tab-about" class="tab-pane" role="tabpanel">
+                         <div class="row" style="position: relative;">
+                             <div class="version">Version: {{viewerJs.version}}</div>
+                         </div>
                      </div>
                 </div>
             </div>
