@@ -733,7 +733,6 @@ Helpers){
         Analytics.trackView('/library');
         var $appContainer = $('#app-container');
         $appContainer.empty();
-        SettingsDialog.initDialog();
         
         $appContainer.append(AddEpubDialog({
             canHandleUrl : libraryManager.canHandleUrl(),
@@ -742,6 +741,7 @@ Helpers){
         }));
         
         Versioning.getVersioningInfo(function(version){
+            SettingsDialog.initDialog(undefined, version);
             $appContainer.append(AboutDialog({imagePathPrefix: moduleConfig.imagePathPrefix, strings: Strings, dateTimeString: version.dateTimeString, viewerJs: version.readiumJsViewer, readiumJs: version.readiumJs, sharedJs: version.readiumSharedJs, cfiJs: version.readiumCfiJs}));
         });
 

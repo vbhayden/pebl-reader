@@ -62,8 +62,8 @@ define(['./ModuleConfig', 'hgn!readium_js_viewer_html_templates/settings-dialog.
         $slider.attr("aria-label", label + " " + txt);
     };
 
-    var initDialog = function(reader){
-        $('#app-container').append(SettingsDialog({imagePathPrefix: moduleConfig.imagePathPrefix, strings: Strings, dialogs: Dialogs, keyboard: Keyboard}));
+    var initDialog = function(reader, version){
+        $('#app-container').append(SettingsDialog({imagePathPrefix: moduleConfig.imagePathPrefix, strings: Strings, dialogs: Dialogs, keyboard: Keyboard, viewerJs: version ? version.readiumJsViewer : null }));
 
         $previewText = $('.preview-text');
         $('.theme-option').on('click', function(){

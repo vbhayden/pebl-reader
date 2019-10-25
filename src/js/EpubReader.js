@@ -2430,109 +2430,111 @@ define([
                     }
                 });
 
-                SettingsDialog.initDialog(readium.reader);
-
-                $('#settings-dialog').on('hidden.bs.modal', function() {
-
-                    Keyboard.scope('reader');
-
-                    unhideUI()
-                    setTimeout(function() { $("#settbutt1").focus(); }, 50);
-
-                    $("#buttSave").removeAttr("accesskey");
-                    $("#buttClose").removeAttr("accesskey");
-                });
-                $('#settings-dialog').on('shown.bs.modal', function() {
-
-                    Keyboard.scope('settings');
-
-                    $("#buttSave").attr("accesskey", Keyboard.accesskeys.SettingsModalSave);
-                    $("#buttClose").attr("accesskey", Keyboard.accesskeys.SettingsModalClose);
-                });
-
-
-                $('#about-dialog').on('hidden.bs.modal', function() {
-                    Keyboard.scope('reader');
-
-                    unhideUI();
-                    setTimeout(function() { $("#aboutButt1").focus(); }, 50);
-                });
-                $('#about-dialog').on('shown.bs.modal', function() {
-                    Keyboard.scope('about');
-                });
-
-                $('#annotations-dialog').on('hidden.bs.modal', function() {
-                    Keyboard.scope('reader');
-
-                    unhideUI();
-                    // setTimeout(function(){ $("#annotationsButt1").focus(); }, 50);
-                });
-                $('#annotations-dialog').on('shown.bs.modal', function() {
-                    Keyboard.scope('annotations');
-                });
-
-                $('#bookmarks-dialog').on('hidden.bs.modal', function() {
-                    Keyboard.scope('reader');
-
-                    unhideUI();
-                    // setTimeout(function(){ $("#bookmarksButt1").focus(); }, 50);
-                });
-                $('#bookmarks-dialog').on('shown.bs.modal', function() {
-                    Keyboard.scope('bookmarks');
-                });
-
-
-
-                var readerSettings;
-                if (settings.reader) {
-                    readerSettings = settings.reader;
-                }
-                if (!embedded) {
-                    readerSettings = readerSettings || SettingsDialog.defaultSettings;
-                    SettingsDialog.updateReader(readium.reader, readerSettings);
-                } else {
-                    readium.reader.updateSettings({
-                        syntheticSpread: "auto",
-                        scroll: "auto"
-                    });
-                }
-
-
-                var toggleNightTheme = function() {
-
-                    if (!embedded) {
-
-                        Settings.get('reader', function(json) {
-                            if (!json) {
-                                json = {};
-                            }
-
-                            var isNight = json.theme === "night-theme";
-                            json.theme = isNight ? "author-theme" : "night-theme";
-
-                            // Note: automatically JSON.stringify's the passed value!
-                            Settings.put('reader', json);
-
-                            SettingsDialog.updateReader(readium.reader, json);
-                        });
-                    }
-                };
-                $("#buttNightTheme").on("click", toggleNightTheme);
-                Keyboard.on(Keyboard.NightTheme, 'reader', toggleNightTheme);
-
-                readium.reader.on(ReadiumSDK.Events.CONTENT_DOCUMENT_LOAD_START, function($iframe, spineItem) {
-                    Globals.logEvent("CONTENT_DOCUMENT_LOAD_START", "ON", "EpubReader.js [ " + spineItem.href + " ]");
-
-                    spin(true);
-                });
-
-                EpubReaderMediaOverlays.init(readium);
-
-                EpubReaderBackgroundAudioTrack.init(readium);
-
-                //epubReadingSystem
+                
 
                 Versioning.getVersioningInfo(function(version) {
+
+                    SettingsDialog.initDialog(readium.reader, version);
+
+                    $('#settings-dialog').on('hidden.bs.modal', function() {
+
+                        Keyboard.scope('reader');
+
+                        unhideUI()
+                        setTimeout(function() { $("#settbutt1").focus(); }, 50);
+
+                        $("#buttSave").removeAttr("accesskey");
+                        $("#buttClose").removeAttr("accesskey");
+                    });
+                    $('#settings-dialog').on('shown.bs.modal', function() {
+
+                        Keyboard.scope('settings');
+
+                        $("#buttSave").attr("accesskey", Keyboard.accesskeys.SettingsModalSave);
+                        $("#buttClose").attr("accesskey", Keyboard.accesskeys.SettingsModalClose);
+                    });
+
+
+                    $('#about-dialog').on('hidden.bs.modal', function() {
+                        Keyboard.scope('reader');
+
+                        unhideUI();
+                        setTimeout(function() { $("#aboutButt1").focus(); }, 50);
+                    });
+                    $('#about-dialog').on('shown.bs.modal', function() {
+                        Keyboard.scope('about');
+                    });
+
+                    $('#annotations-dialog').on('hidden.bs.modal', function() {
+                        Keyboard.scope('reader');
+
+                        unhideUI();
+                        // setTimeout(function(){ $("#annotationsButt1").focus(); }, 50);
+                    });
+                    $('#annotations-dialog').on('shown.bs.modal', function() {
+                        Keyboard.scope('annotations');
+                    });
+
+                    $('#bookmarks-dialog').on('hidden.bs.modal', function() {
+                        Keyboard.scope('reader');
+
+                        unhideUI();
+                        // setTimeout(function(){ $("#bookmarksButt1").focus(); }, 50);
+                    });
+                    $('#bookmarks-dialog').on('shown.bs.modal', function() {
+                        Keyboard.scope('bookmarks');
+                    });
+
+
+
+                    var readerSettings;
+                    if (settings.reader) {
+                        readerSettings = settings.reader;
+                    }
+                    if (!embedded) {
+                        readerSettings = readerSettings || SettingsDialog.defaultSettings;
+                        SettingsDialog.updateReader(readium.reader, readerSettings);
+                    } else {
+                        readium.reader.updateSettings({
+                            syntheticSpread: "auto",
+                            scroll: "auto"
+                        });
+                    }
+
+
+                    var toggleNightTheme = function() {
+
+                        if (!embedded) {
+
+                            Settings.get('reader', function(json) {
+                                if (!json) {
+                                    json = {};
+                                }
+
+                                var isNight = json.theme === "night-theme";
+                                json.theme = isNight ? "author-theme" : "night-theme";
+
+                                // Note: automatically JSON.stringify's the passed value!
+                                Settings.put('reader', json);
+
+                                SettingsDialog.updateReader(readium.reader, json);
+                            });
+                        }
+                    };
+                    $("#buttNightTheme").on("click", toggleNightTheme);
+                    Keyboard.on(Keyboard.NightTheme, 'reader', toggleNightTheme);
+
+                    readium.reader.on(ReadiumSDK.Events.CONTENT_DOCUMENT_LOAD_START, function($iframe, spineItem) {
+                        Globals.logEvent("CONTENT_DOCUMENT_LOAD_START", "ON", "EpubReader.js [ " + spineItem.href + " ]");
+
+                        spin(true);
+                    });
+
+                    EpubReaderMediaOverlays.init(readium);
+
+                    EpubReaderBackgroundAudioTrack.init(readium);
+
+                    //epubReadingSystem
 
                     $('#app-container').append(AboutDialog({ imagePathPrefix: moduleConfig.imagePathPrefix, strings: Strings, dateTimeString: version.dateTimeString, viewerJs: version.readiumJsViewer, readiumJs: version.readiumJs, sharedJs: version.readiumSharedJs, cfiJs: version.readiumCfiJs }));
 
