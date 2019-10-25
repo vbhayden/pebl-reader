@@ -305,3 +305,23 @@ body.list-view .details{
     border-color: #da5243;
     display: none;
 }
+
+#settings-dialog .tab-content {
+    max-height: 400px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#keyboard-list.atLeastOneInvalidOrDuplicateShortcut {
+    border: none;
+}
+
+#keyboard-list>li.invalidShortcut>input {
+    border: 1px solid #bbb;
+    background-color: lightyellow;
+
+}
+
+#keyboard-list label {
+    max-width: 50%;
+}
