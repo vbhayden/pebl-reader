@@ -932,9 +932,12 @@ define([
                         deleteButton.classList.add('glyphicon', 'glyphicon-trash');
                         deleteButtonContainer.appendChild(deleteButton);
                         deleteButtonContainer.addEventListener('click', function() {
-                            removeHighlight(annotation);
-                            $('#annotationContextMenu').remove();
-                            $('#clickOutOverlay').remove();
+                            var confirm = window.confirm("Are you sure you want to delete this annotation?");
+                            if (confirm === true) {
+                                removeHighlight(annotation);
+                                $('#annotationContextMenu').remove();
+                                $('#clickOutOverlay').remove();
+                            }
                         });
 
                         var noteButtonContainer = document.createElement('div');
@@ -1051,14 +1054,17 @@ define([
                             var bookmarkDeleteButton = document.createElement('i');
                             bookmarkDeleteButton.classList.add('glyphicon', 'glyphicon-remove');
                             bookmarkDeleteButton.addEventListener('click', function() {
-                                PeBL.emitEvent(PeBL.events.eventUnbookmarked, {
-                                    cfi: stmt.cfi,
-                                    idref: stmt.idRef,
-                                    name: stmt.title,
-                                    description: stmt.text
-                                });
-                                PeBL.emitEvent(PeBL.events.removedAnnotation, stmt.id);
-                                $(bookmarkWrapper).remove();
+                                var confirm = window.confirm("Are you sure you want to delete this bookmark?");
+                                if (confirm === true) {
+                                    PeBL.emitEvent(PeBL.events.eventUnbookmarked, {
+                                        cfi: stmt.cfi,
+                                        idref: stmt.idRef,
+                                        name: stmt.title,
+                                        description: stmt.text
+                                    });
+                                    PeBL.emitEvent(PeBL.events.removedAnnotation, stmt.id);
+                                    $(bookmarkWrapper).remove();
+                                }
                             });
 
                             bookmarkWrapper.appendChild(bookmarkLink);
