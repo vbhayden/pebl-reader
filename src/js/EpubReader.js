@@ -1024,8 +1024,6 @@ define([
         };
 
         var bookmarksCallback = function(stmts) {
-            var $appContainer = $('#app-container');
-            $appContainer.addClass('bookmarks-visible');
             for (var stmt of stmts) {
                 if (stmt.type === 1) {
                     if ($("#bookmark-" + stmt.id).length == 0) {
