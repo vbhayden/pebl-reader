@@ -876,11 +876,19 @@ ul.nav-tabs li:not(.active) button:hover
 #my-shared-annotations > div,
 #my-annotations > div,
 #general-shared-annotations > div {
-  margin: 1em;
-  cursor: pointer
+  cursor: pointer;
+  padding: 0.5em 0;
+  border-bottom: 1px solid #ddd;
+}
+
+#general-shared-annotations>div:hover, 
+#my-annotations>div:hover, 
+#my-shared-annotations>div:hover {
+  background-color: #eee;
 }
 
 #my-shared-annotations > div > div:first-child > span {
+  padding: 0.25em;
   background: #cbe1ff;
 }
 
@@ -889,6 +897,7 @@ ul.nav-tabs li:not(.active) button:hover
 }
 
 #my-annotations > div > div:first-child > span {
+  padding: 0.25em;
   background: #ffffcb;
 }
 
@@ -897,6 +906,7 @@ ul.nav-tabs li:not(.active) button:hover
 }
 
 #general-shared-annotations > div > div:first-child > span {
+  padding: 0.25em;
   background: #ffcbcb;
 }
 
@@ -907,7 +917,8 @@ ul.nav-tabs li:not(.active) button:hover
 #my-shared-annotations > div > div:last-child,
 #my-annotations > div > div:last-child,
 #general-shared-annotations > div > div:last-child {
-  font-style: italic;
+  padding-left: 0.5em;
+  border-left: 3px solid #ddd;
 }
 
 #readium-slider {
