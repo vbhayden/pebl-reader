@@ -216,6 +216,11 @@ direction: rtl;
   width: 100%;
 }
 
+#annotationInput {
+  min-height: 5em;
+  resize: vertical;
+}
+
 #bookmarkSubmit,
 #noteSubmit {
   width: 50%;
