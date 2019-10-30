@@ -194,6 +194,10 @@ label {
     justify-content: space-evenly;
 }
 
+.confirmLogoutMessage {
+    text-align: center;
+}
+
 .cancel-button {
     max-width: 160px;
     border-radius: .5rem;
