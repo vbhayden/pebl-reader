@@ -211,6 +211,11 @@ var Action = /** @class */ (function (_super) {
         var _this = _super.call(this, raw) || this;
         _this.activityId = _this.object.id;
         _this.action = _this.verb.display["en-US"];
+        _this.book = _this.object.id;
+        if (_this.book.indexOf(PREFIX_PEBL) != -1)
+            _this.book = _this.book.substring(_this.book.indexOf(PREFIX_PEBL) + PREFIX_PEBL.length);
+        else if (_this.book.indexOf(PREFIX_PEBL_THREAD) != -1)
+            _this.book = _this.book.substring(_this.book.indexOf(PREFIX_PEBL_THREAD) + PREFIX_PEBL_THREAD.length);
         if (_this.object.definition) {
             _this.name = _this.object.definition.name && _this.object.definition.name["en-US"];
             _this.description = _this.object.definition.description && _this.object.definition.description["en-US"];
@@ -240,6 +245,11 @@ var Navigation = /** @class */ (function (_super) {
         var _this = _super.call(this, raw) || this;
         _this.type = _this.verb.display["en-US"];
         _this.activityId = _this.object.id;
+        _this.book = _this.object.id;
+        if (_this.book.indexOf(PREFIX_PEBL) != -1)
+            _this.book = _this.book.substring(_this.book.indexOf(PREFIX_PEBL) + PREFIX_PEBL.length);
+        else if (_this.book.indexOf(PREFIX_PEBL_THREAD) != -1)
+            _this.book = _this.book.substring(_this.book.indexOf(PREFIX_PEBL_THREAD) + PREFIX_PEBL_THREAD.length);
         var extensions = _this.object.definition.extensions;
         if (extensions) {
             _this.firstCfi = extensions[PREFIX_PEBL_EXTENSION + "firstCfi"];
@@ -304,6 +314,11 @@ var Question = /** @class */ (function (_super) {
     __extends(Question, _super);
     function Question(raw) {
         var _this = _super.call(this, raw) || this;
+        _this.book = _this.object.id;
+        if (_this.book.indexOf(PREFIX_PEBL) != -1)
+            _this.book = _this.book.substring(_this.book.indexOf(PREFIX_PEBL) + PREFIX_PEBL.length);
+        else if (_this.book.indexOf(PREFIX_PEBL_THREAD) != -1)
+            _this.book = _this.book.substring(_this.book.indexOf(PREFIX_PEBL_THREAD) + PREFIX_PEBL_THREAD.length);
         _this.score = _this.result.score.raw;
         _this.min = _this.result.score.min;
         _this.max = _this.result.score.max;
@@ -332,6 +347,11 @@ var Quiz = /** @class */ (function (_super) {
     __extends(Quiz, _super);
     function Quiz(raw) {
         var _this = _super.call(this, raw) || this;
+        _this.book = _this.object.id;
+        if (_this.book.indexOf(PREFIX_PEBL) != -1)
+            _this.book = _this.book.substring(_this.book.indexOf(PREFIX_PEBL) + PREFIX_PEBL.length);
+        else if (_this.book.indexOf(PREFIX_PEBL_THREAD) != -1)
+            _this.book = _this.book.substring(_this.book.indexOf(PREFIX_PEBL_THREAD) + PREFIX_PEBL_THREAD.length);
         _this.score = _this.result.score.raw;
         _this.min = _this.result.score.min;
         _this.max = _this.result.score.max;
@@ -359,6 +379,11 @@ var Session = /** @class */ (function (_super) {
             _this.activityName = _this.object.definition.name && _this.object.definition.name["en-US"];
             _this.activityDescription = _this.object.definition.description && _this.object.definition.description["en-US"];
         }
+        _this.book = _this.object.id;
+        if (_this.book.indexOf(PREFIX_PEBL) != -1)
+            _this.book = _this.book.substring(_this.book.indexOf(PREFIX_PEBL) + PREFIX_PEBL.length);
+        else if (_this.book.indexOf(PREFIX_PEBL_THREAD) != -1)
+            _this.book = _this.book.substring(_this.book.indexOf(PREFIX_PEBL_THREAD) + PREFIX_PEBL_THREAD.length);
         _this.type = _this.verb.display["en-US"];
         return _this;
     }
@@ -693,6 +718,7 @@ var Endpoint = /** @class */ (function () {
         this.lastSyncedBooksShared = {};
         this.lastSyncedThreads = {};
         this.lastSyncedActivityEvents = {};
+        this.lastSyncedModules = {};
     }
     Endpoint.prototype.toObject = function (urlPrefix) {
         if (urlPrefix === void 0) { urlPrefix = ""; }
@@ -704,7 +730,8 @@ var Endpoint = /** @class */ (function () {
             lastSyncedThreads: this.lastSyncedThreads,
             lastSyncedBooksMine: this.lastSyncedBooksMine,
             lastSyncedBooksShared: this.lastSyncedBooksMine,
-            lastSyncedActivityEvents: this.lastSyncedActivityEvents
+            lastSyncedActivityEvents: this.lastSyncedActivityEvents,
+            lastSyncedModules: this.lastSyncedModules
         };
     };
     return Endpoint;
@@ -1313,7 +1340,7 @@ var CURRENT_USER = "peblCurrentUser";
 var storage_IndexedDBStorageAdapter = /** @class */ (function () {
     function IndexedDBStorageAdapter(callback) {
         this.invocationQueue = [];
-        var request = window.indexedDB.open("pebl", 22);
+        var request = window.indexedDB.open("pebl", 23);
         var self = this;
         request.onupgradeneeded = function () {
             var db = request.result;
@@ -2660,6 +2687,7 @@ var PEBL_THREAD_USER_PREFIX = "peblThread://" + USER_PREFIX;
 var PEBL_THREAD_GROUP_PREFIX = "peblThread://" + GROUP_PREFIX;
 var THREAD_POLL_INTERVAL = 4000;
 var BOOK_POLL_INTERVAL = 6000;
+var MODULE_POLL_INTERVAL = 6000;
 // const PRESENCE_POLL_INTERVAL = 120000;
 // const LEARNLET_POLL_INTERVAL = 60000;
 var PROGRAM_POLL_INTERVAL = 60000;
@@ -2671,6 +2699,7 @@ var SYSTEM_POLL_INTERVAL = 60000;
 var syncing_LLSyncAction = /** @class */ (function () {
     function LLSyncAction(pebl, endpoint) {
         this.bookPoll = null;
+        this.modulePoll = null;
         this.threadPoll = null;
         this.activityPolls = {};
         this.running = false;
@@ -2682,6 +2711,9 @@ var syncing_LLSyncAction = /** @class */ (function () {
         if (this.bookPoll)
             clearTimeout(this.bookPoll);
         this.bookPoll = null;
+        if (this.modulePoll)
+            clearTimeout(this.modulePoll);
+        this.modulePoll = null;
         if (this.threadPoll)
             clearTimeout(this.threadPoll);
         this.threadPoll = null;
@@ -3030,6 +3062,21 @@ var syncing_LLSyncAction = /** @class */ (function () {
                 self.bookPoll = setTimeout(self.bookPollingCallback.bind(self), BOOK_POLL_INTERVAL);
         });
     };
+    LLSyncAction.prototype.modulePollingCallback = function () {
+        var self = this;
+        this.pebl.storage.getCurrentBook(function (book) {
+            if (book) {
+                var lastSynced = self.endpoint.lastSyncedModules[book];
+                if (lastSynced == null) {
+                    lastSynced = new Date("2017-06-05T21:07:49-07:00");
+                    self.endpoint.lastSyncedModules[book] = lastSynced;
+                }
+                self.pullModules(lastSynced, book);
+            }
+            else if (self.running)
+                self.modulePoll = setTimeout(self.modulePollingCallback.bind(self), MODULE_POLL_INTERVAL);
+        });
+    };
     LLSyncAction.prototype.threadPollingCallback = function () {
         var self = this;
         var threadPairs = [];
@@ -3270,6 +3317,103 @@ var syncing_LLSyncAction = /** @class */ (function () {
         };
         chunkIterator(arrayChunks);
     };
+    LLSyncAction.prototype.pullModules = function (lastSynced, book) {
+        var self = this;
+        var pipeline = [
+            {
+                "$match": {
+                    "$or": [
+                        {
+                            "statement.object.id": "pebl://" + book,
+                            "statement.stored": {
+                                "$gt": lastSynced.toISOString()
+                            },
+                            "statement.verb.id": {
+                                "$in": [
+                                    "http://www.peblproject.com/definitions.html#moduleRating",
+                                    "http://www.peblproject.com/definitions.html#moduleFeedback",
+                                    "http://www.peblproject.com/definitions.html#moduleExample",
+                                    "http://www.peblproject.com/definitions.html#moduleExampleRating",
+                                    "http://www.peblproject.com/definitions.html#moduleExampleFeedback",
+                                    "http://www.peblproject.com/definitions.html#moduleRemovedEvent"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "$project": {
+                    "statement": 1,
+                    "_id": 0,
+                    "voided": 1
+                }
+            },
+            {
+                "$sort": {
+                    "stored": -1,
+                    "_id": 1
+                }
+            },
+            {
+                "$limit": 1500
+            }
+        ];
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pullHelper(pipeline, function (stmts) {
+                    var moduleEvents = {};
+                    for (var i = 0; i < stmts.length; i++) {
+                        var xapi = stmts[i];
+                        if (ModuleRating.is(xapi)) {
+                            var mr = new ModuleRating(xapi);
+                            moduleEvents[mr.id] = mr;
+                        }
+                        else if (ModuleFeedback.is(xapi)) {
+                            var mf = new ModuleFeedback(xapi);
+                            moduleEvents[mf.id] = mf;
+                        }
+                        else if (ModuleExample.is(xapi)) {
+                            var me = new ModuleExample(xapi);
+                            moduleEvents[me.id] = me;
+                        }
+                        else if (ModuleExampleRating.is(xapi)) {
+                            var mer = new ModuleExampleRating(xapi);
+                            moduleEvents[mer.id] = mer;
+                        }
+                        else if (ModuleExampleFeedback.is(xapi)) {
+                            var mef = new ModuleExampleFeedback(xapi);
+                            moduleEvents[mef.id] = mef;
+                        }
+                        else if (ModuleRemovedEvent.is(xapi)) {
+                            var mre = new ModuleRemovedEvent(xapi);
+                            moduleEvents[mre.id] = mre;
+                        }
+                        else {
+                            new Error("Unknown Statement type");
+                        }
+                        var temp = new Date(xapi.stored);
+                        var lastSyncedDate = self.endpoint.lastSyncedModules[book];
+                        if (lastSyncedDate.getTime() < temp.getTime())
+                            self.endpoint.lastSyncedModules[book] = temp;
+                    }
+                    var cleanModuleEvents = [];
+                    for (var _i = 0, _a = Object.keys(moduleEvents); _i < _a.length; _i++) {
+                        var id = _a[_i];
+                        cleanModuleEvents.push(moduleEvents[id]);
+                    }
+                    if (cleanModuleEvents.length > 0) {
+                        cleanModuleEvents.sort();
+                        self.pebl.storage.saveModuleEvent(userProfile, cleanModuleEvents);
+                        self.pebl.emitEvent(self.pebl.events.incomingModuleEvents, cleanModuleEvents);
+                    }
+                    self.pebl.storage.saveUserProfile(userProfile);
+                    if (self.running)
+                        self.modulePoll = setTimeout(self.modulePollingCallback.bind(self), MODULE_POLL_INTERVAL);
+                });
+            }
+        });
+    };
     LLSyncAction.prototype.pullBook = function (lastSynced, book) {
         var teacherPack = {
             "statement.object.id": "pebl://" + book,
@@ -3290,13 +3434,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                             },
                             "statement.verb.id": {
                                 "$in": [
-                                    "http://adlnet.gov/expapi/verbs/shared",
-                                    "http://www.peblproject.com/definitions.html#moduleRating",
-                                    "http://www.peblproject.com/definitions.html#moduleFeedback",
-                                    "http://www.peblproject.com/definitions.html#moduleExample",
-                                    "http://www.peblproject.com/definitions.html#moduleExampleRating",
-                                    "http://www.peblproject.com/definitions.html#moduleExampleFeedback",
-                                    "http://www.peblproject.com/definitions.html#moduleRemovedEvent"
+                                    "http://adlnet.gov/expapi/verbs/shared"
                                 ]
                             }
                         }
@@ -3462,6 +3600,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
         this.clearTimeouts();
         this.bookPollingCallback();
         this.threadPollingCallback();
+        this.modulePollingCallback();
         // this.startActivityPull("presence", PRESENCE_POLL_INTERVAL);
         // this.startActivityPull("learnlet", LEARNLET_POLL_INTERVAL);
         this.startActivityPull("program", PROGRAM_POLL_INTERVAL);
@@ -4443,6 +4582,24 @@ var utils_Utils = /** @class */ (function () {
         self.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
                 self.pebl.storage.removeModuleEvent(idref, id);
+            }
+        });
+    };
+    Utils.prototype.getEvents = function (callback) {
+        var self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentBook(function (book) {
+                    if (book) {
+                        self.pebl.storage.getEvents(userProfile, book, callback);
+                    }
+                    else {
+                        callback([]);
+                    }
+                });
+            }
+            else {
+                callback([]);
             }
         });
     };
