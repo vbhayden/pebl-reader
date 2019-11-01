@@ -2058,27 +2058,27 @@ define([
             var readingArea = $('#reading-area');
 
             var setReaderSize = function() {
-                var readingAreaOffset = readingArea.css('left');
+                var readingAreaOffset = readingArea.css('right');
                 if (tocBody.is(':visible')) {
                     var tocBodyWidth = tocBody.css('width');
                     if (readingAreaOffset !== tocBodyWidth) {
-                        readingArea.css('left', tocBodyWidth);
+                        readingArea.css('right', tocBodyWidth);
                         window.dispatchEvent(new Event('resize'));
                     }
                 } else if (annotationsBody.is(':visible')) {
                     var annotationsBodyWidth = annotationsBody.css('width');
                     if (readingAreaOffset !== annotationsBodyWidth) {
-                        readingArea.css('left', annotationsBodyWidth);
+                        readingArea.css('right', annotationsBodyWidth);
                         window.dispatchEvent(new Event('resize'));
                     }
                 } else if (bookmarksBody.is(':visible')) {
                     var bookmarksBodyWidth = bookmarksBody.css('width');
                     if (readingAreaOffset !== bookmarksBodyWidth) {
-                        readingArea.css('left', bookmarksBodyWidth);
+                        readingArea.css('right', bookmarksBodyWidth);
                         window.dispatchEvent(new Event('resize'));
                     }
                 } else if (readingAreaOffset !== '0px') {
-                    readingArea.css('left', '0px');
+                    readingArea.css('right', '0px');
                 }
             }
 
