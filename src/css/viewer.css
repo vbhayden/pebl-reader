@@ -891,7 +891,8 @@ ul.nav-tabs li:not(.active) button:hover
 
 #my-shared-annotations > div~.hideWhenSiblingPresent,
 #my-annotations > div~.hideWhenSiblingPresent,
-#general-shared-annotations > div~.hideWhenSiblingPresent {
+#general-shared-annotations > div~.hideWhenSiblingPresent,
+#bookmarks-body-list > div~.hideWhenSiblingPresent {
   display: none;
 }
 

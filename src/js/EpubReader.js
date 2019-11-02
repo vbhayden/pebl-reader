@@ -1096,6 +1096,7 @@ define([
                     bookmarksCallback);
             } else {
                 $('#bookmarks-body-list').children().remove();
+                $('#bookmarks-body-list').append('<p class="hideWhenSiblingPresent">When you add Bookmarks, they will appear here.</p>');
                 PeBL.subscribeEvent(PeBL.events.incomingAnnotations,
                     false,
                     bookmarksCallback);
