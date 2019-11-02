@@ -97,6 +97,10 @@ define([
                 console.error('No spine item found with idref: ' + idref);
         }
 
+        readerUtils.hideNativeTOC = function() {
+            $('#tocButt').hide();
+        }
+
 
         // TODO: is this variable actually used anywhere here??
         // (bad naming convention, hard to find usages of "el")
