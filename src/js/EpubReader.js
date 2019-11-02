@@ -745,7 +745,7 @@ define([
                                 readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
                             });
 
-                            $('#my-annotations').append($(annotationContainer));
+                            $('#my-annotations').prepend($(annotationContainer));
                         }
                     })(stmt);
                 }
@@ -784,9 +784,9 @@ define([
                                 });
 
                                 if (stmt.owner === userName)
-                                    $('#my-shared-annotations').append($(annotationContainer));
+                                    $('#my-shared-annotations').prepend($(annotationContainer));
                                 else
-                                    $('#general-shared-annotations').append($(annotationContainer));
+                                    $('#general-shared-annotations').prepend($(annotationContainer));
                             }
                         })(stmt);
                     }
@@ -818,8 +818,11 @@ define([
             } else {
                 if (!hide) {
                     $('#my-annotations').children().remove();
+                    $('#my-annotations').append('<p class="hideWhenSiblingPresent">When you add Annotations, they will appear here.</p>');
                     $('#my-shared-annotations').children().remove();
+                    $('#my-shared-annotations').append('<p class="hideWhenSiblingPresent">When you add Annotations and share them, they will appear here.</p>');
                     $('#general-shared-annotations').children().remove();
+                    $('#general-shared-annotations').append('<p class="hideWhenSiblingPresent">When other users share their annotations, they will appear here.</p>');
                     
                     PeBL.subscribeEvent(PeBL.events.incomingAnnotations,
                         false,
@@ -1067,7 +1070,7 @@ define([
 
                             bookmarkWrapper.appendChild(bookmarkLink);
                             bookmarkWrapper.appendChild(bookmarkDeleteButton);
-                            $('#bookmarks-body-list').append($(bookmarkWrapper));
+                            $('#bookmarks-body-list').prepend($(bookmarkWrapper));
                         })(stmt);
                     }
                 }

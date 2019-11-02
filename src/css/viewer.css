@@ -889,6 +889,12 @@ ul.nav-tabs li:not(.active) button:hover
   border-bottom: 1px solid #ddd;
 }
 
+#my-shared-annotations > div~.hideWhenSiblingPresent,
+#my-annotations > div~.hideWhenSiblingPresent,
+#general-shared-annotations > div~.hideWhenSiblingPresent {
+  display: none;
+}
+
 #general-shared-annotations>div:hover, 
 #my-annotations>div:hover, 
 #my-shared-annotations>div:hover {
