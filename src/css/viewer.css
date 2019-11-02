@@ -46,24 +46,27 @@ html#simpleViewer .icon-library{
   display: none;
   overflow: auto;
   background: #f3f3f3;
-  border-right: solid 2px rgba(0,0,0,.15);
+  border-left: solid 2px rgba(0,0,0,.15);
   resize: horizontal;
+  float: right;
 }
 
 #annotations-body{
   display: none;
   overflow: auto;
   background: #f3f3f3;
-  border-right: solid 2px rgba(0,0,0,.15);
+  border-left: solid 2px rgba(0,0,0,.15);
   resize: horizontal;
+  float: right;
 }
 
 #bookmarks-body{
   display: none;
   overflow: auto;
   background: #f3f3f3;
-  border-right: solid 2px rgba(0,0,0,.15);
+  border-left: solid 2px rgba(0,0,0,.15);
   resize: horizontal;
+  float: right;
 }
 
 
@@ -152,7 +155,7 @@ direction: rtl;
 }
 
 .toc-visible #reading-area{
-  left: 30%;
+  right: 30%;
 }
 
 .annotations-visible #annotations-body{
@@ -161,7 +164,7 @@ direction: rtl;
 }
 
 .annotations-visible #reading-area{
-  left: 30%;
+  right: 30%;
 }
 
 .bookmarks-visible #bookmarks-body{
@@ -170,7 +173,7 @@ direction: rtl;
 }
 
 .bookmarks-visible #reading-area{
-  left: 30%;
+  right: 30%;
 }
 
 .bookmark-wrapper {
@@ -884,6 +887,13 @@ ul.nav-tabs li:not(.active) button:hover
   cursor: pointer;
   padding: 0.5em 0;
   border-bottom: 1px solid #ddd;
+}
+
+#my-shared-annotations > div~.hideWhenSiblingPresent,
+#my-annotations > div~.hideWhenSiblingPresent,
+#general-shared-annotations > div~.hideWhenSiblingPresent,
+#bookmarks-body-list > div~.hideWhenSiblingPresent {
+  display: none;
 }
 
 #general-shared-annotations>div:hover, 

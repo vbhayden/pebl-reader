@@ -745,7 +745,7 @@ define([
                                 readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
                             });
 
-                            $('#my-annotations').append($(annotationContainer));
+                            $('#my-annotations').prepend($(annotationContainer));
                         }
                     })(stmt);
                 }
@@ -784,9 +784,9 @@ define([
                                 });
 
                                 if (stmt.owner === userName)
-                                    $('#my-shared-annotations').append($(annotationContainer));
+                                    $('#my-shared-annotations').prepend($(annotationContainer));
                                 else
-                                    $('#general-shared-annotations').append($(annotationContainer));
+                                    $('#general-shared-annotations').prepend($(annotationContainer));
                             }
                         })(stmt);
                     }
@@ -818,8 +818,11 @@ define([
             } else {
                 if (!hide) {
                     $('#my-annotations').children().remove();
+                    $('#my-annotations').append('<p class="hideWhenSiblingPresent">When you add Annotations, they will appear here.</p>');
                     $('#my-shared-annotations').children().remove();
+                    $('#my-shared-annotations').append('<p class="hideWhenSiblingPresent">When you add Annotations and share them, they will appear here.</p>');
                     $('#general-shared-annotations').children().remove();
+                    $('#general-shared-annotations').append('<p class="hideWhenSiblingPresent">When other users share their annotations, they will appear here.</p>');
                     
                     PeBL.subscribeEvent(PeBL.events.incomingAnnotations,
                         false,
@@ -1067,7 +1070,7 @@ define([
 
                             bookmarkWrapper.appendChild(bookmarkLink);
                             bookmarkWrapper.appendChild(bookmarkDeleteButton);
-                            $('#bookmarks-body-list').append($(bookmarkWrapper));
+                            $('#bookmarks-body-list').prepend($(bookmarkWrapper));
                         })(stmt);
                     }
                 }
@@ -1093,6 +1096,7 @@ define([
                     bookmarksCallback);
             } else {
                 $('#bookmarks-body-list').children().remove();
+                $('#bookmarks-body-list').append('<p class="hideWhenSiblingPresent">When you add Bookmarks, they will appear here.</p>');
                 PeBL.subscribeEvent(PeBL.events.incomingAnnotations,
                     false,
                     bookmarksCallback);
@@ -2058,27 +2062,27 @@ define([
             var readingArea = $('#reading-area');
 
             var setReaderSize = function() {
-                var readingAreaOffset = readingArea.css('left');
+                var readingAreaOffset = readingArea.css('right');
                 if (tocBody.is(':visible')) {
                     var tocBodyWidth = tocBody.css('width');
                     if (readingAreaOffset !== tocBodyWidth) {
-                        readingArea.css('left', tocBodyWidth);
+                        readingArea.css('right', tocBodyWidth);
                         window.dispatchEvent(new Event('resize'));
                     }
                 } else if (annotationsBody.is(':visible')) {
                     var annotationsBodyWidth = annotationsBody.css('width');
                     if (readingAreaOffset !== annotationsBodyWidth) {
-                        readingArea.css('left', annotationsBodyWidth);
+                        readingArea.css('right', annotationsBodyWidth);
                         window.dispatchEvent(new Event('resize'));
                     }
                 } else if (bookmarksBody.is(':visible')) {
                     var bookmarksBodyWidth = bookmarksBody.css('width');
                     if (readingAreaOffset !== bookmarksBodyWidth) {
-                        readingArea.css('left', bookmarksBodyWidth);
+                        readingArea.css('right', bookmarksBodyWidth);
                         window.dispatchEvent(new Event('resize'));
                     }
                 } else if (readingAreaOffset !== '0px') {
-                    readingArea.css('left', '0px');
+                    readingArea.css('right', '0px');
                 }
             }
 
