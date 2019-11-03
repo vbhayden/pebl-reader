@@ -2061,9 +2061,10 @@ define([
             var setTocSize = function() {
                 var appHeight = $(document.body).height() - $('#app-container')[0].offsetTop;
                 $('#app-container').height(appHeight);
-                $('#readium-toc-body').height(appHeight);
-                $('#annotations-body').height(appHeight);
-                $('#bookmarks-body').height(appHeight);
+                // TODO: Where is 44px difference coming from?
+                $('#readium-toc-body').height(appHeight - 44);
+                $('#annotations-body').height(appHeight - 44);
+                $('#bookmarks-body').height(appHeight - 44);
             };
 
             var tocBody = $('#readium-toc-body');

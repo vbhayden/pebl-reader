@@ -47,7 +47,6 @@ html#simpleViewer .icon-library{
   position: relative;
   padding: 1.5em;
   overflow-y: auto;
-  resize: horizontal;
   background: #f3f3f3;
   border: solid 1px rgba(0,0,0,.15);
 }
