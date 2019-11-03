@@ -912,7 +912,7 @@ define([
             menu.id = 'annotationContextMenu';
             //Try to center it on the mouse, take into account the offset of the reader view relative to the page as a whole
             
-            var left = event.pageX + readerPosition.left - 50;
+            var left = (event.pageX ? event.pageX : event.originalEvent.pageX) + readerPosition.left - 50;
             if (left < 0) {
                 left = 0;
             } else {
@@ -926,7 +926,7 @@ define([
             left += 'px';
 
             menu.style.left = left;
-            menu.style.top = (event.pageY - 10 < 40 ? event.pageY + 60 : event.pageY - 10) + 'px';
+            menu.style.top = ((event.pageY ? event.pageY : event.originalEvent.pageY) - 10 < 40 ? (event.pageY ? event.pageY : event.originalEvent.pageY) + 60 : (event.pageY ? event.pageY : event.originalEvent.pageY) - 10) + 'px';
 
             var buttonWrapper = document.createElement('div');
             buttonWrapper.classList.add('annotationContextButtonWrapper');
@@ -1984,9 +1984,15 @@ define([
                 function() {
                     loadlibrary();
                 });
-            $('#add-bookmark-submit').on('click', function() {
+            $('#add-bookmark-submit').on('click', function(evt) {
                 var val = $('#bookmarkInput').val();
-                saveBookmark(val);
+                if (val.trim().length > 0) {
+                    saveBookmark(val);
+                } else {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    window.alert('A name for your bookmark is required.');
+                }
             });
             $('#add-note-submit').on('click', function(evt) {
                 var annotation = $(evt.currentTarget).data('annotation');
