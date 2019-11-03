@@ -1984,9 +1984,15 @@ define([
                 function() {
                     loadlibrary();
                 });
-            $('#add-bookmark-submit').on('click', function() {
+            $('#add-bookmark-submit').on('click', function(evt) {
                 var val = $('#bookmarkInput').val();
-                saveBookmark(val);
+                if (val.trim().length > 0) {
+                    saveBookmark(val);
+                } else {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    window.alert('A name for your bookmark is required.');
+                }
             });
             $('#add-note-submit').on('click', function(evt) {
                 var annotation = $(evt.currentTarget).data('annotation');
