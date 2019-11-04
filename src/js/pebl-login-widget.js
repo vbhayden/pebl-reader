@@ -274,12 +274,12 @@ window.Lightbox = {
                 var currentTeam = null;
                 if ($('#loginTeamSelect').length > 0) {
                     if ($('#loginTeamSelect').val().trim().length > 0)
-                        currentTeam = $('#loginTeamSelect').val();
+                        currentTeam = $('#loginTeamSelect').val().toLowerCase();
                 }
                 var currentClass = null;
                 if ($('#loginClassSelect').length > 0) {
                     if ($('#loginClassSelect').val().trim().length > 0) {
-                        currentClass = $('#loginClassSelect').val();
+                        currentClass = $('#loginClassSelect').val().toLowerCase();
                     }
                 }
                 var identity = $("#loginUserNameSelector").val();
