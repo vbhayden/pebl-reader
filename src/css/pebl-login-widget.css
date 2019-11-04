@@ -264,9 +264,9 @@ label {
     .lightBoxLoginForm h2, h3, h4 {
         text-align: left;
     }
-    .lightBoxLoginForm .lightBoxContent {
+/*    .lightBoxLoginForm .lightBoxContent {
         flex-direction: row;
-    }
+    }*/
     .login__header {
         width: 33%;
     }
