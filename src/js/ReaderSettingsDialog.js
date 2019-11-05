@@ -135,7 +135,7 @@ define(['./ModuleConfig', 'hgn!readium_js_viewer_html_templates/settings-dialog.
         $('#settings-dialog').on('show.bs.modal', function(){ // IMPORTANT: not "shown.bs.modal"!! (because .off() in library vs. reader context)
 
             $('#tab-butt-main').trigger("click");
-            KeyboardSettings.initKeyboardList();
+            //KeyboardSettings.initKeyboardList();
 
             setTimeout(function(){ $('#closeSettingsCross')[0].focus(); }, 1000); //tab-butt-main
 
@@ -289,7 +289,7 @@ define(['./ModuleConfig', 'hgn!readium_js_viewer_html_templates/settings-dialog.
             }
 
 
-            var keys = KeyboardSettings.saveKeys();
+            //var keys = KeyboardSettings.saveKeys();
 
             Settings.get('reader', function(json)
             {
@@ -306,7 +306,7 @@ define(['./ModuleConfig', 'hgn!readium_js_viewer_html_templates/settings-dialog.
                     }
                 }
 
-                json.keyboard = keys;
+                //json.keyboard = keys;
                 // if (keys)
                 // {
                 //     for (prop in keys)
@@ -321,40 +321,40 @@ define(['./ModuleConfig', 'hgn!readium_js_viewer_html_templates/settings-dialog.
                 // Note: automatically JSON.stringify's the passed value!
                 Settings.put('reader', json);
 
-                setTimeout(function()
-                {
-                    Keyboard.applySettings(json);
-                }, 100);
+                // setTimeout(function()
+                // {
+                //     Keyboard.applySettings(json);
+                // }, 100);
             });
         };
 
-        Keyboard.on(Keyboard.NightTheme, 'settings', function(){
+        // Keyboard.on(Keyboard.NightTheme, 'settings', function(){
 
-                Settings.get('reader', function(json)
-                {
-                    if (!json)
-                    {
-                        json = {};
-                    }
+        //         Settings.get('reader', function(json)
+        //         {
+        //             if (!json)
+        //             {
+        //                 json = {};
+        //             }
 
-                    var isNight = json.theme === "night-theme";
-                    json.theme = isNight ? "author-theme" : "night-theme";
+        //             var isNight = json.theme === "night-theme";
+        //             json.theme = isNight ? "author-theme" : "night-theme";
                     
-                    // Note: automatically JSON.stringify's the passed value!
-                    Settings.put('reader', json);
+        //             // Note: automatically JSON.stringify's the passed value!
+        //             Settings.put('reader', json);
 
-                    if (reader) updateReader(reader, json);
-                });
-        });
+        //             if (reader) updateReader(reader, json);
+        //         });
+        // });
 
-        Keyboard.on(Keyboard.SettingsModalSave, 'settings', function() {
-            save();
-            $('#settings-dialog').modal('hide');
-        });
+        // Keyboard.on(Keyboard.SettingsModalSave, 'settings', function() {
+        //     save();
+        //     $('#settings-dialog').modal('hide');
+        // });
 
-        Keyboard.on(Keyboard.SettingsModalClose, 'settings', function() {
-            $('#settings-dialog').modal('hide');
-        });
+        // Keyboard.on(Keyboard.SettingsModalClose, 'settings', function() {
+        //     $('#settings-dialog').modal('hide');
+        // });
 
         $('#settings-dialog .btn-primary').on('click', save);
     }
