@@ -422,7 +422,7 @@ define([
             sliderSubChapterName.id = 'sliderSubChapterName';
 
 
-            sliderInfoContainer.appendChild(sliderPageNumber);
+            //sliderInfoContainer.appendChild(sliderPageNumber);
             sliderInfoContainer.appendChild(sliderChapterName);
             sliderInfoContainer.appendChild(sliderSubChapterName);
 
@@ -451,10 +451,10 @@ define([
                 var val = Math.round(this.value);
                 //Show either the page or the chapter while dragging the slider
                 if (typeof newChapters[val].pageNumber !== 'undefined') {
-                    $(sliderPageNumber).text('Page ' + newChapters[val].pageNumber);
-                    $(sliderPageNumber).show();
+                    //$(sliderPageNumber).text('Page ' + newChapters[val].pageNumber);
+                    //$(sliderPageNumber).show();
                 } else {
-                    $(sliderPageNumber).hide();
+                    //$(sliderPageNumber).hide();
                 }
                 if (typeof newChapters[val].title !== 'undefined') {
                     $(sliderSubChapterName).text(newChapters[val].title);
