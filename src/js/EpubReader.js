@@ -824,7 +824,7 @@ define([
                     $('#my-annotations').children().remove();
                     $('#my-annotations').append('<p class="hideWhenSiblingPresent">When you add Annotations, they will appear here.</p>');
                     $('#my-shared-annotations').children().remove();
-                    $('#my-shared-annotations').append('<p class="hideWhenSiblingPresent">When you add Annotations and share them, they will appear here.</p>');
+                    $('#my-shared-annotations').append('<p class="hideWhenSiblingPresent">When you add Annotations and share them, they will appear here. You can share annotations by clicking on the highlighted text on the page and selecting the share option from the popup menu.</p>');
                     $('#general-shared-annotations').children().remove();
                     $('#general-shared-annotations').append('<p class="hideWhenSiblingPresent">When other users share their annotations, they will appear here.</p>');
                     
