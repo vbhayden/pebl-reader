@@ -868,6 +868,16 @@ define([
 
                 PeBL.emitEvent(PeBL.events.eventAnnotated, annotation);
                 annotationsShowHideToggle(true);
+                // Clear the selection so you can't hit the button again.
+                if (iframeWindow.getSelection) {
+                  if (iframeWindow.getSelection().empty) {  // Chrome
+                    iframeWindow.getSelection().empty();
+                  } else if (iframeWindow.getSelection().removeAllRanges) {  // Firefox
+                    iframeWindow.getSelection().removeAllRanges();
+                  }
+                } else if (iframeWindow.selection) {  // IE?
+                  iframeWindow.selection.empty();
+                }
             } else {
                 window.alert('No text has been selected yet, or selected text is ineligible for highlighting.');
                 throw new Error("Nothing selected");
