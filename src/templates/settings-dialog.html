@@ -12,7 +12,8 @@
            <ul class="nav nav-tabs" role="tablist" aria-owns="tab-butt-style tab-butt-layout tab-butt-keys">
              <li class="active" role="presentation"><button id="tab-butt-style"  title="{{strings.style}}" aria-label="{{strings.style}}" role='tab' aria-controls="tab-style" data-toggle="tab" data-target="#tab-style" tabindex="0">{{strings.style}}</button></li>
              <li role="presentation"><button id="tab-butt-layout"  title="{{strings.layout}}" aria-label="{{strings.layout}}" role='tab' aria-controls="tab-layout" data-toggle="tab" data-target="#tab-layout" tabindex="-1">{{strings.layout}}</button></li>
-             <li role="presentation"><button id="tab-butt-keys"  title="{{strings.i18n_keyboard_shortcuts}}" aria-label="{{strings.i18n_keyboard_shortcuts}}" role='tab' aria-controls="tab-keyboard" data-toggle="tab" data-target="#tab-keyboard" tabindex="-1">{{strings.i18n_keyboard_shortcuts}}</button></li>
+             <!-- <li role="presentation"><button id="tab-butt-keys"  title="{{strings.i18n_keyboard_shortcuts}}" aria-label="{{strings.i18n_keyboard_shortcuts}}" role='tab' aria-controls="tab-keyboard" data-toggle="tab" data-target="#tab-keyboard" tabindex="-1">{{strings.i18n_keyboard_shortcuts}}</button></li> -->
+             <li role="presentation"><button id="tab-butt-about"  title="{{strings.about}}" aria-label="{{strings.about}}" role='tab' aria-controls="tab-about" data-toggle="tab" data-target="#tab-about" tabindex="-1">{{strings.about}}</button></li>
            </ul>
 
 
@@ -21,7 +22,7 @@
                 <h5 aria-hidden="true">{{strings.preview}}</h5>
                 <div  aria-hidden="true" class="row">
                     <div data-theme="author-theme" class="col-xs-10 col-xs-offset-1 preview-text author-theme">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus neque dui, congue a suscipit non, feugiat eu urna. Cras in felis sed orci aliquam sagittis.
+                        This is the preview of the font size that will appear in your books. Please use the slider below to adjust the font size.
                     </div>
                 </div>
 
@@ -32,16 +33,16 @@
                         <div class="col-xs-2 icon-scale-down">
                             <img src="{{{imagePathPrefix}}}images/glyphicons_115_text_smaller.png" alt="" aria-hidden="true">
                         </div>
-                        <div class="col-xs-8">
-                            <input  type="range" aria-labelledby="setting-header-font-size" id="font-size-input" min="60" aria-value-min="60" aria-valuemin="60" step="10" max="170" aria-value-max="170" aria-valuemax="170" value="100" aria-valuenow="100" aria-value-now="100" aria-valuetext="1em" aria-value-text="1em" title="{{strings.i18n_font_size}}" aria-label="{{strings.i18n_font_size}}" />
+                        <div style="display: flex;justify-content: center;align-items: center;margin-bottom: 1em;" class="col-xs-8">
+                            <input style="width: 50%;transform: scale(2);"  type="range" aria-labelledby="setting-header-font-size" id="font-size-input" min="60" aria-value-min="60" aria-valuemin="60" step="10" max="170" aria-value-max="170" aria-valuemax="170" value="100" aria-valuenow="100" aria-value-now="100" aria-valuetext="1em" aria-value-text="1em" title="{{strings.i18n_font_size}}" aria-label="{{strings.i18n_font_size}}" />
                         </div>
                         <div class="col-xs-2">
                             <img src="{{{imagePathPrefix}}}images/glyphicons_116_text_bigger.png" alt="" aria-hidden="true">
                         </div>
                     </div>
 
-                    <h5 id="setting-header-font-selection" class="setting-header">{{strings.i18n_font_selection}}</h5>
-                    <div class="row">
+                    <h5 style="display: none;" id="setting-header-font-selection" class="setting-header">{{strings.i18n_font_selection}}</h5>
+                    <div style="display: none;" class="row">
                         <div class="col-xs-8 col-xs-offset-2">
                             <select style="width: 100%; padding: 0.5em;" aria-labelledby="setting-header-font-selection" id="font-selection-input"  title="{{strings.i18n_font_selection}}" aria-label="{{strings.i18n_font_selection}}">
                                 <option value="0" aria-label="{{strings.i18n_fonttype_default}}" title="{{strings.i18n_fonttype_default}}">{{strings.i18n_fonttype_default}}</option>
@@ -50,8 +51,8 @@
                     </div>
 
 
-                    <h5 id="setting-header-color-legend" class="setting-header">{{strings.i18n_text_and_background_color}}</h5>
-                    <div role="group" aria-labelledby="setting-header-color-legend" id="theme-radio-group" class="row">
+                    <h5 style="display: none;" id="setting-header-color-legend" class="setting-header">{{strings.i18n_text_and_background_color}}</h5>
+                    <div style="display: none;" role="group" aria-labelledby="setting-header-color-legend" id="theme-radio-group" class="row">
 
                         <button role="button" data-theme="author-theme"  title="{{strings.i18n_author_theme}}" aria-label="{{strings.i18n_author_theme}}" class="col-xs-8 col-xs-offset-2 theme-option author-theme clickable">{{strings.i18n_author_theme}}</button>
 
@@ -83,15 +84,18 @@
                     </div>
                     
                     <h5 id="setting-header-column-max-width-legend" class="setting-header">{{strings.i18n_pageMaxWidth}}</h5>
+                        <div class="row">
+                            <p style="margin-left: 15px;">Only applies in Single Column View</p>
+                        </div>
                      <div class="row">
                         <div class="col-xs-2">
-                            <img style="height: 32px;" src="{{{imagePathPrefix}}}images/margin4_off.png" alt="" aria-hidden="true">
+                            <!-- <img style="height: 32px;" src="{{{imagePathPrefix}}}images/margin4_off.png" alt="" aria-hidden="true"> -->
                         </div>
-                        <div class="col-xs-8">
-                            <input  type="range" role="slider" aria-labelledby="setting-header-column-max-width-legend" id="column-max-width-input" min="500" aria-value-min="500" aria-valuemin="500" step="50" max="2000" aria-value-max="2000" aria-valuemax="2000" value="700" aria-valuenow="700" aria-value-now="700" aria-valuetext="700" aria-value-text="700" title="{{strings.i18n_pageMaxWidth}}" aria-label="{{strings.i18n_pageMaxWidth}}"/>
+                        <div style="display: flex; justify-content: center;align-items: center;margin-bottom: 1em;" class="col-xs-8">
+                            <input style="width: 50%;transform: scale(2);"  type="range" role="slider" aria-labelledby="setting-header-column-max-width-legend" id="column-max-width-input" min="500" aria-value-min="500" aria-valuemin="500" step="50" max="2000" aria-value-max="2000" aria-valuemax="2000" value="700" aria-valuenow="700" aria-value-now="700" aria-valuetext="700" aria-value-text="700" title="{{strings.i18n_pageMaxWidth}}" aria-label="{{strings.i18n_pageMaxWidth}}"/>
                         </div>
                         <div class="col-xs-2 icon-scale-down">
-                            <img style="height: 32px;" src="{{{imagePathPrefix}}}images/margin1_off.png" alt="" aria-hidden="true">
+                           <!--  <img style="height: 32px;" src="{{{imagePathPrefix}}}images/margin1_off.png" alt="" aria-hidden="true"> -->
                         </div>
                     </div>
 
@@ -126,9 +130,9 @@
                         </div>
                     </div>
 
-                    <h5 id="setting-header-scroll-legend" class="setting-header">{{strings.i18n_scroll_mode}}</h5>
+                    <h5 style="display: none;" id="setting-header-scroll-legend" class="setting-header">{{strings.i18n_scroll_mode}}</h5>
 
-                    <div role="radiogroup" class="row" style="width:100%;text-align:center;" aria-labelledby="setting-header-scroll-legend">
+                    <div style="display: none;" role="radiogroup" class="row" style="width:100%;text-align:center;" aria-labelledby="setting-header-scroll-legend">
 
                         <div role="radio" id="scroll-default-option" style="vertical-align:middle;width:30%;display:inline-block;position:relative;">
                             <input style=""  name="scrolling" value="single" type="radio" id="scroll-default-radio"/>
@@ -199,15 +203,22 @@
 
 
                     </div>
-                    <div id="tab-keyboard" class="tab-pane" role="tabpanel">
+                    <!-- <div style="display: none;" id="tab-keyboard" class="tab-pane" role="tabpanel">
 
-                    <div class="row" style="position:relative;">
+                    <div style="display: none;" class="row" style="position:relative;">
 
                         <div id="invalid_keyboard_shortcut_ALERT"></div>
 
                         <ul id="keyboard-list">
                         </ul>
                     </div>
+                     </div> -->
+
+                     <div id="tab-about" class="tab-pane" role="tabpanel">
+                         <div class="" style="position: relative;">
+                             <h5 class="version">VERSION</h5>
+                             <p>{{viewerJs.version}}</p>
+                         </div>
                      </div>
                 </div>
             </div>

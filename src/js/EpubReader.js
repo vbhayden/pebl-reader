@@ -97,6 +97,10 @@ define([
                 console.error('No spine item found with idref: ' + idref);
         }
 
+        readerUtils.hideNativeTOC = function() {
+            $('#tocButt').hide();
+        }
+
 
         // TODO: is this variable actually used anywhere here??
         // (bad naming convention, hard to find usages of "el")
@@ -418,7 +422,7 @@ define([
             sliderSubChapterName.id = 'sliderSubChapterName';
 
 
-            sliderInfoContainer.appendChild(sliderPageNumber);
+            //sliderInfoContainer.appendChild(sliderPageNumber);
             sliderInfoContainer.appendChild(sliderChapterName);
             sliderInfoContainer.appendChild(sliderSubChapterName);
 
@@ -447,10 +451,10 @@ define([
                 var val = Math.round(this.value);
                 //Show either the page or the chapter while dragging the slider
                 if (typeof newChapters[val].pageNumber !== 'undefined') {
-                    $(sliderPageNumber).text('Page ' + newChapters[val].pageNumber);
-                    $(sliderPageNumber).show();
+                    //$(sliderPageNumber).text('Page ' + newChapters[val].pageNumber);
+                    //$(sliderPageNumber).show();
                 } else {
-                    $(sliderPageNumber).hide();
+                    //$(sliderPageNumber).hide();
                 }
                 if (typeof newChapters[val].title !== 'undefined') {
                     $(sliderSubChapterName).text(newChapters[val].title);
@@ -735,10 +739,17 @@ define([
                             annotationContainer.appendChild(note);
 
                             annotationContainer.addEventListener('click', function() {
+                                PeBL.emitEvent(PeBL.events.eventAccessed, {
+                                    type: 'annotation',
+                                    name: stmt.title,
+                                    description: stmt.text,
+                                    idref: stmt.idRef,
+                                    cfi: stmt.cfi
+                                });
                                 readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
                             });
 
-                            $('#my-annotations').append($(annotationContainer));
+                            $('#my-annotations').prepend($(annotationContainer));
                         }
                     })(stmt);
                 }
@@ -766,13 +777,20 @@ define([
                                 annotationContainer.appendChild(note);
 
                                 annotationContainer.addEventListener('click', function() {
+                                    PeBL.emitEvent(PeBL.events.eventAccessed, {
+                                        type: 'annotation',
+                                        name: stmt.title,
+                                        description: stmt.text,
+                                        idref: stmt.idRef,
+                                        cfi: stmt.cfi
+                                    });
                                     readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
                                 });
 
                                 if (stmt.owner === userName)
-                                    $('#my-shared-annotations').append($(annotationContainer));
+                                    $('#my-shared-annotations').prepend($(annotationContainer));
                                 else
-                                    $('#general-shared-annotations').append($(annotationContainer));
+                                    $('#general-shared-annotations').prepend($(annotationContainer));
                             }
                         })(stmt);
                     }
@@ -804,8 +822,11 @@ define([
             } else {
                 if (!hide) {
                     $('#my-annotations').children().remove();
+                    $('#my-annotations').append('<p class="hideWhenSiblingPresent">When you add Annotations, they will appear here.</p>');
                     $('#my-shared-annotations').children().remove();
+                    $('#my-shared-annotations').append('<p class="hideWhenSiblingPresent">When you add Annotations and share them, they will appear here. You can share annotations by clicking on the highlighted text on the page and selecting the share option from the popup menu.</p>');
                     $('#general-shared-annotations').children().remove();
+                    $('#general-shared-annotations').append('<p class="hideWhenSiblingPresent">When other users share their annotations, they will appear here.</p>');
                     
                     PeBL.subscribeEvent(PeBL.events.incomingAnnotations,
                         false,
@@ -845,8 +866,18 @@ define([
                 annotation.title = iframeWindow.getSelection().toString();
                 annotation.type = 2;
 
-                PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
+                PeBL.emitEvent(PeBL.events.eventAnnotated, annotation);
                 annotationsShowHideToggle(true);
+                // Clear the selection so you can't hit the button again.
+                if (iframeWindow.getSelection) {
+                  if (iframeWindow.getSelection().empty) {  // Chrome
+                    iframeWindow.getSelection().empty();
+                  } else if (iframeWindow.getSelection().removeAllRanges) {  // Firefox
+                    iframeWindow.getSelection().removeAllRanges();
+                  }
+                } else if (iframeWindow.selection) {  // IE?
+                  iframeWindow.selection.empty();
+                }
             } else {
                 window.alert('No text has been selected yet, or selected text is ineligible for highlighting.');
                 throw new Error("Nothing selected");
@@ -891,7 +922,7 @@ define([
             menu.id = 'annotationContextMenu';
             //Try to center it on the mouse, take into account the offset of the reader view relative to the page as a whole
             
-            var left = event.pageX + readerPosition.left - 50;
+            var left = (event.pageX ? event.pageX : event.originalEvent.pageX) + readerPosition.left - 50;
             if (left < 0) {
                 left = 0;
             } else {
@@ -905,7 +936,7 @@ define([
             left += 'px';
 
             menu.style.left = left;
-            menu.style.top = (event.pageY - 10 < 40 ? event.pageY + 60 : event.pageY - 10) + 'px';
+            menu.style.top = ((event.pageY ? event.pageY : event.originalEvent.pageY) - 10 < 40 ? (event.pageY ? event.pageY : event.originalEvent.pageY) + 60 : (event.pageY ? event.pageY : event.originalEvent.pageY) - 10) + 'px';
 
             var buttonWrapper = document.createElement('div');
             buttonWrapper.classList.add('annotationContextButtonWrapper');
@@ -918,9 +949,12 @@ define([
                         deleteButton.classList.add('glyphicon', 'glyphicon-trash');
                         deleteButtonContainer.appendChild(deleteButton);
                         deleteButtonContainer.addEventListener('click', function() {
-                            removeHighlight(annotation);
-                            $('#annotationContextMenu').remove();
-                            $('#clickOutOverlay').remove();
+                            var confirm = window.confirm("Are you sure you want to delete this annotation?");
+                            if (confirm === true) {
+                                removeHighlight(annotation);
+                                $('#annotationContextMenu').remove();
+                                $('#clickOutOverlay').remove();
+                            }
                         });
 
                         var noteButtonContainer = document.createElement('div');
@@ -1003,12 +1037,10 @@ define([
             annotation.title = title;
             annotation.type = 1;
 
-            PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
+            PeBL.emitEvent(PeBL.events.eventBookmarked, annotation);
         };
 
         var bookmarksCallback = function(stmts) {
-            var $appContainer = $('#app-container');
-            $appContainer.addClass('bookmarks-visible');
             for (var stmt of stmts) {
                 if (stmt.type === 1) {
                     if ($("#bookmark-" + stmt.id).length == 0) {
@@ -1021,6 +1053,12 @@ define([
                                     contentCFI: evt.currentTarget.getAttribute('data-CFI'),
                                     IDRef: evt.currentTarget.getAttribute('data-IDRef')
                                 }
+                                PeBL.emitEvent(PeBL.events.eventAccessed, {
+                                    type: 'bookmark',
+                                    name: stmt.title,
+                                    idref: bookmark.IDRef,
+                                    cfi: bookmark.contentCFI
+                                });
                                 readium.reader.openSpineItemElementCfi(bookmark.IDRef, bookmark.contentCFI);
                             });
                             bookmarkLink.classList.add('bookmarkLink');
@@ -1031,13 +1069,22 @@ define([
                             var bookmarkDeleteButton = document.createElement('i');
                             bookmarkDeleteButton.classList.add('glyphicon', 'glyphicon-remove');
                             bookmarkDeleteButton.addEventListener('click', function() {
-                                PeBL.emitEvent(PeBL.events.removedAnnotation, stmt.id);
-                                $(bookmarkWrapper).remove();
+                                var confirm = window.confirm("Are you sure you want to delete this bookmark?");
+                                if (confirm === true) {
+                                    PeBL.emitEvent(PeBL.events.eventUnbookmarked, {
+                                        cfi: stmt.cfi,
+                                        idref: stmt.idRef,
+                                        name: stmt.title,
+                                        description: stmt.text
+                                    });
+                                    PeBL.emitEvent(PeBL.events.removedAnnotation, stmt.id);
+                                    $(bookmarkWrapper).remove();
+                                }
                             });
 
                             bookmarkWrapper.appendChild(bookmarkLink);
                             bookmarkWrapper.appendChild(bookmarkDeleteButton);
-                            $('#bookmarks-body-list').append($(bookmarkWrapper));
+                            $('#bookmarks-body-list').prepend($(bookmarkWrapper));
                         })(stmt);
                     }
                 }
@@ -1063,6 +1110,7 @@ define([
                     bookmarksCallback);
             } else {
                 $('#bookmarks-body-list').children().remove();
+                $('#bookmarks-body-list').append('<p class="hideWhenSiblingPresent">When you add Bookmarks, they will appear here.</p>');
                 PeBL.subscribeEvent(PeBL.events.incomingAnnotations,
                     false,
                     bookmarksCallback);
@@ -1158,6 +1206,13 @@ define([
                             }
                             // add to newly focused
                             event.target.setAttribute("tabindex", "60");
+                        });
+                        $(this).on("click", function(event) {
+                            PeBL.emitEvent(PeBL.events.eventAccessed, {
+                                type: 'TOC',
+                                name: event.currentTarget.textContent,
+                                target: event.currentTarget.href
+                            });
                         });
                     });
 
@@ -1403,7 +1458,7 @@ define([
             $('#bookmarks-body').prepend('<div id="bookmarks-body-list"></div>');
 
             //$('#annotations-body').prepend('<h2 aria-label="' + Strings.annotations + '" title="' + Strings.annotations + '">' + Strings.annotations + '</h2>');
-            $('#bookmarks-body').prepend('<h2 aria-label="' + Strings.bookmarks + '" title="' + Strings.bookmarks + '">' + Strings.bookmarks + '</h2>');
+            $('#bookmarks-body').prepend('<h2 aria-label="' + Strings.bookmarks + '" title="' + Strings.bookmarks + '"><img src="images/pebl-icons-wip_bookmark-list.svg" aria-hidden="true" height="18px"> ' + Strings.bookmarks + '</h2>');
 
             $('#readium-toc-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.toc + '" title="' + Strings.i18n_close + ' ' + Strings.toc + '"><span aria-hidden="true">&times;</span></button>');
             $('#annotations-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.annotations + '" title="' + Strings.i18n_close + ' ' + Strings.annotations + '"><span aria-hidden="true">&times;</span></button>');
@@ -1939,9 +1994,15 @@ define([
                 function() {
                     loadlibrary();
                 });
-            $('#add-bookmark-submit').on('click', function() {
+            $('#add-bookmark-submit').on('click', function(evt) {
                 var val = $('#bookmarkInput').val();
-                saveBookmark(val);
+                if (val.trim().length > 0) {
+                    saveBookmark(val);
+                } else {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    window.alert('A name for your bookmark is required.');
+                }
             });
             $('#add-note-submit').on('click', function(evt) {
                 var annotation = $(evt.currentTarget).data('annotation');
@@ -1951,7 +2012,7 @@ define([
 
                 annotation.text = note;
                 if (annotation.type === 2) {
-                    PeBL.emitEvent(PeBL.events.newAnnotation, annotation);
+                    PeBL.emitEvent(PeBL.events.eventAnnotated, annotation);
                 } else if (annotation.type === 3) {
                     PeBL.emitEvent(PeBL.events.newSharedAnnotation, annotation);
                 }
@@ -2010,9 +2071,10 @@ define([
             var setTocSize = function() {
                 var appHeight = $(document.body).height() - $('#app-container')[0].offsetTop;
                 $('#app-container').height(appHeight);
-                $('#readium-toc-body').height(appHeight);
-                $('#annotations-body').height(appHeight);
-                $('#bookmarks-body').height(appHeight);
+                // TODO: Where is 44px difference coming from?
+                $('#readium-toc-body').height(appHeight - 44);
+                $('#annotations-body').height(appHeight - 44);
+                $('#bookmarks-body').height(appHeight - 44);
             };
 
             var tocBody = $('#readium-toc-body');
@@ -2021,27 +2083,27 @@ define([
             var readingArea = $('#reading-area');
 
             var setReaderSize = function() {
-                var readingAreaOffset = readingArea.css('left');
+                var readingAreaOffset = readingArea.css('right');
                 if (tocBody.is(':visible')) {
                     var tocBodyWidth = tocBody.css('width');
                     if (readingAreaOffset !== tocBodyWidth) {
-                        readingArea.css('left', tocBodyWidth);
+                        readingArea.css('right', tocBodyWidth);
                         window.dispatchEvent(new Event('resize'));
                     }
                 } else if (annotationsBody.is(':visible')) {
                     var annotationsBodyWidth = annotationsBody.css('width');
                     if (readingAreaOffset !== annotationsBodyWidth) {
-                        readingArea.css('left', annotationsBodyWidth);
+                        readingArea.css('right', annotationsBodyWidth);
                         window.dispatchEvent(new Event('resize'));
                     }
                 } else if (bookmarksBody.is(':visible')) {
                     var bookmarksBodyWidth = bookmarksBody.css('width');
                     if (readingAreaOffset !== bookmarksBodyWidth) {
-                        readingArea.css('left', bookmarksBodyWidth);
+                        readingArea.css('right', bookmarksBodyWidth);
                         window.dispatchEvent(new Event('resize'));
                     }
                 } else if (readingAreaOffset !== '0px') {
-                    readingArea.css('left', '0px');
+                    readingArea.css('right', '0px');
                 }
             }
 
@@ -2397,109 +2459,111 @@ define([
                     }
                 });
 
-                SettingsDialog.initDialog(readium.reader);
-
-                $('#settings-dialog').on('hidden.bs.modal', function() {
-
-                    Keyboard.scope('reader');
-
-                    unhideUI()
-                    setTimeout(function() { $("#settbutt1").focus(); }, 50);
-
-                    $("#buttSave").removeAttr("accesskey");
-                    $("#buttClose").removeAttr("accesskey");
-                });
-                $('#settings-dialog').on('shown.bs.modal', function() {
-
-                    Keyboard.scope('settings');
-
-                    $("#buttSave").attr("accesskey", Keyboard.accesskeys.SettingsModalSave);
-                    $("#buttClose").attr("accesskey", Keyboard.accesskeys.SettingsModalClose);
-                });
-
-
-                $('#about-dialog').on('hidden.bs.modal', function() {
-                    Keyboard.scope('reader');
-
-                    unhideUI();
-                    setTimeout(function() { $("#aboutButt1").focus(); }, 50);
-                });
-                $('#about-dialog').on('shown.bs.modal', function() {
-                    Keyboard.scope('about');
-                });
-
-                $('#annotations-dialog').on('hidden.bs.modal', function() {
-                    Keyboard.scope('reader');
-
-                    unhideUI();
-                    // setTimeout(function(){ $("#annotationsButt1").focus(); }, 50);
-                });
-                $('#annotations-dialog').on('shown.bs.modal', function() {
-                    Keyboard.scope('annotations');
-                });
-
-                $('#bookmarks-dialog').on('hidden.bs.modal', function() {
-                    Keyboard.scope('reader');
-
-                    unhideUI();
-                    // setTimeout(function(){ $("#bookmarksButt1").focus(); }, 50);
-                });
-                $('#bookmarks-dialog').on('shown.bs.modal', function() {
-                    Keyboard.scope('bookmarks');
-                });
-
-
-
-                var readerSettings;
-                if (settings.reader) {
-                    readerSettings = settings.reader;
-                }
-                if (!embedded) {
-                    readerSettings = readerSettings || SettingsDialog.defaultSettings;
-                    SettingsDialog.updateReader(readium.reader, readerSettings);
-                } else {
-                    readium.reader.updateSettings({
-                        syntheticSpread: "auto",
-                        scroll: "auto"
-                    });
-                }
-
-
-                var toggleNightTheme = function() {
-
-                    if (!embedded) {
-
-                        Settings.get('reader', function(json) {
-                            if (!json) {
-                                json = {};
-                            }
-
-                            var isNight = json.theme === "night-theme";
-                            json.theme = isNight ? "author-theme" : "night-theme";
-
-                            // Note: automatically JSON.stringify's the passed value!
-                            Settings.put('reader', json);
-
-                            SettingsDialog.updateReader(readium.reader, json);
-                        });
-                    }
-                };
-                $("#buttNightTheme").on("click", toggleNightTheme);
-                Keyboard.on(Keyboard.NightTheme, 'reader', toggleNightTheme);
-
-                readium.reader.on(ReadiumSDK.Events.CONTENT_DOCUMENT_LOAD_START, function($iframe, spineItem) {
-                    Globals.logEvent("CONTENT_DOCUMENT_LOAD_START", "ON", "EpubReader.js [ " + spineItem.href + " ]");
-
-                    spin(true);
-                });
-
-                EpubReaderMediaOverlays.init(readium);
-
-                EpubReaderBackgroundAudioTrack.init(readium);
-
-                //epubReadingSystem
+                
 
                 Versioning.getVersioningInfo(function(version) {
+
+                    SettingsDialog.initDialog(readium.reader, version);
+
+                    $('#settings-dialog').on('hidden.bs.modal', function() {
+
+                        Keyboard.scope('reader');
+
+                        unhideUI()
+                        setTimeout(function() { $("#settbutt1").focus(); }, 50);
+
+                        $("#buttSave").removeAttr("accesskey");
+                        $("#buttClose").removeAttr("accesskey");
+                    });
+                    $('#settings-dialog').on('shown.bs.modal', function() {
+
+                        Keyboard.scope('settings');
+
+                        $("#buttSave").attr("accesskey", Keyboard.accesskeys.SettingsModalSave);
+                        $("#buttClose").attr("accesskey", Keyboard.accesskeys.SettingsModalClose);
+                    });
+
+
+                    $('#about-dialog').on('hidden.bs.modal', function() {
+                        Keyboard.scope('reader');
+
+                        unhideUI();
+                        setTimeout(function() { $("#aboutButt1").focus(); }, 50);
+                    });
+                    $('#about-dialog').on('shown.bs.modal', function() {
+                        Keyboard.scope('about');
+                    });
+
+                    $('#annotations-dialog').on('hidden.bs.modal', function() {
+                        Keyboard.scope('reader');
+
+                        unhideUI();
+                        // setTimeout(function(){ $("#annotationsButt1").focus(); }, 50);
+                    });
+                    $('#annotations-dialog').on('shown.bs.modal', function() {
+                        Keyboard.scope('annotations');
+                    });
+
+                    $('#bookmarks-dialog').on('hidden.bs.modal', function() {
+                        Keyboard.scope('reader');
+
+                        unhideUI();
+                        // setTimeout(function(){ $("#bookmarksButt1").focus(); }, 50);
+                    });
+                    $('#bookmarks-dialog').on('shown.bs.modal', function() {
+                        Keyboard.scope('bookmarks');
+                    });
+
+
+
+                    var readerSettings;
+                    if (settings.reader) {
+                        readerSettings = settings.reader;
+                    }
+                    if (!embedded) {
+                        readerSettings = readerSettings || SettingsDialog.defaultSettings;
+                        SettingsDialog.updateReader(readium.reader, readerSettings);
+                    } else {
+                        readium.reader.updateSettings({
+                            syntheticSpread: "auto",
+                            scroll: "auto"
+                        });
+                    }
+
+
+                    var toggleNightTheme = function() {
+
+                        if (!embedded) {
+
+                            Settings.get('reader', function(json) {
+                                if (!json) {
+                                    json = {};
+                                }
+
+                                var isNight = json.theme === "night-theme";
+                                json.theme = isNight ? "author-theme" : "night-theme";
+
+                                // Note: automatically JSON.stringify's the passed value!
+                                Settings.put('reader', json);
+
+                                SettingsDialog.updateReader(readium.reader, json);
+                            });
+                        }
+                    };
+                    $("#buttNightTheme").on("click", toggleNightTheme);
+                    Keyboard.on(Keyboard.NightTheme, 'reader', toggleNightTheme);
+
+                    readium.reader.on(ReadiumSDK.Events.CONTENT_DOCUMENT_LOAD_START, function($iframe, spineItem) {
+                        Globals.logEvent("CONTENT_DOCUMENT_LOAD_START", "ON", "EpubReader.js [ " + spineItem.href + " ]");
+
+                        spin(true);
+                    });
+
+                    EpubReaderMediaOverlays.init(readium);
+
+                    EpubReaderBackgroundAudioTrack.init(readium);
+
+                    //epubReadingSystem
 
                     $('#app-container').append(AboutDialog({ imagePathPrefix: moduleConfig.imagePathPrefix, strings: Strings, dateTimeString: version.dateTimeString, viewerJs: version.readiumJsViewer, readiumJs: version.readiumJs, sharedJs: version.readiumSharedJs, cfiJs: version.readiumCfiJs }));
 
