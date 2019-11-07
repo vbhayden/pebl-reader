@@ -169,6 +169,83 @@ prodExtensionDeploy:
    
 ### ----------------------
 
+prodNpsDeploy:
+  stage: deploy
+  only:
+    - npsProd
+  script:
+    ## Pull down apt-get install repos
+   - apt-get update -y
+   - apt-get install openssh-client -y
+
+   ##
+   ## Run ssh-agent (inside the build environment)
+   ##
+   - eval $(ssh-agent -s)
+
+   ##
+   ## Create the SSH directory and give it the right permissions
+   ##
+   - mkdir -p ~/.ssh
+   - chmod 700 ~/.ssh
+
+   ##
+   ## Assuming you created the SSH_KNOWN_HOSTS variable, uncomment the
+   ## following two lines. NOTE the $SSH_KNOWN_HOSTS variable should be added
+   ## in the gitlab interface and not here
+   ##
+   - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+   - chmod 644 ~/.ssh/known_hosts
+
+   ## NOTE the $STAGINT_PRIVATE_KEY variable should be added
+   ## in the gitlab interface and not here
+   ##
+   - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+
+   ## Build commands
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/htmlNpsReader/epub_content /var/www/bookTempDeployment/prodNpsBookshelf"      
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "rm -rf /var/www/htmlNpsReader/*"
+   - scp -P22 -r dist/cloud-reader/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/htmlNpsReader/
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/bookTempDeployment/prodNpsBookshelf /var/www/htmlNpsReader/epub_content"
+
+prodAdlDeploy:
+  stage: deploy
+  only:
+    - adlProd
+  script:
+    ## Pull down apt-get install repos
+   - apt-get update -y
+   - apt-get install openssh-client -y
+
+   ##
+   ## Run ssh-agent (inside the build environment)
+   ##
+   - eval $(ssh-agent -s)
+
+   ##
+   ## Create the SSH directory and give it the right permissions
+   ##
+   - mkdir -p ~/.ssh
+   - chmod 700 ~/.ssh
+
+   ##
+   ## Assuming you created the SSH_KNOWN_HOSTS variable, uncomment the
+   ## following two lines. NOTE the $SSH_KNOWN_HOSTS variable should be added
+   ## in the gitlab interface and not here
+   ##
+   - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+   - chmod 644 ~/.ssh/known_hosts
+
+   ## NOTE the $STAGINT_PRIVATE_KEY variable should be added
+   ## in the gitlab interface and not here
+   ##
+   - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+
+   ## Build commands
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/htmlAdlReader/epub_content /var/www/bookTempDeployment/prodAdlBookshelf"      
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "rm -rf /var/www/htmlAdlReader/*"
+   - scp -P22 -r dist/cloud-reader/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/htmlAdlReader/
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/bookTempDeployment/prodAdlBookshelf /var/www/htmlAdlReader/epub_content"
 
 prodDeploy:
   stage: deploy
