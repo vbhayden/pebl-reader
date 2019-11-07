@@ -54,6 +54,60 @@ buildProdExtension:
   artifacts:
     paths:
       - dist/cloud-reader
+
+buildNpsProd:
+  stage: build
+
+  only:
+    - npsProd
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --init --recursive readium-js    
+  script:
+  - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
+  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json    
+  # Yaml doesn't like ':<space>' wrap command in quotes
+  # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_LRS_AUTH\'/g\" src/js/pebl-login-widget.js"  
+  # - "sed -i \"s/production: false/production: true/g\" src/mixins/config.js"
+  - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
+  - echo "window.Configuration = {};" > src/cloud-reader/config.js
+  - echo "window.Configuration.lrsUrl = '$PROD_NPS_LRS_URL';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.lrsCredential = '$PROD_NPS_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.useLinkedIn = false;" >> src/cloud-reader/config.js
+  - echo "window.Configuration.loginImage = 'images/PEBL-Logo-Color-small.png';" >> src/cloud-reader/config.js
+
+  - npm run prepare:all
+  - npm run dist
+  artifacts:
+    paths:
+    - dist/cloud-reader
+
+buildAdlProd:
+  stage: build
+
+  only:
+    - adlProd
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --init --recursive readium-js    
+  script:
+  - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
+  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json    
+  # Yaml doesn't like ':<space>' wrap command in quotes
+  # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_LRS_AUTH\'/g\" src/js/pebl-login-widget.js"  
+  # - "sed -i \"s/production: false/production: true/g\" src/mixins/config.js"
+  - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
+  - echo "window.Configuration = {};" > src/cloud-reader/config.js
+  - echo "window.Configuration.lrsUrl = '$PROD_ADL_LRS_URL';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.lrsCredential = '$PROD_ADL_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.useLinkedIn = false;" >> src/cloud-reader/config.js
+  - echo "window.Configuration.loginImage = 'images/PEBL-Logo-Color-small.png';" >> src/cloud-reader/config.js
+
+  - npm run prepare:all
+  - npm run dist
+  artifacts:
+    paths:
+    - dist/cloud-reader
     
   
 buildProd:
