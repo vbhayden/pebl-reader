@@ -771,6 +771,7 @@ Helpers){
             $('#installbutt')[0].addEventListener('click', function() {
                 $('#download-books-dialog').modal('show');
             });
+            $('#download-books-submit').off();
             $('#download-books-submit')[0].addEventListener('click', function() {
                 $('#install-spinner-dialog').modal('show');
                 spinLibrary(true);
