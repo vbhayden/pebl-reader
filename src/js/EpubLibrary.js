@@ -299,20 +299,28 @@ Helpers){
 
                 var background = epub.coverHref;
 
-                StorageManager.getFile(background, function(data) {
-                    if (data)
-                        var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: URL.createObjectURL(data), strings: Strings, noCoverBackground: noCoverBackground});
-                    else
-                        var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: background, strings: Strings, noCoverBackground: noCoverBackground});
+                if (background) {
+                    StorageManager.getFile(background, function(data) {
+                        if (data)
+                            var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: URL.createObjectURL(data), strings: Strings, noCoverBackground: noCoverBackground});
+                        else
+                            var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: background, strings: Strings, noCoverBackground: noCoverBackground});
+                        $('.library-items').append(elem);
+                    
+                        processEpub(epubs, ++count);
+                    }, function() {
+                        var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, strings: Strings, noCoverBackground: noCoverBackground});
+                        $('.library-items').append(elem);
+                    
+                        processEpub(epubs, ++count);
+                    });
+                } else {
+                    var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: background, strings: Strings, noCoverBackground: noCoverBackground});
                     $('.library-items').append(elem);
-                
                     processEpub(epubs, ++count);
-                }, function() {
-                    var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, strings: Strings, noCoverBackground: noCoverBackground});
-                    $('.library-items').append(elem);
+                }
+
                 
-                    processEpub(epubs, ++count);
-                });
 
                 
                 
