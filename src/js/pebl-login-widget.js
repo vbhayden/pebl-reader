@@ -223,15 +223,16 @@ window.Lightbox = {
                 '</div>' +
                 '<div class="login__input">' +
                     '<select class="select-css" id="loginUserNameSelector">' +
-                    '<option>Learner</option>' +
-                    '<option>Learner1</option>' +
-                    '<option>Learner2</option>' +
-                    '<option>Learner3</option>' +
-                    '<option>Learner5</option>' +
-                    '<option>Learner7</option>' +
-                '</select>' +
-            '</div>'
+                    '</select>' +
+                '</div>'
             );
+
+            if (window.Configuration && window.Configuration.userList && window.Configuration.userList.length > 0) {
+                for (var user of window.Configuration.userList) {
+                    selects.find('#loginUserNameSelector').append($('<option>' + user + '</option>'));
+                }
+            }
+
             $(form).append(selects);
             /*
              *lightBoxContent.appendChild(selects[1]);
