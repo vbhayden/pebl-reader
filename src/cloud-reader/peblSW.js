@@ -75,7 +75,7 @@ var FILES_TO_CACHE = [
     "./images/webreader_logo_eduworks.png",
     "./images/about_readium_logo.png",
     "./images/eXtension-icon_small.png",
-    "./images/images/PEBL-Logo-Color-small.png",
+    "./images/PEBL-Logo-Color-small.png",
     "./images/pebl-icons-light_bookmark-list.svg",
     "./images/pebl-icons-light_download.svg",
     "./images/pebl-icons-light_grid-view.svg",
