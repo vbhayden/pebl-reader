@@ -299,20 +299,28 @@ Helpers){
 
                 var background = epub.coverHref;
 
-                StorageManager.getFile(background, function(data) {
-                    if (data)
-                        var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: URL.createObjectURL(data), strings: Strings, noCoverBackground: noCoverBackground});
-                    else
-                        var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: background, strings: Strings, noCoverBackground: noCoverBackground});
+                if (background) {
+                    StorageManager.getFile(background, function(data) {
+                        if (data)
+                            var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: URL.createObjectURL(data), strings: Strings, noCoverBackground: noCoverBackground});
+                        else
+                            var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: background, strings: Strings, noCoverBackground: noCoverBackground});
+                        $('.library-items').append(elem);
+                    
+                        processEpub(epubs, ++count);
+                    }, function() {
+                        var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, strings: Strings, noCoverBackground: noCoverBackground});
+                        $('.library-items').append(elem);
+                    
+                        processEpub(epubs, ++count);
+                    });
+                } else {
+                    var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: background, strings: Strings, noCoverBackground: noCoverBackground});
                     $('.library-items').append(elem);
-                
                     processEpub(epubs, ++count);
-                }, function() {
-                    var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, strings: Strings, noCoverBackground: noCoverBackground});
-                    $('.library-items').append(elem);
+                }
+
                 
-                    processEpub(epubs, ++count);
-                });
 
                 
                 
@@ -762,40 +770,41 @@ Helpers){
             strings: Strings
         }));
 
-        window.addEventListener('beforeinstallprompt', function(e) {
-            console.log(e);
-            e.preventDefault();
-            var deferredPrompt = e;
-            $('#installbutt').show();
-            $('#installbutt2').hide();
-            $('#installbutt')[0].addEventListener('click', function() {
-                $('#download-books-dialog').modal('show');
-            });
-            $('#download-books-submit')[0].addEventListener('click', function() {
-                $('#install-spinner-dialog').modal('show');
-                spinLibrary(true);
-                storeLibraryOffline(function() {
-                    console.log(window.tempBookshelf);
-                    StorageManager.saveBookshelf('db://epub_library.json', window.tempBookshelf, function() {
-                        spinLibrary(false);
-                        libraryManager.retrieveAvailableEpubs(loadLibraryItems);
-                        $('#install-spinner-dialog').modal('hide');
-                        $('#installbutt').hide();
-                        $('#install-reader-dialog').modal('show');
-                        $('#install-reader-cancel')[0].addEventListener('click', function() {
-                            libraryManager.retrieveAvailableEpubs(loadLibraryItems);
-                        });
-                        $('#install-reader-submit')[0].addEventListener('click', function() {
-                            libraryManager.retrieveAvailableEpubs(loadLibraryItems);
-                            deferredPrompt.prompt();
-                        });
-                    }, function() {
-                        console.log('error thing');
-                    });
+        // window.addEventListener('beforeinstallprompt', function(e) {
+        //     console.log(e);
+        //     e.preventDefault();
+        //     var deferredPrompt = e;
+        //     $('#installbutt').show();
+        //     $('#installbutt2').hide();
+        //     $('#installbutt')[0].addEventListener('click', function() {
+        //         $('#download-books-dialog').modal('show');
+        //     });
+        //     $('#download-books-submit').off();
+        //     $('#download-books-submit')[0].addEventListener('click', function() {
+        //         $('#install-spinner-dialog').modal('show');
+        //         spinLibrary(true);
+        //         storeLibraryOffline(function() {
+        //             console.log(window.tempBookshelf);
+        //             StorageManager.saveBookshelf('db://epub_library.json', window.tempBookshelf, function() {
+        //                 spinLibrary(false);
+        //                 libraryManager.retrieveAvailableEpubs(loadLibraryItems);
+        //                 $('#install-spinner-dialog').modal('hide');
+        //                 $('#installbutt').hide();
+        //                 $('#install-reader-dialog').modal('show');
+        //                 $('#install-reader-cancel')[0].addEventListener('click', function() {
+        //                     libraryManager.retrieveAvailableEpubs(loadLibraryItems);
+        //                 });
+        //                 $('#install-reader-submit')[0].addEventListener('click', function() {
+        //                     libraryManager.retrieveAvailableEpubs(loadLibraryItems);
+        //                     deferredPrompt.prompt();
+        //                 });
+        //             }, function() {
+        //                 console.log('error thing');
+        //             });
                     
-                });
-            });
-        });
+        //         });
+        //     });
+        // });
 
         
 
