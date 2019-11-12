@@ -4,3 +4,4 @@ window.Configuration.lrsCredential = 'MTFkZWU2MDg1NTMyZGM4YzE4ZTQyMDFiMGY2YmE4Nj
 window.Configuration.useLinkedIn = false;
 window.Configuration.favicon = 'images/PEBL-icon-16.ico';
 window.Configuration.loginImage = 'images/PEBL-Logo-Color-small.png';
+window.Configuration.userList = ['Learner', 'Learner1', 'Learner2', 'Learner3', 'Learner5', 'Learner7'];
