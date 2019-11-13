@@ -1139,6 +1139,10 @@ define([
                 PeBL.unsubscribeEvent(PeBL.events.incomingAnnotations,
                     false,
                     bookmarksCallback);
+                PeBL.emitEvent(PeBL.events.eventUndisplayed, {
+                    target: 'PeBL Reader Bookmarks',
+                    type: 'Bookmarks'
+                });
             } else {
                 $('#bookmarks-body-list').children().remove();
                 $('#bookmarks-body-list').append('<p class="hideWhenSiblingPresent">When you add Bookmarks, they will appear here.</p>');
@@ -1147,6 +1151,10 @@ define([
                     bookmarksCallback);
 
                 $appContainer.addClass('bookmarks-visible');
+                PeBL.emitEvent(PeBL.events.eventDisplayed, {
+                    target: 'PeBL Reader Bookmarks',
+                    type: 'Bookmarks'
+                });
             }
 
             if (embedded) {
