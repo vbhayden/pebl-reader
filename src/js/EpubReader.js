@@ -700,10 +700,18 @@ define([
                 }
                 /* end of clear focusable tab item */
                 setTimeout(function() { $('#tocButt')[0].focus(); }, 100);
+                PeBL.emitEvent(PeBL.events.eventUndisplayed, {
+                    target: 'PeBL Reader TOC',
+                    type: 'TOC'
+                });
             } else {
                 $appContainer.addClass('toc-visible');
 
                 setTimeout(function() { $('#readium-toc-body button.close')[0].focus(); }, 100);
+                PeBL.emitEvent(PeBL.events.eventDisplayed, {
+                    target: 'PeBL Reader TOC',
+                    type: 'TOC'
+                });
             }
 
             if (embedded) {
