@@ -827,6 +827,11 @@ define([
                 PeBL.unsubscribeEvent(PeBL.events.incomingSharedAnnotations,
                     false,
                     sharedAnnotationCallback);
+
+                PeBL.emitEvent(PeBL.events.eventUndisplayed, {
+                    target: 'PeBL Reader Annotations',
+                    type: 'Annotations'
+                });
             } else {
                 if (!hide) {
                     $('#my-annotations').children().remove();
@@ -844,6 +849,11 @@ define([
                         sharedAnnotationCallback);
                 }
                 $appContainer.addClass('annotations-visible');
+
+                PeBL.emitEvent(PeBL.events.eventDisplayed, {
+                    target: 'PeBL Reader Annotations',
+                    type: 'Annotations'
+                });
                 // setTimeout(function(){ $('#readium-toc-body button.close')[0].focus(); }, 100);
             }
 
