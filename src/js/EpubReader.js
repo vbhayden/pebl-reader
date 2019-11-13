@@ -885,10 +885,23 @@ define([
         };
 
         var removeHighlight = function(annotation) {
-            if (annotation.type === 2)
+            if (annotation.type === 2) {
                 PeBL.emitEvent(PeBL.events.removedAnnotation, annotation.id);
-            else if (annotation.type === 3)
+                PeBL.emitEvent(PeBL.events.eventUnannotated, {
+                    cfi: annotation.cfi,
+                    idref: annotation.idRef,
+                    name: annotation.title,
+                    description: annotation.text
+                });
+            } else if (annotation.type === 3) {
                 PeBL.emitEvent(PeBL.events.removedSharedAnnotation, annotation.id);
+                PeBL.emitEvent(PeBL.events.eventUnsharedAnnotation, {
+                    cfi: annotation.cfi,
+                    idref: annotation.idRef,
+                    name: annotation.title,
+                    description: annotation.text
+                });
+            }
             readium.reader.plugins.highlights.removeHighlight(annotation.id);
         };
 
