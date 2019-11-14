@@ -281,6 +281,7 @@ var Message = /** @class */ (function (_super) {
         if (extensions) {
             _this.access = extensions[PREFIX_PEBL_EXTENSION + "access"];
             _this.type = extensions[PREFIX_PEBL_EXTENSION + "type"];
+            _this.masterThread = extensions[PREFIX_PEBL_EXTENSION + "masterThread"];
         }
         return _this;
     }
@@ -4909,7 +4910,8 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         var self = this;
         var exts = {
             access: payload.access,
-            type: payload.type
+            type: payload.type,
+            masterThread: payload.masterThread
         };
         self.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
