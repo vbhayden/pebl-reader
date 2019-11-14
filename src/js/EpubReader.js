@@ -700,10 +700,18 @@ define([
                 }
                 /* end of clear focusable tab item */
                 setTimeout(function() { $('#tocButt')[0].focus(); }, 100);
+                PeBL.emitEvent(PeBL.events.eventUndisplayed, {
+                    target: 'PeBL Reader TOC',
+                    type: 'TOC'
+                });
             } else {
                 $appContainer.addClass('toc-visible');
 
                 setTimeout(function() { $('#readium-toc-body button.close')[0].focus(); }, 100);
+                PeBL.emitEvent(PeBL.events.eventDisplayed, {
+                    target: 'PeBL Reader TOC',
+                    type: 'TOC'
+                });
             }
 
             if (embedded) {
@@ -819,6 +827,11 @@ define([
                 PeBL.unsubscribeEvent(PeBL.events.incomingSharedAnnotations,
                     false,
                     sharedAnnotationCallback);
+
+                PeBL.emitEvent(PeBL.events.eventUndisplayed, {
+                    target: 'PeBL Reader Annotations',
+                    type: 'Annotations'
+                });
             } else {
                 if (!hide) {
                     $('#my-annotations').children().remove();
@@ -836,6 +849,11 @@ define([
                         sharedAnnotationCallback);
                 }
                 $appContainer.addClass('annotations-visible');
+
+                PeBL.emitEvent(PeBL.events.eventDisplayed, {
+                    target: 'PeBL Reader Annotations',
+                    type: 'Annotations'
+                });
                 // setTimeout(function(){ $('#readium-toc-body button.close')[0].focus(); }, 100);
             }
 
@@ -885,10 +903,23 @@ define([
         };
 
         var removeHighlight = function(annotation) {
-            if (annotation.type === 2)
+            if (annotation.type === 2) {
                 PeBL.emitEvent(PeBL.events.removedAnnotation, annotation.id);
-            else if (annotation.type === 3)
+                PeBL.emitEvent(PeBL.events.eventUnannotated, {
+                    cfi: annotation.cfi,
+                    idref: annotation.idRef,
+                    name: annotation.title,
+                    description: annotation.text
+                });
+            } else if (annotation.type === 3) {
                 PeBL.emitEvent(PeBL.events.removedSharedAnnotation, annotation.id);
+                PeBL.emitEvent(PeBL.events.eventUnsharedAnnotation, {
+                    cfi: annotation.cfi,
+                    idref: annotation.idRef,
+                    name: annotation.title,
+                    description: annotation.text
+                });
+            }
             readium.reader.plugins.highlights.removeHighlight(annotation.id);
         };
 
@@ -1108,6 +1139,10 @@ define([
                 PeBL.unsubscribeEvent(PeBL.events.incomingAnnotations,
                     false,
                     bookmarksCallback);
+                PeBL.emitEvent(PeBL.events.eventUndisplayed, {
+                    target: 'PeBL Reader Bookmarks',
+                    type: 'Bookmarks'
+                });
             } else {
                 $('#bookmarks-body-list').children().remove();
                 $('#bookmarks-body-list').append('<p class="hideWhenSiblingPresent">When you add Bookmarks, they will appear here.</p>');
@@ -1116,6 +1151,10 @@ define([
                     bookmarksCallback);
 
                 $appContainer.addClass('bookmarks-visible');
+                PeBL.emitEvent(PeBL.events.eventDisplayed, {
+                    target: 'PeBL Reader Bookmarks',
+                    type: 'Bookmarks'
+                });
             }
 
             if (embedded) {
