@@ -159,6 +159,7 @@ window.Lightbox = {
     },
 
     createLoginForm: function() {
+        window.Lightbox.close();
         window.Lightbox.create("login", false);
 
         var lightBoxContent = document.getElementById('lightBoxContent');
