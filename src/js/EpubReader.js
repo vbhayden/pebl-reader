@@ -101,6 +101,26 @@ define([
             $('#tocButt').hide();
         }
 
+        readerUtils.showNativeTOC = function() {
+            $('#tocButt').show();
+        }
+
+        readerUtils.hideAnnotationButton = function() {
+            $('.icon-annotations').hide();
+        }
+
+        readerUtils.showAnnotationButton = function() {
+            $('.icon-annotations').show();
+        }
+
+        readerUtils.hideAnnotationsListButton = function() {
+            $('.icon-show-annotations').hide();
+        }
+
+        readerUtils.showAnnotationsListButton = function() {
+            $('.icon-show-annotations').show();
+        }
+
 
         // TODO: is this variable actually used anywhere here??
         // (bad naming convention, hard to find usages of "el")
