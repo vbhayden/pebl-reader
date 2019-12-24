@@ -1,5 +1,5 @@
 window.Configuration = {}
-window.Configuration.OAuthURL = 'https://project.oauth.eduworks.com/pebl/linkedin/';
+window.Configuration.OAuthURL = 'https://project.oauth.eduworks.com/';
 window.Configuration.OAuthToken = '86ujpjdo6nv82l';
 window.Configuration.lrsUrl = 'https://lrs.peblproject.com/';
 window.Configuration.lrsCredential = 'MTFkZWU2MDg1NTMyZGM4YzE4ZTQyMDFiMGY2YmE4NjE0NTBhMmI3NzoyMGFkNzM3NWE5YjcwYWY1OWJiYzM3ZWZhNjJlYTNlOGNlM2MyMGUw';

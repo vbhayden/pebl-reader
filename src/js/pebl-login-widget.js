@@ -391,7 +391,7 @@ window.Lightbox = {
                 failure(e);
             }
         });
-        xhr.open('GET', window.Configuration.OAuthURL + 'me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams),address,organizations,phoneNumbers)');
+        xhr.open('GET', window.Configuration.OAuthURL + 'pebl/linkedin/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams),address,organizations,phoneNumbers)');
         xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send();
@@ -410,7 +410,7 @@ window.Lightbox = {
                 failure(e);
             }
         });
-        xhr.open('GET', window.Configuration.OAuthURL + 'people/(id:{' + userId + '})');
+        xhr.open('GET', window.Configuration.OAuthURL + 'pebl/linkedin/people/(id:{' + userId + '})');
         xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send();
