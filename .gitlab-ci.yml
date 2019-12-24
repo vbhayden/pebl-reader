@@ -34,6 +34,8 @@ buildProdExtension:
   # - "sed -i \"s/production: false/production: true/g\" src/mixins/config.js"
   - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
   - echo "window.Configuration = {};" > src/cloud-reader/config.js
+  - echo "window.Configuration.OAuthURL = '$PROD_EXTENSION_OAUTH_URL';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.OAuthToken = '$PROD_EXTENSION_OAUTH_TOKEN';" >> src/cloud-reader/config.js
   - echo "window.Configuration.lrsUrl = '$PROD_EXTENSION_LRS_URL';" >> src/cloud-reader/config.js
   - echo "window.Configuration.lrsCredential = '$PROD_EXTENSION_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
   - echo "window.Configuration.useLinkedIn = true;" >> src/cloud-reader/config.js
