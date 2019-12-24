@@ -373,7 +373,7 @@ window.Lightbox = {
             }
         });
         xhr.open('GET',
-            window.Configuration.OAuthUrl +
+            window.Configuration.OAuthURL +
             'oauth2/' + application + '/linkedin?authToken=' + authToken + '&d=' + Date.now());
         xhr.send();
     },
