@@ -373,8 +373,8 @@ window.Lightbox = {
             }
         });
         xhr.open('GET',
-            'https://project.oauth.eduworks.com' +
-            '/oauth2/' + application + '/linkedin?authToken=' + authToken + '&d=' + Date.now());
+            window.Configuration.OAuthURL +
+            'oauth2/' + application + '/linkedin?authToken=' + authToken + '&d=' + Date.now());
         xhr.send();
     },
     apiGetProfile: function(accessToken, success, failure) {
@@ -391,7 +391,7 @@ window.Lightbox = {
                 failure(e);
             }
         });
-        xhr.open('GET', 'https://project.oauth.eduworks.com/pebl/linkedin/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams),address,organizations,phoneNumbers)');
+        xhr.open('GET', window.Configuration.OAuthURL + 'pebl/linkedin/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams),address,organizations,phoneNumbers)');
         xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send();
@@ -410,14 +410,14 @@ window.Lightbox = {
                 failure(e);
             }
         });
-        xhr.open('GET', 'https://project.oath.eduworks.com/pebl/linkedin/people/(id:{' + userId + '})');
+        xhr.open('GET', window.Configuration.OAuthURL + 'pebl/linkedin/people/(id:{' + userId + '})');
         xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send();
     },
 
     linkedInSignIn: function() {
-        window.Lightbox.apiGetAuthToken('86ujpjdo6nv82l',
+        window.Lightbox.apiGetAuthToken(window.Configuration.OAuthToken,
             'r_liteprofile',
             location.origin);
     },
