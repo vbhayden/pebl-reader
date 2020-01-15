@@ -42,6 +42,7 @@
     max-height: 100vh;
     justify-content: center;
     flex-direction: column;
+    align-items: center;
 }
 
 .lightBoxLoginForm .linkedInButton {
@@ -192,6 +193,11 @@ label {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+    width: 100%;
+}
+
+.confirmLogoutMessage {
+    text-align: center;
 }
 
 .cancel-button {
@@ -260,11 +266,11 @@ label {
     .lightBoxLoginForm h2, h3, h4 {
         text-align: left;
     }
-    .lightBoxLoginForm .lightBoxContent {
+/*    .lightBoxLoginForm .lightBoxContent {
         flex-direction: row;
-    }
+    }*/
     .login__header {
-        width: 33%;
+        width: 100%;
     }
     .login__form-section {
         width: 66%;
@@ -310,11 +316,11 @@ label {
     .lightBoxLoginForm h2, h3, h4 {
         text-align: left;
     }
-    .lightBoxLoginForm .lightBoxContent {
+/*    .lightBoxLoginForm .lightBoxContent {
         flex-direction: row;
-    }
+    }*/
     .login__header {
-        width: 33%;
+        width: 100%
     }
     .login__form-section {
         width: 66%;

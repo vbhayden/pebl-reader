@@ -159,6 +159,7 @@ window.Lightbox = {
     },
 
     createLoginForm: function() {
+        window.Lightbox.close();
         window.Lightbox.create("login", false);
 
         var lightBoxContent = document.getElementById('lightBoxContent');
@@ -223,15 +224,16 @@ window.Lightbox = {
                 '</div>' +
                 '<div class="login__input">' +
                     '<select class="select-css" id="loginUserNameSelector">' +
-                    '<option>Learner</option>' +
-                    '<option>Learner1</option>' +
-                    '<option>Learner2</option>' +
-                    '<option>Learner3</option>' +
-                    '<option>Learner5</option>' +
-                    '<option>Learner7</option>' +
-                '</select>' +
-            '</div>'
+                    '</select>' +
+                '</div>'
             );
+
+            if (window.Configuration && window.Configuration.userList && window.Configuration.userList.length > 0) {
+                for (var user of window.Configuration.userList) {
+                    selects.find('#loginUserNameSelector').append($('<option>' + user + '</option>'));
+                }
+            }
+
             $(form).append(selects);
             /*
              *lightBoxContent.appendChild(selects[1]);
@@ -274,12 +276,12 @@ window.Lightbox = {
                 var currentTeam = null;
                 if ($('#loginTeamSelect').length > 0) {
                     if ($('#loginTeamSelect').val().trim().length > 0)
-                        currentTeam = $('#loginTeamSelect').val();
+                        currentTeam = $('#loginTeamSelect').val().toLowerCase();
                 }
                 var currentClass = null;
                 if ($('#loginClassSelect').length > 0) {
                     if ($('#loginClassSelect').val().trim().length > 0) {
-                        currentClass = $('#loginClassSelect').val();
+                        currentClass = $('#loginClassSelect').val().toLowerCase();
                     }
                 }
                 var identity = $("#loginUserNameSelector").val();
@@ -371,8 +373,8 @@ window.Lightbox = {
             }
         });
         xhr.open('GET',
-            'https://project.oauth.eduworks.com' +
-            '/oauth2/' + application + '/linkedin?authToken=' + authToken + '&d=' + Date.now());
+            window.Configuration.OAuthURL +
+            'oauth2/' + application + '/linkedin?authToken=' + authToken + '&d=' + Date.now());
         xhr.send();
     },
     apiGetProfile: function(accessToken, success, failure) {
@@ -389,7 +391,7 @@ window.Lightbox = {
                 failure(e);
             }
         });
-        xhr.open('GET', 'https://project.oauth.eduworks.com/pebl/linkedin/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams),address,organizations,phoneNumbers)');
+        xhr.open('GET', window.Configuration.OAuthURL + 'pebl/linkedin/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams),address,organizations,phoneNumbers)');
         xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send();
@@ -408,14 +410,14 @@ window.Lightbox = {
                 failure(e);
             }
         });
-        xhr.open('GET', 'https://project.oath.eduworks.com/pebl/linkedin/people/(id:{' + userId + '})');
+        xhr.open('GET', window.Configuration.OAuthURL + 'pebl/linkedin/people/(id:{' + userId + '})');
         xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send();
     },
 
     linkedInSignIn: function() {
-        window.Lightbox.apiGetAuthToken('86ujpjdo6nv82l',
+        window.Lightbox.apiGetAuthToken(window.Configuration.OAuthToken,
             'r_liteprofile',
             location.origin);
     },
