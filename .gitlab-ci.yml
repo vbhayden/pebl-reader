@@ -57,6 +57,45 @@ buildProdExtension:
     paths:
       - dist/cloud-reader
 
+buildProdExtensionEEO:
+  stage: build
+  
+  only:
+    - extensionEEO
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --init --recursive readium-js    
+  script:
+  - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
+  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json    
+  # Yaml doesn't like ':<space>' wrap command in quotes
+  # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_EXTENSION_LRS_AUTH\'/g\" src/js/pebl-login-widget.js"
+  # - "sed -i \"s/production: false/production: true/g\" src/mixins/config.js"
+  - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
+  - echo "window.Configuration = {};" > src/cloud-reader/config.js
+  - echo "window.Configuration.OAuthURL = '$PROD_EXTENSION_OAUTH_URL';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.OAuthToken = '$PROD_EXTENSION_OAUTH_TOKEN';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.lrsUrl = '$PROD_EXTENSION_LRS_URL';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.lrsCredential = '$PROD_EXTENSION_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.useLinkedIn = true;" >> src/cloud-reader/config.js
+  - echo "window.Configuration.favicon = 'images/eXtension-icon_small.png';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.loginImage = 'images/eXtension-black.png';" >> src/cloud-reader/config.js
+
+  - echo "{" > src/i18n/_locales/en_US/skinning.json
+
+  - "echo '\"i18n_pebl_library\" : { \"message\" : \"eXtension Library\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_reader\" : { \"message\" : \"eXtension Reader\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_title\" : { \"message\" : \"eXtension Foundation\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_webreader_logo\" : { \"message\" : \"images/eXtension-icon_small.png\" }' >> src/i18n/_locales/en_US/skinning.json"
+  
+  - echo "}" >> src/i18n/_locales/en_US/skinning.json
+  
+  - npm run prepare:all
+  - npm run dist
+  artifacts:
+    paths:
+      - dist/cloud-reader
+
 buildNpsProd:
   stage: build
 
@@ -226,6 +265,47 @@ prodExtensionDeploy:
    - ssh -p22 $PROD_EXTENSION_USERNAME@$PROD_EXTENSION_SERVER_IP "rm -rf /var/www/html/*"
    - scp -P22 -r dist/cloud-reader/* $PROD_EXTENSION_USERNAME@$PROD_EXTENSION_SERVER_IP:/var/www/html/
    - ssh -p22 $PROD_EXTENSION_USERNAME@$PROD_EXTENSION_SERVER_IP "mv /var/www/books/prodBookshelf /var/www/html/epub_content"
+   
+### ----------------------
+
+prodExtensionEEODeploy:
+  stage: deploy
+  only:
+    - extensionEEO
+  script:
+    ## Pull down apt-get install repos
+   - apt-get update -y
+   - apt-get install openssh-client -y
+
+   ##
+   ## Run ssh-agent (inside the build environment)
+   ##
+   - eval $(ssh-agent -s)
+
+   ##
+   ## Create the SSH directory and give it the right permissions
+   ##
+   - mkdir -p ~/.ssh
+   - chmod 700 ~/.ssh
+
+   ##
+   ## Assuming you created the SSH_KNOWN_HOSTS variable, uncomment the
+   ## following two lines. NOTE the $SSH_KNOWN_HOSTS variable should be added
+   ## in the gitlab interface and not here
+   ##
+   - echo "$PROD_EXTENSION_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+   - chmod 644 ~/.ssh/known_hosts
+
+   ## NOTE the $STAGINT_PRIVATE_KEY variable should be added
+   ## in the gitlab interface and not here
+   ##
+   - echo "$PROD_EXTENSION_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+
+   ## Build commands
+   - ssh -p22 $PROD_EXTENSION_USERNAME@$PROD_EXTENSION_SERVER_IP "mv /var/www/htmlEEO/epub_content /var/www/books/prodEEOBookshelf"
+   - ssh -p22 $PROD_EXTENSION_USERNAME@$PROD_EXTENSION_SERVER_IP "rm -rf /var/www/htmlEEO/*"
+   - scp -P22 -r dist/cloud-reader/* $PROD_EXTENSION_USERNAME@$PROD_EXTENSION_SERVER_IP:/var/www/htmlEEO/
+   - ssh -p22 $PROD_EXTENSION_USERNAME@$PROD_EXTENSION_SERVER_IP "mv /var/www/books/prodEEOBookshelf /var/www/htmlEEO/epub_content"
    
 ### ----------------------
 
