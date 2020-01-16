@@ -1012,8 +1012,6 @@ Helpers){
                         handleSync();
                     }
                 });
-            } else if (data.message === 'goToIdref') {
-                readium.reader.openSpineItemPage(data.idref, 0);
             }
         }, false);
 
