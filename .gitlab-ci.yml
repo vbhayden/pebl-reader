@@ -83,8 +83,8 @@ buildProdExtensionEEO:
 
   - echo "{" > src/i18n/_locales/en_US/skinning.json
 
-  - "echo '\"i18n_pebl_library\" : { \"message\" : \"eXtension Library\" },' >> src/i18n/_locales/en_US/skinning.json"
-  - "echo '\"i18n_pebl_reader\" : { \"message\" : \"eXtension Reader\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_library\" : { \"message\" : \"eXtension EEO Library\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_reader\" : { \"message\" : \"eXtension EEO Reader\" },' >> src/i18n/_locales/en_US/skinning.json"
   - "echo '\"i18n_pebl_title\" : { \"message\" : \"eXtension Foundation\" },' >> src/i18n/_locales/en_US/skinning.json"
   - "echo '\"i18n_pebl_webreader_logo\" : { \"message\" : \"images/eXtension-icon_small.png\" }' >> src/i18n/_locales/en_US/skinning.json"
   
