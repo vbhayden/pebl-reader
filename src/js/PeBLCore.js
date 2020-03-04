@@ -1,3 +1,16 @@
+/*
+Copyright 2020 Eduworks Corporation
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -233,7 +246,8 @@ var Action = /** @class */ (function (_super) {
         var verb = x.verb.display["en-US"];
         return (verb == "preferred") || (verb == "morphed") || (verb == "interacted") || (verb == "experienced") || (verb == "disliked") ||
             (verb == "liked") || (verb == "accessed") || (verb == "hid") || (verb == "showed") || (verb == "displayed") || (verb == "undisplayed") ||
-            (verb == "searched") || (verb == "selected") || (verb == "unbookmarked") || (verb == "discarded") || (verb == "unshared") || (verb == "unannotated");
+            (verb == "searched") || (verb == "selected") || (verb == "unbookmarked") || (verb == "discarded") || (verb == "unshared") || (verb == "unannotated") ||
+            (verb == "submitted");
     };
     return Action;
 }(XApiStatement));
@@ -4119,6 +4133,7 @@ var EventSet = /** @class */ (function () {
         this.eventHelped = "eventHelped";
         this.eventInvited = "eventInvited";
         this.eventUninvited = "eventUninvited";
+        this.eventSubmitted = "eventSubmitted";
         this.eventProgramLevelUp = "eventProgramLevelUp";
         this.eventProgramLevelDown = "eventProgramLevelDown";
         this.eventProgramInvited = "eventProgramInvited";
@@ -5882,6 +5897,34 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addActorAccount(xapi, userProfile);
                         self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addExtensions(exts));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#accessed", "accessed");
+                        self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        var s = new Action(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, s);
+                        self.pebl.storage.saveEvent(userProfile, s);
+                    }
+                });
+            });
+        });
+    };
+    PEBLEventHandlers.prototype.eventSubmitted = function (event) {
+        var payload = event.detail;
+        var xapi = {};
+        var self = this;
+        var exts = {
+            idref: payload.idref,
+            cfi: payload.cfi,
+            target: payload.target,
+            type: payload.type
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.user.getUser(function (userProfile) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addExtensions(exts));
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#submitted", "submitted");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var s = new Action(xapi);
                         self.pebl.storage.saveOutgoingXApi(userProfile, s);
