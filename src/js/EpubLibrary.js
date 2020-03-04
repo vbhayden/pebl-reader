@@ -974,7 +974,60 @@ Helpers){
             }
         });
 
-        
+        window.addEventListener('message', function(event) {
+            console.log(event);
+            var data = JSON.parse(event.data);
+            if (data.message === 'extensionDashboardSync') {
+                var handleSync = function() {
+                    window.extensionDashboard = {};
+                    window.extensionDashboard.programID = data.programID;
+                    window.extensionDashboard.userProfile = data.userProfile;
+                    window.extensionDashboard.programTitle = data.programTitle;
+                    window.extensionDashboard.isAdmin = data.isAdmin;
+                    if (data.userProfile) {
+                        PeBL.emitEvent(PeBL.events.eventLoggedIn, data.userProfile);
+                        window.Lightbox.close();
+                    }
+
+                    if (data.redirectUrl) {
+                        window.location.href = data.redirectUrl;
+                    }
+
+                    console.log('SUCCESS');
+                }
+
+                window.PeBL.user.isLoggedIn(function(isLoggedIn) {
+                    if (isLoggedIn) {
+                        window.PeBL.user.getUser(function(userProfile) {
+                            if (userProfile.identity !== data.userProfile.identity || (window.extensionDashboard && window.extensionDashboard.programID && (window.extensionDashboard.programID !== data.programID))) {
+                                setTimeout(function() {
+                                    window.location.href = window.location.href;
+                                }, 10);
+                                handleSync();
+                            } else {
+                                handleSync();
+                            }
+                        });
+                    } else {
+                        handleSync();
+                    }
+                });
+            }
+        }, false);
+
+        if (window.opener) {
+            var urlParams = new URLSearchParams(window.location.search);
+            var redirectUrl = urlParams.get('redirectUrl');
+            var message = {
+                "message": "bookshelfLoaded"
+            }
+
+            if (redirectUrl) {
+                message.redirectUrl = unescape(redirectUrl);
+            }
+
+            window.opener.postMessage(JSON.stringify(message), '*');
+        }
 
     }
 
