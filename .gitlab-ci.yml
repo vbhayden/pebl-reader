@@ -144,6 +144,7 @@ buildAdlProd:
   - echo "window.Configuration.lrsCredential = '$PROD_ADL_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
   - echo "window.Configuration.useLinkedIn = false;" >> src/cloud-reader/config.js
   - echo "window.Configuration.loginImage = 'images/PEBL-Logo-Color-small.png';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.favicon = 'images/PEBL-icon-16.ico';" >> src/cloud-reader/config.js
   - echo "window.Configuration.userList = ['B001', 'B002', 'B003', 'B004', 'B005', 'B006', 'B007', 'B008', 'B009', 'B010', 'B011', 'B012', 'B013', 'B014', 'B015', 'B016', 'B017', 'B018', 'B019', 'B020', 'B021', 'B022', 'B023', 'B024', 'B025', 'B026', 'B027', 'B028', 'B029', 'B030', 'B031', 'B032', 'B033', 'B034', 'B035', 'B036', 'B037', 'B038', 'B039', 'B040', 'B099'];" >> src/cloud-reader/config.js
 
   - npm run prepare:all
@@ -172,6 +173,7 @@ buildLwProd:
   - echo "window.Configuration.lrsCredential = '$PROD_LW_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
   - echo "window.Configuration.useLinkedIn = false;" >> src/cloud-reader/config.js
   - echo "window.Configuration.loginImage = 'images/PEBL-Logo-Color-small.png';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.favicon = 'images/PEBL-icon-16.ico';" >> src/cloud-reader/config.js
   - echo "window.Configuration.userList = ['Guest', 'B001', 'B002', 'B003', 'B004', 'B005', 'B006', 'B007', 'B008', 'B009', 'B010', 'B011', 'B012', 'B013', 'B014', 'B015', 'B016', 'B017', 'B018', 'B019', 'B020', 'B021', 'B022', 'B023', 'B024', 'B025', 'B026', 'B027', 'B028', 'B029', 'B030', 'B031', 'B032', 'B033', 'B034', 'B035', 'B036', 'B037', 'B038', 'B039', 'B040', 'B099'];" >> src/cloud-reader/config.js
 
   - npm run prepare:all
@@ -201,6 +203,7 @@ buildProd:
   - echo "window.Configuration.lrsCredential = '$PROD_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
   - echo "window.Configuration.useLinkedIn = false;" >> src/cloud-reader/config.js
   - echo "window.Configuration.loginImage = 'images/PEBL-Logo-Color-small.png';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.favicon = 'images/PEBL-icon-16.ico';" >> src/cloud-reader/config.js
   - echo "window.Configuration.userList = ['Learner', 'Learner1', 'Learner2', 'Learner3', 'Learner5', 'Learner7'];" >> src/cloud-reader/config.js
 
   - npm run prepare:all
