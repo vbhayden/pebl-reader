@@ -144,7 +144,37 @@ buildAdlProd:
   - echo "window.Configuration.lrsCredential = '$PROD_ADL_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
   - echo "window.Configuration.useLinkedIn = false;" >> src/cloud-reader/config.js
   - echo "window.Configuration.loginImage = 'images/PEBL-Logo-Color-small.png';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.favicon = 'images/PEBL-icon-16.ico';" >> src/cloud-reader/config.js
   - echo "window.Configuration.userList = ['B001', 'B002', 'B003', 'B004', 'B005', 'B006', 'B007', 'B008', 'B009', 'B010', 'B011', 'B012', 'B013', 'B014', 'B015', 'B016', 'B017', 'B018', 'B019', 'B020', 'B021', 'B022', 'B023', 'B024', 'B025', 'B026', 'B027', 'B028', 'B029', 'B030', 'B031', 'B032', 'B033', 'B034', 'B035', 'B036', 'B037', 'B038', 'B039', 'B040', 'B099'];" >> src/cloud-reader/config.js
+
+  - npm run prepare:all
+  - npm run dist
+  artifacts:
+    paths:
+    - dist/cloud-reader
+
+buildLwProd:
+  stage: build
+
+  only:
+    - lwProd
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --init --recursive readium-js
+  script:
+  - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
+  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json    
+  # Yaml doesn't like ':<space>' wrap command in quotes
+  # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_LRS_AUTH\'/g\" src/js/pebl-login-widget.js"  
+  # - "sed -i \"s/production: false/production: true/g\" src/mixins/config.js"
+  - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
+  - echo "window.Configuration = {};" > src/cloud-reader/config.js
+  - echo "window.Configuration.lrsUrl = '$PROD_ADL_LRS_URL';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.lrsCredential = '$PROD_LW_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.useLinkedIn = false;" >> src/cloud-reader/config.js
+  - echo "window.Configuration.loginImage = 'images/PEBL-Logo-Color-small.png';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.favicon = 'images/PEBL-icon-16.ico';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.userList = ['Guest', 'B001', 'B002', 'B003', 'B004', 'B005', 'B006', 'B007', 'B008', 'B009', 'B010', 'B011', 'B012', 'B013', 'B014', 'B015', 'B016', 'B017', 'B018', 'B019', 'B020', 'B021', 'B022', 'B023', 'B024', 'B025', 'B026', 'B027', 'B028', 'B029', 'B030', 'B031', 'B032', 'B033', 'B034', 'B035', 'B036', 'B037', 'B038', 'B039', 'B040', 'B099'];" >> src/cloud-reader/config.js
 
   - npm run prepare:all
   - npm run dist
@@ -173,6 +203,7 @@ buildProd:
   - echo "window.Configuration.lrsCredential = '$PROD_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
   - echo "window.Configuration.useLinkedIn = false;" >> src/cloud-reader/config.js
   - echo "window.Configuration.loginImage = 'images/PEBL-Logo-Color-small.png';" >> src/cloud-reader/config.js
+  - echo "window.Configuration.favicon = 'images/PEBL-icon-16.ico';" >> src/cloud-reader/config.js
   - echo "window.Configuration.userList = ['Learner', 'Learner1', 'Learner2', 'Learner3', 'Learner5', 'Learner7'];" >> src/cloud-reader/config.js
 
   - npm run prepare:all
@@ -386,6 +417,45 @@ prodAdlDeploy:
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "rm -rf /var/www/htmlAdlReader/*"
    - scp -P22 -r dist/cloud-reader/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/htmlAdlReader/
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/bookTempDeployment/prodAdlBookshelf /var/www/htmlAdlReader/epub_content"
+
+prodLwDeploy:
+  stage: deploy
+  only:
+    - lwProd
+  script:
+    ## Pull down apt-get install repos
+   - apt-get update -y
+   - apt-get install openssh-client -y
+
+   ##
+   ## Run ssh-agent (inside the build environment)
+   ##
+   - eval $(ssh-agent -s)
+
+   ##
+   ## Create the SSH directory and give it the right permissions
+   ##
+   - mkdir -p ~/.ssh
+   - chmod 700 ~/.ssh
+
+   ##
+   ## Assuming you created the SSH_KNOWN_HOSTS variable, uncomment the
+   ## following two lines. NOTE the $SSH_KNOWN_HOSTS variable should be added
+   ## in the gitlab interface and not here
+   ##
+   - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+   - chmod 644 ~/.ssh/known_hosts
+
+   ## NOTE the $STAGINT_PRIVATE_KEY variable should be added
+   ## in the gitlab interface and not here
+   ##
+   - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+
+   ## Build commands
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/htmlLwReader/epub_content /var/www/bookTempDeployment/prodLwBookshelf"      
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "rm -rf /var/www/htmlLwReader/*"
+   - scp -P22 -r dist/cloud-reader/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/htmlLwReader/
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/bookTempDeployment/prodLwBookshelf /var/www/htmlLwReader/epub_content"
 
 prodDeploy:
   stage: deploy
