@@ -34,6 +34,12 @@
 	background-color: #0070ff;
 }
 
+.rd-highlight.search-highlight {
+	position: absolute;
+	opacity: 0.2;
+	background-color: #fcf8e3;
+}
+
 .rd-highlight {
 	cursor: pointer;
 	pointer-events: unset !important;

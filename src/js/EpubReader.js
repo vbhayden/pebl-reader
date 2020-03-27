@@ -3,6 +3,7 @@ define([
         "readium_shared_js/globals",
         './ModuleConfig',
         'jquery',
+        'underscore',
         'bootstrap',
         'bootstrapA11y',
         'URIjs',
@@ -35,6 +36,7 @@ define([
         Globals,
         moduleConfig,
         $,
+        _,
         bootstrap,
         bootstrapA11y,
         URI,
@@ -891,6 +893,42 @@ define([
             }
         };
 
+        var searchShowHideToggle = function() {
+            unhideUI();
+
+            var $appContainer = $('#app-container'),
+                hide = $appContainer.hasClass('search-visible');
+            var bookmark;
+            $appContainer.removeClass();
+            if (readium.reader.handleViewportResize && !embedded) {
+                bookmark = JSON.parse(readium.reader.bookmarkCurrentPage());
+            }
+
+            if (hide) {
+                $appContainer.removeClass('search-visible');
+
+                PeBL.emitEvent(PeBL.events.eventUndisplayed, {
+                    target: 'PeBL Reader Search',
+                    type: 'Search'
+                });
+            } else {
+                $appContainer.addClass('search-visible');
+
+                PeBL.emitEvent(PeBL.events.eventDisplayed, {
+                    target: 'PeBL Reader Search',
+                    type: 'Search'
+                });
+            }
+
+            if (embedded) {
+                hideLoop(null, true);
+            } else if (readium.reader.handleViewportResize) {
+                setTimeout(function () {
+                    readium.reader.handleViewportResize(bookmark);
+                }, 200);
+            }
+        }
+
         var saveHighlight = function() {
             var CFI = readium.reader.plugins.highlights.getCurrentSelectionCfi();
             if (CFI) {
@@ -1515,13 +1553,18 @@ define([
             });
             $('#annotations-body').prepend('<div id="annotations-body-list"></div>');
             $('#bookmarks-body').prepend('<div id="bookmarks-body-list"></div>');
+            $('#search-body').prepend('<div id="search-body-list"></div>');
+
+            $('#search-body').prepend('<div><input id="searchInput" placeholder="Search this book" /></div>');
 
             //$('#annotations-body').prepend('<h2 aria-label="' + Strings.annotations + '" title="' + Strings.annotations + '">' + Strings.annotations + '</h2>');
             $('#bookmarks-body').prepend('<h2 aria-label="' + Strings.bookmarks + '" title="' + Strings.bookmarks + '"><img src="images/pebl-icons-wip_bookmark-list.svg" aria-hidden="true" height="18px"> ' + Strings.bookmarks + '</h2>');
+            $('#search-body').prepend('<h2 aria-label="' + Strings.search + '" title="' + Strings.search + '"><img src="images/pebl-icons-wip_bookmark-list.svg" aria-hidden="true" height="18px"> ' + Strings.search + '</h2>');
 
             $('#readium-toc-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.toc + '" title="' + Strings.i18n_close + ' ' + Strings.toc + '"><span aria-hidden="true">&times;</span></button>');
             $('#annotations-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.annotations + '" title="' + Strings.i18n_close + ' ' + Strings.annotations + '"><span aria-hidden="true">&times;</span></button>');
             $('#bookmarks-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.bookmarks + '" title="' + Strings.i18n_close + ' ' + Strings.bookmarks + '"><span aria-hidden="true">&times;</span></button>');
+            $('#search-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.search + '" title="' + Strings.i18n_close + ' ' + Strings.search + '"><span aria-hidden="true">&times;</span></button>');
 
             $('#readium-toc-body button.close').on('click', function() {
                 tocShowHideToggle();
@@ -1545,6 +1588,88 @@ define([
                 bookmarksShowHideToggle();
                 return false;
             });
+            $('#search-body button.close').on('click', function() {
+                searchShowHideToggle();
+                return false;
+            });
+
+            $('#searchInput').on('input', _.debounce(function() {
+                $('#search-body-list').children().remove();
+                var text = this.value;
+                var searchResults = [];
+                if (text.trim().length > 0) {
+                    var regex = new RegExp(text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "gi"); // Escape the input
+                    for (var i = 0; i < window.SpineDocuments.length; i++) {
+                        var documentObject = window.SpineDocuments[i];
+                        var spineDocument = documentObject.htmlDocument;
+                        searchResults.push({title: spineDocument.title, searchResults: []});
+                        var treeWalker = spineDocument.createTreeWalker(spineDocument.body, NodeFilter.SHOW_TEXT, function(node) {
+                            if (node.nodeValue && node.nodeValue.trim().length > 0) { return NodeFilter.FILTER_ACCEPT } else  { return NodeFilter.FILTER_REJECT }
+                        });
+                        var nodeList = [];
+                        var currentNode = treeWalker.currentNode;
+                        currentNode = treeWalker.nextNode();
+                        while (currentNode) {
+                            while ((match = regex.exec(currentNode.nodeValue)) != null) {
+                                var start = match.index;
+                                var end = match.index + match.length - 1;
+                                var range = spineDocument.createRange();
+                                range.setStart(currentNode, start);
+                                range.setEnd(currentNode, end);
+                                var cfiRange = window.READIUM.reader.getRangeCfiFromDomRange(range);
+                                cfiRange.idref = documentObject.spineItem.idref;
+
+                                var surroundingTextStart = 0;
+                                var surroundingTextEnd = currentNode.nodeValue.length;
+                                if (start > 50) {
+                                    surroundingTextStart = start - 50;
+                                }
+                                if (surroundingTextEnd - end > 50) {
+                                    surroundingTextEnd = end + 50;
+                                }
+
+                                var surroundingText = currentNode.nodeValue.substr(surroundingTextStart, surroundingTextEnd);
+                                surroundingText = surroundingText.replace(match, '<mark>' + match + '</mark>');
+
+                                nodeList.push({text: surroundingText, cfi: cfiRange})
+                            }
+                            currentNode = treeWalker.nextNode();
+                        }
+                        searchResults[i].searchResults = nodeList;
+                    }
+                }
+                console.log(searchResults);
+                for (var chapter of searchResults) {
+                    if (chapter.searchResults.length > 0) {
+                        var container = document.createElement('div');
+
+                        var header = document.createElement('h3');
+                        header.textContent = chapter.title;
+                        container.appendChild(header);
+
+                        var list = document.createElement('div');
+                        container.appendChild(list);
+
+                        for (var result of chapter.searchResults) {
+                            var textContainer = document.createElement('div');
+                            textContainer.classList.add('searchResult');
+                            (function(textContainer, result) {
+                                textContainer.addEventListener('click', function() {
+                                    window.READIUM.reader.openSpineItemElementCfi(result.cfi.idref, result.cfi.contentCFI);
+                                    // window.READIUM.reader.plugins.highlights.addHighlight(result.cfi.idref, result.cfi.contentCFI, PeBL.utils.getUuid(), "search-highlight");
+                                });
+                            })(textContainer, result);
+
+                            var textContent = document.createElement('p');
+                            textContent.innerHTML = result.text;
+                            textContainer.appendChild(textContent);
+
+                            list.appendChild(textContainer);
+                        }
+                        $('#search-body-list').append(container);
+                    }
+                }
+            }, 1000));
             //        var KEY_ENTER = 0x0D;
             //        var KEY_SPACE = 0x20;
             var KEY_END = 0x23;
@@ -2046,6 +2171,7 @@ define([
             $('.icon-show-annotations').on('click', annotationsShowHideToggle);
             $('#bookmark-show').on('click', bookmarksShowHideToggle);
             $('#bookmark-page').on('click', showBookmarkDialogue);
+            $('#searchButt').on('click', searchShowHideToggle);
             PeBL.extension.hardcodeLogin.hookLoginButton("loginButt",
                 function() {
                     loadlibrary();
@@ -2134,11 +2260,13 @@ define([
                 $('#readium-toc-body').height(appHeight - 44);
                 $('#annotations-body').height(appHeight - 44);
                 $('#bookmarks-body').height(appHeight - 44);
+                $('#search-body').height(appHeight - 44);
             };
 
             var tocBody = $('#readium-toc-body');
             var annotationsBody = $('#annotations-body');
             var bookmarksBody = $('#bookmarks-body');
+            var searchBody = $('#search-body');
             var readingArea = $('#reading-area');
 
             var setReaderSize = function() {
@@ -2159,6 +2287,12 @@ define([
                     var bookmarksBodyWidth = bookmarksBody.css('width');
                     if (readingAreaOffset !== bookmarksBodyWidth) {
                         readingArea.css('right', bookmarksBodyWidth);
+                        window.dispatchEvent(new Event('resize'));
+                    }
+                } else if (searchBody.is(':visible')) {
+                    var searchBodyWidth = searchBody.css('width');
+                    if (readingAreaOffset !== searchBodyWidth) {
+                        readingArea.css('right', searchBodyWidth);
                         window.dispatchEvent(new Event('resize'));
                     }
                 } else if (readingAreaOffset !== '0px') {
