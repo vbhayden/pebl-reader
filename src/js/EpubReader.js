@@ -911,6 +911,7 @@ define([
                     target: 'PeBL Reader Search',
                     type: 'Search'
                 });
+                readium.reader.plugins.highlights.removeHighlightsByType('search-highlight');
             } else {
                 $appContainer.addClass('search-visible');
 
@@ -1459,6 +1460,13 @@ define([
                     });
                 });
 
+                // If a search result was clicked, draw a new highlight for it.
+                if (window.localStorage.getItem('searchHighlight')) {
+                    var searchHighlight = JSON.parse(window.localStorage.getItem('searchHighlight'));
+                    readium.reader.plugins.highlights.addHighlight(searchHighlight.idref, searchHighlight.contentCFI, PeBL.utils.getUuid(), 'search-highlight');
+                    window.localStorage.removeItem('searchHighlight');
+                }
+
                 if (!_tocLinkActivated) return;
                 _tocLinkActivated = false;
 
@@ -1559,7 +1567,7 @@ define([
 
             //$('#annotations-body').prepend('<h2 aria-label="' + Strings.annotations + '" title="' + Strings.annotations + '">' + Strings.annotations + '</h2>');
             $('#bookmarks-body').prepend('<h2 aria-label="' + Strings.bookmarks + '" title="' + Strings.bookmarks + '"><img src="images/pebl-icons-wip_bookmark-list.svg" aria-hidden="true" height="18px"> ' + Strings.bookmarks + '</h2>');
-            $('#search-body').prepend('<h2 aria-label="' + Strings.search + '" title="' + Strings.search + '"><img src="images/pebl-icons-wip_bookmark-list.svg" aria-hidden="true" height="18px"> ' + Strings.search + '</h2>');
+            $('#search-body').prepend('<h2 aria-label="' + Strings.search + '" title="' + Strings.search + '"><img src="images/pebl-icons-search.svg" aria-hidden="true" height="18px"> ' + Strings.search + '</h2>');
 
             $('#readium-toc-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.toc + '" title="' + Strings.i18n_close + ' ' + Strings.toc + '"><span aria-hidden="true">&times;</span></button>');
             $('#annotations-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.annotations + '" title="' + Strings.i18n_close + ' ' + Strings.annotations + '"><span aria-hidden="true">&times;</span></button>');
@@ -1655,6 +1663,8 @@ define([
                             textContainer.classList.add('searchResult');
                             (function(textContainer, result) {
                                 textContainer.addEventListener('click', function() {
+                                    window.localStorage.setItem('searchHighlight', JSON.stringify(result.cfi));
+                                    window.READIUM.reader.plugins.highlights.removeHighlightsByType('search-highlight');
                                     window.READIUM.reader.openSpineItemElementCfi(result.cfi.idref, result.cfi.contentCFI);
                                     // window.READIUM.reader.plugins.highlights.addHighlight(result.cfi.idref, result.cfi.contentCFI, PeBL.utils.getUuid(), "search-highlight");
                                 });
@@ -2552,6 +2562,8 @@ define([
                                     }
                                 });
 
+                            else if (type === 'search-highlight')
+                                readium.reader.plugins.highlights.removeHighlight(id);
                             // readium.reader.plugins.highlights.removeHighlight(id);
                         });
                     }
