@@ -168,25 +168,6 @@
         </nav>
         <div id="app-container">
         </div>
-        <!-- DELETE ME -->
-        <textarea id="wssTest" style="position: fixed;top: 50%;left: 50%;"></textarea>
     </body>
-    <!-- DELETE ME -->
-    <script type="text/javascript">
-        var websocket = new WebSocket("wss://dev.services.peblproject.org/echo");
-        var textarea = document.getElementById('wssTest');
-        websocket.onopen = function(evt) {
-            textarea.value += 'CONNECTED';
-            websocket.send('sending test message');
-        }
-        websocket.onclose = function(evt) {
-            textarea.value += 'CLOSED';
-        }
-        websocket.onmessage = function(evt) {
-            textarea.value += 'RESPONSE: ' + evt.data; 
-        }
-        websocket.onerror = function(evt) {
-            textarea.value += 'ERROR: ' + evt.data;
-        }
-    </script>
+
 </html>
