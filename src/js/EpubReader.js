@@ -2643,7 +2643,8 @@ define([
                         console.log('No text selected');
                         // Hide the highlight button
                     }
-                    window.lastTouchedElement = e.target;
+                    var iframeWindow = $("#epub-reader-frame iframe")[0].contentWindow;
+                    iframeWindow.lastTouchedElement = e.target;
                 });
 
                 readium.reader.addIFrameEventListener('touchend', function(e) {
@@ -2663,7 +2664,8 @@ define([
                         console.log('No text selected');
                         // Hide the highlight button
                     }
-                    window.lastTouchedElement = e.target;
+                    var iframeWindow = $("#epub-reader-frame iframe")[0].contentWindow;
+                    iframeWindow.lastTouchedElement = e.target;
                 });
 
                 
