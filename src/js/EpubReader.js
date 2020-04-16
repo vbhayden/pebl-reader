@@ -862,7 +862,7 @@ define([
                     $('#my-shared-annotations').append('<p class="hideWhenSiblingPresent">When you add Annotations and share them, they will appear here. You can share annotations by clicking on the highlighted text on the page and selecting the share option from the popup menu.</p>');
                     $('#general-shared-annotations').children().remove();
                     $('#general-shared-annotations').append('<p class="hideWhenSiblingPresent">When other users share their annotations, they will appear here.</p>');
-                    
+
                     PeBL.subscribeEvent(PeBL.events.incomingAnnotations,
                         false,
                         annotationCallback);
@@ -1011,7 +1011,7 @@ define([
             var menu = document.createElement('div');
             menu.id = 'annotationContextMenu';
             //Try to center it on the mouse, take into account the offset of the reader view relative to the page as a whole
-            
+
             var left = (event.pageX ? event.pageX : event.originalEvent.pageX) + readerPosition.left - 50;
             if (left < 0) {
                 left = 0;
@@ -2422,7 +2422,7 @@ define([
 
             Settings.getMultiple(['reader', ebookURL_filepath], function(settings) {
 
-                // Note that unlike Settings.get(), Settings.getMultiple() returns raw string values (from the key/value store), not JSON.parse'd ! 
+                // Note that unlike Settings.get(), Settings.getMultiple() returns raw string values (from the key/value store), not JSON.parse'd !
 
                 // Ensures default settings are saved from the start (as the readium-js-viewer defaults can differ from the readium-shared-js).
                 if (!settings.reader) {
@@ -2460,7 +2460,7 @@ define([
                 _debugBookmarkData_goto = undefined;
                 var openPageRequest;
                 if (settings[ebookURL_filepath]) {
-                    // JSON.parse() *first* because Settings.getMultiple() returns raw string values from the key/value store (unlike Settings.get()) 
+                    // JSON.parse() *first* because Settings.getMultiple() returns raw string values from the key/value store (unlike Settings.get())
                     var bookmark = JSON.parse(settings[ebookURL_filepath]);
                     // JSON.parse() a *second time* because the stored value is readium.reader.bookmarkCurrentPage(), which is JSON.toString'ed
                     bookmark = JSON.parse(bookmark);
@@ -2633,9 +2633,9 @@ define([
                             text = e.view.getSelection().toString();
                         } else if (typeof e.view.document.selection != "undefined" && e.view.document.selection.type == "Text") {
                             text = e.view.document.selection.createRange().text;
-                        }   
+                        }
                     }
-                    
+
                     if (text.length > 0) {
                         console.log('Text is selected');
                         // Show the highlight button
@@ -2652,9 +2652,9 @@ define([
                             text = e.view.getSelection().toString();
                         } else if (typeof e.view.document.selection != "undefined" && e.view.document.selection.type == "Text") {
                             text = e.view.document.selection.createRange().text;
-                        }   
+                        }
                     }
-                    
+
                     if (text.length > 0) {
                         console.log('Text is selected');
                         // Show the highlight button
@@ -2664,7 +2664,7 @@ define([
                     }
                 });
 
-                
+
 
                 Versioning.getVersioningInfo(function(version) {
 
@@ -2863,7 +2863,7 @@ define([
                     readium.reader.pauseMediaOverlay();
                 } catch (err) {
                     //ignore error.
-                    //can occur when ReaderView._mediaOverlayPlayer is null, for example when openBook() fails 
+                    //can occur when ReaderView._mediaOverlayPlayer is null, for example when openBook() fails
                 }
             }
 
