@@ -3089,7 +3089,6 @@ var network_Network = /** @class */ (function () {
     }
     Network.prototype.activate = function (callback) {
         var _this = this;
-        debugger;
         if (!this.running) {
             this.running = true;
             this.syncingProcess.activate(function () {
@@ -6752,7 +6751,7 @@ var pebl_PEBL = /** @class */ (function () {
 // CONCATENATED MODULE: ./src/api.ts
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "install", function() { return install; });
 
-var core = new pebl_PEBL(window.PeBLConfig || window.Configuration, window.PeBLLoaded);
+var core = new pebl_PEBL(window.PeBLConfig, window.PeBLLoaded);
 var install = function (vue, options) {
     vue.prototype.$PeBL = core;
     vue.prototype.$PeBLEvents = core.events;
