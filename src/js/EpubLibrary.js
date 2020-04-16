@@ -259,7 +259,7 @@ Helpers){
 
     var loadLibraryItems = function(epubs){
         $('#app-container .library-items').remove();
-        $('#app-container').append(LibraryBody({}));
+        $('#app-container').append(LibraryBody({strings: Strings}));
         var blacklist = window.localStorage.getItem('blacklist');
         if (blacklist != null) {
             blacklist = JSON.parse(blacklist);
@@ -353,6 +353,194 @@ Helpers){
             }
         };
         processEpub(epubs, 0);
+
+        var initializeLibrarySearch = function() {
+            window.AllSpineDocuments = [];
+
+            libraryManager.retrieveAvailableEpubs(function(epubs) {
+                console.log(epubs);
+
+                var getStuff = function(index, arr) {
+                    var epub = arr[index];
+                    window.READIUM.getPackageDocument(epub.rootUrl, function(packageDocument) {
+                        var packageData = packageDocument.getSharedJsPackageData();
+                        var spine = packageData.spine;
+                        window.AllSpineDocuments[index] = {
+                            title: epub.title,
+                            rootUrl: epub.rootUrl,
+                            spineDocuments: []
+                        }
+
+                        for (var j = 0; j < spine.items.length; j++) {
+                            var spineItem = spine.items[j];
+                            (function(epub, index, spineItem, j, packageData) {
+                                var fetcher = window.READIUM.getCurrentPublicationFetcher();
+                                fetcher.fetchContentDocumentWithoutResolvingDom({spineItem: spineItem}, packageData.rootUrl + '/' + spineItem.href, function(resolvedContentDocumentDom) {
+                                    var searchDocumentObject = {
+                                        spineItem: spineItem,
+                                        htmlDocument: resolvedContentDocumentDom
+                                    }
+                                    window.AllSpineDocuments[index].spineDocuments[j] = searchDocumentObject;
+                                }, function(err) {
+                                    console.log(err);
+                                });
+                            })(epub, index, spineItem, j, packageData);
+                        }
+                        console.log(packageData);
+
+                        if (index < arr.length - 1) {
+                            index++;
+                            getStuff(index, arr);
+                        }
+                    });
+                }
+
+                getStuff(0, epubs);
+            });
+        }
+
+        var searchShowHideToggle = function() {
+            var searchBody = $('#search-library-body');
+            var hide = searchBody.hasClass('search-library-visible');
+            if (hide) {
+                searchBody.removeClass('search-library-visible');
+
+                $('#searchNotInitialized').remove();
+
+                PeBL.emitEvent(PeBL.events.eventUndisplayed, {
+                    target: 'PeBL Library Search',
+                    type: 'Search'
+                });
+            } else {
+                if (!window.READIUM)
+                    return window.alert('Bookshelf search has not been initialized. Please open any book from the bookshelf to initialize the search.');
+                searchBody.addClass('search-library-visible');
+
+                initializeLibrarySearch();
+
+                PeBL.emitEvent(PeBL.events.eventDisplayed, {
+                    target: 'PeBL Library Search',
+                    type: 'Search'
+                });
+            }
+        }
+
+        $('#search-library-body').prepend('<div id="search-body-list"></div>');
+
+        $('#search-library-body').prepend('<div><input id="searchInput" placeholder="Search this book" /></div>');
+
+        $('#search-library-body').prepend('<h2 aria-label="' + Strings.search + '" title="' + Strings.search + '"><img src="images/pebl-icons-search.svg" aria-hidden="true" height="18px"> ' + Strings.search + '</h2>');
+        $('#search-library-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.search + '" title="' + Strings.i18n_close + ' ' + Strings.search + '"><span aria-hidden="true">&times;</span></button>');
+
+        $('#search-library-body button.close').on('click', function() {
+            searchShowHideToggle();
+            return false;
+        });
+
+
+
+        $('#searchButt').on('click', searchShowHideToggle);
+
+        $('#searchInput').on('input', _.debounce(function() {
+            $('#search-body-list').children().remove();
+            var text = this.value;
+            var searchResults = [];
+            if (text.trim().length > 0) {
+                var regex = new RegExp(text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "gi"); // Escape the input
+                for (var i = 0; i < window.AllSpineDocuments.length; i++) {
+                    searchResults[i] = {
+                        title: window.AllSpineDocuments[i].title,
+                        rootUrl: window.AllSpineDocuments[i].rootUrl,
+                        spineDocuments: []
+                    };
+                    for (var j = 0; j < window.AllSpineDocuments[i].spineDocuments.length; j++) {
+                        var documentObject = window.AllSpineDocuments[i].spineDocuments[j];
+                        var spineDocument = documentObject.htmlDocument;
+                        searchResults[i].spineDocuments[j] = {title: spineDocument.title, searchResults: []};
+                        var treeWalker = spineDocument.createTreeWalker(spineDocument.body, NodeFilter.SHOW_TEXT, function(node) {
+                            if (node.nodeValue && node.nodeValue.trim().length > 0) { return NodeFilter.FILTER_ACCEPT } else  { return NodeFilter.FILTER_REJECT }
+                        });
+                        var nodeList = [];
+                        var currentNode = treeWalker.currentNode;
+                        currentNode = treeWalker.nextNode();
+                        while (currentNode) {
+                            while ((match = regex.exec(currentNode.nodeValue)) != null) {
+                                var start = match.index;
+                                var end = match.index + match.length - 1;
+                                var range = spineDocument.createRange();
+                                range.setStart(currentNode, start);
+                                range.setEnd(currentNode, end);
+                                var cfiRange = window.READIUM.reader.getRangeCfiFromDomRange(range);
+                                cfiRange.idref = documentObject.spineItem.idref;
+                                cfiRange.spineItemCfi = documentObject.spineItem.cfi;
+
+                                var surroundingTextStart = 0;
+                                var surroundingTextEnd = currentNode.nodeValue.length;
+                                if (start > 50) {
+                                    surroundingTextStart = start - 50;
+                                }
+                                if (surroundingTextEnd - end > 50) {
+                                    surroundingTextEnd = end + 50;
+                                }
+
+                                var surroundingText = currentNode.nodeValue.substr(surroundingTextStart, surroundingTextEnd);
+                                surroundingText = surroundingText.replace(match, '<mark>' + match + '</mark>');
+
+                                nodeList.push({text: surroundingText, cfi: cfiRange, rootUrl: window.AllSpineDocuments[i].rootUrl})
+                            }
+                            currentNode = treeWalker.nextNode();
+                        }
+                        searchResults[i].spineDocuments[j].searchResults = nodeList;
+                    }
+                }
+            }
+            console.log(searchResults);
+            for (var book of searchResults) {
+                var bookContainer = document.createElement('div');
+
+                var bookHeader = document.createElement('h2');
+                bookHeader.textContent = book.title;
+                bookContainer.appendChild(bookHeader);
+
+                var chapterList = document.createElement('div');
+                bookContainer.appendChild(chapterList);
+
+                for (var chapter of book.spineDocuments) {
+                    if (chapter.searchResults.length > 0) {
+                        var container = document.createElement('div');
+
+                        var header = document.createElement('h3');
+                        header.textContent = chapter.title;
+                        container.appendChild(header);
+
+                        var list = document.createElement('div');
+                        container.appendChild(list);
+
+                        for (var result of chapter.searchResults) {
+                            var textContainer = document.createElement('div');
+                            textContainer.classList.add('searchResult');
+                            (function(textContainer, result) {
+                                textContainer.addEventListener('click', function() {
+                                    console.log(result);
+                                    window.localStorage.setItem('searchHighlight', JSON.stringify(result.cfi));
+                                    window.location.href = window.location.origin + '/?epub=' + encodeURI(result.rootUrl) + '&goto=epubcfi(' + result.cfi.spineItemCfi + result.cfi.contentCFI + ')';
+                                    // window.READIUM.reader.plugins.highlights.addHighlight(result.cfi.idref, result.cfi.contentCFI, PeBL.utils.getUuid(), "search-highlight");
+                                });
+                            })(textContainer, result);
+
+                            var textContent = document.createElement('p');
+                            textContent.innerHTML = result.text;
+                            textContainer.appendChild(textContent);
+
+                            list.appendChild(textContainer);
+                        }
+                        chapterList.append(container);
+                    }
+                }
+                if ($(bookContainer).find('.searchResult').length !== 0)
+                    $('#search-body-list').append(bookContainer);
+            }
+        }, 1000));
     }
 
     var readClick = function(e){
@@ -954,6 +1142,10 @@ Helpers){
             $("#buttSave").attr("accesskey", Keyboard.accesskeys.SettingsModalSave);
             $("#buttClose").attr("accesskey", Keyboard.accesskeys.SettingsModalClose);
         });
+        
+
+
+        
         
 
         var isChromeExtensionPackagedApp_ButNotChromeOS = (typeof chrome !== "undefined") && chrome.app

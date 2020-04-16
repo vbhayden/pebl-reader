@@ -325,3 +325,16 @@ body.list-view .details{
 #keyboard-list label {
     max-width: 50%;
 }
+
+#search-library-body {
+  display: none;
+}
+
+.search-library-visible#search-library-body {
+    display: block;
+    position: fixed;
+    width: 30%;
+    top: 38px;
+    right: -1px;
+    bottom: 0;
+}
