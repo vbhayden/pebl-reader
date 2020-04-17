@@ -19,6 +19,10 @@ document.addEventListener("eventLogout", function() {
     window.Lightbox.createLoginForm(true);
 });
 
+document.addEventListener("eventRefreshLogin", () => {
+    window.Lightbox.createLoginForm();
+});
+
 document.addEventListener("eventLogin", function() {
     $('#loginButt span').addClass("glyphicon-log-out");
     $('#loginButt span').removeClass("glyphicon-log-in");
