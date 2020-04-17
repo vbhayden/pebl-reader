@@ -2894,32 +2894,55 @@ var syncing_LLSyncAction = /** @class */ (function () {
         var _this = this;
         if (!this.active) {
             this.active = true;
+            this.reconnectionBackoff = this.DEFAULT_RECONNECTION_BACKOFF;
             var makeWebSocketConnection_1 = function () {
                 if (_this.pebl.config && _this.pebl.config.PeBLServicesWSURL) {
                     _this.websocket = new WebSocket(_this.pebl.config.PeBLServicesWSURL);
                     _this.websocket.onopen = function () {
-                        _this.reconnectionBackoff = _this.DEFAULT_RECONNECTION_BACKOFF;
                         console.log('websocket opened');
                         _this.pullNotifications();
                         _this.pullAnnotations();
                         _this.pullSharedAnnotations();
                         _this.pullThreadedMessages();
+                        _this.reconnectionBackoffResetHandler = setTimeout(function () {
+                            _this.reconnectionBackoff = _this.DEFAULT_RECONNECTION_BACKOFF;
+                        }, _this.DEFAULT_RECONNECTION_BACKOFF);
                     };
                     _this.websocket.onclose = function () {
                         console.log("Web socket closed retrying in " + _this.reconnectionBackoff, event);
                         if (_this.active) {
+                            if (_this.reconnectionBackoffResetHandler) {
+                                clearTimeout(_this.reconnectionBackoffResetHandler);
+                                _this.reconnectionBackoffResetHandler = undefined;
+                            }
+                            if (_this.reconnectionTimeoutHandler) {
+                                clearTimeout(_this.reconnectionTimeoutHandler);
+                            }
                             _this.reconnectionTimeoutHandler = setTimeout(function () {
                                 makeWebSocketConnection_1();
                                 _this.reconnectionBackoff *= 2;
+                                if (_this.reconnectionBackoff > 60000) {
+                                    _this.reconnectionBackoff = 60000;
+                                }
                             }, _this.reconnectionBackoff);
                         }
                     };
                     _this.websocket.onerror = function (event) {
                         console.log("Web socket error retrying in " + _this.reconnectionBackoff, event);
                         if (_this.active) {
+                            if (_this.reconnectionBackoffResetHandler) {
+                                clearTimeout(_this.reconnectionBackoffResetHandler);
+                                _this.reconnectionBackoffResetHandler = undefined;
+                            }
+                            if (_this.reconnectionTimeoutHandler) {
+                                clearTimeout(_this.reconnectionTimeoutHandler);
+                            }
                             _this.reconnectionTimeoutHandler = setTimeout(function () {
                                 makeWebSocketConnection_1();
                                 _this.reconnectionBackoff *= 2;
+                                if (_this.reconnectionBackoff > 60000) {
+                                    _this.reconnectionBackoff = 60000;
+                                }
                             }, _this.reconnectionBackoff);
                         }
                     };
@@ -2928,8 +2951,12 @@ var syncing_LLSyncAction = /** @class */ (function () {
                             if (userProfile) {
                                 console.log('message recieved');
                                 var parsedMessage = JSON.parse(message.data);
-                                if (_this.messageHandlers[parsedMessage.payload.requestType])
-                                    _this.messageHandlers[parsedMessage.payload.requestType](userProfile, parsedMessage.payload);
+                                if (_this.messageHandlers[parsedMessage.requestType]) {
+                                    _this.messageHandlers[parsedMessage.requestType](userProfile, parsedMessage.payload);
+                                }
+                                else {
+                                    console.log("Unknown request type", parsedMessage.requestType, parsedMessage);
+                                }
                             }
                         });
                     };
