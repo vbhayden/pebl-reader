@@ -30,6 +30,9 @@
     "bookmark_list" : {
         "message" : "Bookmark List"
     },
+    "search": {
+        "message": "Search"
+    },
     "share_url" : {
 	"message" : "Share reader bookmark..."
     },
