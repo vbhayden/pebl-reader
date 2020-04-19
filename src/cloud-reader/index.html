@@ -41,7 +41,7 @@
         <script type="text/javascript" src="font-faces/fonts.js"> </script>
 
         <script type="text/javascript">
-         document.getElementById('readerFavicon').setAttribute('href', window.Configuration.favicon);
+         document.getElementById('readerFavicon').setAttribute('href', window.PeBLConfig.favicon);
 
          if (navigator.serviceWorker) {
              navigator.serviceWorker.register('peblSW.js').then(function (reg) {
