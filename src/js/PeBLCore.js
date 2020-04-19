@@ -3269,6 +3269,7 @@ var network_Network = /** @class */ (function () {
                                         };
                                         _this.pebl.storage.saveToc(userProfile, ref.book, tocEntry);
                                         _this.pebl.emitEvent(_this.pebl.events.incomingNotification, ref);
+                                        _this.pebl.emitEvent(_this.pebl.events.updatedToc, ref.book);
                                         _this.pebl.storage.removeQueuedReference(userProfile, ref.id);
                                         if (_this.running)
                                             _this.pullAssetTimeout = setTimeout(_this.pullAsset.bind(_this), 5000);
@@ -3433,6 +3434,7 @@ var EventSet = /** @class */ (function () {
         this.incomingActivityEvents = "incomingActivityEvents";
         this.incomingModuleEvents = "incomingModuleEvents";
         this.incomingErrors = "incomingErrors";
+        this.updatedToc = "updatedToc";
         this.saveProgram = "saveProgram";
         this.saveProgramConflict = "saveProgramConflict";
         this.saveProgramSuccess = "saveProgramSuccess";
@@ -4300,7 +4302,8 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             access: payload.access,
             type: payload.type,
             replyThread: payload.replyThread,
-            groupId: payload.groupId
+            groupId: payload.groupId,
+            isPrivate: payload.isPrivate
         };
         self.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
