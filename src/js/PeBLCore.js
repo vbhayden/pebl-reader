@@ -282,7 +282,7 @@ var Message = /** @class */ (function (_super) {
         if (extensions) {
             _this.access = extensions[PREFIX_PEBL_EXTENSION + "access"];
             _this.type = extensions[PREFIX_PEBL_EXTENSION + "type"];
-            _this.masterThread = extensions[PREFIX_PEBL_EXTENSION + "masterThread"];
+            _this.replyThread = extensions[PREFIX_PEBL_EXTENSION + "replyThread"];
             _this.groupId = extensions[PREFIX_PEBL_EXTENSION + "groupId"];
             _this.isPrivate = extensions[PREFIX_PEBL_EXTENSION + "isPrivate"];
         }
@@ -300,7 +300,7 @@ var Voided = /** @class */ (function (_super) {
     __extends(Voided, _super);
     function Voided(raw) {
         var _this = _super.call(this, raw) || this;
-        _this.thread = _this.context.contextActivities.parent[0].id;
+        _this.thread = (_this.context && _this.context.contextActivities && _this.context.contextActivities.parent) ? _this.context.contextActivities.parent[0].id : "";
         if (_this.thread.indexOf(PREFIX_PEBL_THREAD) != -1)
             _this.thread = _this.thread.substring(PREFIX_PEBL_THREAD.length);
         _this.target = _this.object.id;
@@ -648,10 +648,8 @@ var UserProfile = /** @class */ (function () {
         this.preferredName = raw.preferredName;
         if (raw.registryEndpoint)
             this.registryEndpoint = new Endpoint(raw.registryEndpoint);
-        if (raw.currentTeam)
-            this.currentTeam = raw.currentTeam;
-        if (raw.currentClass)
-            this.currentClass = raw.currentClass;
+        this.currentTeam = raw.currentTeam ? raw.currentTeam : 'guestTeam';
+        this.currentClass = raw.currentClass ? raw.currentClass : 'guestClass';
         this.endpoints = [];
         this.metadata = raw.metadata;
         if (raw.endpoints)
@@ -1927,7 +1925,7 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
         if (this.db) {
             var clone = stmt;
             clone.identity = userProfile.identity;
-            var request = this.db.transaction(["outgoingXApi"], "readwrite").objectStore("outgoingXApi").put(clone);
+            var request = this.db.transaction(["outgoingXApi"], "readwrite").objectStore("outgoingXApi").put(this.cleanRecord(clone));
             request.onerror = function (e) {
                 console.log(e);
             };
@@ -1996,6 +1994,10 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             if (stmts instanceof Message) {
                 var clone = stmts;
                 clone.identity = userProfile.identity;
+                if (clone.isPrivate)
+                    clone.thread += '_user-' + userProfile.identity;
+                else if (clone.groupId)
+                    clone.thread += '_group-' + clone.groupId;
                 var request = this.db.transaction(["messages"], "readwrite").objectStore("messages").put(this.cleanRecord(clone));
                 request.onerror = function (e) {
                     console.log(e);
@@ -2014,6 +2016,10 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
                     if (record) {
                         var clone = record;
                         clone.identity = userProfile.identity;
+                        if (clone.isPrivate)
+                            clone.thread += '_user-' + userProfile.identity;
+                        else if (clone.groupId)
+                            clone.thread += '_group-' + clone.groupId;
                         var request = objectStore_5.put(self_30.cleanRecord(clone));
                         request.onerror = processCallback_6;
                         request.onsuccess = processCallback_6;
@@ -2700,31 +2706,54 @@ var syncing_LLSyncAction = /** @class */ (function () {
         var self = this;
         this.pebl = pebl;
         this.reconnectionBackoff = this.DEFAULT_RECONNECTION_BACKOFF;
-        this.annotationSyncTimestamp = 0;
-        this.sharedAnnotationSyncTimestamp = 0;
-        this.notificationSyncTimestamp = 0;
-        this.threadSyncTimestamps = {};
-        this.privateThreadSyncTimestamps = {};
-        this.groupThreadSyncTimestamps = {};
         this.active = false;
         console.log(this.pebl.config && this.pebl.config.PeBLServicesWSURL);
         this.messageHandlers = {};
+        this.messageHandlers.getReferences = function (userProfile, payload) {
+            for (var _i = 0, _a = payload.data; _i < _a.length; _i++) {
+                var stmt = _a[_i];
+                if (Voided.is(stmt)) {
+                    //TODO
+                    console.log('TODO');
+                }
+                else {
+                    var ref = new Reference(stmt);
+                    self.pebl.storage.saveQueuedReference(userProfile, ref);
+                    var stored = new Date(ref.stored).getTime();
+                    if (stored > self.pebl.referenceSyncTimestamp)
+                        self.pebl.referenceSyncTimestamp = stored;
+                }
+            }
+        };
+        this.messageHandlers.newReference = function (userProfile, payload) {
+            if (Voided.is(payload.data)) {
+                //TODO
+                console.log('TODO');
+            }
+            else {
+                var ref = new Reference(payload.data);
+                self.pebl.storage.saveQueuedReference(userProfile, ref);
+                var stored = new Date(ref.stored).getTime();
+                if (stored > self.pebl.referenceSyncTimestamp)
+                    self.pebl.referenceSyncTimestamp = stored;
+            }
+        };
         this.messageHandlers.getNotifications = function (userProfile, payload) {
             var stmts = payload.data.map(function (stmt) {
                 if (Voided.is(stmt)) {
                     var voided = new Voided(stmt);
                     self.pebl.storage.removeNotification(userProfile, voided.target);
                     var stored = new Date(voided.stored).getTime();
-                    if (stored > self.notificationSyncTimestamp)
-                        self.notificationSyncTimestamp = stored;
+                    if (stored > self.pebl.notificationSyncTimestamp)
+                        self.pebl.notificationSyncTimestamp = stored;
                     return voided;
                 }
                 else {
                     var n = new Notification(stmt);
                     self.pebl.storage.saveNotification(userProfile, n);
                     var stored = new Date(n.stored).getTime();
-                    if (stored > self.notificationSyncTimestamp)
-                        self.notificationSyncTimestamp = stored;
+                    if (stored > self.pebl.notificationSyncTimestamp)
+                        self.pebl.notificationSyncTimestamp = stored;
                     return n;
                 }
             });
@@ -2742,104 +2771,95 @@ var syncing_LLSyncAction = /** @class */ (function () {
             }
             self.pebl.emitEvent(self.pebl.events.incomingNotifications, [n]);
             var stored = new Date(n.stored).getTime();
-            if (stored > self.notificationSyncTimestamp)
-                self.notificationSyncTimestamp = stored;
+            if (stored > self.pebl.notificationSyncTimestamp)
+                self.pebl.notificationSyncTimestamp = stored;
         };
         this.messageHandlers.getThreadedMessages = function (userProfile, payload) {
-            var stmts = payload.data.map(function (stmt) {
-                if (Voided.is(stmt)) {
-                    var voided = new Voided(stmt);
-                    self.pebl.storage.removeMessage(userProfile, voided.target);
-                    var stored = new Date(voided.stored).getTime();
-                    var thread_1 = payload.additionalData.thread;
-                    var groupId = payload.additionalData.groupId;
-                    var isPrivate = payload.additionalData.private;
-                    if (groupId) {
-                        if (stored > self.groupThreadSyncTimestamps[groupId][thread_1])
-                            self.groupThreadSyncTimestamps[groupId][thread_1] = stored;
-                    }
-                    else if (isPrivate) {
-                        if (stored > self.privateThreadSyncTimestamps[thread_1])
-                            self.privateThreadSyncTimestamps[thread_1] = stored;
-                    }
-                    else {
-                        if (stored > self.threadSyncTimestamps[thread_1])
-                            self.threadSyncTimestamps[thread_1] = stored;
-                    }
-                    return voided;
+            var groupId = payload.options && payload.options.groupId;
+            var isPrivate = payload.options && payload.options.isPrivate;
+            var thread = payload.thread;
+            for (var _i = 0, _a = payload.data; _i < _a.length; _i++) {
+                var stmt = _a[_i];
+                if (groupId) {
+                    self.handleGroupMessage(userProfile, stmt, thread, groupId);
+                }
+                else if (isPrivate) {
+                    self.handlePrivateMessage(userProfile, stmt, thread);
                 }
                 else {
-                    var m = new Message(stmt);
-                    self.pebl.storage.saveMessages(userProfile, [m]);
-                    var stored = new Date(m.stored).getTime();
-                    if (m.groupId) {
-                        if (stored > self.groupThreadSyncTimestamps[m.groupId][m.thread])
-                            self.groupThreadSyncTimestamps[m.groupId][m.thread] = stored;
-                    }
-                    else if (m.isPrivate) {
-                        if (stored > self.privateThreadSyncTimestamps[m.thread])
-                            self.privateThreadSyncTimestamps[m.thread] = stored;
-                    }
-                    else {
-                        if (stored > self.threadSyncTimestamps[m.thread])
-                            self.threadSyncTimestamps[m.thread] = stored;
-                    }
-                    return m;
+                    self.handleMessage(userProfile, stmt, thread);
                 }
-            });
-            var thread = payload.additionalData.thread;
-            if (payload.additionalData.groupId)
-                thread = thread + GROUP_PREFIX + payload.additionalData.groupId;
-            else if (payload.additionalData.isPrivate)
-                thread = thread + USER_PREFIX + userProfile.identity;
-            self.pebl.emitEvent(thread, stmts);
+            }
         };
         this.messageHandlers.newThreadedMessage = function (userProfile, payload) {
-            var m;
-            if (Voided.is(payload.data)) {
-                m = new Voided(payload.data);
-                self.pebl.storage.removeMessage(userProfile, m.target);
-            }
-            else {
-                m = new Message(payload.data);
-                self.pebl.storage.saveMessages(userProfile, [m]);
-            }
-            var stored = new Date(m.stored).getTime();
-            var groupId = payload.additionalData.groupId;
-            var isPrivate = payload.additionalData.isPrivate;
-            var thread = payload.additionalData.thread;
+            var groupId = payload.options && payload.options.groupId;
+            var isPrivate = payload.options && payload.options.isPrivate;
+            var thread = payload.thread;
             if (groupId) {
-                if (stored > self.groupThreadSyncTimestamps[groupId][thread])
-                    self.groupThreadSyncTimestamps[groupId][thread] = stored;
-                self.pebl.emitEvent(thread + GROUP_PREFIX + groupId, [m]);
+                self.handleGroupMessage(userProfile, payload.data, thread, groupId);
             }
             else if (isPrivate) {
-                if (stored > self.privateThreadSyncTimestamps[thread])
-                    self.privateThreadSyncTimestamps[thread] = stored;
-                self.pebl.emitEvent(thread + USER_PREFIX + userProfile.identity, [m]);
+                self.handlePrivateMessage(userProfile, payload.data, thread);
             }
             else {
-                if (stored > self.threadSyncTimestamps[thread])
-                    self.threadSyncTimestamps[thread] = stored;
-                self.pebl.emitEvent(thread, [m]);
+                self.handleMessage(userProfile, payload.data, thread);
+            }
+        };
+        this.messageHandlers.getSubscribedThreads = function (userProfile, payload) {
+            if (self.websocket && self.websocket.readyState === 1) {
+                for (var _i = 0, _a = payload.data.threads; _i < _a.length; _i++) {
+                    var thread = _a[_i];
+                    var message = {
+                        identity: userProfile.identity,
+                        requestType: "getThreadedMessages",
+                        thread: thread,
+                        timestamp: self.pebl.threadSyncTimestamps[thread] ? self.pebl.threadSyncTimestamps[thread] : 1
+                    };
+                    self.websocket.send(JSON.stringify(message));
+                }
+                for (var _b = 0, _c = payload.data.privateThreads; _b < _c.length; _b++) {
+                    var thread = _c[_b];
+                    var message = {
+                        identity: userProfile.identity,
+                        requestType: "getThreadedMessages",
+                        thread: thread,
+                        options: { isPrivate: true },
+                        timestamp: self.pebl.privateThreadSyncTimestamps[thread] ? self.pebl.privateThreadSyncTimestamps[thread] : 1
+                    };
+                    self.websocket.send(JSON.stringify(message));
+                }
+                for (var groupId in payload.data.groupThreads) {
+                    for (var _d = 0, _e = payload.data.groupThreads[groupId]; _d < _e.length; _d++) {
+                        var thread = _e[_d];
+                        var message = {
+                            identity: userProfile.identity,
+                            requestType: "getThreadedMessages",
+                            thread: thread,
+                            options: { groupId: groupId },
+                            timestamp: self.pebl.groupThreadSyncTimestamps[groupId] ? self.pebl.groupThreadSyncTimestamps[groupId][thread] : 1
+                        };
+                        self.websocket.send(JSON.stringify(message));
+                    }
+                }
             }
         };
         this.messageHandlers.getAnnotations = function (userProfile, payload) {
+            console.log(payload);
             var stmts = payload.data.map(function (stmt) {
                 if (Voided.is(stmt)) {
                     var voided = new Voided(stmt);
                     self.pebl.storage.removeAnnotation(userProfile, voided.target);
                     var stored = new Date(voided.stored).getTime();
-                    if (stored > self.annotationSyncTimestamp)
-                        self.annotationSyncTimestamp = stored;
+                    if (stored > self.pebl.annotationSyncTimestamp)
+                        self.pebl.annotationSyncTimestamp = stored;
                     return voided;
                 }
                 else {
                     var a = new Annotation(stmt);
                     self.pebl.storage.saveAnnotations(userProfile, [a]);
                     var stored = new Date(a.stored).getTime();
-                    if (stored > self.annotationSyncTimestamp)
-                        self.annotationSyncTimestamp = stored;
+                    if (stored > self.pebl.annotationSyncTimestamp)
+                        self.pebl.annotationSyncTimestamp = stored;
                     return a;
                 }
             });
@@ -2851,53 +2871,76 @@ var syncing_LLSyncAction = /** @class */ (function () {
                     var voided = new Voided(stmt);
                     self.pebl.storage.removeSharedAnnotation(userProfile, voided.target);
                     var stored = new Date(voided.stored).getTime();
-                    if (stored > self.sharedAnnotationSyncTimestamp)
-                        self.sharedAnnotationSyncTimestamp = stored;
+                    if (stored > self.pebl.sharedAnnotationSyncTimestamp)
+                        self.pebl.sharedAnnotationSyncTimestamp = stored;
                     return voided;
                 }
                 else {
                     var sa = new SharedAnnotation(stmt);
                     self.pebl.storage.saveSharedAnnotations(userProfile, [sa]);
                     var stored = new Date(sa.stored).getTime();
-                    if (stored > self.sharedAnnotationSyncTimestamp)
-                        self.sharedAnnotationSyncTimestamp = stored;
+                    if (stored > self.pebl.sharedAnnotationSyncTimestamp)
+                        self.pebl.sharedAnnotationSyncTimestamp = stored;
                     return sa;
                 }
             });
             self.pebl.emitEvent(self.pebl.events.incomingSharedAnnotations, stmts);
         };
         this.messageHandlers.newAnnotation = function (userProfile, payload) {
-            var a;
-            if (Voided.is(payload.data)) {
-                a = new Voided(payload.data);
-                self.pebl.storage.removeAnnotation(userProfile, a.target);
+            var allAnnotations;
+            if (payload.data instanceof Array) {
+                allAnnotations = payload.data;
             }
             else {
-                a = new Annotation(payload.data);
-                self.pebl.storage.saveAnnotations(userProfile, [a]);
+                allAnnotations = [payload.data];
             }
-            var stored = new Date(a.stored).getTime();
-            if (stored > self.annotationSyncTimestamp)
-                self.annotationSyncTimestamp = stored;
-            self.pebl.emitEvent(self.pebl.events.incomingAnnotations, [a]);
+            var stmts = allAnnotations.map(function (a) {
+                if (Voided.is(a)) {
+                    a = new Voided(a);
+                    self.pebl.storage.removeAnnotation(userProfile, a.target);
+                }
+                else {
+                    a = new Annotation(a);
+                    self.pebl.storage.saveAnnotations(userProfile, [a]);
+                }
+                var stored = new Date(a.stored).getTime();
+                if (stored > self.pebl.annotationSyncTimestamp)
+                    self.pebl.annotationSyncTimestamp = stored;
+                return a;
+            });
+            self.pebl.emitEvent(self.pebl.events.incomingAnnotations, stmts);
         };
         this.messageHandlers.newSharedAnnotation = function (userProfile, payload) {
-            var sa;
-            if (Voided.is(payload.data)) {
-                sa = new Voided(payload.data);
-                self.pebl.storage.removeSharedAnnotation(userProfile, sa.target);
+            var allSharedAnnotations;
+            if (payload.data instanceof Array) {
+                allSharedAnnotations = payload.data;
             }
             else {
-                sa = new SharedAnnotation(payload.data);
-                self.pebl.storage.saveSharedAnnotations(userProfile, [sa]);
+                allSharedAnnotations = [payload.data];
             }
-            var stored = new Date(sa.stored).getTime();
-            if (stored > self.annotationSyncTimestamp)
-                self.sharedAnnotationSyncTimestamp = stored;
-            self.pebl.emitEvent(self.pebl.events.incomingSharedAnnotations, [sa]);
+            var stmts = allSharedAnnotations.map(function (sa) {
+                if (Voided.is(sa)) {
+                    sa = new Voided(sa);
+                    self.pebl.storage.removeSharedAnnotation(userProfile, sa.target);
+                }
+                else {
+                    sa = new SharedAnnotation(sa);
+                    self.pebl.storage.saveSharedAnnotations(userProfile, [sa]);
+                }
+                var stored = new Date(sa.stored).getTime();
+                if (stored > self.pebl.annotationSyncTimestamp)
+                    self.pebl.sharedAnnotationSyncTimestamp = stored;
+                return sa;
+            });
+            self.pebl.emitEvent(self.pebl.events.incomingSharedAnnotations, stmts);
         };
         this.messageHandlers.loggedOut = function (userProfile, payload) {
-            self.pebl.emitEvent(self.pebl.events.eventRefreshLogin, null);
+            self.pebl.storage.removeCurrentUser(function () {
+                self.pebl.emitEvent(self.pebl.events.eventRefreshLogin, null);
+            });
+        };
+        this.messageHandlers.error = function (userProfile, payload) {
+            console.log("Message failed", payload);
         };
     }
     LLSyncAction.prototype.activate = function (callback) {
@@ -2913,7 +2956,8 @@ var syncing_LLSyncAction = /** @class */ (function () {
                         _this.pullNotifications();
                         _this.pullAnnotations();
                         _this.pullSharedAnnotations();
-                        _this.pullThreadedMessages();
+                        _this.pullReferences();
+                        _this.pullSubscribedThreads();
                         _this.reconnectionBackoffResetHandler = setTimeout(function () {
                             _this.reconnectionBackoff = _this.DEFAULT_RECONNECTION_BACKOFF;
                         }, _this.DEFAULT_RECONNECTION_BACKOFF);
@@ -2962,7 +3006,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                                 console.log('message recieved');
                                 var parsedMessage = JSON.parse(message.data);
                                 if (_this.messageHandlers[parsedMessage.requestType]) {
-                                    _this.messageHandlers[parsedMessage.requestType](userProfile, parsedMessage.payload);
+                                    _this.messageHandlers[parsedMessage.requestType](userProfile, parsedMessage);
                                 }
                                 else {
                                     console.log("Unknown request type", parsedMessage.requestType, parsedMessage);
@@ -3048,7 +3092,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                 var message = {
                     identity: userProfile.identity,
                     requestType: "getNotifications",
-                    timestamp: _this.notificationSyncTimestamp + 1
+                    timestamp: _this.pebl.notificationSyncTimestamp + 1
                 };
                 _this.websocket.send(JSON.stringify(message));
             }
@@ -3061,7 +3105,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                 var message = {
                     identity: userProfile.identity,
                     requestType: "getAnnotations",
-                    timestamp: _this.annotationSyncTimestamp + 1
+                    timestamp: _this.pebl.annotationSyncTimestamp + 1
                 };
                 _this.websocket.send(JSON.stringify(message));
             }
@@ -3074,49 +3118,89 @@ var syncing_LLSyncAction = /** @class */ (function () {
                 var message = {
                     identity: userProfile.identity,
                     requestType: "getSharedAnnotations",
-                    timestamp: _this.sharedAnnotationSyncTimestamp + 1
+                    timestamp: _this.pebl.sharedAnnotationSyncTimestamp + 1
                 };
                 _this.websocket.send(JSON.stringify(message));
             }
         });
     };
-    LLSyncAction.prototype.pullThreadedMessages = function () {
+    LLSyncAction.prototype.pullReferences = function () {
         var _this = this;
         this.pebl.user.getUser(function (userProfile) {
             if (userProfile && _this.websocket && _this.websocket.readyState === 1) {
-                for (var thread in _this.pebl.subscribedThreads) {
-                    var message = {
-                        identity: userProfile.identity,
-                        requestType: "getThreadedMessages",
-                        thread: thread,
-                        timestamp: _this.threadSyncTimestamps[thread]
-                    };
-                    _this.websocket.send(JSON.stringify(message));
-                }
-                for (var thread in _this.pebl.subscribedPrivateThreads) {
-                    var message = {
-                        identity: userProfile.identity,
-                        requestType: "getThreadedMessages",
-                        thread: thread,
-                        isPrivate: true,
-                        timestamp: _this.privateThreadSyncTimestamps[thread]
-                    };
-                    _this.websocket.send(JSON.stringify(message));
-                }
-                for (var group in _this.pebl.subscribedGroupThreads) {
-                    for (var thread in _this.pebl.subscribedGroupThreads[group]) {
-                        var message = {
-                            identity: userProfile.identity,
-                            requestType: "getThreadedMessages",
-                            thread: thread,
-                            groupId: group,
-                            timestamp: _this.groupThreadSyncTimestamps[group][thread]
-                        };
-                        _this.websocket.send(JSON.stringify(message));
-                    }
-                }
+                var message = {
+                    identity: userProfile.identity,
+                    requestType: "getReferences",
+                    timestamp: _this.pebl.referenceSyncTimestamp + 1
+                };
+                _this.websocket.send(JSON.stringify(message));
             }
         });
+    };
+    LLSyncAction.prototype.pullSubscribedThreads = function () {
+        var _this = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile && _this.websocket && _this.websocket.readyState === 1) {
+                var message = {
+                    identity: userProfile.identity,
+                    requestType: "getSubscribedThreads"
+                };
+                _this.websocket.send(JSON.stringify(message));
+            }
+        });
+    };
+    LLSyncAction.prototype.handlePrivateMessage = function (userProfile, message, thread) {
+        var m;
+        if (Voided.is(message)) {
+            m = new Voided(message);
+            this.pebl.storage.removeMessage(userProfile, m.target);
+        }
+        else {
+            m = new Message(message);
+            this.pebl.storage.saveMessages(userProfile, [m]);
+        }
+        var stored = new Date(m.stored).getTime();
+        if (!this.pebl.privateThreadSyncTimestamps[thread])
+            this.pebl.privateThreadSyncTimestamps[thread] = 1;
+        if (stored > this.pebl.privateThreadSyncTimestamps[thread])
+            this.pebl.privateThreadSyncTimestamps[thread] = stored;
+        this.pebl.emitEvent(thread + USER_PREFIX + userProfile.identity, [m]);
+    };
+    LLSyncAction.prototype.handleGroupMessage = function (userProfile, message, thread, groupId) {
+        var m;
+        if (Voided.is(message)) {
+            m = new Voided(message);
+            this.pebl.storage.removeMessage(userProfile, m.target);
+        }
+        else {
+            m = new Message(message);
+            this.pebl.storage.saveMessages(userProfile, [m]);
+        }
+        var stored = new Date(m.stored).getTime();
+        if (!this.pebl.groupThreadSyncTimestamps[groupId])
+            this.pebl.groupThreadSyncTimestamps[groupId] = {};
+        if (!this.pebl.groupThreadSyncTimestamps[groupId][thread])
+            this.pebl.groupThreadSyncTimestamps[groupId][thread] = 1;
+        if (stored > this.pebl.groupThreadSyncTimestamps[groupId][thread])
+            this.pebl.groupThreadSyncTimestamps[groupId][thread] = stored;
+        this.pebl.emitEvent(thread + GROUP_PREFIX + groupId, [m]);
+    };
+    LLSyncAction.prototype.handleMessage = function (userProfile, message, thread) {
+        var m;
+        if (Voided.is(message)) {
+            m = new Voided(message);
+            this.pebl.storage.removeMessage(userProfile, m.target);
+        }
+        else {
+            m = new Message(message);
+            this.pebl.storage.saveMessages(userProfile, [m]);
+        }
+        var stored = new Date(m.stored).getTime();
+        if (!this.pebl.threadSyncTimestamps[thread])
+            this.pebl.threadSyncTimestamps[thread] = 1;
+        if (stored > this.pebl.threadSyncTimestamps[thread])
+            this.pebl.threadSyncTimestamps[thread] = stored;
+        this.pebl.emitEvent(thread, [m]);
     };
     return LLSyncAction;
 }());
@@ -3141,7 +3225,7 @@ var network_Network = /** @class */ (function () {
             this.syncingProcess.activate(function () {
                 _this.push();
                 _this.pushActivity();
-                // this.pullAsset();
+                _this.pullAsset();
                 if (callback)
                     callback();
             });
@@ -3306,14 +3390,14 @@ var network_Network = /** @class */ (function () {
                             if (success)
                                 _this.pebl.storage.removeOutgoingXApi(userProfile, stmts);
                             if (_this.running)
-                                _this.pushTimeout = setTimeout(_this.push.bind(_this), 5000);
+                                _this.pushTimeout = setTimeout(_this.push.bind(_this), 2000);
                             if (finished)
                                 finished();
                         });
                     }
                     else {
                         if (_this.running)
-                            _this.pushTimeout = setTimeout(_this.push.bind(_this), 5000);
+                            _this.pushTimeout = setTimeout(_this.push.bind(_this), 2000);
                         if (finished)
                             finished();
                     }
@@ -3321,7 +3405,7 @@ var network_Network = /** @class */ (function () {
             }
             else {
                 if (_this.running)
-                    _this.pushTimeout = setTimeout(_this.push.bind(_this), 5000);
+                    _this.pushTimeout = setTimeout(_this.push.bind(_this), 2000);
                 if (finished)
                     finished();
             }
@@ -4200,7 +4284,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                             requestType: "saveReferences",
                             references: [s]
                         });
-                        self.pebl.storage.saveEvent(userProfile, s);
+                        self.pebl.storage.saveQueuedReference(userProfile, s);
                         if (pulled)
                             self.pebl.emitEvent(PEBL_THREAD_USER_PREFIX + payload.target, [s]);
                     }
@@ -4215,7 +4299,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         var exts = {
             access: payload.access,
             type: payload.type,
-            masterThread: payload.masterThread,
+            replyThread: payload.replyThread,
             groupId: payload.groupId
         };
         self.pebl.user.getUser(function (userProfile) {
@@ -4229,12 +4313,13 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addObject(xapi, PEBL_THREAD_PREFIX + payload.thread, payload.prompt, payload.text, self.xapiGen.addExtensions(exts));
                         self.xapiGen.addActorAccount(xapi, userProfile);
                         var message = new Message(xapi);
+                        var clone = JSON.parse(JSON.stringify(message));
                         self.pebl.storage.saveMessages(userProfile, message);
                         self.pebl.storage.saveOutgoingXApi(userProfile, {
                             identity: userProfile.identity,
                             id: message.id,
-                            requestType: "storeThreadedMessage",
-                            message: message,
+                            requestType: "saveThreadedMessage",
+                            message: clone,
                         });
                         self.pebl.emitEvent(message.thread, [message]);
                     });
@@ -4248,7 +4333,8 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         var self = this;
         var exts = {
             access: payload.access,
-            type: payload.type
+            type: payload.type,
+            isPrivate: payload.isPrivate
         };
         self.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
@@ -4261,12 +4347,13 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addObject(xapi, PEBL_THREAD_PREFIX + payload.thread, payload.prompt, payload.text, self.xapiGen.addExtensions(exts));
                         self.xapiGen.addActorAccount(xapi, userProfile);
                         var message = new Message(xapi);
+                        var clone = JSON.parse(JSON.stringify(message));
                         self.pebl.storage.saveMessages(userProfile, message);
                         self.pebl.storage.saveOutgoingXApi(userProfile, {
                             identity: userProfile.identity,
                             id: message.id,
-                            requestType: "storeThreadedMessage",
-                            messages: [message]
+                            requestType: "saveThreadedMessage",
+                            message: clone
                         });
                         self.pebl.emitEvent(message.thread, [message]);
                     });
@@ -6510,9 +6597,13 @@ var pebl_PEBL = /** @class */ (function () {
         this.extension = {};
         // this.extension.shared = {};
         this.config = config;
-        this.subscribedThreads = {};
-        this.subscribedPrivateThreads = {};
-        this.subscribedGroupThreads = {};
+        this.annotationSyncTimestamp = 0;
+        this.sharedAnnotationSyncTimestamp = 0;
+        this.notificationSyncTimestamp = 0;
+        this.referenceSyncTimestamp = 0;
+        this.threadSyncTimestamps = {};
+        this.privateThreadSyncTimestamps = {};
+        this.groupThreadSyncTimestamps = {};
         if (config) {
             this.teacher = config.teacher;
             this.enableDirectMessages = config.enableDirectMessages;
@@ -6630,21 +6721,16 @@ var pebl_PEBL = /** @class */ (function () {
                 var thread = baseThread;
                 if (options && options.groupId) {
                     thread = baseThread + pebl_GROUP_PREFIX + options.groupId;
-                    delete _this.subscribedGroupThreads[options.groupId][baseThread];
                 }
                 else if (options && options.isPrivate) {
                     thread = baseThread + pebl_USER_PREFIX + userProfile.identity;
-                    delete _this.subscribedPrivateThreads[baseThread];
-                }
-                else {
-                    delete _this.subscribedThreads[thread];
                 }
                 var message = {
+                    id: _this.utils.getUuid(),
                     identity: userProfile.identity,
                     requestType: "unsubscribeThread",
                     thread: baseThread,
-                    groupId: options ? options.groupId : undefined,
-                    isPrivate: options ? options.isPrivate : undefined
+                    options: options
                 };
                 _this.storage.saveOutgoingXApi(userProfile, message);
                 var i = 0;
@@ -6754,14 +6840,9 @@ var pebl_PEBL = /** @class */ (function () {
                 var thread_1 = baseThread;
                 if (options && options.groupId) {
                     thread_1 = thread_1 + pebl_GROUP_PREFIX + options.groupId;
-                    _this.subscribedGroupThreads[options.groupId][baseThread] = true;
                 }
                 else if (options && options.isPrivate) {
                     thread_1 = thread_1 + pebl_USER_PREFIX + userProfile.identity;
-                    _this.subscribedPrivateThreads[baseThread] = true;
-                }
-                else {
-                    _this.subscribedThreads[thread_1] = true;
                 }
                 var threadCallbacks = _this.subscribedThreadHandlers[thread_1];
                 if (!threadCallbacks) {
@@ -6781,13 +6862,38 @@ var pebl_PEBL = /** @class */ (function () {
                     document.addEventListener(thread_1, modifiedHandler);
                     threadCallbacks.push({ once: once, fn: callback, modifiedFn: modifiedHandler });
                 }
+                var needsToPull = false;
+                if (options && options.groupId) {
+                    if (!_this.groupThreadSyncTimestamps[options.groupId] || !_this.groupThreadSyncTimestamps[options.groupId][baseThread])
+                        needsToPull = true;
+                }
+                else if (options && options.isPrivate) {
+                    if (!_this.privateThreadSyncTimestamps[baseThread])
+                        needsToPull = true;
+                }
+                else {
+                    if (!_this.threadSyncTimestamps[baseThread])
+                        needsToPull = true;
+                }
+                //Never subscribed to this thread, need to get all the messages for it.
+                if (needsToPull) {
+                    var message_1 = {
+                        id: _this.utils.getUuid(),
+                        identity: userProfile.identity,
+                        requestType: "getThreadedMessages",
+                        thread: baseThread,
+                        options: options,
+                        timestamp: 1
+                    };
+                    _this.storage.saveOutgoingXApi(userProfile, message_1);
+                }
                 _this.storage.getMessages(userProfile, thread_1, callback);
                 var message = {
+                    id: _this.utils.getUuid(),
                     identity: userProfile.identity,
                     requestType: "subscribeThread",
                     thread: baseThread,
-                    groupId: options ? options.groupId : undefined,
-                    isPrivate: options ? options.isPrivate : undefined
+                    options: options
                 };
                 _this.storage.saveOutgoingXApi(userProfile, message);
             }
