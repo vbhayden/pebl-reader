@@ -4497,7 +4497,9 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             replyThread: payload.replyThread,
             groupId: payload.groupId,
             isPrivate: payload.isPrivate,
-            book: payload.book
+            book: payload.book,
+            idRef: payload.idRef,
+            cfi: payload.cfi
         };
         self.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
@@ -4532,7 +4534,9 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             access: payload.access,
             type: payload.type,
             isPrivate: payload.isPrivate,
-            book: payload.book
+            book: payload.book,
+            idRef: payload.idRef,
+            cfi: payload.cfi
         };
         self.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
