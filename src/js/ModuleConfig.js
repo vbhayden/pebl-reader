@@ -8,7 +8,7 @@ define(['module'], function(module) {
         return {
             'imagePathPrefix': config.imagePathPrefix || "",
             
-            'epubLibraryPath': config.epubLibraryPath || "",
+            'epubLibraryPath': config.epubLibraryPath || "epub_content/epub_library.json",
 
             'canHandleUrl': config.canHandleUrl || false,
             'canHandleDirectory': config.canHandleDirectory || false,
@@ -16,11 +16,11 @@ define(['module'], function(module) {
 
             'epubReadingSystemUrl': config.epubReadingSystemUrl || "/EPUBREADINGSYSTEM.js",
 
-            'workerUrl': config.workerUrl || "/READIUMWORKER.js",
+            'workerUrl': config.workerUrl || "scripts/Readium-js-viewer_CLOUDAPP-WORKER.js",
 
-            'annotationCSSUrl': config.annotationCSSUrl || "/ANNOTATIONS.css",
-            'mathJaxUrl': config.mathJaxUrl || "/MATHJAX.js",
-            'jsLibRoot': config.jsLibRoot || "/ZIPJS/",
+            'annotationCSSUrl': config.annotationCSSUrl || "css/annotations.css",
+            'mathJaxUrl': config.mathJaxUrl || "scripts/mathjax/MathJax.js",
+            'jsLibRoot': config.jsLibRoot || "scripts/zip/",
 
             //Fonts is a list of font objects. 
             'fonts': config.fonts || [],
