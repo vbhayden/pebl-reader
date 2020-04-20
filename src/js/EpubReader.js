@@ -453,7 +453,7 @@ define([
             slider.min = '0';
             slider.max = chaptersWithoutFiller.length - 1;
             slider.step = '0.001';
-            slider.value = currentPageIndex;
+            slider.value = currentPageIndex ? currentPageIndex : 0;
 
 
             // Clear selection to prevent blue border bug that prevent slider from working
