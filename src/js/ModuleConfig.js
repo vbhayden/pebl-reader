@@ -16,7 +16,7 @@ define(['module'], function(module) {
 
             'epubReadingSystemUrl': config.epubReadingSystemUrl || "/EPUBREADINGSYSTEM.js",
 
-            'workerUrl': config.workerUrl || "scripts/Readium-js-viewer_CLOUDAPP-WORKER.js",
+            'workerUrl': config.workerUrl || "scripts/readium-js-viewer_CLOUDAPP-WORKER.js",
 
             'annotationCSSUrl': config.annotationCSSUrl || "css/annotations.css",
             'mathJaxUrl': config.mathJaxUrl || "scripts/mathjax/MathJax.js",
