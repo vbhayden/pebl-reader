@@ -3096,6 +3096,10 @@ var syncing_LLSyncAction = /** @class */ (function () {
             this.reconnectionBackoff = this.DEFAULT_RECONNECTION_BACKOFF;
             var makeWebSocketConnection_1 = function () {
                 if (_this.pebl.config && _this.pebl.config.PeBLServicesWSURL) {
+                    if (_this.websocket) {
+                        _this.websocket.close();
+                        _this.websocket = undefined;
+                    }
                     _this.websocket = new WebSocket(_this.pebl.config.PeBLServicesWSURL);
                     _this.websocket.onopen = function () {
                         console.log('websocket opened');
@@ -7031,10 +7035,14 @@ var pebl_PEBL = /** @class */ (function () {
                 else if (options && options.isPrivate) {
                     thread_1 = thread_1 + pebl_USER_PREFIX + userProfile.identity;
                 }
+                var firstRegistration = true;
                 var threadCallbacks = _this.subscribedThreadHandlers[thread_1];
                 if (!threadCallbacks) {
                     threadCallbacks = [];
                     _this.subscribedThreadHandlers[thread_1] = threadCallbacks;
+                }
+                else {
+                    firstRegistration = false;
                 }
                 if (once) {
                     var modifiedHandler = (function (e) {
@@ -7049,42 +7057,26 @@ var pebl_PEBL = /** @class */ (function () {
                     document.addEventListener(thread_1, modifiedHandler);
                     threadCallbacks.push({ once: once, fn: callback, modifiedFn: modifiedHandler });
                 }
-                _this.utils.getThreadTimestamps(userProfile.identity, function (threadSyncTimestamps, privateThreadSyncTimestamps, groupThreadSyncTimestamps) {
-                    var needsToPull = false;
-                    if (options && options.groupId) {
-                        if (!groupThreadSyncTimestamps[options.groupId] || !groupThreadSyncTimestamps[options.groupId][baseThread])
-                            needsToPull = true;
-                    }
-                    else if (options && options.isPrivate) {
-                        if (!privateThreadSyncTimestamps[baseThread])
-                            needsToPull = true;
-                    }
-                    else {
-                        if (!threadSyncTimestamps[baseThread])
-                            needsToPull = true;
-                    }
-                    //Never subscribed to this thread, need to get all the messages for it.
-                    if (needsToPull) {
-                        var message_1 = {
-                            id: _this.utils.getUuid(),
-                            identity: userProfile.identity,
-                            requestType: "getThreadedMessages",
-                            thread: baseThread,
-                            options: options,
-                            timestamp: 1
-                        };
-                        _this.storage.saveOutgoingXApi(userProfile, message_1);
-                    }
-                    _this.storage.getMessages(userProfile, thread_1, callback);
-                    var message = {
+                if (firstRegistration) {
+                    _this.storage.saveOutgoingXApi(userProfile, {
+                        id: _this.utils.getUuid(),
+                        identity: userProfile.identity,
+                        requestType: "getThreadedMessages",
+                        requests: [{
+                                thread: baseThread,
+                                options: options,
+                                timestamp: 1
+                            }]
+                    });
+                    _this.storage.saveOutgoingXApi(userProfile, {
                         id: _this.utils.getUuid(),
                         identity: userProfile.identity,
                         requestType: "subscribeThread",
                         thread: baseThread,
                         options: options
-                    };
-                    _this.storage.saveOutgoingXApi(userProfile, message);
-                });
+                    });
+                }
+                _this.storage.getMessages(userProfile, thread_1, callback);
             }
             else {
                 callback([]);
