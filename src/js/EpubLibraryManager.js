@@ -57,10 +57,10 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
             // }
 
             var self = this;
+            if (!moduleConfig.epubLibraryPath)
+                moduleConfig.epubLibraryPath = 'epub_content/epub_content.json';
             
-            var indexUrl = moduleConfig.epubLibraryPath
-                ? StorageManager.getPathUrl(moduleConfig.epubLibraryPath)
-                : StorageManager.getPathUrl('epub_content/epub_library.json');
+            var indexUrl = StorageManager.getPathUrl(moduleConfig.epubLibraryPath);
 
             var dataFail = function() {
                 console.error("Ebook library fail: " + indexUrl);
