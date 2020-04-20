@@ -481,6 +481,9 @@ usmcDeploy:
   stage: deploy
   only:
     - usmc
+  environment:
+    name: usmc
+    url: https://tecom.peblproject.org
   script:
     ## Pull down apt-get install repos
    - apt-get update -y
@@ -522,6 +525,9 @@ prodDeploy:
   stage: deploy
   only:
     - master
+  environment:
+    name: prod
+    url: https://reader.peblproject.org
   script:
     ## Pull down apt-get install repos
    - apt-get update -y
@@ -563,7 +569,9 @@ qaDeploy:
   stage: deploy
   only:
     - QA
-
+  environment:
+    name: qa
+    url: https://qa.reader.peblproject.org
   script:
    - apt-get update -y
    - apt-get install openssh-client -y
@@ -609,6 +617,9 @@ devDeploy:
   stage: deploy
   only:
     - Dev
+  environment:
+    name: dev
+    url: https://dev.reader.peblproject.org
   script:
    ## Pull down apt-get install repos
    - apt-get update -y
