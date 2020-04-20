@@ -20,15 +20,15 @@ stages:
 
 buildProdExtension:
   stage: build
-  
+
   only:
     - extension
   before_script:
     - git submodule sync --recursive
-    - git submodule update --init --recursive readium-js    
+    - git submodule update --init --recursive readium-js
   script:
   - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
-  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json    
+  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
   # Yaml doesn't like ':<space>' wrap command in quotes
   # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_EXTENSION_LRS_AUTH\'/g\" src/js/pebl-login-widget.js"
   # - "sed -i \"s/production: false/production: true/g\" src/mixins/config.js"
@@ -48,26 +48,48 @@ buildProdExtension:
   - "echo '\"i18n_pebl_reader\" : { \"message\" : \"eXtension Reader\" },' >> src/i18n/_locales/en_US/skinning.json"
   - "echo '\"i18n_pebl_title\" : { \"message\" : \"eXtension Foundation\" },' >> src/i18n/_locales/en_US/skinning.json"
   - "echo '\"i18n_pebl_webreader_logo\" : { \"message\" : \"images/eXtension-icon_small.png\" }' >> src/i18n/_locales/en_US/skinning.json"
-  
+
   - echo "}" >> src/i18n/_locales/en_US/skinning.json
-  
+
   - npm run prepare:all
   - npm run dist
   artifacts:
     paths:
       - dist/cloud-reader
 
+
+buildProdUSMC:
+  stage: build
+
+  only:
+    - usmc
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --init --recursive readium-js
+  script:
+  - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
+  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
+  - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
+  - scp "$USMC_WEB_READER_CONFIG" src/cloud-reader/config.js
+
+  - npm run prepare:all
+  - npm run dist
+  artifacts:
+    paths:
+      - dist/cloud-reader
+
+
 buildProdExtensionEEO:
   stage: build
-  
+
   only:
     - extensionEEO
   before_script:
     - git submodule sync --recursive
-    - git submodule update --init --recursive readium-js    
+    - git submodule update --init --recursive readium-js
   script:
   - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
-  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json    
+  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
   # Yaml doesn't like ':<space>' wrap command in quotes
   # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_EXTENSION_LRS_AUTH\'/g\" src/js/pebl-login-widget.js"
   # - "sed -i \"s/production: false/production: true/g\" src/mixins/config.js"
@@ -87,9 +109,9 @@ buildProdExtensionEEO:
   - "echo '\"i18n_pebl_reader\" : { \"message\" : \"eXtension EEO Reader\" },' >> src/i18n/_locales/en_US/skinning.json"
   - "echo '\"i18n_pebl_title\" : { \"message\" : \"eXtension Foundation\" },' >> src/i18n/_locales/en_US/skinning.json"
   - "echo '\"i18n_pebl_webreader_logo\" : { \"message\" : \"images/eXtension-icon_small.png\" }' >> src/i18n/_locales/en_US/skinning.json"
-  
+
   - echo "}" >> src/i18n/_locales/en_US/skinning.json
-  
+
   - npm run prepare:all
   - npm run dist
   artifacts:
@@ -103,12 +125,12 @@ buildNpsProd:
     - npsProd
   before_script:
     - git submodule sync --recursive
-    - git submodule update --init --recursive readium-js    
+    - git submodule update --init --recursive readium-js
   script:
   - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
-  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json    
+  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
   # Yaml doesn't like ':<space>' wrap command in quotes
-  # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_LRS_AUTH\'/g\" src/js/pebl-login-widget.js"  
+  # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_LRS_AUTH\'/g\" src/js/pebl-login-widget.js"
   # - "sed -i \"s/production: false/production: true/g\" src/mixins/config.js"
   - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
   - echo "window.Configuration = {};" > src/cloud-reader/config.js
@@ -131,12 +153,12 @@ buildAdlProd:
     - adlProd
   before_script:
     - git submodule sync --recursive
-    - git submodule update --init --recursive readium-js    
+    - git submodule update --init --recursive readium-js
   script:
   - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
-  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json    
+  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
   # Yaml doesn't like ':<space>' wrap command in quotes
-  # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_LRS_AUTH\'/g\" src/js/pebl-login-widget.js"  
+  # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_LRS_AUTH\'/g\" src/js/pebl-login-widget.js"
   # - "sed -i \"s/production: false/production: true/g\" src/mixins/config.js"
   - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
   - echo "window.Configuration = {};" > src/cloud-reader/config.js
@@ -163,9 +185,9 @@ buildLwProd:
     - git submodule update --init --recursive readium-js
   script:
   - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
-  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json    
+  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
   # Yaml doesn't like ':<space>' wrap command in quotes
-  # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_LRS_AUTH\'/g\" src/js/pebl-login-widget.js"  
+  # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_LRS_AUTH\'/g\" src/js/pebl-login-widget.js"
   # - "sed -i \"s/production: false/production: true/g\" src/mixins/config.js"
   - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
   - echo "window.Configuration = {};" > src/cloud-reader/config.js
@@ -181,8 +203,8 @@ buildLwProd:
   artifacts:
     paths:
     - dist/cloud-reader
-    
-  
+
+
 buildProd:
   stage: build
 
@@ -190,12 +212,12 @@ buildProd:
     - master
   before_script:
     - git submodule sync --recursive
-    - git submodule update --init --recursive readium-js    
+    - git submodule update --init --recursive readium-js
   script:
   - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
-  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json    
+  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
   # Yaml doesn't like ':<space>' wrap command in quotes
-  # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_LRS_AUTH\'/g\" src/js/pebl-login-widget.js"  
+  # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_LRS_AUTH\'/g\" src/js/pebl-login-widget.js"
   # - "sed -i \"s/production: false/production: true/g\" src/mixins/config.js"
   - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
   - echo "window.Configuration = {};" > src/cloud-reader/config.js
@@ -213,20 +235,20 @@ buildProd:
     - dist/cloud-reader
 
 buildQA:
-  stage: build 
+  stage: build
 
   only:
     - QA
   before_script:
     - git submodule sync --recursive
-    - git submodule update --init --recursive readium-js    
-  script:  
+    - git submodule update --init --recursive readium-js
+  script:
   - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
   - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
   - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
 
   - cp "$QA_WEB_READER_CONFIG" src/cloud-reader/config.js
-  
+
   - npm run prepare:all
   - npm run dist
   artifacts:
@@ -246,7 +268,7 @@ buildDev:
   - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
 
   - cp "$DEV_WEB_READER_CONFIG" src/cloud-reader/config.js
-  
+
   - npm run prepare:all
   - npm run dist
   artifacts:
@@ -293,7 +315,7 @@ prodExtensionDeploy:
    - ssh -p22 $PROD_EXTENSION_USERNAME@$PROD_EXTENSION_SERVER_IP "rm -rf /var/www/html/*"
    - scp -P22 -r dist/cloud-reader/* $PROD_EXTENSION_USERNAME@$PROD_EXTENSION_SERVER_IP:/var/www/html/
    - ssh -p22 $PROD_EXTENSION_USERNAME@$PROD_EXTENSION_SERVER_IP "mv /var/www/books/prodBookshelf /var/www/html/epub_content"
-   
+
 ### ----------------------
 
 prodExtensionEEODeploy:
@@ -334,7 +356,7 @@ prodExtensionEEODeploy:
    - ssh -p22 $PROD_EXTENSION_USERNAME@$PROD_EXTENSION_SERVER_IP "rm -rf /var/www/htmlEEO/*"
    - scp -P22 -r dist/cloud-reader/* $PROD_EXTENSION_USERNAME@$PROD_EXTENSION_SERVER_IP:/var/www/htmlEEO/
    - ssh -p22 $PROD_EXTENSION_USERNAME@$PROD_EXTENSION_SERVER_IP "mv /var/www/books/prodEEOBookshelf /var/www/htmlEEO/epub_content"
-   
+
 ### ----------------------
 
 prodNpsDeploy:
@@ -371,7 +393,7 @@ prodNpsDeploy:
    - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
 
    ## Build commands
-   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/htmlNpsReader/epub_content /var/www/bookTempDeployment/prodNpsBookshelf"      
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/htmlNpsReader/epub_content /var/www/bookTempDeployment/prodNpsBookshelf"
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "rm -rf /var/www/htmlNpsReader/*"
    - scp -P22 -r dist/cloud-reader/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/htmlNpsReader/
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/bookTempDeployment/prodNpsBookshelf /var/www/htmlNpsReader/epub_content"
@@ -410,7 +432,7 @@ prodAdlDeploy:
    - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
 
    ## Build commands
-   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/htmlAdlReader/epub_content /var/www/bookTempDeployment/prodAdlBookshelf"      
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/htmlAdlReader/epub_content /var/www/bookTempDeployment/prodAdlBookshelf"
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "rm -rf /var/www/htmlAdlReader/*"
    - scp -P22 -r dist/cloud-reader/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/htmlAdlReader/
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/bookTempDeployment/prodAdlBookshelf /var/www/htmlAdlReader/epub_content"
@@ -449,15 +471,63 @@ prodLwDeploy:
    - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
 
    ## Build commands
-   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/htmlLwReader/epub_content /var/www/bookTempDeployment/prodLwBookshelf"      
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/htmlLwReader/epub_content /var/www/bookTempDeployment/prodLwBookshelf"
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "rm -rf /var/www/htmlLwReader/*"
    - scp -P22 -r dist/cloud-reader/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/htmlLwReader/
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/bookTempDeployment/prodLwBookshelf /var/www/htmlLwReader/epub_content"
+
+
+usmcDeploy:
+  stage: deploy
+  only:
+    - usmc
+  environment:
+    name: usmc
+    url: https://tecom.peblproject.org
+  script:
+    ## Pull down apt-get install repos
+   - apt-get update -y
+   - apt-get install openssh-client -y
+
+   ##
+   ## Run ssh-agent (inside the build environment)
+   ##
+   - eval $(ssh-agent -s)
+
+   ##
+   ## Create the SSH directory and give it the right permissions
+   ##
+   - mkdir -p ~/.ssh
+   - chmod 700 ~/.ssh
+
+   ##
+   ## Assuming you created the SSH_KNOWN_HOSTS variable, uncomment the
+   ## following two lines. NOTE the $SSH_KNOWN_HOSTS variable should be added
+   ## in the gitlab interface and not here
+   ##
+   - echo "$USMC_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+   - chmod 644 ~/.ssh/known_hosts
+
+   ## NOTE the $STAGINT_PRIVATE_KEY variable should be added
+   ## in the gitlab interface and not here
+   ##
+   - chmod 600 "$USMC_PRIVATE_KEY"
+   - ssh-add "$USMC_PRIVATE_KEY" > /dev/null
+
+   ## Build commands
+   - ssh -p22 deploymentpebl@$USMC_SERVER_IP "mv /var/www/tecom.peblproject.org/epub_content /var/www/miscPeBL/tempUSMCBooks"
+   - ssh -p22 deploymentpebl@$USMC_SERVER_IP "rm -rf /var/www/tecom.peblproject.org/*"
+   - scp -P22 -r dist/cloud-reader/* deploymentpebl@$USMC_SERVER_IP:/var/www/tecom.peblproject.org/
+   - ssh -p22 deploymentpebl@$USMC_SERVER_IP "mv /var/www/miscPeBL/tempUSMCBooks /var/www/tecom.peblproject.org/epub_content"
+
 
 prodDeploy:
   stage: deploy
   only:
     - master
+  environment:
+    name: prod
+    url: https://reader.peblproject.org
   script:
     ## Pull down apt-get install repos
    - apt-get update -y
@@ -488,18 +558,20 @@ prodDeploy:
    - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
 
    ## Build commands
-   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/htmlOrgReaderProd/epub_content /var/www/bookTempDeployment/prodBookshelf"      
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/htmlOrgReaderProd/epub_content /var/www/bookTempDeployment/prodBookshelf"
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "rm -rf /var/www/htmlOrgReaderProd/*"
    - scp -P22 -r dist/cloud-reader/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/htmlOrgReaderProd/
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/bookTempDeployment/prodBookshelf /var/www/htmlOrgReaderProd/epub_content"
-   
+
 ### ----------------------
 
 qaDeploy:
   stage: deploy
   only:
     - QA
-    
+  environment:
+    name: qa
+    url: https://qa.reader.peblproject.org
   script:
    - apt-get update -y
    - apt-get install openssh-client -y
@@ -534,7 +606,7 @@ qaDeploy:
    - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
 
    ## Build commands
-   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/htmlOrgReaderQa/epub_content /var/www/bookTempDeployment/qaBookshelf"   
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/htmlOrgReaderQa/epub_content /var/www/bookTempDeployment/qaBookshelf"
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "rm -rf /var/www/htmlOrgReaderQa/*"
    - scp -P22 -r dist/cloud-reader/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/htmlOrgReaderQa/
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/bookTempDeployment/qaBookshelf /var/www/htmlOrgReaderQa/epub_content"
@@ -545,6 +617,9 @@ devDeploy:
   stage: deploy
   only:
     - Dev
+  environment:
+    name: dev
+    url: https://dev.reader.peblproject.org
   script:
    ## Pull down apt-get install repos
    - apt-get update -y
