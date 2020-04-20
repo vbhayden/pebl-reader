@@ -58,7 +58,7 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
 
             var self = this;
             if (!moduleConfig.epubLibraryPath)
-                moduleConfig.epubLibraryPath = 'epub_content/epub_content.json';
+                moduleConfig.epubLibraryPath = 'epub_content/epub_library.json';
             
             var indexUrl = StorageManager.getPathUrl(moduleConfig.epubLibraryPath);
 
