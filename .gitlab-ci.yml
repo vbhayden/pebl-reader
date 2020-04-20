@@ -70,7 +70,7 @@ buildProdUSMC:
   - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
   - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
   - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
-  - scp "$USMC_WEB_READER_CONFIG" src/cloud-reader/config.js
+  - cp "$USMC_WEB_READER_CONFIG" src/cloud-reader/config.js
 
   - npm run prepare:all
   - npm run dist
