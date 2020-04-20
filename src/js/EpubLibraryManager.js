@@ -60,7 +60,7 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
             
             var indexUrl = moduleConfig.epubLibraryPath
                 ? StorageManager.getPathUrl(moduleConfig.epubLibraryPath)
-                : StorageManager.getPathUrl('epub_library.json');
+                : StorageManager.getPathUrl('epub_content/epub_library.json');
 
             var dataFail = function() {
                 console.error("Ebook library fail: " + indexUrl);
