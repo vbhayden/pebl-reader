@@ -3245,7 +3245,7 @@ var network_Network = /** @class */ (function () {
                                 _this.pebl.storage.getToc(userProfile, ref.book, function (toc) {
                                     //Wait to add resources until the static TOC has been initialized, otherwise it never gets intialized
                                     if (toc.length > 0) {
-                                        _this.pebl.storage.saveNotification(userProfile, ref);
+                                        // this.pebl.storage.saveNotification(userProfile, ref);
                                         var tocEntry = {
                                             "url": ref.url,
                                             "documentName": ref.name,
