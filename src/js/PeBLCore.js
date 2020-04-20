@@ -285,6 +285,9 @@ var Message = /** @class */ (function (_super) {
             _this.replyThread = extensions[PREFIX_PEBL_EXTENSION + "replyThread"];
             _this.groupId = extensions[PREFIX_PEBL_EXTENSION + "groupId"];
             _this.isPrivate = extensions[PREFIX_PEBL_EXTENSION + "isPrivate"];
+            _this.book = extensions[PREFIX_PEBL_EXTENSION + "book"];
+            _this.cfi = extensions[PREFIX_PEBL_EXTENSION + "cfi"];
+            _this.idRef = extensions[PREFIX_PEBL_EXTENSION + "idRef"];
         }
         return _this;
     }
@@ -2759,21 +2762,6 @@ var syncing_LLSyncAction = /** @class */ (function () {
             });
             self.pebl.emitEvent(self.pebl.events.incomingNotifications, stmts);
         };
-        this.messageHandlers.newNotification = function (userProfile, payload) {
-            var n;
-            if (Voided.is(payload.data)) {
-                n = new Voided(payload.data);
-                self.pebl.storage.removeNotification(userProfile, n.target);
-            }
-            else {
-                n = new Notification(payload.data);
-                self.pebl.storage.saveNotification(userProfile, n);
-            }
-            self.pebl.emitEvent(self.pebl.events.incomingNotifications, [n]);
-            var stored = new Date(n.stored).getTime();
-            if (stored > self.pebl.notificationSyncTimestamp)
-                self.pebl.notificationSyncTimestamp = stored;
-        };
         this.messageHandlers.getThreadedMessages = function (userProfile, payload) {
             var groupId = payload.options && payload.options.groupId;
             var isPrivate = payload.options && payload.options.isPrivate;
@@ -4303,7 +4291,8 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             type: payload.type,
             replyThread: payload.replyThread,
             groupId: payload.groupId,
-            isPrivate: payload.isPrivate
+            isPrivate: payload.isPrivate,
+            book: payload.book
         };
         self.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
@@ -4322,7 +4311,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                             identity: userProfile.identity,
                             id: message.id,
                             requestType: "saveThreadedMessage",
-                            message: clone,
+                            message: clone
                         });
                         self.pebl.emitEvent(message.thread, [message]);
                     });
@@ -4337,7 +4326,8 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         var exts = {
             access: payload.access,
             type: payload.type,
-            isPrivate: payload.isPrivate
+            isPrivate: payload.isPrivate,
+            book: payload.book
         };
         self.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
