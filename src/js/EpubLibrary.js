@@ -258,6 +258,7 @@ Helpers){
     }
 
     var loadLibraryItems = function(epubs){
+        var currentScrollPos = $(window).scrollTop();
         $('#app-container .library-row-title').remove();
         $('#app-container .library-items.cloud-library').remove();
         $('#app-container .library-items.local-library').remove();
@@ -272,6 +273,7 @@ Helpers){
             var epub = epubs[count];
             if (!epub) { // count >= epubs.length
                 $('.details').on('click', loadDetails);
+                $(window).scrollTop(currentScrollPos);
                 return;
             }
 
@@ -1068,7 +1070,7 @@ Helpers){
             storeBookOffline(url, function() {
                 if (window.existingBookshelf) {
                     for (var i = 0; i < window.existingBookshelf.length; i++) {
-                        if (window.existingBookshelf[i].title === [window.tempBookshelf[0].title]) {
+                        if (window.existingBookshelf[i].title === window.tempBookshelf[0].title) {
                             window.existingBookshelf.splice(i, 1);
                             break;
                         }
@@ -1079,9 +1081,6 @@ Helpers){
                 }
                 StorageManager.saveBookshelf('db://epub_library.json', window.tempBookshelf, function() {
                     spinLibrary(false);
-                    setTimeout(function() {
-                        libraryManager.retrieveAvailableEpubs(loadLibraryItems);
-                    }, 1000);
                     $('#install-spinner-dialog').modal('hide');
                 }, function() {
                     console.log('error thing');
