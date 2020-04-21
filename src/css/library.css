@@ -297,6 +297,10 @@ body.list-view .details{
     margin-left: 0.5em;
 }
 
+.local-library .library-item {
+    margin-bottom: 30px;
+}
+
 #install-spinner-body > .spinner {
     height: 100px;
     margin-top: 100px;
@@ -307,6 +311,12 @@ body.list-view .details{
     color: #fff;
     background-color: #da5243;
     border-color: #da5243;
+}
+
+.download-book-button {
+    color: #fff;
+    background-color: #0aa6bf;
+    border-color: #0aa6bf;
 }
 
 #settings-dialog .tab-content {
