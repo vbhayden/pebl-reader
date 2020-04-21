@@ -779,6 +779,11 @@ define([
                                 readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
                             });
 
+                            annotationContainer.addEventListener('contextmenu', function(evt) {
+                                evt.preventDefault();
+                                showAnnotationContextMenu(evt, stmt, true);
+                            });
+
                             $('#my-annotations').prepend($(annotationContainer));
                         }
                     })(stmt);
@@ -815,6 +820,11 @@ define([
                                         cfi: stmt.cfi
                                     });
                                     readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
+                                });
+
+                                annotationContainer.addEventListener('contextmenu', function(evt) {
+                                    evt.preventDefault();
+                                    showAnnotationContextMenu(evt, stmt, true);
                                 });
 
                                 if (stmt.owner === userName)
@@ -998,7 +1008,7 @@ define([
             }, 500);
         }
 
-        var showAnnotationContextMenu = function(event, annotation) {
+        var showAnnotationContextMenu = function(event, annotation, absolutePos) {
             $('#annotationContextMenu').remove();
             $('#clickOutOverlay').remove();
             var appWidth = $('#app-container').width();
@@ -1012,11 +1022,16 @@ define([
             menu.id = 'annotationContextMenu';
             //Try to center it on the mouse, take into account the offset of the reader view relative to the page as a whole
 
-            var left = (event.pageX ? event.pageX : event.originalEvent.pageX) + readerPosition.left - 50;
+            var left = (event.pageX ? event.pageX : event.originalEvent.pageX) - 50;
+
+            if (!absolutePos)
+                left += readerPosition.left;
+
             if (left < 0) {
                 left = 0;
             } else {
-                left += readerFrameOffset;
+                if (!absolutePos)
+                    left += readerFrameOffset;
             }
 
             if ((left + 250) > appWidth) {
