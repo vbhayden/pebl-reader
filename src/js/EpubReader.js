@@ -780,6 +780,7 @@ define([
                             });
 
                             annotationContainer.addEventListener('contextmenu', function(evt) {
+                                evt.preventDefault();
                                 showAnnotationContextMenu(evt, stmt);
                             });
 
@@ -822,6 +823,7 @@ define([
                                 });
 
                                 annotationContainer.addEventListener('contextmenu', function(evt) {
+                                    evt.preventDefault();
                                     showAnnotationContextMenu(evt, stmt);
                                 });
 
