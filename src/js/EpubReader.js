@@ -781,7 +781,7 @@ define([
 
                             annotationContainer.addEventListener('contextmenu', function(evt) {
                                 evt.preventDefault();
-                                showAnnotationContextMenu(evt, stmt);
+                                showAnnotationContextMenu(evt, stmt, true);
                             });
 
                             $('#my-annotations').prepend($(annotationContainer));
@@ -824,7 +824,7 @@ define([
 
                                 annotationContainer.addEventListener('contextmenu', function(evt) {
                                     evt.preventDefault();
-                                    showAnnotationContextMenu(evt, stmt);
+                                    showAnnotationContextMenu(evt, stmt, true);
                                 });
 
                                 if (stmt.owner === userName)
@@ -1008,7 +1008,7 @@ define([
             }, 500);
         }
 
-        var showAnnotationContextMenu = function(event, annotation) {
+        var showAnnotationContextMenu = function(event, annotation, absolutePos) {
             $('#annotationContextMenu').remove();
             $('#clickOutOverlay').remove();
             var appWidth = $('#app-container').width();
@@ -1032,6 +1032,9 @@ define([
             if ((left + 250) > appWidth) {
                 left = appWidth - 250;
             }
+
+            if (absolutePos)
+                left = event.pageX ? event.pageX : event.originalEvent.pageX;
 
             left += 'px';
 
