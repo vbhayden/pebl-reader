@@ -220,8 +220,8 @@ body.list-view .details{
 
 @media (max-width:768px){
 
-    .library-item .book-info{
-        display: none;
+    body:not(.list-view) .library-item {
+        margin-bottom: 70px;
     }
 
     body.list-view #app-container .library-item .info-wrap{
@@ -297,7 +297,7 @@ body.list-view .details{
     margin-left: 0.5em;
 }
 
-.library-item {
+body:not(.list-view) .library-item {
     margin-bottom: 30px;
 }
 
