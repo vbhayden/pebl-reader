@@ -218,18 +218,6 @@ body.list-view .details{
     display: inline;
 }
 
-@media (max-width:768px){
-
-    body:not(.list-view) .library-item {
-        margin-bottom: 70px;
-    }
-
-    body.list-view #app-container .library-item .info-wrap{
-        padding-bottom: 0px;
-        padding-left: 0px;
-    }
-}
-
 
 /*.icon-library, .icon-library:active{
   background-image: url('../images/glyphicons_319_sort.png');
@@ -350,4 +338,27 @@ body:not(.list-view) .library-item {
     top: 38px;
     right: -1px;
     bottom: 0;
+}
+
+@media (max-width:768px){
+
+    body:not(.list-view) .library-item {
+        margin-bottom: 70px;
+    }
+
+    body.list-view #app-container .library-item .info-wrap{
+        padding-bottom: 0px;
+        padding-left: 0px;
+    }
+}
+
+
+@media (max-width: 480px) {
+    body:not(.list-view) .library-item {
+        margin-bottom: 90px;
+    }
+
+    body:not(.list-view) .download-book-button {
+        white-space: normal;
+    }
 }
