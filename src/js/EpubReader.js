@@ -779,6 +779,10 @@ define([
                                 readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
                             });
 
+                            annotationContainer.addEventListener('contextmenu', function(evt) {
+                                showAnnotationContextMenu(evt, stmt);
+                            });
+
                             $('#my-annotations').prepend($(annotationContainer));
                         }
                     })(stmt);
@@ -815,6 +819,10 @@ define([
                                         cfi: stmt.cfi
                                     });
                                     readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
+                                });
+
+                                annotationContainer.addEventListener('contextmenu', function(evt) {
+                                    showAnnotationContextMenu(evt, stmt);
                                 });
 
                                 if (stmt.owner === userName)
