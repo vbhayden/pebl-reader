@@ -258,7 +258,7 @@ Helpers){
     }
 
     var loadLibraryItems = function(epubs){
-        var currentScrollPos = $(window).scrollTop();
+        var currentScrollPos = $('#app-container').scrollTop();
         $('#app-container .library-row-title').remove();
         $('#app-container .library-items.cloud-library').remove();
         $('#app-container .library-items.local-library').remove();
@@ -273,7 +273,7 @@ Helpers){
             var epub = epubs[count];
             if (!epub) { // count >= epubs.length
                 $('.details').on('click', loadDetails);
-                $(window).scrollTop(currentScrollPos);
+                $('#app-container').scrollTop(currentScrollPos);
                 return;
             }
 
