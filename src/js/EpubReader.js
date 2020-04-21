@@ -1023,9 +1023,9 @@ define([
             //Try to center it on the mouse, take into account the offset of the reader view relative to the page as a whole
 
             var left = (event.pageX ? event.pageX : event.originalEvent.pageX) - 50;
-            
+
             if (!absolutePos)
-                left + readerPosition.left;
+                left += readerPosition.left;
 
             if (left < 0) {
                 left = 0;
