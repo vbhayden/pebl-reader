@@ -258,20 +258,13 @@ Helpers){
     }
 
     var loadLibraryItems = function(epubs){
-        $('#app-container .library-items').remove();
+        $('#app-container .library-row-title').remove();
+        $('#app-container .library-items.cloud-library').remove();
+        $('#app-container .library-items.local-library').remove();
         $('#app-container').append(LibraryBody({strings: Strings}));
-        var blacklist = window.localStorage.getItem('blacklist');
-        if (blacklist != null) {
-            blacklist = JSON.parse(blacklist);
-            var i = epubs.length;
-            while (i--) {
-                var epubUrl = epubs[i].rootUrl;
-                if (epubUrl && blacklist[epubUrl] === true)
-                    epubs.splice(i, 1);
-            }
-        }
+
         if (!epubs.length){
-            $('#app-container .library-items').append(EmptyLibrary({imagePathPrefix: moduleConfig.imagePathPrefix, strings: Strings}));
+            $('#app-container .library-items.cloud-library').append(EmptyLibrary({imagePathPrefix: moduleConfig.imagePathPrefix, strings: Strings}));
             return;
         }
 
@@ -305,18 +298,27 @@ Helpers){
                             var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: URL.createObjectURL(data), strings: Strings, noCoverBackground: noCoverBackground});
                         else
                             var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: background, strings: Strings, noCoverBackground: noCoverBackground});
-                        $('.library-items').append(elem);
+                        if (epub.rootUrl.substr(0, 5) == "db://")
+                            $('.library-items.local-library').append(elem);
+                        else
+                            $('.library-items.cloud-library').append(elem);
 
                         processEpub(epubs, ++count);
                     }, function() {
                         var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, strings: Strings, noCoverBackground: noCoverBackground});
-                        $('.library-items').append(elem);
+                        if (epub.rootUrl.substr(0, 5) == "db://")
+                            $('.library-items.local-library').append(elem);
+                        else
+                            $('.library-items.cloud-library').append(elem);
 
                         processEpub(epubs, ++count);
                     });
                 } else {
                     var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: background, strings: Strings, noCoverBackground: noCoverBackground});
-                    $('.library-items').append(elem);
+                    if (epub.rootUrl.substr(0, 5) == "db://")
+                            $('.library-items.local-library').append(elem);
+                        else
+                            $('.library-items.cloud-library').append(elem);
                     processEpub(epubs, ++count);
                 }
 
@@ -847,28 +849,7 @@ Helpers){
 
             libraryManager.retrieveAvailableEpubs(function(epubs) {
                 var i = epubs.length;
-                //Strip out epubs that were already added to indexeddb and blacklisted ones
-                while (i--) {
-                    if (blacklist != null)  {
-                        if (blacklist[epubs[i].rootUrl] === true) {
-                            epubs.splice(i, 1);
-                            continue;
-                        }
-                    }
-                    if (epubs[i].rootUrl.substr(0, 5) === 'db://')
-                        epubs.splice(i, 1);
-                    else {
-                        if (index) {
-                            for (var j = 0; j < index.length; j++) {
-                                if (index[j].rootUrl.split('/').pop() === epubs[i].rootUrl.split('/').pop()) {
-                                    epubs.splice(i, 1);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                }
+                
                 console.log(epubs);
                 if (epubs.length < 1)
                     callback();
@@ -883,7 +864,6 @@ Helpers){
                                 var blob = this.response;
                                 var file = new File([blob], url.split('/').pop());
                                 ebooks.push(file);
-                                blacklistEpub(url);
                                 if (ebooks.length === epubs.length) {
                                     importZippedEpubs(ebooks, 0, function(num) {
                                         if (ebooks.length === num + 1) {
@@ -1088,7 +1068,6 @@ Helpers){
                     console.log('delete failed');
                 });
             } else {
-                blacklistEpub(url);
                 libraryManager.retrieveAvailableEpubs(loadLibraryItems);
             }
 
