@@ -1026,15 +1026,13 @@ define([
             if (left < 0) {
                 left = 0;
             } else {
-                left += readerFrameOffset;
+                if (!absolutePos)
+                    left += readerFrameOffset;
             }
 
             if ((left + 250) > appWidth) {
                 left = appWidth - 250;
             }
-
-            if (absolutePos)
-                left = event.pageX ? event.pageX : event.originalEvent.pageX;
 
             left += 'px';
 
