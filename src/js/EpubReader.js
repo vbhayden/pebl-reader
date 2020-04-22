@@ -431,6 +431,13 @@ define([
             var sliderContainer = document.createElement('div');
             sliderContainer.classList.add('sliderContainer');
 
+            var sliderPageContainer = document.createElement('div');
+            sliderPageContainer.classList.add('sliderPageContainer');
+
+            var sliderPageContainerText = document.createElement('span');
+            sliderPageContainerText.textContent = currentPage + '/' + pageCount;
+            sliderPageContainer.appendChild(sliderPageContainerText);
+
             var sliderInfoContainer = document.createElement('div');
             sliderInfoContainer.classList.add('sliderInfoContainer');
 
@@ -545,7 +552,7 @@ define([
 
             //Add the chapter title and page nyumber under the slider
             //$('#readium-page-count').text(newChapters[chapterStart].title + ': Page ' + currentPage);
-
+            $('#readium-slider').prepend($(sliderPageContainer));
             $('#readium-slider').prepend($(sliderContainer));
             $('#readium-slider').append($(sliderInfoContainer));
         };
@@ -1662,7 +1669,7 @@ define([
                     }
                 }
                 console.log(searchResults);
-                if (searchResults.length === 0) {
+                if (searchResults.every(function(chapter) { return chapter.searchResults.length === 0 })) {
                     $('#search-body-list').append($('<h3>No results found</h3>'));
                 }
                 for (var chapter of searchResults) {

@@ -939,7 +939,6 @@ ul.nav-tabs li:not(.active) button:hover
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
   background: transparent;
   color: black;
 }
@@ -991,6 +990,11 @@ ul.nav-tabs li:not(.active) button:hover
 .sliderInfoContainer.visible {
   display: flex;
   flex-direction: column;
+}
+
+.sliderPageContainer {
+  margin-left: 10px;
+  opacity: 0.5;
 }
 
 input[type=range]::-webkit-slider-runnable-track {
