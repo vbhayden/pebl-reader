@@ -1095,26 +1095,26 @@ Helpers){
         //}
 
         // if (inIos && inIosStandalone) {
-            $(document.body).on('click', '#installbutt2', function() {
-                $('#download-books-dialog').modal('show');
-            });
-            $('#download-books-submit')[0].addEventListener('click', function() {
-                $('#install-spinner-dialog').modal('show');
-                spinLibrary(true);
-                storeLibraryOffline(function() {
-                    console.log(window.tempBookshelf);
-                    StorageManager.saveBookshelf('db://epub_library.json', window.tempBookshelf, function() {
-                        spinLibrary(false);
-                        setTimeout(function() {
-                            libraryManager.retrieveAvailableEpubs(loadLibraryItems);
-                        }, 1000);
-                        $('#install-spinner-dialog').modal('hide');
-                    }, function() {
-                        console.log('error thing');
-                    });
+            // $(document.body).on('click', '#installbutt2', function() {
+            //     $('#download-books-dialog').modal('show');
+            // });
+            // $('#download-books-submit')[0].addEventListener('click', function() {
+            //     $('#install-spinner-dialog').modal('show');
+            //     spinLibrary(true);
+            //     storeLibraryOffline(function() {
+            //         console.log(window.tempBookshelf);
+            //         StorageManager.saveBookshelf('db://epub_library.json', window.tempBookshelf, function() {
+            //             spinLibrary(false);
+            //             setTimeout(function() {
+            //                 libraryManager.retrieveAvailableEpubs(loadLibraryItems);
+            //             }, 1000);
+            //             $('#install-spinner-dialog').modal('hide');
+            //         }, function() {
+            //             console.log('error thing');
+            //         });
 
-                });
-            });
+            //     });
+            // });
         //}
 
 
