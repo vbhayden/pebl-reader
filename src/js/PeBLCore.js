@@ -288,6 +288,7 @@ var Message = /** @class */ (function (_super) {
             _this.book = extensions[PREFIX_PEBL_EXTENSION + "book"];
             _this.cfi = extensions[PREFIX_PEBL_EXTENSION + "cfi"];
             _this.idRef = extensions[PREFIX_PEBL_EXTENSION + "idRef"];
+            _this.peblAction = extensions[PREFIX_PEBL_EXTENSION + "peblAction"];
         }
         return _this;
     }
@@ -4499,7 +4500,8 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             isPrivate: payload.isPrivate,
             book: payload.book,
             idRef: payload.idRef,
-            cfi: payload.cfi
+            cfi: payload.cfi,
+            peblAction: payload.peblAction
         };
         self.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
@@ -4536,7 +4538,8 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             isPrivate: payload.isPrivate,
             book: payload.book,
             idRef: payload.idRef,
-            cfi: payload.cfi
+            cfi: payload.cfi,
+            peblAction: payload.peblAction
         };
         self.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
