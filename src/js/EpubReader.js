@@ -1669,7 +1669,7 @@ define([
                     }
                 }
                 console.log(searchResults);
-                if (searchResults.length === 0) {
+                if (searchResults.every(function(chapter) { return chapter.searchResults.length === 0 })) {
                     $('#search-body-list').append($('<h3>No results found</h3>'));
                 }
                 for (var chapter of searchResults) {
