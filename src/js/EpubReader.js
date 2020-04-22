@@ -308,6 +308,7 @@ define([
             //Remove the old slider
             $('.sliderContainer').remove();
             $('.sliderInfoContainer').remove();
+            $('.sliderPageContainer').remove();
 
             var currentIdref = readium.reader.getFirstVisibleCfi().idref;
 
