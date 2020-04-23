@@ -308,6 +308,7 @@ define([
             //Remove the old slider
             $('.sliderContainer').remove();
             $('.sliderInfoContainer').remove();
+            $('.sliderPageContainer').remove();
 
             var currentIdref = readium.reader.getFirstVisibleCfi().idref;
 
@@ -431,6 +432,13 @@ define([
             var sliderContainer = document.createElement('div');
             sliderContainer.classList.add('sliderContainer');
 
+            var sliderPageContainer = document.createElement('div');
+            sliderPageContainer.classList.add('sliderPageContainer');
+
+            var sliderPageContainerText = document.createElement('span');
+            sliderPageContainerText.textContent = currentPage + '/' + pageCount;
+            sliderPageContainer.appendChild(sliderPageContainerText);
+
             var sliderInfoContainer = document.createElement('div');
             sliderInfoContainer.classList.add('sliderInfoContainer');
 
@@ -545,7 +553,7 @@ define([
 
             //Add the chapter title and page nyumber under the slider
             //$('#readium-page-count').text(newChapters[chapterStart].title + ': Page ' + currentPage);
-
+            $('#readium-slider').prepend($(sliderPageContainer));
             $('#readium-slider').prepend($(sliderContainer));
             $('#readium-slider').append($(sliderInfoContainer));
         };
@@ -779,6 +787,11 @@ define([
                                 readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
                             });
 
+                            annotationContainer.addEventListener('contextmenu', function(evt) {
+                                evt.preventDefault();
+                                showAnnotationContextMenu(evt, stmt, true);
+                            });
+
                             $('#my-annotations').prepend($(annotationContainer));
                         }
                     })(stmt);
@@ -815,6 +828,11 @@ define([
                                         cfi: stmt.cfi
                                     });
                                     readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
+                                });
+
+                                annotationContainer.addEventListener('contextmenu', function(evt) {
+                                    evt.preventDefault();
+                                    showAnnotationContextMenu(evt, stmt, true);
                                 });
 
                                 if (stmt.owner === userName)
@@ -998,7 +1016,7 @@ define([
             }, 500);
         }
 
-        var showAnnotationContextMenu = function(event, annotation) {
+        var showAnnotationContextMenu = function(event, annotation, absolutePos) {
             $('#annotationContextMenu').remove();
             $('#clickOutOverlay').remove();
             var appWidth = $('#app-container').width();
@@ -1012,11 +1030,16 @@ define([
             menu.id = 'annotationContextMenu';
             //Try to center it on the mouse, take into account the offset of the reader view relative to the page as a whole
 
-            var left = (event.pageX ? event.pageX : event.originalEvent.pageX) + readerPosition.left - 50;
+            var left = (event.pageX ? event.pageX : event.originalEvent.pageX) - 50;
+
+            if (!absolutePos)
+                left += readerPosition.left;
+
             if (left < 0) {
                 left = 0;
             } else {
-                left += readerFrameOffset;
+                if (!absolutePos)
+                    left += readerFrameOffset;
             }
 
             if ((left + 250) > appWidth) {
@@ -1647,6 +1670,9 @@ define([
                     }
                 }
                 console.log(searchResults);
+                if (searchResults.every(function(chapter) { return chapter.searchResults.length === 0 })) {
+                    $('#search-body-list').append($('<h3>No results found</h3>'));
+                }
                 for (var chapter of searchResults) {
                     if (chapter.searchResults.length > 0) {
                         var container = document.createElement('div');

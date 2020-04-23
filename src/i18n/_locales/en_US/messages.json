@@ -180,6 +180,9 @@
     "i18n_delete_book" : {
         "message" : "Delete Book"
     },
+    "i18n_download_book" : {
+        "message": "Download Book"
+    },
     "i18n_author" : {
 	"message" : "Author: "
     },

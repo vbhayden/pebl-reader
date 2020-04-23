@@ -761,7 +761,17 @@ ul.nav-tabs li:not(.active) button:hover
     border-bottom-right-radius: 0 !important;
 }
 
-@media (max-width:768px){
+@media (max-width:768px) {
+  .navbar-left #webreaderTitle {
+    display: none;
+  }
+  .navbar {
+  }
+  .navbar .btn-group > .btn {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+  }
   .navbar .btn-group > .btn.icon-full-screen
   {
     display:none;
@@ -929,7 +939,6 @@ ul.nav-tabs li:not(.active) button:hover
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
   background: transparent;
   color: black;
 }
@@ -981,6 +990,11 @@ ul.nav-tabs li:not(.active) button:hover
 .sliderInfoContainer.visible {
   display: flex;
   flex-direction: column;
+}
+
+.sliderPageContainer {
+  margin-left: 10px;
+  opacity: 0.5;
 }
 
 input[type=range]::-webkit-slider-runnable-track {
