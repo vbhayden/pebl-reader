@@ -18,7 +18,7 @@ define(['module'], function(module) {
 
             'workerUrl': config.workerUrl || "scripts/readium-js-viewer_CLOUDAPP-WORKER.js",
 
-            'annotationCSSUrl': config.annotationCSSUrl || "css/annotations.css",
+            'annotationCSSUrl': config.annotationCSSUrl || "/ANNOTATIONS.css",
             'mathJaxUrl': config.mathJaxUrl || "scripts/mathjax/MathJax.js",
             'jsLibRoot': config.jsLibRoot || "scripts/zip/",
 
