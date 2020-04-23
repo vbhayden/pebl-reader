@@ -19,8 +19,8 @@ define(['module'], function(module) {
             'workerUrl': config.workerUrl || "scripts/readium-js-viewer_CLOUDAPP-WORKER.js",
 
             'annotationCSSUrl': config.annotationCSSUrl || "/ANNOTATIONS.css",
-            'mathJaxUrl': config.mathJaxUrl || "/MATHJAX.js",
-            'jsLibRoot': config.jsLibRoot || "/ZIPJS/",
+            'mathJaxUrl': config.mathJaxUrl || "scripts/mathjax/MathJax.js",
+            'jsLibRoot': config.jsLibRoot || "scripts/zip/",
 
             //Fonts is a list of font objects. 
             'fonts': config.fonts || [],
