@@ -234,7 +234,6 @@ buildProd:
   artifacts:
     paths:
     - dist/cloud-reader
-    expire_in: 1 hour
 
 buildQA:
   stage: build
@@ -256,7 +255,6 @@ buildQA:
   artifacts:
     paths:
     - dist/cloud-reader
-    expire_in: 1 hour
 
 buildDev:
   stage: build
@@ -680,9 +678,11 @@ qaRelease:
     - cd epub_content
     - touch epub_library.json
     - mkdir bookshelf
-    - cd ../../..
+    - cd ..
 
-    - zip -r PeBLReader.zip dist/cloud-reader/*
+    - zip -r ../../PeBLReader.zip .
+
+    - cd ../..
 
     - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
 
@@ -707,9 +707,11 @@ prodRelease:
     - cd epub_content
     - touch epub_library.json
     - mkdir bookshelf
-    - cd ../../..
+    - cd ..
 
-    - zip -r PeBLReader.zip dist/cloud-reader/*
+    - zip -r ../../PeBLReader.zip .
+
+    - cd ../..
 
     - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
 
