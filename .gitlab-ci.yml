@@ -682,7 +682,7 @@ qaRelease:
     - mkdir bookshelf
     - cd ../../..
 
-    - zip -r PeBLReader.zip dist/cloud-reader
+    - zip -r PeBLReader.zip dist/cloud-reader/*
 
     - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
 
@@ -709,7 +709,7 @@ prodRelease:
     - mkdir bookshelf
     - cd ../../..
 
-    - zip -r PeBLReader.zip dist/cloud-reader
+    - zip -r PeBLReader.zip dist/cloud-reader/*
 
     - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
 
