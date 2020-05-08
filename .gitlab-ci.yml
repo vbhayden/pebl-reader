@@ -564,6 +564,9 @@ prodDeploy:
    - scp -P22 -r dist/cloud-reader/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/htmlOrgReaderProd/
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/bookTempDeployment/prodBookshelf /var/www/htmlOrgReaderProd/epub_content"
 
+   artifacts:
+    paths:
+    - dist/cloud-reader
 ### ----------------------
 
 qaDeploy:
@@ -612,6 +615,9 @@ qaDeploy:
    - scp -P22 -r dist/cloud-reader/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/htmlOrgReaderQa/
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/bookTempDeployment/qaBookshelf /var/www/htmlOrgReaderQa/epub_content"
 
+   artifacts:
+    paths:
+    - dist/cloud-reader
 ### ----------------------
 
 devDeploy:
@@ -683,8 +689,6 @@ qaRelease:
     - zip -r PeBLReader.zip dist/cloud-reader
 
     - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
-
-    - echo $(file -b --mime-type PeBLReader.zip)
 
     - id=$(curl -H "Authorization:token $GITHUB_ACCESS_TOKEN" --data "{\"tag_name\":\"$LAST_TAG\", \"name\":\"QA_$LAST_TAG\", \"body\":\"QA PeBL WebReader\"}" "https://api.github.com/repos/peblproject/WebReader/releases" | jq '.id')
 
