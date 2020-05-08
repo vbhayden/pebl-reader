@@ -670,8 +670,8 @@ qaRelease:
     - QA
   script:
     - apt-get update -y
-    - apt-get install zip
-    - apt-get install jq
+    - apt-get install zip -y
+    - apt-get install jq -y
 
     - cd dist/cloud-reader
     - mkdir epub_content
@@ -694,8 +694,8 @@ prodRelease:
     - master
   script:
     - apt-get update -y
-    - apt-get install zip
-    - apt-get install jq
+    - apt-get install zip -y
+    - apt-get install jq -y
 
     - cd dist/cloud-reader
     - mkdir epub_content
