@@ -563,7 +563,6 @@ prodDeploy:
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "rm -rf /var/www/htmlOrgReaderProd/*"
    - scp -P22 -r dist/cloud-reader/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/htmlOrgReaderProd/
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/bookTempDeployment/prodBookshelf /var/www/htmlOrgReaderProd/epub_content"
-
    artifacts:
     paths:
     - dist/cloud-reader
@@ -614,7 +613,6 @@ qaDeploy:
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "rm -rf /var/www/htmlOrgReaderQa/*"
    - scp -P22 -r dist/cloud-reader/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/htmlOrgReaderQa/
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/bookTempDeployment/qaBookshelf /var/www/htmlOrgReaderQa/epub_content"
-
    artifacts:
     paths:
     - dist/cloud-reader
