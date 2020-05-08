@@ -686,7 +686,7 @@ qaRelease:
 
     - id=$(curl -H "Authorization:token $GITHUB_ACCESS_TOKEN" --data "{\"tag_name\":\"$LAST_TAG\", \"name\":\"QA_$LAST_TAG\", \"body\":\"QA PeBL WebReader\"}" "https://api.github.com/repos/peblproject/WebReader/releases" | jq '.id')
 
-    - curl -H "Authorization:token $GITHUB_ACCESS_TOKEN" -H "Content-Type:$(file -b --mime-type PeBLReader.zip)" --data-binary PeBLReader.zip "https://api.github.com/repos/peblproject/WebReader/releases/$id/assets?name=PeBLReader"
+    - curl -H "Authorization:token $GITHUB_ACCESS_TOKEN" -H "Content-Type:$(file -b --mime-type PeBLReader.zip)" --data-binary PeBLReader.zip "https://uploads.github.com/repos/peblproject/WebReader/releases/$id/assets?name=PeBLReader"
 
 prodRelease:
   stage: release
@@ -710,4 +710,4 @@ prodRelease:
 
     - id=$(curl -H "Authorization:token $GITHUB_ACCESS_TOKEN" --data "{\"tag_name\":\"$LAST_TAG\", \"name\":\"$LAST_TAG\", \"body\":\"PeBL WebReader\"}" "https://api.github.com/repos/peblproject/WebReader/releases" | jq '.id')
 
-    - curl -H "Authorization:token $GITHUB_ACCESS_TOKEN" -H "Content-Type:$(file -b --mime-type PeBLReader.zip)" --data-binary PeBLReader.zip "https://api.github.com/repos/peblproject/WebReader/releases/$id/assets?name=PeBLReader"
+    - curl -H "Authorization:token $GITHUB_ACCESS_TOKEN" -H "Content-Type:$(file -b --mime-type PeBLReader.zip)" --data-binary PeBLReader.zip "https://uploads.github.com/repos/peblproject/WebReader/releases/$id/assets?name=PeBLReader"
