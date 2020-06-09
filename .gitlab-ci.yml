@@ -536,10 +536,10 @@ extensionQADeploy:
    - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null   
 
    ## Build commands
-   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/qa.reader.extension.peblproject.org/epub_content /var/www/miscPeBL/tempExtensionQABooks"
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/qa.reader.extension.peblproject.org/epub_content /var/www/bookTempDeployment/tempExtensionQABooks"
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "rm -rf /var/www/qa.reader.extension.peblproject.org/*"
    - scp -P22 -r dist/cloud-reader/* $DEV_USERNAME@$DEV_SERVER_IP:/var/www/qa.reader.extension.peblproject.org/
-   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/miscPeBL/tempExtensionQABooks /var/www/qa.reader.extension.peblproject.org/epub_content"
+   - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/bookTempDeployment/tempExtensionQABooks /var/www/qa.reader.extension.peblproject.org/epub_content"
 
 
 
