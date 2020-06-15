@@ -11,12 +11,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-window.Configuration = {}
-window.Configuration.OAuthURL = 'https://project.oauth.eduworks.com/';
-window.Configuration.OAuthToken = '86ujpjdo6nv82l';
-window.Configuration.lrsUrl = 'https://lrs.peblproject.com/';
-window.Configuration.lrsCredential = 'MTFkZWU2MDg1NTMyZGM4YzE4ZTQyMDFiMGY2YmE4NjE0NTBhMmI3NzoyMGFkNzM3NWE5YjcwYWY1OWJiYzM3ZWZhNjJlYTNlOGNlM2MyMGUw';
-window.Configuration.useLinkedIn = true;
-window.Configuration.favicon = 'images/PEBL-icon-16.ico';
-window.Configuration.loginImage = 'images/PEBL-Logo-Color-small.png';
-window.Configuration.userList = ['Learner', 'Learner1', 'Learner2', 'Learner3', 'Learner5', 'Learner7'];
+window.PeBLConfig = {}
+// window.PeBLConfig.PeBLServicesURL = 'https://dev.services.peblproject.org';
+// window.PeBLConfig.PeBLServicesWSURL = 'wss://dev.services.peblproject.org';
+window.PeBLConfig.PeBLServicesURL = 'https://localhost:8080';
+window.PeBLConfig.PeBLServicesWSURL = 'wss://localhost:8080';
+window.PeBLConfig.useOpenID = true;
+window.PeBLConfig.favicon = 'images/PEBL-icon-16.ico';
+window.PeBLConfig.loginImage = 'images/PEBL-Logo-Color-small.png';
+window.PeBLConfig.userList = ['Learner', 'Learner1', 'Learner2', 'Learner3', 'Learner5', 'Learner7'];

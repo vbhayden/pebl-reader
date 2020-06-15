@@ -218,18 +218,6 @@ body.list-view .details{
     display: inline;
 }
 
-@media (max-width:768px){
-
-    .library-item .book-info{
-        display: none;
-    }
-
-    body.list-view #app-container .library-item .info-wrap{
-        padding-bottom: 0px;
-        padding-left: 0px;
-    }
-}
-
 
 /*.icon-library, .icon-library:active{
   background-image: url('../images/glyphicons_319_sort.png');
@@ -293,6 +281,14 @@ body.list-view .details{
     background-size: cover;
 }
 
+.library-row-title {
+    margin-left: 0.5em;
+}
+
+body:not(.list-view) .library-item {
+    margin-bottom: 30px;
+}
+
 #install-spinner-body > .spinner {
     height: 100px;
     margin-top: 100px;
@@ -303,7 +299,12 @@ body.list-view .details{
     color: #fff;
     background-color: #da5243;
     border-color: #da5243;
-    display: none;
+}
+
+.download-book-button {
+    color: #fff;
+    background-color: #0aa6bf;
+    border-color: #0aa6bf;
 }
 
 #settings-dialog .tab-content {
@@ -324,4 +325,40 @@ body.list-view .details{
 
 #keyboard-list label {
     max-width: 50%;
+}
+
+#search-library-body {
+  display: none;
+}
+
+.search-library-visible#search-library-body {
+    display: block;
+    position: fixed;
+    width: 30%;
+    top: 38px;
+    right: -1px;
+    bottom: 0;
+}
+
+@media (max-width:768px){
+
+    body:not(.list-view) .library-item {
+        margin-bottom: 70px;
+    }
+
+    body.list-view #app-container .library-item .info-wrap{
+        padding-bottom: 0px;
+        padding-left: 0px;
+    }
+}
+
+
+@media (max-width: 480px) {
+    body:not(.list-view) .library-item {
+        margin-bottom: 90px;
+    }
+
+    body:not(.list-view) .download-book-button {
+        white-space: normal;
+    }
 }

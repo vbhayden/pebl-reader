@@ -67,7 +67,8 @@ html#simpleViewer .icon-library{
 
 #annotations-body,
 #bookmarks-body,
-#readium-toc-body {
+#readium-toc-body,
+#search-body {
   display: none;
 }
 
@@ -148,6 +149,15 @@ direction: rtl;
 }
 
 .bookmarks-visible #reading-area{
+  right: 30%;
+}
+
+.search-visible #search-body {
+  display: inline-block;
+  width: 30%;
+}
+
+.search-visible #reading-area {
   right: 30%;
 }
 
@@ -751,7 +761,17 @@ ul.nav-tabs li:not(.active) button:hover
     border-bottom-right-radius: 0 !important;
 }
 
-@media (max-width:768px){
+@media (max-width:768px) {
+  .navbar-left #webreaderTitle {
+    display: none;
+  }
+  .navbar {
+  }
+  .navbar .btn-group > .btn {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+  }
   .navbar .btn-group > .btn.icon-full-screen
   {
     display:none;
@@ -919,7 +939,6 @@ ul.nav-tabs li:not(.active) button:hover
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
   background: transparent;
   color: black;
 }
@@ -973,6 +992,11 @@ ul.nav-tabs li:not(.active) button:hover
   flex-direction: column;
 }
 
+.sliderPageContainer {
+  margin-left: 10px;
+  opacity: 0.5;
+}
+
 input[type=range]::-webkit-slider-runnable-track {
 /*  background: linear-gradient(to right, rgba(59,144,232,0) 20%, rgba(59,144,232,1) 20%, rgba(44,133,231,1) 50%, rgba(44,133,230,0) 50%)
   background: rgba(73,155,234,0);
@@ -983,4 +1007,13 @@ background: -o-linear-gradient(left, rgba(73,155,234,0) 0%, rgba(59,144,232,0) 3
 background: -ms-linear-gradient(left, rgba(73,155,234,0) 0%, rgba(59,144,232,0) 34%, rgba(59,144,232,1) 35%, rgba(44,133,231,1) 70%, rgba(44,133,230,0) 71%, rgba(32,124,229,0) 100%);
 background: linear-gradient(to right, rgba(73,155,234,0) 0%, rgba(59,144,232,0) 34%, rgba(59,144,232,1) 35%, rgba(44,133,231,1) 70%, rgba(44,133,230,0) 71%, rgba(32,124,229,0) 100%);
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#499bea', endColorstr='#207ce5', GradientType=1 );*/
+}
+
+.searchResult {
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.searchResult:hover {
+  background: #dedede;
 }
