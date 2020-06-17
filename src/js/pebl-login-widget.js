@@ -234,11 +234,11 @@ window.Lightbox = {
                                 console.log(JSON.parse(xhr.response));
                                 let payload = JSON.parse(xhr.response);
                                 let userProfile = {
-                                    identity: payload.preferred_username,
-                                    name: payload.name,
-                                    preferredName: payload.name,
-                                    firstName: payload.given_name,
-                                    lastName: payload.family_name,
+                                    identity: payload.id ? payload.id : payload.preferred_username,
+                                    name: payload.name ? payload.name : (payload.firstName.localized[payload.firstName.preferredLocale.language + '-' + payload.firstName.preferredLocale.country] + ' ' + payload.lastName.localized[payload.lastName.preferredLocale.language + '-' + payload.lastName.preferredLocale.country]),
+                                    preferredName: payload.name ? payload.name : (payload.firstName.localized[payload.firstName.preferredLocale.language + '-' + payload.firstName.preferredLocale.country] + ' ' + payload.lastName.localized[payload.lastName.preferredLocale.language + '-' + payload.lastName.preferredLocale.country]),
+                                    firstName: payload.given_name ? payload.given_name : payload.firstName.localized[payload.firstName.preferredLocale.language + '-' + payload.firstName.preferredLocale.country],
+                                    lastName: payload.family_name ? payload.family_name : payload.lastName.localized[payload.lastName.preferredLocale.language + '-' + payload.lastName.preferredLocale.country],
                                     // avatar: imageToUse,
                                     registryEndpoint: {
                                         ul: 'https://peblproject.com/registry/api/downloadContent?guid='
