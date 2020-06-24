@@ -217,18 +217,30 @@ define([
         };
 
         var checkCompletion = function() {
-            var iframe = $("#epub-reader-frame iframe")[0];
-            var iframeWindow = iframe.contentWindow || iframe.contentDocument;
-            var iframeDocument = iframeWindow.document;
+            var currentPage = getCurrentPageNumber();
 
-            var elem = iframeDocument.getElementById('CompleteTrigger');
+            var totalPages = getPageCountOfCurrentChapter();
 
-            if (elem) {
-                var rect = elem.getBoundingClientRect();
+            if (currentPage === totalPages) {
+                var bookmark = JSON.parse(readium.reader.bookmarkCurrentPage());
+                var urlParams = new URLSearchParams(window.location.search);
+                var epub = urlParams.get('epub');
+                var chapterTitle;
 
-                if (rect.top >= 0 && rect.left >= 0 && rect.bottom <= (iframeWindow.innerHeight || iframeDocument.documentElement.clientHeight) && rect.right <= (iframeWindow.innerWidth || iframeDocument.documentElement.clientWidth)) {
-                    PeBL.emitEvent(PeBL.events.eventCompleted, {});
+                for (let item of currentSliderToc) {
+                    if (item.idref === bookmark.idref) {
+                        chapterTitle = item.title;
+                        break;
+                    }
                 }
+
+                PeBL.emitEvent(PeBL.events.eventExperienced, {
+                    type: 'chapter',
+                    target: window.location.origin + '/?epub=' + epub + '&goto=' + encodeURIComponent('{"idref": "' + bookmark.idref + '"}'),
+                    name: chapterTitle,
+                    idref: bookmark.idref,
+                    cfi: bookmark.contentCFI
+                });
             }
         }
 
@@ -739,7 +751,7 @@ define([
 
                 setTimeout(function() { $('#readium-toc-body button.close')[0].focus(); }, 100);
                 PeBL.emitEvent(PeBL.events.eventDisplayed, {
-                    target: 'PeBL Reader TOC',
+                    target: 'http://www.peblproject.com/activities/reader-toc',
                     type: 'TOC'
                 });
             }
@@ -779,6 +791,7 @@ define([
                             annotationContainer.addEventListener('click', function() {
                                 PeBL.emitEvent(PeBL.events.eventAccessed, {
                                     type: 'annotation',
+                                    target: stmt.id,
                                     name: stmt.title,
                                     description: stmt.text,
                                     idref: stmt.idRef,
@@ -822,6 +835,7 @@ define([
                                 annotationContainer.addEventListener('click', function() {
                                     PeBL.emitEvent(PeBL.events.eventAccessed, {
                                         type: 'annotation',
+                                        target: stmt.id,
                                         name: stmt.title,
                                         description: stmt.text,
                                         idref: stmt.idRef,
@@ -891,7 +905,7 @@ define([
                 $appContainer.addClass('annotations-visible');
 
                 PeBL.emitEvent(PeBL.events.eventDisplayed, {
-                    target: 'PeBL Reader Annotations',
+                    target: 'http://www.peblproject.com/activities/reader-annotations',
                     type: 'Annotations'
                 });
                 // setTimeout(function(){ $('#readium-toc-body button.close')[0].focus(); }, 100);
@@ -934,7 +948,7 @@ define([
                 $appContainer.addClass('search-visible');
 
                 PeBL.emitEvent(PeBL.events.eventDisplayed, {
-                    target: 'PeBL Reader Search',
+                    target: 'http://www.peblproject.com/activities/reader-search',
                     type: 'Search'
                 });
             }
@@ -961,6 +975,21 @@ define([
                 annotation.title = iframeWindow.getSelection().toString();
                 annotation.type = 2;
 
+                var urlParams = new URLSearchParams(window.location.search);
+                var epub = urlParams.get('epub');
+                var chapterTitle;
+
+                var spineItemCfi = readium.reader.getLoadedSpineItems()[0].cfi;
+
+                for (let item of currentSliderToc) {
+                    if (item.idref === bookmark.idref) {
+                        chapterTitle = item.title;
+                        break;
+                    }
+                }
+
+                annotation.target = window.location.origin + '/?epub=' + epub + '&goto=epubcfi(' + spineItemCfi + encodeURIComponent(CFI.cfi) + ')';
+                
                 PeBL.emitEvent(PeBL.events.eventAnnotated, annotation);
                 annotationsShowHideToggle(true);
                 // Clear the selection so you can't hit the button again.
@@ -1150,6 +1179,21 @@ define([
             annotation.title = title;
             annotation.type = 1;
 
+            var urlParams = new URLSearchParams(window.location.search);
+            var epub = urlParams.get('epub');
+            var chapterTitle;
+
+            var spineItemCfi = readium.reader.getLoadedSpineItems()[0].cfi;
+
+            for (let item of currentSliderToc) {
+                if (item.idref === bookmark.idref) {
+                    chapterTitle = item.title;
+                    break;
+                }
+            }
+
+            annotation.target = window.location.origin + '/?epub=' + epub + '&goto=epubcfi(' + spineItemCfi + encodeURIComponent(bookmark.contentCFI) + ')';
+
             PeBL.emitEvent(PeBL.events.eventBookmarked, annotation);
         };
 
@@ -1168,6 +1212,7 @@ define([
                                 }
                                 PeBL.emitEvent(PeBL.events.eventAccessed, {
                                     type: 'bookmark',
+                                    target: stmt.id,
                                     name: stmt.title,
                                     idref: bookmark.IDRef,
                                     cfi: bookmark.contentCFI
@@ -1234,7 +1279,7 @@ define([
 
                 $appContainer.addClass('bookmarks-visible');
                 PeBL.emitEvent(PeBL.events.eventDisplayed, {
-                    target: 'PeBL Reader Bookmarks',
+                    target: 'http://www.peblproject.com/activities/reader-bookmarks',
                     type: 'Bookmarks'
                 });
             }
@@ -1373,6 +1418,26 @@ define([
                 } else {
                     hideScaleDisplay();
                 }
+                
+                var bookmark = JSON.parse(readium.reader.bookmarkCurrentPage());
+                var urlParams = new URLSearchParams(window.location.search);
+                var epub = urlParams.get('epub');
+                var chapterTitle;
+
+                for (let item of currentSliderToc) {
+                    if (item.idref === bookmark.idref) {
+                        chapterTitle = item.title;
+                        break;
+                    }
+                }
+
+                PeBL.emitEvent(PeBL.events.eventAccessed, {
+                    type: 'chapter',
+                    target: window.location.origin + '/?epub=' + epub + '&goto=' + encodeURIComponent('{"idref": "' + bookmark.idref + '"}'),
+                    name: chapterTitle,
+                    idref: bookmark.idref,
+                    cfi: bookmark.contentCFI
+                });
 
                 //TODO not picked-up by all screen readers, so for now this short description will suffice
                 $iframe.attr("title", "EPUB");
@@ -1629,6 +1694,10 @@ define([
                 var text = this.value;
                 var searchResults = [];
                 if (text.trim().length > 0) {
+                    PeBL.emitEvent(PeBL.events.eventSearched, {
+                        target: 'http://www.peblproject.com/activities/reader-search',
+                        name: text.trim()
+                    });
                     var regex = new RegExp(text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "gi"); // Escape the input
                     for (var i = 0; i < window.SpineDocuments.length; i++) {
                         var documentObject = window.SpineDocuments[i];
@@ -1689,6 +1758,13 @@ define([
                             textContainer.classList.add('searchResult');
                             (function(textContainer, result) {
                                 textContainer.addEventListener('click', function() {
+                                    PeBL.emitEvent(PeBL.events.eventAccessed, {
+                                        type: 'searchResult',
+                                        target: 'http://www.peblproject.com/activities/reader-search-result',
+                                        name: result.text,
+                                        idref: result.cfi.idref,
+                                        cfi: result.cfi.contentCFI
+                                    });
                                     window.localStorage.setItem('searchHighlight', JSON.stringify(result.cfi));
                                     window.READIUM.reader.plugins.highlights.removeHighlightsByType('search-highlight');
                                     window.READIUM.reader.openSpineItemElementCfi(result.cfi.idref, result.cfi.contentCFI);
@@ -2417,7 +2493,7 @@ define([
             ebookURL = data.epub;
             ebookURL_filepath = Helpers.getEbookUrlFilePath(ebookURL);
 
-            PeBL.emitEvent(PeBL.events.newBook, constructEbookTitle(ebookURL_filepath));
+            PeBL.emitEvent(PeBL.events.newBook, window.location.origin + '/?epub=' + encodeURIComponent(ebookURL_filepath));
 
             Analytics.trackView('/reader');
             embedded = data.embedded;
