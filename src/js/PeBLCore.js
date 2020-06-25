@@ -1391,15 +1391,17 @@ var XApiStatement = /** @class */ (function () {
         this.result = raw.result;
         this["object"] = raw.object;
         this.attachments = raw.attachments;
-        var extensions = this["object"].definition.extensions;
-        this.browserName = extensions[PREFIX_PEBL_EXTENSION + "browserName"];
-        this.browserVersion = extensions[PREFIX_PEBL_EXTENSION + "browserVersion"];
-        this.osName = extensions[PREFIX_PEBL_EXTENSION + "osName"];
-        this.osVersion = extensions[PREFIX_PEBL_EXTENSION + "osVersion"];
-        this.contextOrigin = extensions[PREFIX_PEBL_EXTENSION + "contextOrigin"];
-        this.contextUrl = extensions[PREFIX_PEBL_EXTENSION + "contextUrl"];
-        this.currentTeam = extensions[PREFIX_PEBL_EXTENSION + "currentTeam"];
-        this.currentClass = extensions[PREFIX_PEBL_EXTENSION + "currentClass"];
+        if (this["object"].definition) {
+            var extensions = this["object"].definition.extensions;
+            this.browserName = extensions[PREFIX_PEBL_EXTENSION + "browserName"];
+            this.browserVersion = extensions[PREFIX_PEBL_EXTENSION + "browserVersion"];
+            this.osName = extensions[PREFIX_PEBL_EXTENSION + "osName"];
+            this.osVersion = extensions[PREFIX_PEBL_EXTENSION + "osVersion"];
+            this.contextOrigin = extensions[PREFIX_PEBL_EXTENSION + "contextOrigin"];
+            this.contextUrl = extensions[PREFIX_PEBL_EXTENSION + "contextUrl"];
+            this.currentTeam = extensions[PREFIX_PEBL_EXTENSION + "currentTeam"];
+            this.currentClass = extensions[PREFIX_PEBL_EXTENSION + "currentClass"];
+        }
     }
     XApiStatement.prototype.toXAPI = function () {
         return new XApiStatement(this);
