@@ -412,7 +412,7 @@ Helpers){
                 $('#searchNotInitialized').remove();
 
                 PeBL.emitEvent(PeBL.events.eventUndisplayed, {
-                    target: 'PeBL Library Search',
+                    activityType: 'library-search',
                     type: 'Search'
                 });
             } else {
@@ -423,7 +423,7 @@ Helpers){
                 initializeLibrarySearch();
 
                 PeBL.emitEvent(PeBL.events.eventDisplayed, {
-                    target: 'PeBL Library Search',
+                    activityType: 'library-search',
                     type: 'Search'
                 });
             }
