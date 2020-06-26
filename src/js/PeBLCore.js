@@ -5504,16 +5504,33 @@ var xapiGenerator_XApiGenerator = /** @class */ (function () {
         stmt.result.score.min = minScore;
         stmt.result.score.max = maxScore;
         if (extensions) {
-            if (!stmt.extensions)
-                stmt.extensions = {};
+            if (!stmt.result.extensions)
+                stmt.result.extensions = {};
             for (var _i = 0, _a = Object.keys(extensions); _i < _a.length; _i++) {
                 var key = _a[_i];
-                stmt.extensions[key] = extensions[key];
+                stmt.result.extensions[key] = extensions[key];
             }
         }
         return stmt;
     };
-    XApiGenerator.prototype.addObject = function (stmt, activityId, name, description, extensions) {
+    XApiGenerator.prototype.addResultResponse = function (stmt, response, complete, duration, extensions) {
+        if (!stmt.result)
+            stmt.result = {};
+        stmt.result.response = response;
+        stmt.result.completion = complete;
+        if (duration)
+            stmt.result.duration = duration;
+        if (extensions) {
+            if (!stmt.result.extensions)
+                stmt.result.extensions = {};
+            for (var _i = 0, _a = Object.keys(extensions); _i < _a.length; _i++) {
+                var key = _a[_i];
+                stmt.result.extensions[key] = extensions[key];
+            }
+        }
+        return stmt;
+    };
+    XApiGenerator.prototype.addObject = function (stmt, activityId, name, description, activityType, extensions) {
         if (!stmt.object)
             stmt.object = {};
         stmt.object.id = activityId;
@@ -5530,6 +5547,8 @@ var xapiGenerator_XApiGenerator = /** @class */ (function () {
                 stmt.object.definition.description = {};
             stmt.object.definition.description["en-US"] = description;
         }
+        if (activityType)
+            stmt.object.definition.type = activityType;
         if (extensions)
             stmt.object.definition.extensions = extensions;
         return stmt;
@@ -5688,7 +5707,7 @@ var xapiGenerator_XApiGenerator = /** @class */ (function () {
 
 // CONCATENATED MODULE: ./src/eventHandlers.ts
 var PEBL_PREFIX = "";
-var PEBL_THREAD_PREFIX = "peblThread://";
+// const PEBL_THREAD_PREFIX = "peblThread://";
 var PEBL_THREAD_USER_PREFIX = "peblThread://user-";
 // const PEBL_THREAD_ARTIFACT_PREFIX = "peblThread://artifact-";
 var PEBL_THREAD_GROUP_PREFIX = "peblThread://group-";
@@ -5771,7 +5790,8 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             card: payload.card,
             url: payload.url,
             book: payload.book,
-            externalURL: payload.externalURL
+            externalURL: payload.externalURL,
+            target: payload.target
         };
         this.pebl.storage.getCurrentActivity(function (activity) {
             self.pebl.storage.getCurrentBook(function (book) {
@@ -5780,7 +5800,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_THREAD_USER_PREFIX + payload.target, payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         var pulled = userProfile.identity == payload.target;
                         if (pulled)
                             self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#pulled", "pulled");
@@ -5827,7 +5847,8 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/responded", "responded");
                         self.xapiGen.addTimestamp(xapi);
-                        self.xapiGen.addObject(xapi, PEBL_THREAD_PREFIX + payload.thread, payload.prompt, payload.text, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.prompt, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addResultResponse(xapi, payload.text, true, payload.duration, payload.additionalResultData);
                         self.xapiGen.addActorAccount(xapi, userProfile);
                         var message = new Message(xapi);
                         var clone = JSON.parse(JSON.stringify(message));
@@ -5866,7 +5887,8 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/noted", "noted");
                         self.xapiGen.addTimestamp(xapi);
-                        self.xapiGen.addObject(xapi, PEBL_THREAD_PREFIX + payload.thread, payload.prompt, payload.text, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.prompt, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addResultResponse(xapi, payload.text, true, payload.duration, payload.additionalResultData);
                         self.xapiGen.addActorAccount(xapi, userProfile);
                         var message = new Message(xapi);
                         var clone = JSON.parse(JSON.stringify(message));
@@ -5934,6 +5956,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         });
     };
     PEBLEventHandlers.prototype.saveProgram = function (event) {
+        var payload = event.detail;
         var prog = event.detail;
         var xapi = {};
         var self = this;
@@ -5949,7 +5972,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                             self.xapiGen.addId(xapi);
                             self.xapiGen.addTimestamp(xapi);
                             self.xapiGen.addActorAccount(xapi, userProfile);
-                            self.xapiGen.addObject(xapi, PEBL_THREAD_USER_PREFIX + userProfile.identity, prog.id, prog.programShortDescription, self.xapiGen.addExtensions(exts_1));
+                            self.xapiGen.addObject(xapi, PEBL_THREAD_USER_PREFIX + userProfile.identity, prog.id, prog.programShortDescription, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts_1));
                             self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#joined", "joined");
                             if (book || activity)
                                 self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
@@ -5977,6 +6000,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         });
     };
     PEBLEventHandlers.prototype.saveInstitution = function (event) {
+        var payload = event.detail;
         var inst = new activity_Institution(event.detail);
         var xapi = {};
         var self = this;
@@ -5992,7 +6016,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                             self.xapiGen.addId(xapi);
                             self.xapiGen.addTimestamp(xapi);
                             self.xapiGen.addActorAccount(xapi, userProfile);
-                            self.xapiGen.addObject(xapi, PEBL_THREAD_USER_PREFIX + userProfile.identity, inst.id, inst.description, self.xapiGen.addExtensions(exts_2));
+                            self.xapiGen.addObject(xapi, PEBL_THREAD_USER_PREFIX + userProfile.identity, inst.id, inst.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts_2));
                             self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#joined", "joined");
                             if (book || activity)
                                 self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
@@ -6020,6 +6044,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         });
     };
     PEBLEventHandlers.prototype.saveSystem = function (event) {
+        var payload = event.detail;
         var system = new activity_System(event.detail);
         var xapi = {};
         var self = this;
@@ -6035,7 +6060,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                             self.xapiGen.addId(xapi);
                             self.xapiGen.addTimestamp(xapi);
                             self.xapiGen.addActorAccount(xapi, userProfile);
-                            self.xapiGen.addObject(xapi, PEBL_THREAD_USER_PREFIX + userProfile.identity, system.id, system.description, self.xapiGen.addExtensions(exts_3));
+                            self.xapiGen.addObject(xapi, PEBL_THREAD_USER_PREFIX + userProfile.identity, system.id, system.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts_3));
                             self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#joined", "joined");
                             if (book || activity)
                                 self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
@@ -6105,7 +6130,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_THREAD_USER_PREFIX + payload.thread, payload.groupId, payload.groupDescription, self.xapiGen.addExtensions(exts_4));
+                        self.xapiGen.addObject(xapi, PEBL_THREAD_USER_PREFIX + payload.thread, payload.groupId, payload.groupDescription, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts_4));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#joined", "joined");
                         if (book || activity)
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
@@ -6172,7 +6197,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                             xapiNew.id = newMembership.id;
                             self.xapiGen.addTimestamp(xapiNew);
                             self.xapiGen.addActorAccount(xapiNew, newUserProfile_1);
-                            self.xapiGen.addObject(xapiNew, PEBL_THREAD_USER_PREFIX + newUserProfile_1.identity, newMembership.membershipId, newMembership.groupDescription, self.xapiGen.addExtensions(exts_5));
+                            self.xapiGen.addObject(xapiNew, PEBL_THREAD_USER_PREFIX + newUserProfile_1.identity, newMembership.membershipId, newMembership.groupDescription, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts_5));
                             self.xapiGen.addVerb(xapiNew, "http://www.peblproject.com/definitions.html#joined", "joined");
                             if (book || activity)
                                 self.xapiGen.addParentActivity(xapiNew, PEBL_PREFIX + (book || activity));
@@ -6238,7 +6263,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/commented", "commented");
                         self.xapiGen.addTimestamp(xapi);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.title, payload.text, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts_6, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.title, payload.text, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts_6, userProfile)));
                         self.xapiGen.addActorAccount(xapi, userProfile);
                         var annotation = new Annotation(xapi);
                         self.pebl.storage.saveAnnotations(userProfile, annotation);
@@ -6272,7 +6297,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#bookmarked", "bookmarked");
                         self.xapiGen.addTimestamp(xapi);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.title, payload.text, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts_7, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.title, payload.text, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts_7, userProfile)));
                         self.xapiGen.addActorAccount(xapi, userProfile);
                         var annotation = new Annotation(xapi);
                         self.pebl.storage.saveAnnotations(userProfile, annotation);
@@ -6303,7 +6328,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#unbookmarked", "unbookmarked");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var s = new Action(xapi);
@@ -6337,7 +6362,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#annotated", "annotated");
                         self.xapiGen.addTimestamp(xapi);
-                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.title, payload.text, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts_8, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.title, payload.text, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts_8, userProfile)));
                         self.xapiGen.addActorAccount(xapi, userProfile);
                         var annotation = new Annotation(xapi);
                         self.pebl.storage.saveAnnotations(userProfile, annotation);
@@ -6371,7 +6396,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/shared", "shared");
                         self.xapiGen.addTimestamp(xapi);
-                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.title, payload.text, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts_9, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.title, payload.text, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts_9, userProfile)));
                         self.xapiGen.addActorAccount(xapi, userProfile);
                         var annotation = new SharedAnnotation(xapi);
                         self.pebl.storage.saveSharedAnnotations(userProfile, annotation);
@@ -6402,7 +6427,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts_10, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts_10, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#unshared", "unshared");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var s = new Action(xapi);
@@ -6433,7 +6458,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts_11, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts_11, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#unannotated", "unannotated");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var s = new Action(xapi);
@@ -6537,6 +6562,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
     };
     // -------------------------------
     PEBLEventHandlers.prototype.eventSessionStart = function (event) {
+        var payload = event.detail;
         var xapi = {};
         var self = this;
         var exts = {};
@@ -6547,7 +6573,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#entered", "entered");
                         if (book || activity)
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
@@ -6565,6 +6591,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         });
     };
     PEBLEventHandlers.prototype.eventSessionStop = function (event) {
+        var payload = event.detail;
         var xapi = {};
         var self = this;
         var exts = {};
@@ -6575,7 +6602,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#exited", "exited");
                         if (book || activity)
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
@@ -6593,6 +6620,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         });
     };
     PEBLEventHandlers.prototype.eventLaunched = function (event) {
+        var payload = event.detail;
         var xapi = {};
         var self = this;
         var exts = {};
@@ -6603,7 +6631,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#launched", "launched");
                         if (book || activity)
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
@@ -6631,7 +6659,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.xapiGen.addId(xapi);
                 self.xapiGen.addTimestamp(xapi);
                 self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, PEBL_PREFIX + payload, undefined, undefined, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                self.xapiGen.addObject(xapi, PEBL_PREFIX + payload, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                 self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/terminated", "terminated");
                 self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + payload);
                 var s = new Session(xapi);
@@ -6656,7 +6684,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                     self.xapiGen.addId(xapi);
                     self.xapiGen.addTimestamp(xapi);
                     self.xapiGen.addActorAccount(xapi, userProfile);
-                    self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                    self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                     self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/initialized", "initialized");
                     self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + payload.activity);
                     var s = new Session(xapi);
@@ -6684,7 +6712,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.xapiGen.addId(xapi);
                 self.xapiGen.addTimestamp(xapi);
                 self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                 self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/interacted", "interacted");
                 self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + payload.activity);
                 var s = new Action(xapi);
@@ -6710,7 +6738,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#paged-jump", "paged-jump");
                         if (activity)
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
@@ -6769,7 +6797,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addResult(xapi, payload.score, payload.minScore, payload.maxScore, payload.complete, payload.success);
                         self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/passed", "passed");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
@@ -6798,7 +6826,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addResult(xapi, payload.score, payload.minScore, payload.maxScore, payload.complete, payload.success);
                         self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/failed", "failed");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
@@ -6831,7 +6859,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/preferred", "preferred");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
                         var s = new Action(xapi);
@@ -6862,7 +6890,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#morphed", "morphed");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var s = new Action(xapi);
@@ -6894,7 +6922,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#experienced", "experienced");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var s = new Action(xapi);
@@ -6925,7 +6953,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#disliked", "disliked");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var s = new Action(xapi);
@@ -6956,7 +6984,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#liked", "liked");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var s = new Action(xapi);
@@ -6988,7 +7016,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#accessed", "accessed");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var s = new Action(xapi);
@@ -7021,7 +7049,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#submitted", "submitted");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var s = new Action(xapi);
@@ -7052,7 +7080,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#hid", "hid");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var s = new Action(xapi);
@@ -7083,7 +7111,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#showed", "showed");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var s = new Action(xapi);
@@ -7114,7 +7142,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#displayed", "displayed");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var s = new Action(xapi);
@@ -7145,7 +7173,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#undisplayed", "undisplayed");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var s = new Action(xapi);
@@ -7176,7 +7204,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#searched", "searched");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var s = new Action(xapi);
@@ -7207,7 +7235,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#selected", "selected");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var s = new Action(xapi);
@@ -7238,7 +7266,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#discarded", "discarded");
                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var s = new Action(xapi);
@@ -7269,7 +7297,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#paged-next", "paged-next");
                         if (activity)
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
@@ -7301,7 +7329,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#paged-prev", "paged-prev");
                         if (activity)
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
@@ -7330,7 +7358,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/completed", "completed");
                         if (activity)
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
@@ -7370,7 +7398,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#compatibilityTested", "compatibilityTested");
                         if (activity)
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
@@ -7400,7 +7428,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#helped", "helped");
                         if (activity)
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
@@ -7432,7 +7460,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addId(xapi);
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + 'Harness', payload.token, payload.description, self.xapiGen.addExtensions(exts));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + 'Harness', payload.token, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#invited", "invited");
                         if (activity)
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
@@ -7489,7 +7517,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programLevelUp", "programLevelUp");
                 self.xapiGen.addTimestamp(xapi);
                 self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
                 var pa = new ProgramAction(xapi);
                 self.pebl.storage.saveOutgoingXApi(userProfile, {
                     identity: userProfile.identity,
@@ -7515,7 +7543,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programLevelDown", "programLevelDown");
                 self.xapiGen.addTimestamp(xapi);
                 self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
                 var pa = new ProgramAction(xapi);
                 self.pebl.storage.saveOutgoingXApi(userProfile, {
                     identity: userProfile.identity,
@@ -7541,7 +7569,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programInvited", "programInvited");
                 self.xapiGen.addTimestamp(xapi);
                 self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
                 var pa = new ProgramAction(xapi);
                 self.pebl.storage.saveOutgoingXApi(userProfile, {
                     identity: userProfile.identity,
@@ -7567,7 +7595,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programUninvited", "programUninvited");
                 self.xapiGen.addTimestamp(xapi);
                 self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
                 var pa = new ProgramAction(xapi);
                 self.pebl.storage.saveOutgoingXApi(userProfile, {
                     identity: userProfile.identity,
@@ -7593,7 +7621,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programJoined", "programJoined");
                 self.xapiGen.addTimestamp(xapi);
                 self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
                 var pa = new ProgramAction(xapi);
                 self.pebl.storage.saveOutgoingXApi(userProfile, {
                     identity: userProfile.identity,
@@ -7619,7 +7647,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programExpelled", "programExpelled");
                 self.xapiGen.addTimestamp(xapi);
                 self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
                 var pa = new ProgramAction(xapi);
                 self.pebl.storage.saveOutgoingXApi(userProfile, {
                     identity: userProfile.identity,
@@ -7644,7 +7672,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programActivityLaunched", "programActivityLaunched");
                 self.xapiGen.addTimestamp(xapi);
                 self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
                 var pa = new ProgramAction(xapi);
                 self.pebl.storage.saveOutgoingXApi(userProfile, {
                     identity: userProfile.identity,
@@ -7669,7 +7697,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programActivityCompleted", "programActivityCompleted");
                 self.xapiGen.addTimestamp(xapi);
                 self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
                 var pa = new ProgramAction(xapi);
                 self.pebl.storage.saveOutgoingXApi(userProfile, {
                     identity: userProfile.identity,
@@ -7694,7 +7722,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programActivityTeamCompleted", "programActivityTeamCompleted");
                 self.xapiGen.addTimestamp(xapi);
                 self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
                 var pa = new ProgramAction(xapi);
                 self.pebl.storage.saveOutgoingXApi(userProfile, {
                     identity: userProfile.identity,
@@ -7720,7 +7748,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programModified", "programModified");
                 self.xapiGen.addTimestamp(xapi);
                 self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
                 var pa = new ProgramAction(xapi);
                 self.pebl.storage.saveOutgoingXApi(userProfile, {
                     identity: userProfile.identity,
@@ -7746,7 +7774,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programDeleted", "programDeleted");
                 self.xapiGen.addTimestamp(xapi);
                 self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
                 var pa = new ProgramAction(xapi);
                 self.pebl.storage.saveOutgoingXApi(userProfile, {
                     identity: userProfile.identity,
@@ -7770,7 +7798,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programCompleted", "programCompleted");
                 self.xapiGen.addTimestamp(xapi);
                 self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
                 var pa = new ProgramAction(xapi);
                 self.pebl.storage.saveOutgoingXApi(userProfile, {
                     identity: userProfile.identity,
@@ -7796,7 +7824,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programCopied", "programCopied");
                 self.xapiGen.addTimestamp(xapi);
                 self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
                 var pa = new ProgramAction(xapi);
                 self.pebl.storage.saveOutgoingXApi(userProfile, {
                     identity: userProfile.identity,
@@ -7822,7 +7850,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programDiscussed", "programDiscussed");
                 self.xapiGen.addTimestamp(xapi);
                 self.xapiGen.addActorAccount(xapi, userProfile);
-                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addExtensions(exts));
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
                 var pa = new ProgramAction(xapi);
                 self.pebl.storage.saveOutgoingXApi(userProfile, {
                     identity: userProfile.identity,
@@ -7835,6 +7863,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
     };
     // -------------------------------
     PEBLEventHandlers.prototype.eventLogin = function (event) {
+        var payload = event.detail;
         var userProfile = event.detail;
         var xapi = {};
         var self = this;
@@ -7846,9 +7875,9 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/logged-in", "logged-in");
                 self.pebl.storage.getCurrentBook(function (book) {
                     if (book)
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                     else
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + "Harness", undefined, undefined, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + "Harness", undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                     self.xapiGen.addActorAccount(xapi, userProfile);
                     var session = new Session(xapi);
                     self.pebl.storage.saveEvent(userProfile, session);
@@ -7863,6 +7892,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         });
     };
     PEBLEventHandlers.prototype.eventLogout = function (event) {
+        var payload = event.detail;
         var xapi = {};
         var self = this;
         var exts = {};
@@ -7873,9 +7903,9 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/logged-out", "logged-out");
                 self.pebl.storage.getCurrentBook(function (book) {
                     if (book)
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                     else
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + "Harness", undefined, undefined, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + "Harness", undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                     self.xapiGen.addActorAccount(xapi, userProfile);
                     var session = new Session(xapi);
                     self.pebl.storage.saveEvent(userProfile, session);
@@ -7906,7 +7936,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#moduleRating", "moduleRating");
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.rating, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.rating, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         if (activity)
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var mr = new ModuleRating(xapi);
@@ -7938,7 +7968,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#moduleFeedback", "moduleFeedback");
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.feedback, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.feedback, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         if (activity)
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var mf = new ModuleFeedback(xapi);
@@ -7973,7 +8003,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#moduleExample", "moduleExample");
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.example, payload.description, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.example, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                         if (activity)
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var me = new ModuleExample(xapi);
@@ -8006,7 +8036,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#moduleExampleRating", "moduleExampleRating");
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.rating, payload.description, self.xapiGen.addExtensions(exts));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.rating, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
                         if (activity)
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var mer = new ModuleExampleRating(xapi);
@@ -8039,7 +8069,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                         self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#moduleExampleFeedback", "moduleExampleFeedback");
                         self.xapiGen.addTimestamp(xapi);
                         self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.feedback, payload.description, self.xapiGen.addExtensions(exts));
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.feedback, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
                         if (activity)
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
                         var mef = new ModuleExampleFeedback(xapi);
