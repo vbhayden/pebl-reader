@@ -1570,6 +1570,8 @@ var Message = /** @class */ (function (_super) {
             _this.cfi = extensions[PREFIX_PEBL_EXTENSION + "cfi"];
             _this.idRef = extensions[PREFIX_PEBL_EXTENSION + "idRef"];
             _this.peblAction = extensions[PREFIX_PEBL_EXTENSION + "peblAction"];
+            if (extensions[PREFIX_PEBL_EXTENSION + "thread"])
+                _this.thread = extensions[PREFIX_PEBL_EXTENSION + "thread"];
         }
         return _this;
     }
