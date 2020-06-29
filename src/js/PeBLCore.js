@@ -1558,7 +1558,7 @@ var Message = /** @class */ (function (_super) {
         _this.prompt = _this.object.definition.name["en-US"];
         _this.name = _this.actor.name;
         _this.direct = _this.thread == (NAMESPACE_USER_MESSAGES + _this.getActorId());
-        _this.text = _this.object.definition.description["en-US"];
+        _this.text = _this.result.response;
         var extensions = _this.object.definition.extensions;
         if (extensions) {
             _this.access = extensions[PREFIX_PEBL_EXTENSION + "access"];
