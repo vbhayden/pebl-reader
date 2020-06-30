@@ -2489,7 +2489,11 @@ define([
             ebookURL = data.epub;
             ebookURL_filepath = Helpers.getEbookUrlFilePath(ebookURL);
 
-            PeBL.emitEvent(PeBL.events.newBook, window.location.origin + '/?epub=' + encodeURIComponent(ebookURL_filepath));
+            PeBL.emitEvent(PeBL.events.newBook, {
+                book: window.location.origin + '/?epub=' + encodeURIComponent(ebookURL_filepath),
+                bookTitle: ebookURL_filepath.replace('epub_content/bookshelf/', ''),
+                bookId: ebookURL_filepath.replace('epub_content/bookshelf/', '')
+            });
 
             Analytics.trackView('/reader');
             embedded = data.embedded;

@@ -2632,6 +2632,8 @@ function toActivity(obj) {
 
 var MASTER_INDEX = "master";
 var CURRENT_BOOK = "peblCurrentBook";
+var CURRENT_BOOK_TITLE = "peblCurrentBookTitle";
+var CURRENT_BOOK_ID = "peblCurrentBookId";
 var CURRENT_USER = "peblCurrentUser";
 // const VERB_INDEX = "verbs";
 var storage_IndexedDBStorageAdapter = /** @class */ (function () {
@@ -3098,6 +3100,98 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
         }
     };
     // -------------------------------
+    IndexedDBStorageAdapter.prototype.saveCurrentBookTitle = function (book, callback) {
+        var pack = {
+            value: book,
+            id: CURRENT_BOOK_TITLE
+        };
+        if (this.db) {
+            var request = this.db.transaction(["state"], "readwrite").objectStore("state").put(this.cleanRecord(pack));
+            request.onerror = function (e) {
+                console.log(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            var self_18 = this;
+            this.invocationQueue.push(function () {
+                self_18.saveCurrentBookTitle(book, callback);
+            });
+        }
+    };
+    IndexedDBStorageAdapter.prototype.getCurrentBookTitle = function (callback) {
+        if (this.db) {
+            var request_5 = this.db.transaction(["state"], "readonly").objectStore("state").get(CURRENT_BOOK_TITLE);
+            request_5.onerror = function (e) {
+                console.log(e);
+            };
+            request_5.onsuccess = function () {
+                var r = request_5.result;
+                if (callback != null) {
+                    if (r != null)
+                        callback(r.value);
+                    else
+                        callback();
+                }
+            };
+        }
+        else {
+            var self_19 = this;
+            this.invocationQueue.push(function () {
+                self_19.getCurrentBookTitle(callback);
+            });
+        }
+    };
+    // -------------------------------
+    IndexedDBStorageAdapter.prototype.saveCurrentBookId = function (book, callback) {
+        var pack = {
+            value: book,
+            id: CURRENT_BOOK_ID
+        };
+        if (this.db) {
+            var request = this.db.transaction(["state"], "readwrite").objectStore("state").put(this.cleanRecord(pack));
+            request.onerror = function (e) {
+                console.log(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            var self_20 = this;
+            this.invocationQueue.push(function () {
+                self_20.saveCurrentBookId(book, callback);
+            });
+        }
+    };
+    IndexedDBStorageAdapter.prototype.getCurrentBookId = function (callback) {
+        if (this.db) {
+            var request_6 = this.db.transaction(["state"], "readonly").objectStore("state").get(CURRENT_BOOK_ID);
+            request_6.onerror = function (e) {
+                console.log(e);
+            };
+            request_6.onsuccess = function () {
+                var r = request_6.result;
+                if (callback != null) {
+                    if (r != null)
+                        callback(r.value);
+                    else
+                        callback();
+                }
+            };
+        }
+        else {
+            var self_21 = this;
+            this.invocationQueue.push(function () {
+                self_21.getCurrentBookId(callback);
+            });
+        }
+    };
+    // -------------------------------
     IndexedDBStorageAdapter.prototype.saveSyncTimestamps = function (identity, key, data, callback) {
         var _this = this;
         if (this.db) {
@@ -3122,14 +3216,14 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
     IndexedDBStorageAdapter.prototype.getSyncTimestamps = function (identity, key, callback) {
         var _this = this;
         if (this.db) {
-            var request_5 = this.db.transaction(["state"], "readonly").objectStore("state").get(identity + key);
-            request_5.onerror = function (e) {
+            var request_7 = this.db.transaction(["state"], "readonly").objectStore("state").get(identity + key);
+            request_7.onerror = function (e) {
                 console.log(e);
                 callback(-1);
             };
-            request_5.onsuccess = function () {
-                if (request_5.result) {
-                    callback(request_5.result.data);
+            request_7.onsuccess = function () {
+                if (request_7.result) {
+                    callback(request_7.result.data);
                 }
                 else {
                     callback(-1);
@@ -3166,14 +3260,14 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
     IndexedDBStorageAdapter.prototype.getCompoundSyncTimestamps = function (identity, key, callback) {
         var _this = this;
         if (this.db) {
-            var request_6 = this.db.transaction(["state"], "readonly").objectStore("state").get(identity + key);
-            request_6.onerror = function (e) {
+            var request_8 = this.db.transaction(["state"], "readonly").objectStore("state").get(identity + key);
+            request_8.onerror = function (e) {
                 console.log(e);
                 callback({});
             };
-            request_6.onsuccess = function () {
-                if (request_6.result)
-                    callback(request_6.result.data);
+            request_8.onsuccess = function () {
+                if (request_8.result)
+                    callback(request_8.result.data);
                 else
                     callback({});
             };
@@ -3202,13 +3296,13 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             else {
                 var objectStore_3 = this.db.transaction(["events"], "readwrite").objectStore("events");
                 var stmtsCopy_3 = events.slice(0);
-                var self_18 = this;
+                var self_22 = this;
                 var processCallback_3 = function () {
                     var record = stmtsCopy_3.pop();
                     if (record) {
                         var clone = record;
                         clone.identity = userProfile.identity;
-                        var request = objectStore_3.put(self_18.cleanRecord(clone));
+                        var request = objectStore_3.put(self_22.cleanRecord(clone));
                         request.onerror = processCallback_3;
                         request.onsuccess = processCallback_3;
                     }
@@ -3221,9 +3315,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             }
         }
         else {
-            var self_19 = this;
+            var self_23 = this;
             this.invocationQueue.push(function () {
-                self_19.saveEvent(userProfile, events, callback);
+                self_23.saveEvent(userProfile, events, callback);
             });
         }
     };
@@ -3231,13 +3325,13 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
         if (this.db) {
             var index = this.db.transaction(["events"], "readonly").objectStore("events").index(MASTER_INDEX);
             var param = [userProfile.identity, book];
-            var self_20 = this;
-            self_20.getAll(index, IDBKeyRange.only(param), callback);
+            var self_24 = this;
+            self_24.getAll(index, IDBKeyRange.only(param), callback);
         }
         else {
-            var self_21 = this;
+            var self_25 = this;
             this.invocationQueue.push(function () {
-                self_21.getEvents(userProfile, book, callback);
+                self_25.getEvents(userProfile, book, callback);
             });
         }
     };
@@ -3247,18 +3341,18 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             var os = this.db.transaction(["competencies"], "readonly").objectStore("competencies");
             var index_1 = os.index(MASTER_INDEX);
             var param_1 = userProfile.identity;
-            var self_22 = this;
+            var self_26 = this;
             this.getAll(index_1, IDBKeyRange.only(param_1), function (arr) {
                 if (arr.length == 0)
-                    self_22.getAll(index_1, IDBKeyRange.only([param_1]), callback);
+                    self_26.getAll(index_1, IDBKeyRange.only([param_1]), callback);
                 else
                     callback(arr);
             });
         }
         else {
-            var self_23 = this;
+            var self_27 = this;
             this.invocationQueue.push(function () {
-                self_23.getCompetencies(userProfile, callback);
+                self_27.getCompetencies(userProfile, callback);
             });
         }
     };
@@ -3272,11 +3366,11 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
                 c.identity = userProfile.identity;
                 competencies.push(c);
             }
-            var self_24 = this;
+            var self_28 = this;
             var processCallback_4 = function () {
                 if (competencies.length > 0) {
                     var record = competencies.pop();
-                    var request = os_1.put(self_24.cleanRecord(record));
+                    var request = os_1.put(self_28.cleanRecord(record));
                     request.onerror = processCallback_4;
                     request.onsuccess = processCallback_4;
                 }
@@ -3288,9 +3382,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             processCallback_4();
         }
         else {
-            var self_25 = this;
+            var self_29 = this;
             this.invocationQueue.push(function () {
-                self_25.saveCompetencies(userProfile, competencies, callback);
+                self_29.saveCompetencies(userProfile, competencies, callback);
             });
         }
     };
@@ -3309,9 +3403,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_26 = this;
+            var self_30 = this;
             this.invocationQueue.push(function () {
-                self_26.saveOutgoingXApi(userProfile, stmt, callback);
+                self_30.saveOutgoingXApi(userProfile, stmt, callback);
             });
         }
     };
@@ -3320,18 +3414,18 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             var os = this.db.transaction(["outgoingXApi"], "readonly").objectStore("outgoingXApi");
             var index_2 = os.index(MASTER_INDEX);
             var param_2 = userProfile.identity;
-            var self_27 = this;
+            var self_31 = this;
             this.getAll(index_2, IDBKeyRange.only(param_2), function (arr) {
                 if (arr.length == 0)
-                    self_27.getAll(index_2, IDBKeyRange.only([param_2]), callback);
+                    self_31.getAll(index_2, IDBKeyRange.only([param_2]), callback);
                 else
                     callback(arr);
             });
         }
         else {
-            var self_28 = this;
+            var self_32 = this;
             this.invocationQueue.push(function () {
-                self_28.getOutgoingXApi(userProfile, callback);
+                self_32.getOutgoingXApi(userProfile, callback);
             });
         }
     };
@@ -3356,9 +3450,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             processCallback_5();
         }
         else {
-            var self_29 = this;
+            var self_33 = this;
             this.invocationQueue.push(function () {
-                self_29.removeOutgoingXApi(userProfile, toClear, callback);
+                self_33.removeOutgoingXApi(userProfile, toClear, callback);
             });
         }
     };
@@ -3384,7 +3478,7 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             else {
                 var objectStore_5 = this.db.transaction(["messages"], "readwrite").objectStore("messages");
                 var stmtsCopy_4 = stmts.slice(0);
-                var self_30 = this;
+                var self_34 = this;
                 var processCallback_6 = function () {
                     var record = stmtsCopy_4.pop();
                     if (record) {
@@ -3394,7 +3488,7 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
                             clone.thread += '_user-' + userProfile.identity;
                         else if (clone.groupId)
                             clone.thread += '_group-' + clone.groupId;
-                        var request = objectStore_5.put(self_30.cleanRecord(clone));
+                        var request = objectStore_5.put(self_34.cleanRecord(clone));
                         request.onerror = processCallback_6;
                         request.onsuccess = processCallback_6;
                     }
@@ -3405,9 +3499,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             }
         }
         else {
-            var self_31 = this;
+            var self_35 = this;
             this.invocationQueue.push(function () {
-                self_31.saveMessages(userProfile, stmts, callback);
+                self_35.saveMessages(userProfile, stmts, callback);
             });
         }
     };
@@ -3423,9 +3517,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_32 = this;
+            var self_36 = this;
             this.invocationQueue.push(function () {
-                self_32.removeMessage(userProfile, id, callback);
+                self_36.removeMessage(userProfile, id, callback);
             });
         }
     };
@@ -3435,9 +3529,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             this.getAll(index, IDBKeyRange.only([userProfile.identity, thread]), callback);
         }
         else {
-            var self_33 = this;
+            var self_37 = this;
             this.invocationQueue.push(function () {
-                self_33.getMessages(userProfile, thread, callback);
+                self_37.getMessages(userProfile, thread, callback);
             });
         }
     };
@@ -3482,9 +3576,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_34 = this;
+            var self_38 = this;
             this.invocationQueue.push(function () {
-                self_34.saveQueuedReference(userProfile, ref, callback);
+                self_38.saveQueuedReference(userProfile, ref, callback);
             });
         }
     };
@@ -3492,33 +3586,33 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
         if (this.db) {
             var os = this.db.transaction(["queuedReferences"], "readonly").objectStore("queuedReferences");
             var index_3 = os.index(MASTER_INDEX);
-            var request_7 = index_3.openCursor(IDBKeyRange.only([userProfile.identity, currentBook]));
-            request_7.onerror = function (e) {
+            var request_9 = index_3.openCursor(IDBKeyRange.only([userProfile.identity, currentBook]));
+            request_9.onerror = function (e) {
                 console.log(e);
             };
-            request_7.onsuccess = function () {
-                if (request_7.result == null) {
+            request_9.onsuccess = function () {
+                if (request_9.result == null) {
                     var req = index_3.openCursor(IDBKeyRange.only([userProfile.identity, currentBook]));
                     req.onerror = function (e) {
                         console.log(e);
                     };
                     req.onsuccess = function () {
-                        if (callback && request_7.result)
-                            callback(request_7.result.value);
+                        if (callback && request_9.result)
+                            callback(request_9.result.value);
                         else
                             callback();
                     };
                 }
-                else if (callback && request_7.result)
-                    callback(request_7.result.value);
+                else if (callback && request_9.result)
+                    callback(request_9.result.value);
                 else
                     callback();
             };
         }
         else {
-            var self_35 = this;
+            var self_39 = this;
             this.invocationQueue.push(function () {
-                self_35.getQueuedReference(userProfile, currentBook, callback);
+                self_39.getQueuedReference(userProfile, currentBook, callback);
             });
         }
     };
@@ -3534,9 +3628,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_36 = this;
+            var self_40 = this;
             this.invocationQueue.push(function () {
-                self_36.removeQueuedReference(userProfile, refId, callback);
+                self_40.removeQueuedReference(userProfile, refId, callback);
             });
         }
     };
@@ -3555,9 +3649,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_37 = this;
+            var self_41 = this;
             this.invocationQueue.push(function () {
-                self_37.saveToc(userProfile, book, data, callback);
+                self_41.saveToc(userProfile, book, data, callback);
             });
         }
     };
@@ -3573,9 +3667,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             this.getAll(index, IDBKeyRange.only([userProfile.identity, book]), callback);
         }
         else {
-            var self_38 = this;
+            var self_42 = this;
             this.invocationQueue.push(function () {
-                self_38.getToc(userProfile, book, callback);
+                self_42.getToc(userProfile, book, callback);
             });
         }
     };
@@ -3591,9 +3685,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_39 = this;
+            var self_43 = this;
             this.invocationQueue.push(function () {
-                self_39.removeToc(userProfile, book, section, id, callback);
+                self_43.removeToc(userProfile, book, section, id, callback);
             });
         }
     };
@@ -3611,9 +3705,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_40 = this;
+            var self_44 = this;
             this.invocationQueue.push(function () {
-                self_40.saveNotification(userProfile, notification, callback);
+                self_44.saveNotification(userProfile, notification, callback);
             });
         }
     };
@@ -3622,18 +3716,18 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             var os = this.db.transaction(["notifications"], "readonly").objectStore("notifications");
             var index_4 = os.index(MASTER_INDEX);
             var param_3 = userProfile.identity;
-            var self_41 = this;
+            var self_45 = this;
             this.getAll(index_4, IDBKeyRange.only(param_3), function (arr) {
                 if (arr.length == 0)
-                    self_41.getAll(index_4, IDBKeyRange.only([param_3]), callback);
+                    self_45.getAll(index_4, IDBKeyRange.only([param_3]), callback);
                 else
                     callback(arr);
             });
         }
         else {
-            var self_42 = this;
+            var self_46 = this;
             this.invocationQueue.push(function () {
-                self_42.getNotifications(userProfile, callback);
+                self_46.getNotifications(userProfile, callback);
             });
         }
     };
@@ -3649,9 +3743,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_43 = this;
+            var self_47 = this;
             this.invocationQueue.push(function () {
-                self_43.removeNotification(userProfile, notificationId, callback);
+                self_47.removeNotification(userProfile, notificationId, callback);
             });
         }
     };
@@ -3673,13 +3767,13 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             else {
                 var objectStore_6 = this.db.transaction(["groups"], "readwrite").objectStore("groups");
                 var stmtsCopy_5 = stmts.slice(0);
-                var self_44 = this;
+                var self_48 = this;
                 var processCallback_7 = function () {
                     var record = stmtsCopy_5.pop();
                     if (record) {
                         var clone = record;
                         clone.identity = userProfile.identity;
-                        var request = objectStore_6.put(self_44.cleanRecord(clone));
+                        var request = objectStore_6.put(self_48.cleanRecord(clone));
                         request.onerror = processCallback_7;
                         request.onsuccess = processCallback_7;
                     }
@@ -3692,9 +3786,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             }
         }
         else {
-            var self_45 = this;
+            var self_49 = this;
             this.invocationQueue.push(function () {
-                self_45.saveGroupMembership(userProfile, stmts, callback);
+                self_49.saveGroupMembership(userProfile, stmts, callback);
             });
         }
     };
@@ -3703,18 +3797,18 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             var os = this.db.transaction(["groups"], "readonly").objectStore("groups");
             var index_5 = os.index(MASTER_INDEX);
             var param_4 = userProfile.identity;
-            var self_46 = this;
+            var self_50 = this;
             this.getAll(index_5, IDBKeyRange.only(param_4), function (arr) {
                 if (arr.length == 0)
-                    self_46.getAll(index_5, IDBKeyRange.only([param_4]), callback);
+                    self_50.getAll(index_5, IDBKeyRange.only([param_4]), callback);
                 else
                     callback(arr);
             });
         }
         else {
-            var self_47 = this;
+            var self_51 = this;
             this.invocationQueue.push(function () {
-                self_47.getGroupMembership(userProfile, callback);
+                self_51.getGroupMembership(userProfile, callback);
             });
         }
     };
@@ -3730,9 +3824,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_48 = this;
+            var self_52 = this;
             this.invocationQueue.push(function () {
-                self_48.removeGroupMembership(userProfile, xId, callback);
+                self_52.removeGroupMembership(userProfile, xId, callback);
             });
         }
     };
@@ -3742,18 +3836,18 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             var os = this.db.transaction(["activityEvents"], "readonly").objectStore("activityEvents");
             var index_6 = os.index(MASTER_INDEX);
             var param_5 = programId;
-            var self_49 = this;
+            var self_53 = this;
             this.getAll(index_6, IDBKeyRange.only(param_5), function (arr) {
                 if (arr.length == 0)
-                    self_49.getAll(index_6, IDBKeyRange.only([param_5]), callback);
+                    self_53.getAll(index_6, IDBKeyRange.only([param_5]), callback);
                 else
                     callback(arr);
             });
         }
         else {
-            var self_50 = this;
+            var self_54 = this;
             this.invocationQueue.push(function () {
-                self_50.getActivityEvent(programId, callback);
+                self_54.getActivityEvent(programId, callback);
             });
         }
     };
@@ -3774,13 +3868,13 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             else {
                 var objectStore_7 = this.db.transaction(["activityEvents"], "readwrite").objectStore("activityEvents");
                 var stmtsCopy_6 = stmts.slice(0);
-                var self_51 = this;
+                var self_55 = this;
                 var processCallback_8 = function () {
                     var record = stmtsCopy_6.pop();
                     if (record) {
                         var clone = record;
                         clone.identity = clone.actor.account.name;
-                        var request = objectStore_7.put(self_51.cleanRecord(clone));
+                        var request = objectStore_7.put(self_55.cleanRecord(clone));
                         request.onerror = processCallback_8;
                         request.onsuccess = processCallback_8;
                     }
@@ -3793,9 +3887,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             }
         }
         else {
-            var self_52 = this;
+            var self_56 = this;
             this.invocationQueue.push(function () {
-                self_52.saveActivityEvent(userProfile, stmts, callback);
+                self_56.saveActivityEvent(userProfile, stmts, callback);
             });
         }
     };
@@ -3805,18 +3899,18 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             var os = this.db.transaction(["moduleEvents"], "readonly").objectStore("moduleEvents");
             var index_7 = os.index(MASTER_INDEX);
             var param_6 = idref;
-            var self_53 = this;
+            var self_57 = this;
             this.getAll(index_7, IDBKeyRange.only(param_6), function (arr) {
                 if (arr.length == 0)
-                    self_53.getAll(index_7, IDBKeyRange.only([param_6]), callback);
+                    self_57.getAll(index_7, IDBKeyRange.only([param_6]), callback);
                 else
                     callback(arr);
             });
         }
         else {
-            var self_54 = this;
+            var self_58 = this;
             this.invocationQueue.push(function () {
-                self_54.getModuleEvent(idref, callback);
+                self_58.getModuleEvent(idref, callback);
             });
         }
     };
@@ -3837,13 +3931,13 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             else {
                 var objectStore_8 = this.db.transaction(["moduleEvents"], "readwrite").objectStore("moduleEvents");
                 var stmtsCopy_7 = stmts.slice(0);
-                var self_55 = this;
+                var self_59 = this;
                 var processCallback_9 = function () {
                     var record = stmtsCopy_7.pop();
                     if (record) {
                         var clone = record;
                         clone.identity = clone.actor.account.name;
-                        var request = objectStore_8.put(self_55.cleanRecord(clone));
+                        var request = objectStore_8.put(self_59.cleanRecord(clone));
                         request.onerror = processCallback_9;
                         request.onsuccess = processCallback_9;
                     }
@@ -3856,9 +3950,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             }
         }
         else {
-            var self_56 = this;
+            var self_60 = this;
             this.invocationQueue.push(function () {
-                self_56.saveModuleEvent(userProfile, stmts, callback);
+                self_60.saveModuleEvent(userProfile, stmts, callback);
             });
         }
     };
@@ -3874,9 +3968,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_57 = this;
+            var self_61 = this;
             this.invocationQueue.push(function () {
-                self_57.removeModuleEvent(idref, xId, callback);
+                self_61.removeModuleEvent(idref, xId, callback);
             });
         }
     };
@@ -3900,13 +3994,13 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             else {
                 var objectStore_9 = this.db.transaction(["activity"], "readwrite").objectStore("activity");
                 var stmtsCopy_8 = stmts.slice(0);
-                var self_58 = this;
+                var self_62 = this;
                 var processCallback_10 = function () {
                     var record = stmtsCopy_8.pop();
                     if (record) {
                         var clone = record;
                         clone.identity = userProfile.identity;
-                        var request = objectStore_9.put(self_58.cleanRecord(clone));
+                        var request = objectStore_9.put(self_62.cleanRecord(clone));
                         request.onerror = processCallback_10;
                         request.onsuccess = processCallback_10;
                     }
@@ -3919,9 +4013,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             }
         }
         else {
-            var self_59 = this;
+            var self_63 = this;
             this.invocationQueue.push(function () {
-                self_59.saveActivity(userProfile, stmts, callback);
+                self_63.saveActivity(userProfile, stmts, callback);
             });
         }
     };
@@ -3930,25 +4024,25 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             var os = this.db.transaction(["activity"], "readonly").objectStore("activity");
             var index = os.index(MASTER_INDEX);
             var param = [userProfile.identity, activityType];
-            var self_60 = this;
-            self_60.getAll(index, IDBKeyRange.only(param), callback);
+            var self_64 = this;
+            self_64.getAll(index, IDBKeyRange.only(param), callback);
         }
         else {
-            var self_61 = this;
+            var self_65 = this;
             this.invocationQueue.push(function () {
-                self_61.getActivity(userProfile, activityType, callback);
+                self_65.getActivity(userProfile, activityType, callback);
             });
         }
     };
     IndexedDBStorageAdapter.prototype.getActivityById = function (userProfile, activityType, activityId, callback) {
         if (this.db) {
             var param = [userProfile.identity, activityType, activityId];
-            var request_8 = this.db.transaction(["activity"], "readonly").objectStore("activity").get(param);
-            request_8.onerror = function (e) {
+            var request_10 = this.db.transaction(["activity"], "readonly").objectStore("activity").get(param);
+            request_10.onerror = function (e) {
                 console.log(e);
             };
-            request_8.onsuccess = function () {
-                var r = request_8.result;
+            request_10.onsuccess = function () {
+                var r = request_10.result;
                 if (r != null)
                     callback(r);
                 else
@@ -3956,9 +4050,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_62 = this;
+            var self_66 = this;
             this.invocationQueue.push(function () {
-                self_62.getActivityById(userProfile, activityType, activityId, callback);
+                self_66.getActivityById(userProfile, activityType, activityId, callback);
             });
         }
     };
@@ -3974,9 +4068,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_63 = this;
+            var self_67 = this;
             this.invocationQueue.push(function () {
-                self_63.removeActivity(userProfile, xId, activityType, callback);
+                self_67.removeActivity(userProfile, xId, activityType, callback);
             });
         }
     };
@@ -3995,9 +4089,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             };
         }
         else {
-            var self_64 = this;
+            var self_68 = this;
             this.invocationQueue.push(function () {
-                self_64.saveOutgoingActivity(userProfile, stmt, callback);
+                self_68.saveOutgoingActivity(userProfile, stmt, callback);
             });
         }
     };
@@ -4006,18 +4100,18 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             var os = this.db.transaction(["outgoingActivity"], "readonly").objectStore("outgoingActivity");
             var index_8 = os.index(MASTER_INDEX);
             var param_7 = userProfile.identity;
-            var self_65 = this;
+            var self_69 = this;
             this.getAll(index_8, IDBKeyRange.only(param_7), function (arr) {
                 if (arr.length == 0)
-                    self_65.getAll(index_8, IDBKeyRange.only([param_7]), callback);
+                    self_69.getAll(index_8, IDBKeyRange.only([param_7]), callback);
                 else
                     callback(arr);
             });
         }
         else {
-            var self_66 = this;
+            var self_70 = this;
             this.invocationQueue.push(function () {
-                self_66.getOutgoingActivity(userProfile, callback);
+                self_70.getOutgoingActivity(userProfile, callback);
             });
         }
     };
@@ -4031,9 +4125,9 @@ var storage_IndexedDBStorageAdapter = /** @class */ (function () {
             }
         }
         else {
-            var self_67 = this;
+            var self_71 = this;
             this.invocationQueue.push(function () {
-                self_67.removeOutgoingActivity(userProfile, toClear, callback);
+                self_71.removeOutgoingActivity(userProfile, toClear, callback);
             });
         }
     };
@@ -5724,7 +5818,10 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
     }
     // -------------------------------
     PEBLEventHandlers.prototype.newBook = function (event) {
-        var book = event.detail;
+        var payload = event.detail;
+        var book = payload.book;
+        var bookTitle = payload.bookTitle;
+        var bookId = payload.bookId;
         var self = this;
         // if (book.indexOf("/") != -1)
         //     book = book.substring(book.lastIndexOf("/") + 1);
@@ -5739,6 +5836,8 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                 self.pebl.unsubscribeAllEvents();
                 self.pebl.unsubscribeAllThreads();
                 self.pebl.storage.saveCurrentBook(book);
+                self.pebl.storage.saveCurrentBookTitle(bookTitle);
+                self.pebl.storage.saveCurrentBookId(bookId);
             }
             else {
                 self.pebl.emitEvent(self.pebl.events.eventJumpPage, {});
@@ -5747,7 +5846,10 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         });
     };
     PEBLEventHandlers.prototype.newBookNoReset = function (event) {
-        var book = event.detail;
+        var payload = event.detail;
+        var book = payload.book;
+        var bookTitle = payload.bookTitle;
+        var bookId = payload.bookId;
         var self = this;
         // if (book.indexOf("/") != -1)
         //     book = book.substring(book.lastIndexOf("/") + 1);
@@ -5761,6 +5863,8 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                     target: book
                 });
                 self.pebl.storage.saveCurrentBook(book);
+                self.pebl.storage.saveCurrentBookTitle(bookTitle);
+                self.pebl.storage.saveCurrentBookId(bookId);
             }
             else {
                 self.pebl.emitEvent(self.pebl.events.eventJumpPage, {});
