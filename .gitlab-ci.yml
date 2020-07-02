@@ -184,7 +184,7 @@ buildAdlProd:
   # - "sed -i \"s/production: false/production: true/g\" src/mixins/config.js"
   - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
   - cp "$ADL_READER_CONFIG" src/cloud-reader/config.js
-  
+
   - npm run prepare:all
   - npm run dist
   artifacts:
@@ -265,6 +265,7 @@ buildQA:
 
   - cp "$QA_WEB_READER_CONFIG" src/cloud-reader/config.js
 
+  - chmod +x pack.sh
   - npm run prepare:all
   - npm run dist
   artifacts:
@@ -285,6 +286,7 @@ buildDev:
 
   - cp "$DEV_WEB_READER_CONFIG" src/cloud-reader/config.js
 
+  - chmod +x pack.sh
   - npm run prepare:all
   - npm run dist
   artifacts:
@@ -527,7 +529,7 @@ extensionQADeploy:
    ## NOTE the $STAGINT_PRIVATE_KEY variable should be added
    ## in the gitlab interface and not here
    ##
-   - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null   
+   - echo "$DEV_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
 
    ## Build commands
    - ssh -p22 $DEV_USERNAME@$DEV_SERVER_IP "mv /var/www/qa.reader.extension.peblproject.org/epub_content /var/www/bookTempDeployment/tempExtensionQABooks"

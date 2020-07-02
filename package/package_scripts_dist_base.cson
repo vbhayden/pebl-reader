@@ -40,9 +40,20 @@
         &&
         npm run dist:cloudReader
         &&
+        npm run pack
+        &&
         npm run minify
     '
 
+#=====================
+    'distDev': '
+
+        npm run dist:copy
+        &&
+        npm run dist:cloudReader
+        &&
+        npm run pack
+    '
 
 #=====================
     'dist+sourcemap': '
