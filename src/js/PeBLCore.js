@@ -5820,7 +5820,7 @@ var xapiGenerator_XApiGenerator = /** @class */ (function () {
                 peblActivity += ('?id=' + activityId);
             return peblActivity;
         }
-        return '';
+        return 'pebl://deprecated';
     };
     return XApiGenerator;
 }());
@@ -8170,7 +8170,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                             if (book)
                                 self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
                             else
-                                self.xapiGen.addObject(xapi, PEBL_PREFIX + "Harness", undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                                self.xapiGen.addObject(xapi, window.location.href, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                             self.xapiGen.addActorAccount(xapi, userProfile);
                             var session = new Session(xapi);
                             self.pebl.storage.saveEvent(userProfile, session);
@@ -8202,7 +8202,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                             if (book)
                                 self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
                             else
-                                self.xapiGen.addObject(xapi, PEBL_PREFIX + "Harness", undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                                self.xapiGen.addObject(xapi, window.location.href, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                             self.xapiGen.addActorAccount(xapi, userProfile);
                             var session = new Session(xapi);
                             self.pebl.storage.saveEvent(userProfile, session);
