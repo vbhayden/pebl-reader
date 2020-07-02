@@ -1463,6 +1463,8 @@ var Annotation = /** @class */ (function (_super) {
         _this.cfi = extensions[PREFIX_PEBL_EXTENSION + "cfi"];
         _this.idRef = extensions[PREFIX_PEBL_EXTENSION + "idRef"];
         _this.style = extensions[PREFIX_PEBL_EXTENSION + "style"];
+        if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
+            _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
         return _this;
     }
     Annotation.is = function (x) {
@@ -1506,6 +1508,8 @@ var Action = /** @class */ (function (_super) {
                 _this.type = extensions[PREFIX_PEBL_EXTENSION + "type"];
                 _this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
                 _this.cfi = extensions[PREFIX_PEBL_EXTENSION + "cfi"];
+                if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
+                    _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
             }
         }
         return _this;
@@ -1536,6 +1540,8 @@ var Navigation = /** @class */ (function (_super) {
         if (extensions) {
             _this.firstCfi = extensions[PREFIX_PEBL_EXTENSION + "firstCfi"];
             _this.lastCfi = extensions[PREFIX_PEBL_EXTENSION + "lastCfi"];
+            if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
+                _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
         }
         return _this;
     }
@@ -1624,6 +1630,11 @@ var Question = /** @class */ (function (_super) {
             var key = _a[_i];
             _this.answers.push(choices[key].description["en-US"]);
         }
+        var extensions = _this.object.definition.extensions;
+        if (extensions) {
+            if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
+                _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
+        }
         return _this;
     }
     Question.is = function (x) {
@@ -1651,6 +1662,11 @@ var Quiz = /** @class */ (function (_super) {
         _this.quizId = _this.object.definition.name["en-US"];
         _this.quizName = _this.object.definition.description["en-US"];
         _this.activityId = _this.object.id;
+        var extensions = _this.object.definition.extensions;
+        if (extensions) {
+            if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
+                _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
+        }
         return _this;
     }
     Quiz.is = function (x) {
@@ -1676,6 +1692,11 @@ var Session = /** @class */ (function (_super) {
         else if (_this.book.indexOf(PREFIX_PEBL_THREAD) != -1)
             _this.book = _this.book.substring(_this.book.indexOf(PREFIX_PEBL_THREAD) + PREFIX_PEBL_THREAD.length);
         _this.type = _this.verb.display["en-US"];
+        var extensions = _this.object.definition.extensions;
+        if (extensions) {
+            if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
+                _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
+        }
         return _this;
     }
     Session.is = function (x) {
@@ -5087,7 +5108,7 @@ var utils_Utils = /** @class */ (function () {
         var self = this;
         this.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
-                self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookId(function (book) {
                     if (book)
                         self.pebl.storage.getAnnotations(userProfile, book, callback);
                     else
@@ -5102,7 +5123,7 @@ var utils_Utils = /** @class */ (function () {
         var self = this;
         this.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
-                self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookId(function (book) {
                     if (book)
                         self.pebl.storage.getSharedAnnotations(userProfile, book, callback);
                     else
