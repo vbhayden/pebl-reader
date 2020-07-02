@@ -88,7 +88,7 @@
     "prepare:yarn:submodule": "cd readium-js && yarn run prepare:yarn:all && cd .. && ls",
     "clean": "(yarn --version || echo noyarn) && node --version && npm --version && node ./readium-js/readium-shared-js/node_modules/rimraf/bin.js build-output && node ./readium-js/readium-shared-js/node_modules/rimraf/bin.js api-docs/* && node ./readium-js/readium-shared-js/node_modules/rimraf/bin.js dist",
     "apidocs": "node ./readium-js/readium-shared-js/node_modules/yuidocjs/lib/cli.js -N -C -c yuidocs.json",
-    "minify": "node terser.js",
+    "minify": "./pack.sh && node terser.js",
     "prebuild": "npm run clean",
     "build": "npm run build:scripts",
     "lint": "node ./readium-js/readium-shared-js/readium-build-tools/jshint_glob.js \"src/js/**.js\"",
