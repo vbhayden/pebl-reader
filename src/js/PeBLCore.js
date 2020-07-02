@@ -1463,8 +1463,6 @@ var Annotation = /** @class */ (function (_super) {
         _this.cfi = extensions[PREFIX_PEBL_EXTENSION + "cfi"];
         _this.idRef = extensions[PREFIX_PEBL_EXTENSION + "idRef"];
         _this.style = extensions[PREFIX_PEBL_EXTENSION + "style"];
-        if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
-            _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
         return _this;
     }
     Annotation.is = function (x) {
@@ -1508,8 +1506,6 @@ var Action = /** @class */ (function (_super) {
                 _this.type = extensions[PREFIX_PEBL_EXTENSION + "type"];
                 _this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
                 _this.cfi = extensions[PREFIX_PEBL_EXTENSION + "cfi"];
-                if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
-                    _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
             }
         }
         return _this;
@@ -1540,8 +1536,6 @@ var Navigation = /** @class */ (function (_super) {
         if (extensions) {
             _this.firstCfi = extensions[PREFIX_PEBL_EXTENSION + "firstCfi"];
             _this.lastCfi = extensions[PREFIX_PEBL_EXTENSION + "lastCfi"];
-            if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
-                _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
         }
         return _this;
     }
@@ -1564,7 +1558,7 @@ var Message = /** @class */ (function (_super) {
         _this.prompt = _this.object.definition.name["en-US"];
         _this.name = _this.actor.name;
         _this.direct = _this.thread == (NAMESPACE_USER_MESSAGES + _this.getActorId());
-        _this.text = _this.result ? _this.result.response : _this.object.definition.description['en-US'];
+        _this.text = _this.result.response;
         var extensions = _this.object.definition.extensions;
         if (extensions) {
             _this.access = extensions[PREFIX_PEBL_EXTENSION + "access"];
@@ -1630,11 +1624,6 @@ var Question = /** @class */ (function (_super) {
             var key = _a[_i];
             _this.answers.push(choices[key].description["en-US"]);
         }
-        var extensions = _this.object.definition.extensions;
-        if (extensions) {
-            if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
-                _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
-        }
         return _this;
     }
     Question.is = function (x) {
@@ -1662,11 +1651,6 @@ var Quiz = /** @class */ (function (_super) {
         _this.quizId = _this.object.definition.name["en-US"];
         _this.quizName = _this.object.definition.description["en-US"];
         _this.activityId = _this.object.id;
-        var extensions = _this.object.definition.extensions;
-        if (extensions) {
-            if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
-                _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
-        }
         return _this;
     }
     Quiz.is = function (x) {
@@ -1692,11 +1676,6 @@ var Session = /** @class */ (function (_super) {
         else if (_this.book.indexOf(PREFIX_PEBL_THREAD) != -1)
             _this.book = _this.book.substring(_this.book.indexOf(PREFIX_PEBL_THREAD) + PREFIX_PEBL_THREAD.length);
         _this.type = _this.verb.display["en-US"];
-        var extensions = _this.object.definition.extensions;
-        if (extensions) {
-            if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
-                _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
-        }
         return _this;
     }
     Session.is = function (x) {
@@ -5108,7 +5087,7 @@ var utils_Utils = /** @class */ (function () {
         var self = this;
         this.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
-                self.pebl.storage.getCurrentBookId(function (book) {
+                self.pebl.storage.getCurrentBook(function (book) {
                     if (book)
                         self.pebl.storage.getAnnotations(userProfile, book, callback);
                     else
@@ -5123,7 +5102,7 @@ var utils_Utils = /** @class */ (function () {
         var self = this;
         this.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
-                self.pebl.storage.getCurrentBookId(function (book) {
+                self.pebl.storage.getCurrentBook(function (book) {
                     if (book)
                         self.pebl.storage.getSharedAnnotations(userProfile, book, callback);
                     else
@@ -5820,7 +5799,7 @@ var xapiGenerator_XApiGenerator = /** @class */ (function () {
                 peblActivity += ('?id=' + activityId);
             return peblActivity;
         }
-        return 'pebl://deprecated';
+        return '';
     };
     return XApiGenerator;
 }());
@@ -8170,7 +8149,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                             if (book)
                                 self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
                             else
-                                self.xapiGen.addObject(xapi, window.location.href, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + "Harness", undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                             self.xapiGen.addActorAccount(xapi, userProfile);
                             var session = new Session(xapi);
                             self.pebl.storage.saveEvent(userProfile, session);
@@ -8202,7 +8181,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                             if (book)
                                 self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
                             else
-                                self.xapiGen.addObject(xapi, window.location.href, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + "Harness", undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                             self.xapiGen.addActorAccount(xapi, userProfile);
                             var session = new Session(xapi);
                             self.pebl.storage.saveEvent(userProfile, session);

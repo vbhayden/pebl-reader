@@ -38,7 +38,9 @@
 
         npm run dist:copy
         &&
-        npm run dist:cloudReader       
+        npm run dist:cloudReader
+        &&
+        npm run minify
     '
 
 
