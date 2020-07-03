@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0">
 
         <link rel="manifest" href="manifest.json" />
-        
+
         <link id="readerFavicon" href="" rel="shortcut icon"/>
         <link href="images/PEBL-icon-144.png" rel="apple-touch-icon"/>
         <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,8 +15,8 @@
 
         <meta name="msapplication-TileImage" content="images/PEBL-icon-144.png">
         <meta name="msapplication-TileColor" content="#000000">
-        
-        
+
+
         <style>
          .library-item{
              height: 100px;
@@ -30,15 +30,13 @@
          }
         </style>
 
-        <link rel="stylesheet" type="text/css" href="css/readium-all.css">
-        <link rel="stylesheet" type="text/css" href="css/pebl-login-widget.css">
+        <link rel="preload" href="fonts/glyphicons-halflings-regular.woff2" as="font">
+        <link rel="preload" href="css/annotations.css" as="style">
 
-        <script type="text/javascript" src="scripts/jquery-3.3.1.min.js"></script>
-        <script type="text/javascript" src="scripts/config.js"></script>
-        <script type="text/javascript" src="scripts/PeBLCore.js"> </script>
-        <script type="text/javascript" src="scripts/pebl-login-widget.js"> </script>    
-        <script type="text/javascript" src="scripts/readium-js-viewer_all.js"> </script>
-        <script type="text/javascript" src="font-faces/fonts.js"> </script>
+        <script type="text/javascript" src="scripts/pack.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="css/readium-all.css" async>
+        <link rel="stylesheet" type="text/css" href="css/pebl-login-widget.css" async>
 
         <script type="text/javascript">
          document.getElementById('readerFavicon').setAttribute('href', window.PeBLConfig.favicon);
@@ -55,12 +53,12 @@
              }).catch(function (err) {
                  console.log("Bad service worker", err);
              });
-             
+
          }
 
          var cache = window.applicationCache;
          if (cache) {
-             cache.addEventListener('updateready', function (e) {         
+             cache.addEventListener('updateready', function (e) {
                  if (cache.status == cache.UPDATEREADY) {
                      cache.swapCache();
                      if (confirm("New Site Version Available, Reload?")) {
@@ -71,8 +69,8 @@
              if (cache.status == 1 || cache.status > 3)
                 cache.update();
          }
-         
-         var path = (window.location && window.location.pathname) ? window.location.pathname : ''; 
+
+         var path = (window.location && window.location.pathname) ? window.location.pathname : '';
 
          // extracts path to index.html (or more generally: /PATH/TO/*.[x]html)
          path = path.replace(/(.*)\/.*\.[x]?html$/, "$1");
@@ -81,7 +79,7 @@
          path = path.charAt(path.length-1) == '/'
               ? path.substr(0, path.length-1)
               : path;
-         
+
          var HTTPServerRootFolder =
              window.location ? (
                  window.location.protocol
@@ -131,7 +129,7 @@
                  'readium_js_viewer/ModuleConfig' : {
 
                      'mathJaxUrl': HTTPServerRootFolder + '/scripts/mathjax/MathJax.js',
-                     
+
                      'fonts': fontsArray,
 
                      'annotationCSSUrl': HTTPServerRootFolder + '/css/annotations.css',

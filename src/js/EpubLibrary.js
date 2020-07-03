@@ -412,7 +412,7 @@ Helpers){
                 $('#searchNotInitialized').remove();
 
                 PeBL.emitEvent(PeBL.events.eventUndisplayed, {
-                    target: 'PeBL Library Search',
+                    activityType: 'library-search',
                     type: 'Search'
                 });
             } else {
@@ -423,7 +423,7 @@ Helpers){
                 initializeLibrarySearch();
 
                 PeBL.emitEvent(PeBL.events.eventDisplayed, {
-                    target: 'PeBL Library Search',
+                    activityType: 'library-search',
                     type: 'Search'
                 });
             }
@@ -1219,7 +1219,7 @@ Helpers){
 
     var applyKeyboardSettingsAndLoadUi = function(data)
     {
-	PeBL.emitEvent(PeBL.events.newBook, "Library");
+	PeBL.emitEvent(PeBL.events.newBook, window.location.href);
         if (data && data.epubs && (typeof data.epubs == "string")) {
 
             // this is normally init'ed at page launch using the "epubs" URL GET query parameter,

@@ -110,7 +110,7 @@ dependencies:
     "opener": '^1.4.3'
 
     #"http-server": 'latest'
-    "http-server": 'github:danielweck/http-server#master'
+    #    "http-server": 'github:danielweck/http-server#master'
     # SEE: https://github.com/indexzero/http-server/issues/154
 
 
@@ -168,20 +168,20 @@ devDependencies:
     # "clean-css": 'latest'
     "clean-css-cli": '^4.1.10'
     
-    "uglify-js": '^3.4.1'
+    "terser": '^4.8.0'
 
     #"nodeunit": 'latest'
-    "mocha": '^5.2.0'
+#    "mocha": '^5.2.0'
 
     "wd": '^1.9.0'
 
     "phantomjs-prebuilt": '^2.1.16'
 
     #"grunt": 'latest'
-    "grunt-selenium-webdriver": 'github:levexis/grunt-selenium-webdriver#master'
+#    "grunt-selenium-webdriver": 'github:levexis/grunt-selenium-webdriver#master'
     #"selenium-webdriver": 'latest'
 
-    "crx": '^3.2.1'
+#    "crx": '^3.2.1'
 
     # https://github.com/domenic/chai-as-promised/issues/184
     "chai": '3.x'
