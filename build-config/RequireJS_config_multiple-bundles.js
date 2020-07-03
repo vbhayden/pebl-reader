@@ -28,16 +28,6 @@ require.config({
             insertRequire: [
                 "readium_js_viewer/ReadiumViewer"
             ]
-        },
-
-        {
-            name: "readium-js-viewer_LITE",
-            create: true,
-            include: ["readium_js_viewer/ReadiumViewerLite"],
-            exclude: ["readium-js", "readium-external-libs", "readium-shared-js"],
-            insertRequire: [
-                "readium_js_viewer/ReadiumViewerLite"
-            ]
         }
     ],
 
