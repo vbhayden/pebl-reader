@@ -237,6 +237,7 @@ define([
                 PeBL.emitEvent(PeBL.events.eventExperienced, {
                     type: 'chapter',
                     activityURI: window.location.origin + '/?epub=' + epub + '&goto=' + encodeURIComponent('{"idref": "' + bookmark.idref + '"}'),
+                    activityType: 'chapter',
                     name: chapterTitle,
                     idref: bookmark.idref,
                     cfi: bookmark.contentCFI
@@ -1372,6 +1373,8 @@ define([
                         $(this).on("click", function(event) {
                             PeBL.emitEvent(PeBL.events.eventAccessed, {
                                 type: 'TOC',
+                                activityType: 'reader-toc',
+                                activityId: event.currentTarget.href,
                                 name: event.currentTarget.textContent,
                                 target: event.currentTarget.href
                             });
@@ -1430,6 +1433,7 @@ define([
                 PeBL.emitEvent(PeBL.events.eventAccessed, {
                     type: 'chapter',
                     activityURI: window.location.origin + '/?epub=' + epub + '&goto=' + encodeURIComponent('{"idref": "' + bookmark.idref + '"}'),
+                    activityType: 'chapter',
                     name: chapterTitle,
                     idref: bookmark.idref,
                     cfi: bookmark.contentCFI
@@ -2057,7 +2061,8 @@ define([
 
             PeBL.emitEvent(PeBL.events.eventNextPage, {
                 firstCfi: readium.reader.getFirstVisibleCfi(),
-                lastCfi: readium.reader.getLastVisibleCfi()
+                lastCfi: readium.reader.getLastVisibleCfi(),
+                activityType: 'page'
             });
 
             return false;
@@ -2070,7 +2075,8 @@ define([
 
             PeBL.emitEvent(PeBL.events.eventPrevPage, {
                 firstCfi: readium.reader.getFirstVisibleCfi(),
-                lastCfi: readium.reader.getLastVisibleCfi()
+                lastCfi: readium.reader.getLastVisibleCfi(),
+                activityType: 'page'
             });
 
             return false;
