@@ -93,7 +93,8 @@ buildExtensionQa:
   - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
   - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
   - cp "$QA_EXTENSION_WEB_READER_CONFIG" src/cloud-reader/config.js
-
+  
+  - chmod +x pack.sh
   - npm run prepare:all
   - npm run dist
   artifacts:
