@@ -5854,7 +5854,8 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             if (currentBook != book) {
                 if (currentBook)
                     self.pebl.emitEvent(self.pebl.events.eventTerminated, {
-                        activityURI: currentBook
+                        activityURI: currentBook,
+                        activityType: 'book'
                     });
                 self.pebl.storage.removeCurrentActivity();
                 // self.pebl.emitEvent(self.pebl.events.eventInteracted, {
@@ -5869,7 +5870,9 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             else {
                 self.pebl.emitEvent(self.pebl.events.eventJumpPage, {});
             }
-            self.pebl.emitEvent(self.pebl.events.eventLaunched, {});
+            self.pebl.emitEvent(self.pebl.events.eventLaunched, {
+                activityType: 'book'
+            });
         });
     };
     PEBLEventHandlers.prototype.newBookNoReset = function (event) {
@@ -6725,7 +6728,10 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             self.pebl.storage.saveUserProfile(userP, function () {
                 self.pebl.network.activate(function () {
                     if (userP.identity != currentIdentity) {
-                        self.pebl.emitEvent(self.pebl.events.eventLogin, userP);
+                        self.pebl.emitEvent(self.pebl.events.eventLogin, {
+                            userProfile: userP,
+                            activityType: 'login'
+                        });
                     }
                 });
             });
@@ -6736,7 +6742,10 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         this.pebl.user.getUser(function (currentUser) {
             self.pebl.network.disable(function () {
                 self.pebl.storage.removeCurrentUser(function () {
-                    self.pebl.emitEvent(self.pebl.events.eventLogout, currentUser);
+                    self.pebl.emitEvent(self.pebl.events.eventLogout, {
+                        userProfile: currentUser,
+                        activityType: 'login'
+                    });
                 });
             });
         });
@@ -8160,7 +8169,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
     // -------------------------------
     PEBLEventHandlers.prototype.eventLogin = function (event) {
         var payload = event.detail;
-        var userProfile = event.detail;
+        var userProfile = payload.userProfile;
         var xapi = {};
         var self = this;
         var exts = {};
