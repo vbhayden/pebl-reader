@@ -1463,6 +1463,8 @@ var Annotation = /** @class */ (function (_super) {
         _this.cfi = extensions[PREFIX_PEBL_EXTENSION + "cfi"];
         _this.idRef = extensions[PREFIX_PEBL_EXTENSION + "idRef"];
         _this.style = extensions[PREFIX_PEBL_EXTENSION + "style"];
+        if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
+            _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
         return _this;
     }
     Annotation.is = function (x) {
@@ -1506,6 +1508,8 @@ var Action = /** @class */ (function (_super) {
                 _this.type = extensions[PREFIX_PEBL_EXTENSION + "type"];
                 _this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
                 _this.cfi = extensions[PREFIX_PEBL_EXTENSION + "cfi"];
+                if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
+                    _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
             }
         }
         return _this;
@@ -1536,6 +1540,8 @@ var Navigation = /** @class */ (function (_super) {
         if (extensions) {
             _this.firstCfi = extensions[PREFIX_PEBL_EXTENSION + "firstCfi"];
             _this.lastCfi = extensions[PREFIX_PEBL_EXTENSION + "lastCfi"];
+            if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
+                _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
         }
         return _this;
     }
@@ -1558,7 +1564,7 @@ var Message = /** @class */ (function (_super) {
         _this.prompt = _this.object.definition.name["en-US"];
         _this.name = _this.actor.name;
         _this.direct = _this.thread == (NAMESPACE_USER_MESSAGES + _this.getActorId());
-        _this.text = _this.result.response;
+        _this.text = _this.result ? _this.result.response : _this.object.definition.description['en-US'];
         var extensions = _this.object.definition.extensions;
         if (extensions) {
             _this.access = extensions[PREFIX_PEBL_EXTENSION + "access"];
@@ -1624,6 +1630,11 @@ var Question = /** @class */ (function (_super) {
             var key = _a[_i];
             _this.answers.push(choices[key].description["en-US"]);
         }
+        var extensions = _this.object.definition.extensions;
+        if (extensions) {
+            if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
+                _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
+        }
         return _this;
     }
     Question.is = function (x) {
@@ -1651,6 +1662,11 @@ var Quiz = /** @class */ (function (_super) {
         _this.quizId = _this.object.definition.name["en-US"];
         _this.quizName = _this.object.definition.description["en-US"];
         _this.activityId = _this.object.id;
+        var extensions = _this.object.definition.extensions;
+        if (extensions) {
+            if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
+                _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
+        }
         return _this;
     }
     Quiz.is = function (x) {
@@ -1676,6 +1692,11 @@ var Session = /** @class */ (function (_super) {
         else if (_this.book.indexOf(PREFIX_PEBL_THREAD) != -1)
             _this.book = _this.book.substring(_this.book.indexOf(PREFIX_PEBL_THREAD) + PREFIX_PEBL_THREAD.length);
         _this.type = _this.verb.display["en-US"];
+        var extensions = _this.object.definition.extensions;
+        if (extensions) {
+            if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
+                _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
+        }
         return _this;
     }
     Session.is = function (x) {
@@ -5087,7 +5108,7 @@ var utils_Utils = /** @class */ (function () {
         var self = this;
         this.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
-                self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookId(function (book) {
                     if (book)
                         self.pebl.storage.getAnnotations(userProfile, book, callback);
                     else
@@ -5102,7 +5123,7 @@ var utils_Utils = /** @class */ (function () {
         var self = this;
         this.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
-                self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookId(function (book) {
                     if (book)
                         self.pebl.storage.getSharedAnnotations(userProfile, book, callback);
                     else
@@ -5799,7 +5820,7 @@ var xapiGenerator_XApiGenerator = /** @class */ (function () {
                 peblActivity += ('?id=' + activityId);
             return peblActivity;
         }
-        return '';
+        return 'pebl://deprecated';
     };
     return XApiGenerator;
 }());
@@ -5832,7 +5853,10 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         this.pebl.storage.getCurrentBook(function (currentBook) {
             if (currentBook != book) {
                 if (currentBook)
-                    self.pebl.emitEvent(self.pebl.events.eventTerminated, currentBook);
+                    self.pebl.emitEvent(self.pebl.events.eventTerminated, {
+                        activityURI: currentBook,
+                        activityType: 'book'
+                    });
                 self.pebl.storage.removeCurrentActivity();
                 // self.pebl.emitEvent(self.pebl.events.eventInteracted, {
                 //     activity: book
@@ -5846,7 +5870,9 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             else {
                 self.pebl.emitEvent(self.pebl.events.eventJumpPage, {});
             }
-            self.pebl.emitEvent(self.pebl.events.eventLaunched, {});
+            self.pebl.emitEvent(self.pebl.events.eventLaunched, {
+                activityType: 'book'
+            });
         });
     };
     PEBLEventHandlers.prototype.newBookNoReset = function (event) {
@@ -6702,7 +6728,10 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             self.pebl.storage.saveUserProfile(userP, function () {
                 self.pebl.network.activate(function () {
                     if (userP.identity != currentIdentity) {
-                        self.pebl.emitEvent(self.pebl.events.eventLogin, userP);
+                        self.pebl.emitEvent(self.pebl.events.eventLogin, {
+                            userProfile: userP,
+                            activityType: 'login'
+                        });
                     }
                 });
             });
@@ -6713,7 +6742,10 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         this.pebl.user.getUser(function (currentUser) {
             self.pebl.network.disable(function () {
                 self.pebl.storage.removeCurrentUser(function () {
-                    self.pebl.emitEvent(self.pebl.events.eventLogout, currentUser);
+                    self.pebl.emitEvent(self.pebl.events.eventLogout, {
+                        userProfile: currentUser,
+                        activityType: 'login'
+                    });
                 });
             });
         });
@@ -6825,24 +6857,27 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         var self = this;
         var exts = {};
         this.pebl.user.getUser(function (userProfile) {
-            self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
-                self.pebl.storage.getCurrentBookId(function (bookId) {
-                    if (userProfile) {
-                        self.xapiGen.addId(xapi);
-                        self.xapiGen.addTimestamp(xapi);
-                        self.xapiGen.addActorAccount(xapi, userProfile);
-                        self.xapiGen.addObject(xapi, PEBL_PREFIX + payload, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
-                        self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/terminated", "terminated");
-                        self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + payload);
-                        var s = new Session(xapi);
-                        self.pebl.storage.saveOutgoingXApi(userProfile, {
-                            identity: userProfile.identity,
-                            id: s.id,
-                            requestType: "saveSessions",
-                            sessions: [s]
-                        });
-                        self.pebl.storage.saveEvent(userProfile, s);
-                    }
+            self.pebl.storage.getCurrentActivity(function (activity) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        if (userProfile) {
+                            self.xapiGen.addId(xapi);
+                            self.xapiGen.addTimestamp(xapi);
+                            self.xapiGen.addActorAccount(xapi, userProfile);
+                            self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                            self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/terminated", "terminated");
+                            if (activity)
+                                self.xapiGen.addParentActivity(xapi, activity);
+                            var s = new Session(xapi);
+                            self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                identity: userProfile.identity,
+                                id: s.id,
+                                requestType: "saveSessions",
+                                sessions: [s]
+                            });
+                            self.pebl.storage.saveEvent(userProfile, s);
+                        }
+                    });
                 });
             });
         });
@@ -6856,11 +6891,11 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
                 self.pebl.storage.getCurrentBookId(function (bookId) {
                     self.pebl.user.getUser(function (userProfile) {
-                        if (userProfile) {
+                        if (userProfile && book) {
                             self.xapiGen.addId(xapi);
                             self.xapiGen.addTimestamp(xapi);
                             self.xapiGen.addActorAccount(xapi, userProfile);
-                            self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                            self.xapiGen.addObject(xapi, book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
                             self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/initialized", "initialized");
                             self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + payload.activity);
                             var s = new Session(xapi);
@@ -8134,7 +8169,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
     // -------------------------------
     PEBLEventHandlers.prototype.eventLogin = function (event) {
         var payload = event.detail;
-        var userProfile = event.detail;
+        var userProfile = payload.userProfile;
         var xapi = {};
         var self = this;
         var exts = {};
@@ -8149,7 +8184,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                             if (book)
                                 self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
                             else
-                                self.xapiGen.addObject(xapi, PEBL_PREFIX + "Harness", undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                                self.xapiGen.addObject(xapi, window.location.origin, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                             self.xapiGen.addActorAccount(xapi, userProfile);
                             var session = new Session(xapi);
                             self.pebl.storage.saveEvent(userProfile, session);
@@ -8181,7 +8216,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                             if (book)
                                 self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
                             else
-                                self.xapiGen.addObject(xapi, PEBL_PREFIX + "Harness", undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                                self.xapiGen.addObject(xapi, window.location.origin, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
                             self.xapiGen.addActorAccount(xapi, userProfile);
                             var session = new Session(xapi);
                             self.pebl.storage.saveEvent(userProfile, session);
