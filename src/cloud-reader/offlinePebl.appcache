@@ -20,7 +20,7 @@ scripts/pack.js
 scripts/zip/deflate.js
 scripts/zip/inflate.js
 scripts/zip/z-worker.js
-font-faces/fonts.js
+# font-faces/fonts.js
 # scripts/pebl-login-widget.js
 
 # media

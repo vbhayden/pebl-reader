@@ -36,7 +36,7 @@ var FILES_TO_CACHE = [
     // "./scripts/config.js",
 
 
-    "./font-faces/fonts.js",
+    // "./font-faces/fonts.js",
     "./fonts/glyphicons-halflings-regular.eot",
     "./fonts/glyphicons-halflings-regular.svg",
     "./fonts/glyphicons-halflings-regular.ttf",
