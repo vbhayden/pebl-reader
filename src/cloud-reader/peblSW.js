@@ -17,24 +17,25 @@ var FILES_TO_CACHE = [
     "./",
     "./?",
 
-    
+
     "./css/readium-all.css",
     "./css/pebl-login-widget.css",
     "./css/annotations.css",
 
-    
-    "./scripts/jquery-3.3.1.min.js",
-    "./scripts/PeBLCore.js",
-    "./scripts/readium-js-viewer_all.js",
-    "./scripts/pebl-login-widget.js",
-    "./scripts/readium-js-viewer_CLOUDAPP-WORKER.js",
-    "./scripts/mathjax/MathJax.js",
+
+    // "./scripts/jquery-3.3.1.min.js",
+    // "./scripts/PeBLCore.js",
+    // "./scripts/readium-js-viewer_all.js",
+    // "./scripts/pebl-login-widget.js",
+    // "./scripts/readium-js-viewer_CLOUDAPP-WORKER.js",
+    // "./scripts/mathjax/MathJax.js",
     "./scripts/zip/deflate.js",
     "./scripts/zip/inflate.js",
     "./scripts/zip/z-worker.js",
-    "./scripts/config.js",
+    "./scripts/pack.js",
+    // "./scripts/config.js",
 
-    
+
     "./font-faces/fonts.js",
     "./fonts/glyphicons-halflings-regular.eot",
     "./fonts/glyphicons-halflings-regular.svg",
@@ -57,10 +58,10 @@ var FILES_TO_CACHE = [
     "./font-faces/Open-Sans/Open-Sans-italic.woff",
     "./font-faces/Open-Sans/Open-Sans-regular.woff",
 
-    
+
     "./manifest.json",
-    
-    
+
+
     "./images/PEBL-icon-16.ico",
     "./images/covers/cover1.jpg",
     "./images/covers/cover2.jpg",
@@ -126,25 +127,25 @@ self.addEventListener('install',
 
 self.addEventListener('activate',
                       function (e) {
-                          
+
                       });
 
 self.addEventListener('fetch', event => {
     if (event.request.method != 'GET') return;
 
     var request = event.request;
-    
+
     var url = new URL(request.url);
-    
+
     if (url.origin == location.origin) {
         event.respondWith(
             fetch(event.request).then(function (response) {
-                return caches.open(CACHE_NAME).then(function (openCache) {                    
+                return caches.open(CACHE_NAME).then(function (openCache) {
                     if (response.status != 206) {
                         openCache.put(request, response.clone());
                     }
                     return response;
-                });             
+                });
             }).catch(function () {
                 return caches.match(request);
             }));

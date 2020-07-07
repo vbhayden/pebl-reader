@@ -10,17 +10,18 @@ css/annotations.css
 css/pebl-login-widget.css
 
 # scripts
-scripts/jquery-3.3.1.min.js
-scripts/PeBLCore.js
-scripts/readium-js-viewer_all.js
-scripts/config.js
-scripts/readium-js-viewer_CLOUDAPP-WORKER.js
-scripts/mathjax/MathJax.js
+# scripts/jquery-3.3.1.min.js
+# scripts/PeBLCore.js
+# scripts/readium-js-viewer_all.js
+# scripts/config.js
+# scripts/readium-js-viewer_CLOUDAPP-WORKER.js
+# scripts/mathjax/MathJax.js
+scripts/pack.js
 scripts/zip/deflate.js
 scripts/zip/inflate.js
 scripts/zip/z-worker.js
 font-faces/fonts.js
-scripts/pebl-login-widget.js
+# scripts/pebl-login-widget.js
 
 # media
 images/covers/cover1.jpg
