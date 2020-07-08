@@ -1,8 +1,25 @@
+/*
+  Copyright 2020 Eduworks Corporation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
 document.addEventListener("eventLogout", function() {
     $('#loginButt span').removeClass("glyphicon-log-out");
     $('#loginButt span').addClass("glyphicon-log-in");
     $('#loginButt').attr("aria-label", "Login");
     $('#loginButt').attr("title", "Login");
+    window.Lightbox.createLoginForm(true);
+});
+
+document.addEventListener("eventRefreshLogin", () => {
     window.Lightbox.createLoginForm();
 });
 
@@ -101,9 +118,9 @@ window.Lightbox = {
     },
 
     initDefaultLRSSettings: function(reset) {
-        var lrsURL = window.Configuration.lrsUrl;
+        var lrsURL = window.PeBLConfig.lrsUrl;
         var lrsPassword = null;
-        var lrsToken = window.Configuration.lrsCredential;
+        var lrsToken = window.PeBLConfig.lrsCredential;
         var lrsUsername = null;
         var currentSettings = window.Lightbox.getLRSSettings();
 
@@ -158,7 +175,7 @@ window.Lightbox = {
         callback(lrsUsername);
     },
 
-    createLoginForm: function() {
+    createLoginForm: function(loggingOut) {
         window.Lightbox.close();
         window.Lightbox.create("login", false);
 
@@ -167,14 +184,14 @@ window.Lightbox = {
         var loginHeader = $(
             '<div class="login__header">' +
                 '<div class="login__image">' +
-                    '<img  src="' + window.Configuration.loginImage + '"></img>' +
+                '<img  src="' + window.PeBLConfig.loginImage + '"></img>' +
                 '</div>' +
-            '</div>'
+                '</div>'
         );
 
         $(lightBoxContent).append(loginHeader);
 
-        if (window.Configuration.useLinkedIn) {
+        if (window.PeBLConfig.useLinkedIn) {
             var linkedInButtonWrapper = document.createElement('div');
             linkedInButtonWrapper.classList.add('linkedin-button-wrapper');
             var linkedInButton = document.createElement('div');
@@ -205,31 +222,76 @@ window.Lightbox = {
             });
 
             lightBoxContent.appendChild(linkedInButtonWrapper);
-        }
+        } else if (window.PeBLConfig.useOpenID) {
 
-        if (!window.Configuration.useLinkedIn) {
+            if (!loggingOut) {
+                PeBL.user.isLoggedIn(function(loggedIn) {
+                    if (!loggedIn) {
+                        let xhr = new XMLHttpRequest();
+
+                        xhr.addEventListener('load', () => {
+                            if (xhr.status < 300) {
+                                console.log(JSON.parse(xhr.response));
+                                let payload = JSON.parse(xhr.response);
+                                let userProfile = {
+                                    identity: payload.preferred_username,
+                                    name: payload.name,
+                                    preferredName: payload.name,
+                                    firstName: payload.given_name,
+                                    lastName: payload.family_name,
+                                    // avatar: imageToUse,
+                                    registryEndpoint: {
+                                        ul: 'https://peblproject.com/registry/api/downloadContent?guid='
+                                    }
+                                };
+
+                                window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
+                                window.Lightbox.close();
+                            } else {
+                                window.location = window.PeBLConfig.PeBLServicesURL + "/login?redirectUrl=" + encodeURIComponent(window.location.href);
+                            }
+                        });
+
+                        xhr.addEventListener('error', (e) => {
+                            console.log('failed to retrieve user profile', e);
+                            window.location = window.PeBLConfig.PeBLServicesURL + "/login?redirectUrl=" + encodeURIComponent(window.location.href);
+                        });
+
+                        xhr.open('GET',
+                                 window.PeBLConfig.PeBLServicesURL + "/user/profile");
+                        xhr.withCredentials = true;
+                        xhr.send();
+                    } else {
+                        console.log("!loggedIn");
+                    }
+                });
+            } else {
+                window.location = window.PeBLConfig.PeBLServicesURL + "/logout?redirectUrl=" + encodeURIComponent(window.location.href);
+            }
+
+        } else {
             var form = $(
                 '<div class="login__form-section">' +
-                '<div>' +
-                '<h2>Welcome to PeBL</h2>' +
-                '<h4>Login to continue</h4>' +
-                '</div>' +
-            '</div>'
+                    '<div>' +
+                    '<h2>Welcome to PeBL</h2>' +
+                    '<h4>Login to continue</h4>' +
+                    '</div>' +
+                    '</div>'
             );
 
             var selects = $(
                 '<div class="login__input-wrapper">' +
-                '<div class="login__label">' +
+                    '<div class="login__label">' +
                     '<label>Username:</label>' +
-                '</div>' +
-                '<div class="login__input">' +
+                    '</div>' +
+                    '<div class="login__input">' +
                     '<select class="select-css" id="loginUserNameSelector">' +
                     '</select>' +
-                '</div>'
+                    '</div>'
             );
 
-            if (window.Configuration && window.Configuration.userList && window.Configuration.userList.length > 0) {
-                for (var user of window.Configuration.userList) {
+            if (window.PeBLConfig && window.PeBLConfig.userList && window.PeBLConfig.userList.length > 0) {
+                for (var user of window.PeBLConfig.userList) {
                     selects.find('#loginUserNameSelector').append($('<option>' + user + '</option>'));
                 }
             }
@@ -244,31 +306,31 @@ window.Lightbox = {
 
             var classSelect = $(
                 '<div class="login__input-wrapper">' +
-                '<div class="login__label">' +
+                    '<div class="login__label">' +
                     '<label>Class ID:</label>' +
-                '</div>' +
-                '<div class="login__input">' +
+                    '</div>' +
+                    '<div class="login__input">' +
                     '<input type="text" id="loginClassSelect"></input>' +
-                '</div>' +
-            '</div>'
+                    '</div>' +
+                    '</div>'
             );
             $(form).append(classSelect);
 
             var teamSelect = $(
                 '<div class="login__input-wrapper">' +
                     '<div class="login__label">'+
-                        '<label>Team:</label>'+
+                    '<label>Team:</label>'+
                     '</div>' +
                     '<div class="login__input">'+
-                        '<input type="text" id="loginTeamSelect"></input>' +
+                    '<input type="text" id="loginTeamSelect"></input>' +
                     '</div>' +
-                '</div>'
+                    '</div>'
             );
             $(form).append(teamSelect);
             var login = $(
                 '<div class="login__input-wrapper">' +
                     '<input class="login__button" type="button" value="Login" id="loginUserNameSubmit" />' +
-                '</div>'
+                    '</div>'
             );
             $(form).append(login);
             $(lightBoxContent).append(form);
@@ -288,20 +350,20 @@ window.Lightbox = {
                 if (currentClass)
                     identity += '-' + currentClass;
                 PeBL.emitEvent(PeBL.events.eventLoggedIn,
-                    {
-                        identity: identity,
-                        endpoints: [
-                            {
-                                url: window.Configuration.lrsUrl,
-                                token: window.Configuration.lrsCredential
-                            }
-                        ],
-                        registryEndpoint: {
-                            url: "https://peblproject.com/registry/api/downloadContent?guid="
-                        },
-                        currentTeam: currentTeam,
-                        currentClass: currentClass
-                    });
+                               {
+                                   identity: identity,
+                                   endpoints: [
+                                       {
+                                           url: window.PeBLConfig.lrsUrl,
+                                           token: window.PeBLConfig.lrsCredential
+                                       }
+                                   ],
+                                   registryEndpoint: {
+                                       url: "https://peblproject.com/registry/api/downloadContent?guid="
+                                   },
+                                   currentTeam: currentTeam,
+                                   currentClass: currentClass
+                               });
                 Lightbox.close();
             });
 
@@ -352,9 +414,9 @@ window.Lightbox = {
         var state = window.Lightbox.uuidv4();
         localStorage.setItem('linkedInOauthState', state);
         window.location.replace(window.Lightbox.buildLinkedInAuthCodeUrl(scope,
-            clientId,
-            redirectUri,
-            state));
+                                                                         clientId,
+                                                                         redirectUri,
+                                                                         state));
     },
     apiGetAccessToken: function(application, authToken, success, failure) {
         var xhr = new XMLHttpRequest();
@@ -373,8 +435,8 @@ window.Lightbox = {
             }
         });
         xhr.open('GET',
-            window.Configuration.OAuthURL +
-            'oauth2/' + application + '/linkedin?authToken=' + authToken + '&d=' + Date.now());
+                 window.PeBLConfig.OAuthURL +
+                 'oauth2/' + application + '/linkedin?authToken=' + authToken + '&d=' + Date.now());
         xhr.send();
     },
     apiGetProfile: function(accessToken, success, failure) {
@@ -391,7 +453,7 @@ window.Lightbox = {
                 failure(e);
             }
         });
-        xhr.open('GET', window.Configuration.OAuthURL + 'pebl/linkedin/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams),address,organizations,phoneNumbers)');
+        xhr.open('GET', window.PeBLConfig.OAuthURL + 'pebl/linkedin/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams),address,organizations,phoneNumbers)');
         xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send();
@@ -410,16 +472,16 @@ window.Lightbox = {
                 failure(e);
             }
         });
-        xhr.open('GET', window.Configuration.OAuthURL + 'pebl/linkedin/people/(id:{' + userId + '})');
+        xhr.open('GET', window.PeBLConfig.OAuthURL + 'pebl/linkedin/people/(id:{' + userId + '})');
         xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send();
     },
 
     linkedInSignIn: function() {
-        window.Lightbox.apiGetAuthToken(window.Configuration.OAuthToken,
-            'r_liteprofile',
-            location.origin);
+        window.Lightbox.apiGetAuthToken(window.PeBLConfig.OAuthToken,
+                                        'r_liteprofile',
+                                        location.origin);
     },
 
     linkedInLogin: function() {
@@ -456,8 +518,8 @@ window.Lightbox = {
                                 homePage: 'acct:LinkedIn',
                                 endpoints: [
                                     {
-                                        url: window.Configuration.lrsUrl,
-                                        token: window.Configuration.lrsCredential
+                                        url: window.PeBLConfig.lrsUrl,
+                                        token: window.PeBLConfig.lrsCredential
                                     }
                                 ],
                                 registryEndpoint: {
@@ -477,17 +539,17 @@ window.Lightbox = {
                         };
 
                         window.Lightbox.apiGetAccessToken('pebl',
-                            authToken,
-                            function(authObj) {
-                                window.Lightbox.apiGetProfile(authObj.access_token,
-                                    loginUser,
-                                    function(error) {
-                                        console.log(error);
-                                    });
-                            },
-                            function(error) {
-                                console.log(error);
-                            });
+                                                          authToken,
+                                                          function(authObj) {
+                                                              window.Lightbox.apiGetProfile(authObj.access_token,
+                                                                                            loginUser,
+                                                                                            function(error) {
+                                                                                                console.log(error);
+                                                                                            });
+                                                          },
+                                                          function(error) {
+                                                              console.log(error);
+                                                          });
                     }
                 }
             }
@@ -555,12 +617,12 @@ window.Lightbox = {
         var loginForm = $('#loginFormSubmit');
         if (loginForm.length == 0) {
             loginForm = $('<form id="loginFormSubmit" action="https://people.extension.org/opie" method="GET">' +
-                '<input type="hidden" name="openid.identity" value="http://specs.openid.net/auth/2.0/identifier_select"/>' +
-                '<input type="hidden" name="openid.claimed_id" value="http://specs.openid.net/auth/2.0/identifier_select"/>' +
-                '<input type="hidden" name="openid.mode" value="checkid_setup"/>' +
-                '<input type="hidden" name="openid.ns" value="http://specs.openid.net/auth/2.0" />' +
-                '<input type="hidden" name="openid.return_to" id="returnValue" value="" />' +
-                '</form>');
+                          '<input type="hidden" name="openid.identity" value="http://specs.openid.net/auth/2.0/identifier_select"/>' +
+                          '<input type="hidden" name="openid.claimed_id" value="http://specs.openid.net/auth/2.0/identifier_select"/>' +
+                          '<input type="hidden" name="openid.mode" value="checkid_setup"/>' +
+                          '<input type="hidden" name="openid.ns" value="http://specs.openid.net/auth/2.0" />' +
+                          '<input type="hidden" name="openid.return_to" id="returnValue" value="" />' +
+                          '</form>');
 
             $(loginFrame[0].contentDocument.body).append(loginForm);
             loginFrame[0].contentDocument.getElementById("returnValue").value = window.top.location.protocol + "//" + window.top.location.host;
@@ -643,12 +705,12 @@ window.Lightbox = {
             var loginForm = $('#loginFormSubmit');
             if (loginForm.length == 0) {
                 loginForm = $('<form id="loginFormSubmit" action="https://people.extension.org/opie" method="GET">' +
-                    '<input type="hidden" name="openid.identity" value="http://specs.openid.net/auth/2.0/identifier_select"/>' +
-                    '<input type="hidden" name="openid.claimed_id" value="http://specs.openid.net/auth/2.0/identifier_select"/>' +
-                    '<input type="hidden" name="openid.mode" value="checkid_setup"/>' +
-                    '<input type="hidden" name="openid.ns" value="http://specs.openid.net/auth/2.0" />' +
-                    '<input type="hidden" name="openid.return_to" id="returnValue" value="" />' +
-                    '</form>');
+                              '<input type="hidden" name="openid.identity" value="http://specs.openid.net/auth/2.0/identifier_select"/>' +
+                              '<input type="hidden" name="openid.claimed_id" value="http://specs.openid.net/auth/2.0/identifier_select"/>' +
+                              '<input type="hidden" name="openid.mode" value="checkid_setup"/>' +
+                              '<input type="hidden" name="openid.ns" value="http://specs.openid.net/auth/2.0" />' +
+                              '<input type="hidden" name="openid.return_to" id="returnValue" value="" />' +
+                              '</form>');
 
                 $(loginFrame[0].contentDocument.body).append(loginForm);
                 loginFrame[0].contentDocument.getElementById("returnValue").value = window.top.location.protocol + "//" + window.top.location.host;

@@ -1,28 +1,42 @@
+/*
+Copyright 2020 Eduworks Corporation
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 var CACHE_NAME = "peblV2";
 
 var FILES_TO_CACHE = [
     "./",
     "./?",
 
-    
+
     "./css/readium-all.css",
     "./css/pebl-login-widget.css",
     "./css/annotations.css",
 
-    
-    "./scripts/jquery-3.3.1.min.js",
-    "./scripts/PeBLCore.js",
-    "./scripts/readium-js-viewer_all.js",
-    "./scripts/pebl-login-widget.js",
-    "./scripts/readium-js-viewer_CLOUDAPP-WORKER.js",
-    "./scripts/mathjax/MathJax.js",
+
+    // "./scripts/jquery-3.3.1.min.js",
+    // "./scripts/PeBLCore.js",
+    // "./scripts/readium-js-viewer_all.js",
+    // "./scripts/pebl-login-widget.js",
+    // "./scripts/readium-js-viewer_CLOUDAPP-WORKER.js",
+    // "./scripts/mathjax/MathJax.js",
     "./scripts/zip/deflate.js",
     "./scripts/zip/inflate.js",
     "./scripts/zip/z-worker.js",
-    "./scripts/config.js",
+    "./scripts/pack.js",
+    // "./scripts/config.js",
 
-    
-    "./font-faces/fonts.js",
+
+    // "./font-faces/fonts.js",
     "./fonts/glyphicons-halflings-regular.eot",
     "./fonts/glyphicons-halflings-regular.svg",
     "./fonts/glyphicons-halflings-regular.ttf",
@@ -44,10 +58,10 @@ var FILES_TO_CACHE = [
     "./font-faces/Open-Sans/Open-Sans-italic.woff",
     "./font-faces/Open-Sans/Open-Sans-regular.woff",
 
-    
+
     "./manifest.json",
-    
-    
+
+
     "./images/PEBL-icon-16.ico",
     "./images/covers/cover1.jpg",
     "./images/covers/cover2.jpg",
@@ -113,25 +127,25 @@ self.addEventListener('install',
 
 self.addEventListener('activate',
                       function (e) {
-                          
+
                       });
 
 self.addEventListener('fetch', event => {
     if (event.request.method != 'GET') return;
 
     var request = event.request;
-    
+
     var url = new URL(request.url);
-    
+
     if (url.origin == location.origin) {
         event.respondWith(
             fetch(event.request).then(function (response) {
-                return caches.open(CACHE_NAME).then(function (openCache) {                    
+                return caches.open(CACHE_NAME).then(function (openCache) {
                     if (response.status != 206) {
                         openCache.put(request, response.clone());
                     }
                     return response;
-                });             
+                });
             }).catch(function () {
                 return caches.match(request);
             }));
