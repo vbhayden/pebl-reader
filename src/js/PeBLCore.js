@@ -4204,11 +4204,20 @@ var syncing_LLSyncAction = /** @class */ (function () {
         var _this = this;
         this.DEFAULT_RECONNECTION_BACKOFF = 1000;
         var self = this;
+        this.serverReady = false;
         this.pebl = pebl;
         this.reconnectionBackoff = this.DEFAULT_RECONNECTION_BACKOFF;
         this.active = false;
         console.log(this.pebl.config && this.pebl.config.PeBLServicesWSURL);
         this.messageHandlers = {};
+        this.messageHandlers.serverReady = function (userProfile, payload) {
+            _this.serverReady = true;
+            _this.pullNotifications();
+            _this.pullAnnotations();
+            _this.pullSharedAnnotations();
+            _this.pullReferences();
+            _this.pullSubscribedThreads();
+        };
         this.messageHandlers.getReferences = function (userProfile, payload) {
             _this.pebl.storage.getSyncTimestamps(userProfile.identity, SYNC_REFERENCES, function (timestamp) {
                 for (var _i = 0, _a = payload.data; _i < _a.length; _i++) {
@@ -4373,7 +4382,6 @@ var syncing_LLSyncAction = /** @class */ (function () {
             }
         };
         this.messageHandlers.getAnnotations = function (userProfile, payload) {
-            console.log(payload);
             _this.pebl.storage.getSyncTimestamps(userProfile.identity, SYNC_ANNOTATIONS, function (timestamp) {
                 var stmts = payload.data.map(function (stmt) {
                     if (Voided.is(stmt)) {
@@ -4502,17 +4510,13 @@ var syncing_LLSyncAction = /** @class */ (function () {
                     _this.websocket = new WebSocket(_this.pebl.config.PeBLServicesWSURL);
                     _this.websocket.onopen = function () {
                         console.log('websocket opened');
-                        _this.pullNotifications();
-                        _this.pullAnnotations();
-                        _this.pullSharedAnnotations();
-                        _this.pullReferences();
-                        _this.pullSubscribedThreads();
                         _this.reconnectionBackoffResetHandler = setTimeout(function () {
                             _this.reconnectionBackoff = _this.DEFAULT_RECONNECTION_BACKOFF;
                         }, _this.DEFAULT_RECONNECTION_BACKOFF);
                     };
                     _this.websocket.onclose = function () {
                         console.log("Web socket closed retrying in " + _this.reconnectionBackoff, event);
+                        _this.serverReady = false;
                         if (_this.active) {
                             if (_this.reconnectionBackoffResetHandler) {
                                 clearTimeout(_this.reconnectionBackoffResetHandler);
@@ -4532,6 +4536,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
                     };
                     _this.websocket.onerror = function (event) {
                         console.log("Web socket error retrying in " + _this.reconnectionBackoff, event);
+                        _this.serverReady = false;
                         if (_this.active) {
                             if (_this.reconnectionBackoffResetHandler) {
                                 clearTimeout(_this.reconnectionBackoffResetHandler);
@@ -4605,7 +4610,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
     LLSyncAction.prototype.push = function (outgoing, callback) {
         var _this = this;
         this.pebl.user.getUser(function (userProfile) {
-            if (userProfile && _this.websocket && _this.websocket.readyState === 1) {
+            if (userProfile && _this.serverReady && _this.websocket && _this.websocket.readyState === 1) {
                 _this.websocket.send(JSON.stringify({
                     requestType: "bulkPush",
                     identity: userProfile.identity,
@@ -4621,7 +4626,7 @@ var syncing_LLSyncAction = /** @class */ (function () {
     LLSyncAction.prototype.pushActivity = function (outgoing, callback) {
         var _this = this;
         this.pebl.user.getUser(function (userProfile) {
-            if (userProfile && _this.websocket && _this.websocket.readyState === 1) {
+            if (userProfile && _this.serverReady && _this.websocket && _this.websocket.readyState === 1) {
                 for (var _i = 0, outgoing_1 = outgoing; _i < outgoing_1.length; _i++) {
                     var message = outgoing_1[_i];
                     console.log(message);
