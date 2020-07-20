@@ -876,9 +876,27 @@ ul.nav-tabs li:not(.active) button:hover
   padding-right: 10px;
 }
 
-#my-shared-annotations > div,
-#my-annotations > div,
-#general-shared-annotations > div {
+div.annotation.pinned > div:first-child {
+  display: flex;
+  align-items: center;
+}
+
+.pinnedIcon {
+  display: none;
+}
+
+div.annotation.pinned .pinnedIcon {
+  display: block;
+  margin-right: 1em;
+}
+
+div.annotation.pinned > div:not(:first-child) {
+  margin-left: 2em;
+}
+
+#my-shared-annotations div.annotation,
+#my-annotations div.annotation,
+#general-shared-annotations div.annotation {
   cursor: pointer;
   padding: 0.5em 0;
   border-bottom: 1px solid #ddd;
@@ -891,42 +909,46 @@ ul.nav-tabs li:not(.active) button:hover
   display: none;
 }
 
-#general-shared-annotations>div:hover, 
-#my-annotations>div:hover, 
-#my-shared-annotations>div:hover {
+.hideWhenOnlyChild:only-child {
+  display: none;
+}
+
+#general-shared-annotations div.annotation:hover, 
+#my-annotations div.annotation:hover, 
+#my-shared-annotations div.annotation:hover {
   background-color: #eee;
 }
 
-#my-shared-annotations > div > div:first-child > span {
+#my-shared-annotations div.annotation > div:first-child > span {
   padding: 0.25em;
   background: #cbe1ff;
 }
 
-#my-shared-annotations > div:hover > div:first-child > span {
+#my-shared-annotations div.annotation:hover > div:first-child > span {
   background: #98c5ff;
 }
 
-#my-annotations > div > div:first-child > span {
+#my-annotations div.annotation > div:first-child > span {
   padding: 0.25em;
   background: #ffffcb;
 }
 
-#my-annotations > div:hover > div:first-child > span {
+#my-annotations div.annotation:hover > div:first-child > span {
   background: #ffff98;
 }
 
-#general-shared-annotations > div > div:first-child > span {
+#general-shared-annotations div.annotation > div:first-child > span {
   padding: 0.25em;
   background: #ffcbcb;
 }
 
-#general-shared-annotations > div:hover > div:first-child > span {
+#general-shared-annotations div.annotation:hover > div:first-child > span {
   background: #ff9898;
 }
 
-#my-shared-annotations > div > div:last-child,
-#my-annotations > div > div:last-child,
-#general-shared-annotations > div > div:last-child {
+#my-shared-annotations div.annotation > div:last-child,
+#my-annotations div.annotation > div:last-child,
+#general-shared-annotations div.annotation > div:last-child {
   padding-left: 0.5em;
   border-left: 3px solid #ddd;
 }

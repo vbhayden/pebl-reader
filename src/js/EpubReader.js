@@ -297,7 +297,7 @@ define([
                     chaptersArray.push(item);
                 });
                 currentSliderToc = chaptersArray;
-
+                readium.reader.chaptersMap = chaptersArray;
             });
         }
 
@@ -777,6 +777,7 @@ define([
                         if ($("#annotation-" + stmt.id).length == 0) {
                             var annotationContainer = document.createElement('div');
                             annotationContainer.id = "annotation-" + stmt.id;
+                            annotationContainer.classList.add('annotation');
                             var annotation = document.createElement('div');
                             var annotationTitle = document.createElement('span');
                             annotationTitle.textContent = stmt.title;
@@ -807,7 +808,7 @@ define([
                                 showAnnotationContextMenu(evt, stmt, true);
                             });
 
-                            $('#my-annotations').prepend($(annotationContainer));
+                            $('#my-annotations div[data-id="' + stmt.idRef + '"]').append($(annotationContainer));
                         }
                     })(stmt);
                 }
@@ -821,8 +822,18 @@ define([
                         (function(stmt) {
                             if ($("#sharedAnnotation-" + stmt.id).length == 0) {
                                 var annotationContainer = document.createElement('div');
-                                annotationContainer.id = "sharedAnnotation-" + stmt.id;
+                                annotationContainer.id = "sharedAnnotation-" + stmt.id;``
+                                annotationContainer.classList.add('annotation');
+                                
                                 var annotation = document.createElement('div');
+
+                                var pinnedIcon = document.createElement('i');
+                                pinnedIcon.classList.add('fa', 'fa-star', 'pinnedIcon');
+                                annotation.appendChild(pinnedIcon);
+
+                                if (stmt.pinned)
+                                    annotationContainer.classList.add('pinned');
+                                
                                 var annotationTitle = document.createElement('span');
                                 annotationTitle.textContent = stmt.title;
                                 annotation.appendChild(annotationTitle);
@@ -830,6 +841,7 @@ define([
                                 var noteText = document.createElement('span');
                                 noteText.textContent = stmt.text;
                                 note.appendChild(noteText);
+
 
                                 annotationContainer.appendChild(annotation);
                                 annotationContainer.appendChild(note);
@@ -853,15 +865,60 @@ define([
                                 });
 
                                 if (stmt.owner === userName)
-                                    $('#my-shared-annotations').prepend($(annotationContainer));
+                                    $('#my-shared-annotations div[data-id="' + stmt.idRef + '"]').append($(annotationContainer));
                                 else
-                                    $('#general-shared-annotations').prepend($(annotationContainer));
+                                    $('#general-shared-annotations div[data-id="' + stmt.idRef + '"]').append($(annotationContainer));
                             }
                         })(stmt);
                     }
                 }
             });
         };
+
+        var addAnnotationChapterSections = function(id) {
+            var chaptersAdded = {};
+            for (var chapter of readium.reader.chaptersMap) {
+                if (!chaptersAdded[chapter.idref]) {
+                    chaptersAdded[chapter.idref] = true;
+                    $('#' + id).append('<div data-id="' + chapter.idref + '"><h3 class="hideWhenOnlyChild">' + chapter.title + '</h3></div>');
+                }
+            }
+        }
+
+        var setHideSharedAnnotationsButton = function() {
+            $('#hideSharedAnnotationsButton').off();
+            if (readium.reader.disableSharedHighlights) {
+                $('#hideSharedAnnotationsButton').text('Show shared annotations');
+                $('#hideSharedAnnotationsButton').on('click', function() {
+                    readium.reader.disableSharedHighlights = false;
+                    PeBL.utils.getSharedAnnotations(function(stmts) {
+                        PeBL.storage.getCurrentUser(function(userName) {
+                            for (var stmt of stmts) {
+                                if (stmt.type === 3 && stmt.owner !== userName) {
+                                    // console.log(stmt);
+                                    var highlightType = 'shared-highlight';
+
+                                    try {
+                                        readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, highlightType);
+                                    } catch (e) {
+                                        console.error(e);
+                                    }
+                                }
+                            }
+                        });
+                    });
+                    setHideSharedAnnotationsButton();
+                });
+            } else {
+                $('#hideSharedAnnotationsButton').text('Hide shared annotations');
+                $('#hideSharedAnnotationsButton').on('click', function() {
+                    readium.reader.disableSharedHighlights = true;
+                    readium.reader.plugins.highlights.removeHighlightsByType('shared-highlight');
+                    setHideSharedAnnotationsButton();
+                });
+            }
+
+        }
 
         var annotationsShowHideToggle = function(showOnly) {
 
@@ -892,11 +949,20 @@ define([
             } else {
                 if (!hide) {
                     $('#my-annotations').children().remove();
-                    $('#my-annotations').append('<p class="hideWhenSiblingPresent">When you add Annotations, they will appear here.</p>');
                     $('#my-shared-annotations').children().remove();
-                    $('#my-shared-annotations').append('<p class="hideWhenSiblingPresent">When you add Annotations and share them, they will appear here. You can share annotations by clicking on the highlighted text on the page and selecting the share option from the popup menu.</p>');
                     $('#general-shared-annotations').children().remove();
-                    $('#general-shared-annotations').append('<p class="hideWhenSiblingPresent">When other users share their annotations, they will appear here.</p>');
+
+                    addAnnotationChapterSections('my-annotations');
+                    addAnnotationChapterSections('my-shared-annotations');
+                    addAnnotationChapterSections('general-shared-annotations');
+
+                    $('#my-annotations').prepend('<p class="hideWhenSiblingPresent">When you add Annotations, they will appear here.</p>');
+                    
+                    $('#my-shared-annotations').prepend('<p class="hideWhenSiblingPresent">When you add Annotations and share them, they will appear here. You can share annotations by clicking on the highlighted text on the page and selecting the share option from the popup menu.</p>');
+                    
+                    $('#general-shared-annotations').prepend('<p class="hideWhenSiblingPresent">When other users share their annotations, they will appear here.</p>');
+
+                    setHideSharedAnnotationsButton();
 
                     PeBL.subscribeEvent(PeBL.events.incomingAnnotations,
                         false,
@@ -1030,6 +1096,30 @@ define([
             annotationsShowHideToggle(true);
         };
 
+        var pinHighlight = function(annotation) {
+            annotation.pinned = true;
+            PeBL.emitEvent(PeBL.events.pinnedAnnotation, annotation);
+
+            var elem = document.getElementById('sharedAnnotation-' + annotation.id);
+            if (elem) {
+                elem.classList.add('pinned');
+            }
+
+            annotationsShowHideToggle(true);
+        };
+
+        var unpinHighlight = function(annotation) {
+            annotation.pinned = false;
+            PeBL.emitEvent(PeBL.events.unpinnedAnnotation, annotation);
+
+            var elem = document.getElementById('sharedAnnotation-' + annotation.id);
+            if (elem) {
+                elem.classList.remove('pinned');
+            }
+
+            annotationsShowHideToggle(true);
+        }
+
         var showAnnotationNoteDialogue = function(annotation) {
             $('#annotationInput').val(annotation.text);
             $('#add-note-submit').data('annotation', annotation);
@@ -1037,6 +1127,34 @@ define([
             setTimeout(function() {
                 $('#annotationInput').focus();
             }, 500);
+        }
+
+        var deleteAnnotationPermission = function(userProfile) {
+            if (userProfile.memberships) {
+                if (userProfile.currentTeam && userProfile.memberships[userProfile.currentTeam] === 'instructor')
+                    return true;
+                if (userProfile.currentClass && userProfile.memberships[userProfile.currentClass] === 'instructor')
+                    return true;
+                if (userProfile.currentTeam && userProfile.memberships[userProfile.currentTeam] === 'admin')
+                    return true;
+                if (userProfile.currentClass && userProfile.memberships[userProfile.currentClass] === 'admin')
+                    return true;
+            }
+            return false;
+        }
+
+        var pinAnnotationPermission = function(userProfile) {
+            if (userProfile.memberships) {
+                if (userProfile.currentTeam && userProfile.memberships[userProfile.currentTeam] === 'instructor')
+                    return true;
+                if (userProfile.currentClass && userProfile.memberships[userProfile.currentClass] === 'instructor')
+                    return true;
+                if (userProfile.currentTeam && userProfile.memberships[userProfile.currentTeam] === 'admin')
+                    return true;
+                if (userProfile.currentClass && userProfile.memberships[userProfile.currentClass] === 'admin')
+                    return true;
+            }
+            return false;
         }
 
         var showAnnotationContextMenu = function(event, annotation, absolutePos) {
@@ -1077,9 +1195,10 @@ define([
             var buttonWrapper = document.createElement('div');
             buttonWrapper.classList.add('annotationContextButtonWrapper');
 
-            PeBL.storage.getCurrentUser(function(identity) {
+            PeBL.user.getUser(function(userProfile) {
+                var identity = userProfile.identity;
                 if (identity) {
-                    if (annotation.owner === identity) {
+                    if (annotation.owner === identity || deleteAnnotationPermission(userProfile)) {
                         var deleteButtonContainer = document.createElement('div');
                         var deleteButton = document.createElement('span');
                         deleteButton.classList.add('glyphicon', 'glyphicon-trash');
@@ -1092,7 +1211,10 @@ define([
                                 $('#clickOutOverlay').remove();
                             }
                         });
-
+                        buttonWrapper.appendChild(deleteButtonContainer);
+                    }
+                    
+                    if (annotation.owner === identity) {
                         var noteButtonContainer = document.createElement('div');
                         var noteButton = document.createElement('span');
                         noteButton.textContent = 'Note';
@@ -1103,7 +1225,7 @@ define([
                             $('#clickOutOverlay').remove();
                         });
 
-                        buttonWrapper.appendChild(deleteButtonContainer);
+                        
                         buttonWrapper.appendChild(noteButtonContainer);
                     } else {
                         var infoContainer = document.createElement('div');
@@ -1125,6 +1247,23 @@ define([
                             $('#clickOutOverlay').remove();
                         });
                         buttonWrapper.appendChild(shareButtonContainer);
+                    } else if (pinAnnotationPermission(userProfile)) {
+                        var pinButtonContainer = document.createElement('div');
+                        var pinButton = document.createElement('span');
+                        if (!annotation.pinned)
+                            pinButton.textContent = 'Pin';
+                        else
+                            pinButton.textContent = 'Unpin';
+                        pinButtonContainer.appendChild(pinButton);
+                        pinButtonContainer.addEventListener('click', function() {
+                            if (!annotation.pinned)
+                                pinHighlight(annotation);
+                            else
+                                unpinHighlight(annotation);
+                            $('#annotationContextMenu').remove();
+                            $('#clickOutOverlay').remove();
+                        });
+                        buttonWrapper.appendChild(pinButtonContainer);
                     }
 
                     menu.appendChild(buttonWrapper);
@@ -1483,6 +1622,8 @@ define([
                             for (var stmt of stmts) {
                                 PeBL.storage.getCurrentUser(function(identity) {
                                     if (stmt.type == 3) {
+                                        if (stmt.owner !== identity && readium.reader.disableSharedHighlights)
+                                            return;
                                         try {
                                             readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, identity == stmt.owner ? 'shared-my-highlight' : 'shared-highlight');
                                         } catch (e) {
@@ -1533,6 +1674,8 @@ define([
                     PeBL.storage.getCurrentUser(function(userName) {
                         for (var stmt of stmts) {
                             if (stmt.type === 3) {
+                                if (stmt.owner !== userName && readium.reader.disableSharedHighlights)
+                                    return;
                                 // console.log(stmt);
                                 var highlightType = 'shared-highlight';
                                 if (stmt.owner === userName)
@@ -2286,6 +2429,38 @@ define([
             $('#bookmark-show').on('click', bookmarksShowHideToggle);
             $('#bookmark-page').on('click', showBookmarkDialogue);
             $('#searchButt').on('click', searchShowHideToggle);
+
+            $('#readerCurrentClassContainer').on('click', function() {
+                PeBL.user.getUser(function(userProfile) {
+                    window.Lightbox.createGroupSelectForm(userProfile.groups, function(classObj, teamObj) {
+                        if (classObj) {
+                            userProfile.currentClass = classObj.id;
+                            userProfile.currentClassName = classObj.name;
+                        }
+                        
+                        if (teamObj) {
+                            userProfile.currentTeam = teamObj.id;
+                            userProfile.currentTeamName = teamObj.name;
+                        }
+                        window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
+                        window.Lightbox.close();
+                        window.location.href = window.location.href;
+                    }, true);
+                });
+            });
+
+            PeBL.user.getUser(function(userProfile) {
+                if (userProfile.currentTeamName) {
+                    $('#readerCurrentClassContainer').show();
+                    $('#readerCurrentClass').text(userProfile.currentTeamName);
+                } else if (userProfile.currentClassName) {
+                    $('#readerCurrentClassContainer').show();
+                    $('#readerCurrentClass').text(userProfile.currentClassName);
+                } else {
+                    $('#readerCurrentClassContainer').hide();
+                }
+            });
+
             PeBL.extension.hardcodeLogin.hookLoginButton("loginButt",
                 function() {
                     loadlibrary();

@@ -1160,6 +1160,37 @@ Helpers){
             }
         });
 
+        $('#readerCurrentClassContainer').on('click', function() {
+            PeBL.user.getUser(function(userProfile) {
+                window.Lightbox.createGroupSelectForm(userProfile.groups, function(classObj, teamObj) {
+                    if (classObj) {
+                        userProfile.currentClass = classObj.id;
+                        userProfile.currentClassName = classObj.name;
+                    }
+                    
+                    if (teamObj) {
+                        userProfile.currentTeam = teamObj.id;
+                        userProfile.currentTeamName = teamObj.name;
+                    }
+                    window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
+                    window.Lightbox.close();
+                });
+            });
+        });
+
+        document.addEventListener('eventLoggedIn', function(e) {
+            var userProfile = e.detail;
+            if (userProfile.currentTeamName) {
+                $('#readerCurrentClassContainer').show();
+                $('#readerCurrentClass').text(userProfile.currentTeamName);
+            } else if (userProfile.currentClassName) {
+                $('#readerCurrentClassContainer').show();
+                $('#readerCurrentClass').text(userProfile.currentClassName);
+            } else {
+                $('#readerCurrentClassContainer').hide();
+            }
+        });
+
         window.addEventListener('message', function(event) {
             console.log(event);
             var data = JSON.parse(event.data);
