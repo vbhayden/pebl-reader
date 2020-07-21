@@ -8353,6 +8353,7 @@ var Annotation = /** @class */ (function (_super) {
         if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
             _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
         _this.pinned = raw.pinned;
+        _this.pinMessage = raw.pinMessage;
         return _this;
     }
     Annotation.is = function (x) {
@@ -8468,6 +8469,7 @@ var Message = /** @class */ (function (_super) {
                 _this.thread = extensions[PREFIX_PEBL_EXTENSION + "thread"];
         }
         _this.pinned = raw.pinned;
+        _this.pinMessage = raw.pinMessage;
         return _this;
     }
     Message.is = function (x) {
