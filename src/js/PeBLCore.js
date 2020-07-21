@@ -449,10 +449,8 @@ exports.string2buf = function (str) {
 
 // Helper (used in 2 places)
 function buf2binstring(buf, len) {
-  // On Chrome, the arguments in a function call that are allowed is `65534`.
-  // If the length of the buffer is smaller than that, we can use this optimization,
-  // otherwise we will take a slower path.
-  if (len < 65534) {
+  // use fallback for big arrays to avoid stack overflow
+  if (len < 65537) {
     if ((buf.subarray && STR_APPLY_UIA_OK) || (!buf.subarray && STR_APPLY_OK)) {
       return String.fromCharCode.apply(null, utils.shrinkBuf(buf, len));
     }
@@ -2571,7 +2569,7 @@ function deflate(strm, flush) {
                     (!s.gzhead.extra ? 0 : 4) +
                     (!s.gzhead.name ? 0 : 8) +
                     (!s.gzhead.comment ? 0 : 16)
-        );
+                );
         put_byte(s, s.gzhead.time & 0xff);
         put_byte(s, (s.gzhead.time >> 8) & 0xff);
         put_byte(s, (s.gzhead.time >> 16) & 0xff);
@@ -3016,8 +3014,6 @@ exports.deflateTune = deflateTune;
 // 2. Altered source versions must be plainly marked as such, and must not be
 //   misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
-
-/* eslint-disable space-unary-ops */
 
 var utils = __webpack_require__(0);
 
@@ -4371,22 +4367,6 @@ function Inflate(options) {
   this.header = new GZheader();
 
   zlib_inflate.inflateGetHeader(this.strm, this.header);
-
-  // Setup dictionary
-  if (opt.dictionary) {
-    // Convert data if needed
-    if (typeof opt.dictionary === 'string') {
-      opt.dictionary = strings.string2buf(opt.dictionary);
-    } else if (toString.call(opt.dictionary) === '[object ArrayBuffer]') {
-      opt.dictionary = new Uint8Array(opt.dictionary);
-    }
-    if (opt.raw) { //In raw mode we need to set the dictionary early
-      status = zlib_inflate.inflateSetDictionary(this.strm, opt.dictionary);
-      if (status !== c.Z_OK) {
-        throw new Error(msg[status]);
-      }
-    }
-  }
 }
 
 /**
@@ -4423,6 +4403,7 @@ Inflate.prototype.push = function (data, mode) {
   var dictionary = this.options.dictionary;
   var status, _mode;
   var next_out_utf8, tail, utf8str;
+  var dict;
 
   // Flag to properly process Z_BUF_ERROR on testing inflate call
   // when we check that all output data was flushed.
@@ -4454,7 +4435,17 @@ Inflate.prototype.push = function (data, mode) {
     status = zlib_inflate.inflate(strm, c.Z_NO_FLUSH);    /* no bad return value */
 
     if (status === c.Z_NEED_DICT && dictionary) {
-      status = zlib_inflate.inflateSetDictionary(this.strm, dictionary);
+      // Convert data if needed
+      if (typeof dictionary === 'string') {
+        dict = strings.string2buf(dictionary);
+      } else if (toString.call(dictionary) === '[object ArrayBuffer]') {
+        dict = new Uint8Array(dictionary);
+      } else {
+        dict = dictionary;
+      }
+
+      status = zlib_inflate.inflateSetDictionary(this.strm, dict);
+
     }
 
     if (status === c.Z_BUF_ERROR && allowBufError === true) {
@@ -8361,6 +8352,7 @@ var Annotation = /** @class */ (function (_super) {
         _this.style = extensions[PREFIX_PEBL_EXTENSION + "style"];
         if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
             _this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
+        _this.pinned = raw.pinned;
         return _this;
     }
     Annotation.is = function (x) {
@@ -8475,6 +8467,7 @@ var Message = /** @class */ (function (_super) {
             if (extensions[PREFIX_PEBL_EXTENSION + "thread"])
                 _this.thread = extensions[PREFIX_PEBL_EXTENSION + "thread"];
         }
+        _this.pinned = raw.pinned;
         return _this;
     }
     Message.is = function (x) {
@@ -8852,8 +8845,12 @@ var UserProfile = /** @class */ (function () {
         this.preferredName = raw.preferredName;
         if (raw.registryEndpoint)
             this.registryEndpoint = new Endpoint(raw.registryEndpoint);
-        this.currentTeam = raw.currentTeam ? raw.currentTeam : 'guestTeam';
-        this.currentClass = raw.currentClass ? raw.currentClass : 'guestClass';
+        this.currentTeam = raw.currentTeam;
+        this.currentTeamName = raw.currentTeamName;
+        this.currentClass = raw.currentClass;
+        this.currentClassName = raw.currentClassName;
+        this.memberships = raw.memberships;
+        this.groups = raw.groups;
         this.endpoints = [];
         this.metadata = raw.metadata;
         if (raw.endpoints)
@@ -8899,7 +8896,10 @@ var UserProfile = /** @class */ (function () {
             "metadata": {},
             "registryEndpoint": this.registryEndpoint,
             "currentTeam": this.currentTeam,
+            "currentTeamName": this.currentTeamName,
             "currentClass": this.currentClass,
+            "currentClassName": this.currentClassName,
+            "memberships": this.memberships,
             "firstName": this.firstName,
             "lastName": this.lastName,
             "avatar": this.avatar,
@@ -11382,7 +11382,6 @@ var syncing_LLSyncAction = /** @class */ (function () {
                         if ((stored >= (_this.notificationTimestamps["sa" + sa.book] || 0)) &&
                             (!_this.clearedNotifications[sa.id])) {
                             if (userProfile.identity !== sa.getActorId()) {
-                                debugger;
                                 _this.pebl.storage.saveNotification(userProfile, sa);
                                 _this.pebl.emitEvent(_this.pebl.events.incomingNotifications, [sa]);
                             }
@@ -12121,6 +12120,10 @@ var EventSet = /** @class */ (function () {
         this.newSharedAnnotation = "newSharedAnnotation";
         this.newArtifact = "newArtifact";
         this.modifiedMembership = "modifiedMembership";
+        this.pinnedMessage = "pinnedMessage";
+        this.unpinnedMessage = "unpinnedMessage";
+        this.pinnedAnnotation = "pinnedAnnotation";
+        this.unpinnedAnnotation = "unpinnedAnnotation";
         this.removedPresence = "removedPresence";
         this.removedMembership = "removedMembership";
         this.removedAnnotation = "removedAnnotation";
@@ -13144,6 +13147,42 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
             }
         });
     };
+    PEBLEventHandlers.prototype.pinnedMessage = function (event) {
+        var payload = event.detail;
+        payload.message.pinned = true;
+        payload.message = new Message(payload.message);
+        var self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                var clone = JSON.parse(JSON.stringify(payload.message));
+                self.pebl.storage.saveMessages(userProfile, [payload.message]);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: payload.message.id,
+                    requestType: "pinThreadedMessage",
+                    message: clone
+                });
+            }
+        });
+    };
+    PEBLEventHandlers.prototype.unpinnedMessage = function (event) {
+        var payload = event.detail;
+        payload.message.pinned = false;
+        payload.message = new Message(payload.message);
+        var self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                var clone = JSON.parse(JSON.stringify(payload.message));
+                self.pebl.storage.saveMessages(userProfile, [payload.message]);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: payload.message.id,
+                    requestType: "unpinThreadedMessage",
+                    message: clone
+                });
+            }
+        });
+    };
     PEBLEventHandlers.prototype.eventNoted = function (event) {
         var payload = event.detail;
         var xapi = {};
@@ -13189,19 +13228,38 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
         });
     };
     PEBLEventHandlers.prototype.removedMessage = function (event) {
-        var xId = event.detail;
+        var payload = event.detail;
+        payload.message.pinned = true;
+        var xapi = {};
         var self = this;
-        this.pebl.user.getUser(function (userProfile) {
+        var exts = {
+            groupId: payload.message.groupId,
+            isPrivate: payload.message.isPrivate,
+            thread: payload.message.thread,
+            messageId: payload.message.id
+        };
+        self.pebl.user.getUser(function (userProfile) {
             if (userProfile) {
                 self.pebl.storage.getCurrentActivity(function (activity) {
                     self.pebl.storage.getCurrentBook(function (book) {
-                        self.pebl.storage.saveOutgoingXApi(userProfile, {
-                            identity: userProfile.identity,
-                            id: xId,
-                            xId: xId,
-                            requestType: "deleteMessage"
+                        self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                            self.pebl.storage.getCurrentBookId(function (bookId) {
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#removed", "removed");
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.message.prompt, payload.message.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                var clone = JSON.parse(JSON.stringify(payload.message));
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: payload.message.id,
+                                    requestType: "deleteThreadedMessage",
+                                    message: clone
+                                });
+                                self.pebl.storage.removeMessage(userProfile, payload.message.id);
+                            });
                         });
-                        self.pebl.storage.removeMessage(userProfile, xId);
                     });
                 });
             }
@@ -13711,6 +13769,40 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
                             });
                         });
                     });
+                });
+            }
+        });
+    };
+    PEBLEventHandlers.prototype.pinnedAnnotation = function (event) {
+        var payload = event.detail;
+        payload.pinned = true;
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                var clone = JSON.parse(JSON.stringify(payload));
+                self.pebl.storage.saveSharedAnnotations(userProfile, [payload]);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: clone.id,
+                    requestType: "pinSharedAnnotation",
+                    annotation: clone
+                });
+            }
+        });
+    };
+    PEBLEventHandlers.prototype.unpinnedAnnotation = function (event) {
+        var payload = event.detail;
+        payload.pinned = false;
+        var self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                var clone = JSON.parse(JSON.stringify(payload));
+                self.pebl.storage.saveSharedAnnotations(userProfile, [payload]);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: clone.id,
+                    requestType: "unpinSharedAnnotation",
+                    annotation: clone
                 });
             }
         });
