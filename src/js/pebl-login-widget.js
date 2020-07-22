@@ -175,6 +175,80 @@ window.Lightbox = {
         callback(lrsUsername);
     },
 
+    createGroupSelectForm: function(groups, callback, allowCancel) {
+        window.Lightbox.close();
+        window.Lightbox.create("login", allowCancel);
+
+        var classes = [];
+        var teams = [];
+
+        for (var group of groups) {
+            if ((group.match(/\//g)||[]).length > 1)
+                teams.push(group);
+            else
+                classes.push(group);
+        }
+
+        var lightBoxContent = document.getElementById('lightBoxContent');
+        
+        var classSelect = $(
+            '<div class="login__input-wrapper">' +
+                '<div class="login__label">' +
+                '<label>School:</label>' +
+                '</div>' +
+                '<div class="login__input">' +
+                '<select id="loginClassSelect"></select>' +
+                '</div>' +
+                '</div>'
+        );
+
+        var classSelectElement = classSelect.find('#loginClassSelect');
+        for (var cls of classes) {
+            classSelectElement.append($('<option></option').data("value", cls).text(cls.split('/').pop()));
+        }
+
+        if (classes.length > 0)
+            $(lightBoxContent).append(classSelect);
+
+        var teamSelect = $(
+            '<div class="login__input-wrapper">' +
+                '<div class="login__label">'+
+                '<label>Class:</label>'+
+                '</div>' +
+                '<div class="login__input">'+
+                '<select id="loginTeamSelect"></select>' +
+                '</div>' +
+                '</div>'
+        );
+
+        var teamSelectElement = teamSelect.find('#loginTeamSelect');
+        for (var team of teams) {
+            teamSelectElement.append($('<option></option').data("value", team).text(team.split('/').pop()));
+        }
+
+        if (teams.length > 0)
+            $(lightBoxContent).append(teamSelect);
+
+
+        var submit = $(
+            '<div class="login__input-wrapper">' +
+                '<input class="login__button" type="button" value="Submit" id="loginGroupSelectSubmit" />' +
+                '</div>'
+        );
+        submit.find('#loginGroupSelectSubmit').on('click', function() {
+            var classObj;
+            var teamObj;
+            if (classes.length > 0) {
+                classObj = $('#loginClassSelect option:selected').data('value');
+            }
+            if (teams.length > 0) {
+                teamObj = $('#loginTeamSelect option:selected').data('value');
+            }
+            callback(classObj, teamObj);
+        });
+        $(lightBoxContent).append(submit);
+    },
+
     createLoginForm: function(loggingOut) {
         window.Lightbox.close();
         window.Lightbox.create("login", false);
@@ -242,11 +316,31 @@ window.Lightbox = {
                                     // avatar: imageToUse,
                                     registryEndpoint: {
                                         ul: 'https://peblproject.com/registry/api/downloadContent?guid='
-                                    }
+                                    },
+                                    memberships: payload.memberships,
+                                    groups: payload.groups
                                 };
 
-                                window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
-                                window.Lightbox.close();
+                                if (payload.groups && payload.groups.length > 0) {
+                                    window.Lightbox.createGroupSelectForm(payload.groups, function(classObj, teamObj) {
+                                        if (classObj) {
+                                            userProfile.currentClass = classObj;
+                                            userProfile.currentClassName = classObj.split('/').pop();
+                                        }
+                                        
+                                        if (teamObj) {
+                                            userProfile.currentTeam = teamObj;
+                                            userProfile.currentTeamName = teamObj.split('/').pop();
+                                        }
+                                        window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
+                                        window.Lightbox.close();
+                                    });
+                                } else {
+                                    window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
+                                    window.Lightbox.close();
+                                }
+
+                                
                             } else {
                                 window.location = window.PeBLConfig.PeBLServicesURL + "/login?redirectUrl=" + encodeURIComponent(window.location.href);
                             }
@@ -794,6 +888,9 @@ window.Lightbox = {
         } else if (lightBoxType === 'login') {
             lightBox.classList.add('lightBox');
             lightBox.classList.add('lightBoxLoginForm');
+        } else if (lightBoxType === 'groupSelect') {
+            lightBox.classList.add('lightBox');
+            lightBox.classList.add('lightBoxGroupSelect');
         }
 
         lightBoxContent = document.createElement('div');
