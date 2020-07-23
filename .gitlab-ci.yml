@@ -93,7 +93,7 @@ buildExtensionQa:
   - "echo '\"i18n_pebl_webreader_logo\" : { \"message\" : \"images/eXtension-icon_small.png\" }' >> src/i18n/_locales/en_US/skinning.json"
 
   - echo "}" >> src/i18n/_locales/en_US/skinning.json
-  
+
   - chmod +x pack.sh
   - npm run prepare:all
   - npm run dist
@@ -260,12 +260,15 @@ buildQA:
     - git submodule sync --recursive
     - git submodule update --init --recursive readium-js
   script:
+  - 'curl -L --output artifacts.zip --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://git.eduworks.us/api/v4/projects/94/jobs/artifacts/qa/download?job=buildQA"'
   - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
   - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
   - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
 
   - cp "$QA_WEB_READER_CONFIG" src/cloud-reader/config.js
 
+  - unzip artifacts.zip
+  - mv dist/PeBLCore.js src/js/
   - chmod +x pack.sh
   - npm run prepare:all
   - npm run dist
@@ -281,12 +284,15 @@ buildDev:
     - git submodule sync --recursive
     - git submodule update --init --recursive readium-js
   script:
+  - 'curl -L --output artifacts.zip --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://git.eduworks.us/api/v4/projects/94/jobs/artifacts/dev/download?job=buildDev"'
   - LAST_TAG=$(git describe --tags)
   - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
   - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
 
   - cp "$DEV_WEB_READER_CONFIG" src/cloud-reader/config.js
 
+  - unzip artifacts.zip
+  - mv dist/PeBLCore.js src/js/
   - chmod +x pack.sh
   - npm run prepare:all
   - export UNMINIFIED=true && npm run dist
