@@ -13231,7 +13231,7 @@ var eventHandlers_PEBLEventHandlers = /** @class */ (function () {
     };
     PEBLEventHandlers.prototype.removedMessage = function (event) {
         var payload = event.detail;
-        payload.message.pinned = true;
+        payload.message = new Message(payload.message);
         var xapi = {};
         var self = this;
         var exts = {
