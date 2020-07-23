@@ -288,6 +288,7 @@ buildDev:
 
   - cp "$DEV_WEB_READER_CONFIG" src/cloud-reader/config.js
 
+  - ls -al
   - unzip artifacts.zip
   - mv dist/PeBLCore.js src/js/
   - chmod +x pack.sh
