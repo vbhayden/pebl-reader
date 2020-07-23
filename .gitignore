@@ -17,3 +17,4 @@ http_app-ebooks.log
 
 /package.json.save
 /workbench.xmi
+/src/js/PeBLCore.js
