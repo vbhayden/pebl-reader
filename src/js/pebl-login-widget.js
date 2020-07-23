@@ -183,7 +183,7 @@ window.Lightbox = {
         var teams = [];
 
         for (var group of groups) {
-            if ((group.path.match(/\//g)||[]).length > 1)
+            if ((group.match(/\//g)||[]).length > 1)
                 teams.push(group);
             else
                 classes.push(group);
@@ -204,7 +204,7 @@ window.Lightbox = {
 
         var classSelectElement = classSelect.find('#loginClassSelect');
         for (var cls of classes) {
-            classSelectElement.append($('<option></option').data("value", cls).text(cls.name));
+            classSelectElement.append($('<option></option').data("value", cls).text(cls.split('/').pop()));
         }
 
         if (classes.length > 0)
@@ -223,7 +223,7 @@ window.Lightbox = {
 
         var teamSelectElement = teamSelect.find('#loginTeamSelect');
         for (var team of teams) {
-            teamSelectElement.append($('<option></option').data("value", team).text(team.name));
+            teamSelectElement.append($('<option></option').data("value", team).text(team.split('/').pop()));
         }
 
         if (teams.length > 0)
@@ -324,13 +324,13 @@ window.Lightbox = {
                                 if (payload.groups && payload.groups.length > 0) {
                                     window.Lightbox.createGroupSelectForm(payload.groups, function(classObj, teamObj) {
                                         if (classObj) {
-                                            userProfile.currentClass = classObj.id;
-                                            userProfile.currentClassName = classObj.name;
+                                            userProfile.currentClass = classObj;
+                                            userProfile.currentClassName = classObj.split('/').pop();
                                         }
                                         
                                         if (teamObj) {
-                                            userProfile.currentTeam = teamObj.id;
-                                            userProfile.currentTeamName = teamObj.name;
+                                            userProfile.currentTeam = teamObj;
+                                            userProfile.currentTeamName = teamObj.split('/').pop();
                                         }
                                         window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
                                         window.Lightbox.close();
