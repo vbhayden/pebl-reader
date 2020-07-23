@@ -3,6 +3,16 @@
 */
 
 define(['module'], function(module) {
+        var path = (window.location && window.location.pathname) ? window.location.pathname : '';
+
+         // extracts path to index.html (or more generally: /PATH/TO/*.[x]html)
+         path = path.replace(/(.*)\/.*\.[x]?html$/, "$1");
+
+         // removes trailing slash
+         path = path.charAt(path.length-1) == '/'
+              ? path.substr(0, path.length-1)
+              : path;
+
         var HTTPServerRootFolder =
              window.location ? (
                  window.location.protocol
