@@ -3,6 +3,16 @@
 */
 
 define(['module'], function(module) {
+        var HTTPServerRootFolder =
+             window.location ? (
+                 window.location.protocol
+                 + "//"
+                 + window.location.hostname
+                 + (window.location.port ? (':' + window.location.port) : '')
+                 + path
+             ) : ''
+         ;
+
 
         var config = module.config();
         return {
@@ -18,7 +28,7 @@ define(['module'], function(module) {
 
             'workerUrl': config.workerUrl || "scripts/readium-js-viewer_CLOUDAPP-WORKER.js",
 
-            'annotationCSSUrl': config.annotationCSSUrl || "/ANNOTATIONS.css",
+            'annotationCSSUrl': config.annotationCSSUrl || HTTPServerRootFolder + '/css/annotations.css',
             'mathJaxUrl': config.mathJaxUrl || "scripts/mathjax/MathJax.js",
             'jsLibRoot': config.jsLibRoot || "scripts/zip/",
 
