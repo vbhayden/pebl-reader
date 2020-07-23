@@ -79,6 +79,10 @@
             dist/cloud-reader/
         &&
         npm run cpy
+            src/cloud-reader/handlerSW.js
+            dist/cloud-reader/scripts/
+        &&        
+        npm run cpy
             src/js/PeBLCore.js
             dist/cloud-reader/scripts/
         &&
@@ -95,6 +99,10 @@
             dist/cloud-reader/css/
         &&
         npm run cpy
+            src/css/all.min.css
+            dist/cloud-reader/css/
+        &&        
+        npm run cpy
             src/js/pebl-login-widget.js
             dist/cloud-reader/scripts/
         &&
@@ -108,6 +116,11 @@
         npm run ncp
             src/fonts/
             dist/cloud-reader/font-faces/
+        &&
+        npm run ncp
+            src/webfonts/
+            dist/cloud-reader/webfonts/
+            
     '
 
 #=====================

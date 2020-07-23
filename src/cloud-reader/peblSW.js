@@ -18,6 +18,7 @@ var FILES_TO_CACHE = [
     "./?",
 
 
+    "./css/all.min.css",
     "./css/readium-all.css",
     "./css/pebl-login-widget.css",
     "./css/annotations.css",
@@ -57,6 +58,21 @@ var FILES_TO_CACHE = [
     "./font-faces/Open-Sans/Open-Sans-700italic.woff",
     "./font-faces/Open-Sans/Open-Sans-italic.woff",
     "./font-faces/Open-Sans/Open-Sans-regular.woff",
+    "./webfonts/fa-brands-400.eot",
+    "./webfonts/fa-brands-400.svg",
+    "./webfonts/fa-brands-400.ttf",
+    "./webfonts/fa-brands-400.woff2",
+    "./webfonts/fa-brands-400.woff",
+    "./webfonts/fa-regular-400.eot",
+    "./webfonts/fa-regular-400.svg",
+    "./webfonts/fa-regular-400.ttf",
+    "./webfonts/fa-regular-400.woff2",
+    "./webfonts/fa-regular-400.woff",
+    "./webfonts/fa-solid-900.eot",
+    "./webfonts/fa-solid-900.svg",
+    "./webfonts/fa-solid-900.ttf",
+    "./webfonts/fa-solid-900.woff2",
+    "./webfonts/fa-solid-900.woff",
 
 
     "./manifest.json",
@@ -124,6 +140,11 @@ self.addEventListener('install',
                               })
                           );
                       });
+
+self.addEventListener('message', (event) => {
+    console.log(event);
+    event.source.postMessage({"pong":true});
+});
 
 self.addEventListener('activate',
                       function (e) {
