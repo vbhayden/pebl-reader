@@ -237,7 +237,6 @@ URI){
                 }
 
                 if (json.length < 50) { // TODO: library view pagination! (better list / grid UI)
-		    debugger;
                     json.push({
                         rootUrl: rootUrl,
                         title: title,

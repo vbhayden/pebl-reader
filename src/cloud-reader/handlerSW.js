@@ -6,20 +6,28 @@ let lookUpDispatch = (eventName) => {
 };
 
 let dispatchHandlerFn = (msg) => {
-    let dispatchHandlers = lookUpDispatch(msg.eventName);
-    for (let dispatchHandler of dispatchHandlers) {
-        dispatchHandler(msg);
+    let dispatchHandlers = lookUpDispatch(msg.data.eventName);
+    for (let dispatchHandlerIndex in dispatchHandlers) {
+        let dispatchHandler = dispatchHandlers[dispatchHandlerIndex];
+        if (dispatchHandler) {
+            dispatchHandler(msg.data);
+        }
     }
 };
 
 let onStateChange = () => {
-    navigator.serviceWorker
+    if (navigator.serviceWorker.controller.state === "activated") {
+        for (let msg of pending) {
+            sendSWMsg(msg[0], msg[1]);
+        }
+        pending = [];
+    }
 }
 
 function hookSWWorkerApi() {
     navigator.serviceWorker.addEventListener('message', dispatchHandlerFn);
     navigator.serviceWorker.addEventListener('statechange', onStateChange);
-    if (navigator.serviceWorker.controller.state === "activated") {
+    if (navigator.serviceWorker.controller && navigator.serviceWorker.controller.state === "activated") {
         for (let msg of pending) {
             sendSWMsg(msg[0], msg[1]);
         }
@@ -43,14 +51,14 @@ function sendSWMsg(eventName, payload) {
 }
 
 function registerSWListener(eventName, handler) {
-    if (!dispatchHandlers(eventName)) {
+    if (!dispatchHandlers[eventName]) {
         dispatchHandlers[eventName] = [];
     }
     dispatchHandlers[eventName].push(handler);
 }
 
 function registerSWListeners(eventName, handlers) {
-    if (!dispatchHandlers(eventName)) {
+    if (!dispatchHandlers[eventName]) {
         dispatchHandlers[eventName] = [];
     }
     for (let handler of handlers) {

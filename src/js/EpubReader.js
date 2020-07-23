@@ -824,7 +824,7 @@ define([
                                 var annotationContainer = document.createElement('div');
                                 annotationContainer.id = "sharedAnnotation-" + stmt.id;``
                                 annotationContainer.classList.add('annotation');
-                                
+
                                 var annotation = document.createElement('div');
 
                                 var pinnedIcon = document.createElement('i');
@@ -833,7 +833,7 @@ define([
 
                                 if (stmt.pinned)
                                     annotationContainer.classList.add('pinned');
-                                
+
                                 var annotationTitle = document.createElement('span');
                                 annotationTitle.textContent = stmt.title;
                                 annotation.appendChild(annotationTitle);
@@ -957,9 +957,9 @@ define([
                     addAnnotationChapterSections('general-shared-annotations');
 
                     $('#my-annotations').prepend('<p class="hideWhenSiblingPresent">When you add Annotations, they will appear here.</p>');
-                    
+
                     $('#my-shared-annotations').prepend('<p class="hideWhenSiblingPresent">When you add Annotations and share them, they will appear here. You can share annotations by clicking on the highlighted text on the page and selecting the share option from the popup menu.</p>');
-                    
+
                     $('#general-shared-annotations').prepend('<p class="hideWhenSiblingPresent">When other users share their annotations, they will appear here.</p>');
 
                     setHideSharedAnnotationsButton();
@@ -1045,7 +1045,7 @@ define([
                 annotation.type = 2;
 
                 annotation.activityType = 'reader-annotation';
-                
+
                 PeBL.emitEvent(PeBL.events.eventAnnotated, annotation);
                 annotationsShowHideToggle(true);
                 // Clear the selection so you can't hit the button again.
@@ -1213,7 +1213,7 @@ define([
                         });
                         buttonWrapper.appendChild(deleteButtonContainer);
                     }
-                    
+
                     if (annotation.owner === identity) {
                         var noteButtonContainer = document.createElement('div');
                         var noteButton = document.createElement('span');
@@ -1225,7 +1225,7 @@ define([
                             $('#clickOutOverlay').remove();
                         });
 
-                        
+
                         buttonWrapper.appendChild(noteButtonContainer);
                     } else {
                         var infoContainer = document.createElement('div');
@@ -1556,7 +1556,7 @@ define([
                 } else {
                     hideScaleDisplay();
                 }
-                
+
                 var bookmark = JSON.parse(readium.reader.bookmarkCurrentPage());
                 var urlParams = new URLSearchParams(window.location.search);
                 var epub = urlParams.get('epub');
@@ -2151,8 +2151,6 @@ define([
                     goto: { value: gotoParam ? gotoParam : " ", verbatim: true }
                 });
 
-                // debugger;
-
                 if ((bookmark.contentCFI || bookmark.idref) && (history.state && history.state.url !== url)) {
 
                     var obj = {
@@ -2437,7 +2435,7 @@ define([
                             userProfile.currentClass = classObj.id;
                             userProfile.currentClassName = classObj.name;
                         }
-                        
+
                         if (teamObj) {
                             userProfile.currentTeam = teamObj.id;
                             userProfile.currentTeamName = teamObj.name;

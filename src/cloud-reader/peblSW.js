@@ -133,23 +133,56 @@ var FILES_TO_CACHE = [
 ];
 
 self.addEventListener('install',
-                      function (event) {
-                          event.waitUntil(
-                              caches.open(CACHE_NAME).then(function (openCache) {
-                                  return openCache.addAll(FILES_TO_CACHE);
-                              })
-                          );
-                      });
+    (event) => {
+        event.waitUntil(
+            caches.open(CACHE_NAME).then((openCache) => {
+                return openCache.addAll(FILES_TO_CACHE);
+            })
+        );
+    });
+
+let sendMsg = (client, eventName, payload) => {
+    if (eventName) {
+        payload.eventName = eventName;
+    }
+    client.postMessage(payload);
+}
+
+let addToCache = (client, payload) => {
+    let resp = () => {
+        sendMsg(client, "addedToCache", true);
+    };
+    caches.open(payload.rootUrl).then((openCache) => {
+        openCache.addAll(payload.items).then(resp).catch(resp);
+    });
+};
+
+let removeFromCache = (client, payload) => {
+
+};
+
+let dispatchFns = {
+    addToCache: addToCache,
+    removeFromCache: removeFromCache
+}
+
+let dispatch = (source, eventName, payload) => {
+    let dispatchFn = dispatchFns[eventName];
+    if (dispatchFn) {
+        dispatchFn(source, payload);
+    }
+};
 
 self.addEventListener('message', (event) => {
-    console.log(event);
-    event.source.postMessage({"pong":true});
+    dispatch(event.source, event.data.eventName, event.data);
 });
 
 self.addEventListener('activate',
-                      function (e) {
+    (e) => {
+        caches.delete(CACHE_NAME).then(() => {
 
-                      });
+        });
+    });
 
 self.addEventListener('fetch', event => {
     if (event.request.method != 'GET') return;
@@ -157,17 +190,18 @@ self.addEventListener('fetch', event => {
     var request = event.request;
 
     var url = new URL(request.url);
+    console.log(url);
 
     if (url.origin == location.origin) {
         event.respondWith(
-            fetch(event.request).then(function (response) {
-                return caches.open(CACHE_NAME).then(function (openCache) {
+            fetch(event.request).then(function(response) {
+                return caches.open(CACHE_NAME).then(function(openCache) {
                     if (response.status != 206) {
                         openCache.put(request, response.clone());
                     }
                     return response;
                 });
-            }).catch(function () {
+            }).catch(function() {
                 return caches.match(request);
             }));
     } else

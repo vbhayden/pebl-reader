@@ -13,25 +13,25 @@ Modified in commit 994a17c6cf0b38051b98f4b9a126a18f28fd0e7e
 */
 
 //  Copyright (c) 2014 Readium Foundation and/or its licensees. All rights reserved.
-//  
-//  Redistribution and use in source and binary forms, with or without modification, 
+//
+//  Redistribution and use in source and binary forms, with or without modification,
 //  are permitted provided that the following conditions are met:
-//  1. Redistributions of source code must retain the above copyright notice, this 
+//  1. Redistributions of source code must retain the above copyright notice, this
 //  list of conditions and the following disclaimer.
-//  2. Redistributions in binary form must reproduce the above copyright notice, 
-//  this list of conditions and the following disclaimer in the documentation and/or 
+//  2. Redistributions in binary form must reproduce the above copyright notice,
+//  this list of conditions and the following disclaimer in the documentation and/or
 //  other materials provided with the distribution.
-//  3. Neither the name of the organization nor the names of its contributors may be 
-//  used to endorse or promote products derived from this software without specific 
+//  3. Neither the name of the organization nor the names of its contributors may be
+//  used to endorse or promote products derived from this software without specific
 //  prior written permission.
 
 define(['readium_shared_js/globals', 'jquery','jquery_hammer','hammerjs'], function(Globals, $,jqueryHammer,Hammer) {
 
     var gesturesHandler = function(reader, viewport){
-        
+
         this.initialize= function(){};
         return; // TODO disabled gestures for now
-        
+
         // var onSwipeLeft = function(){
         //     reader.openPageRight();
         // };
@@ -45,19 +45,14 @@ define(['readium_shared_js/globals', 'jquery','jquery_hammer','hammerjs'], funct
 
         //     return viewType === ReadiumSDK.Views.ReaderView.VIEW_TYPE_FIXED || viewType == ReadiumSDK.Views.ReaderView.VIEW_TYPE_COLUMNIZED;
         // };
-        
-        // debugger;
-        
+
         this.initialize= function(){
-            // debugger;
-            
+
             reader.on(ReadiumSDK.Events.CONTENT_DOCUMENT_LOADED, function(iframe, spineItem) {
                 Globals.logEvent("CONTENT_DOCUMENT_LOADED", "ON", "gestures.js [ " + spineItem.href + " ]");
 
-                // debugger;
-
                 delete Hammer.defaults.cssProps.userSelect;
-                
+
                 var hammer = new Hammer(iframe[0].contentDocument);
 
                 var isIos = function() {
@@ -80,7 +75,7 @@ define(['readium_shared_js/globals', 'jquery','jquery_hammer','hammerjs'], funct
                         }
                     }
                 }
-                
+
                 //set hammer's document root
                 // Hammer.DOCUMENT = iframe.contents();
                 //hammer's internal touch events need to be redefined? (doesn't work without)
@@ -102,9 +97,9 @@ define(['readium_shared_js/globals', 'jquery','jquery_hammer','hammerjs'], funct
                         reader.openPageLeft();
                     }
                 });
-                
+
                 // Hammer(Hammer.DOCUMENT,swipingOptions).on("swipeleft", function() {
-                //     onSwipeLeft();                    
+                //     onSwipeLeft();
                 // });
                 // Hammer(Hammer.DOCUMENT,swipingOptions).on("swiperight", function() {
                 //     onSwipeRight();
