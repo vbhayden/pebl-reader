@@ -289,7 +289,7 @@ buildDev:
 
   - chmod +x pack.sh
   - npm run prepare:all
-  - npm run dist
+  - npm run distDev
   artifacts:
     paths:
     - dist/cloud-reader
