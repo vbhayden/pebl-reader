@@ -281,14 +281,13 @@ buildDev:
     - git submodule sync --recursive
     - git submodule update --init --recursive readium-js
   script:
-  - 'curl -LO --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://git.eduworks.us/api/v4/projects/94/jobs/artifacts/dev/download"'
+  - 'curl -LO --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://git.eduworks.us/api/v4/projects/94/jobs/artifacts/dev/download?job=build"'
   - LAST_TAG=$(git describe --tags)
   - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
   - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
 
   - cp "$DEV_WEB_READER_CONFIG" src/cloud-reader/config.js
 
-  - ls -al
   - unzip artifacts.zip
   - mv dist/PeBLCore.js src/js/
   - chmod +x pack.sh
