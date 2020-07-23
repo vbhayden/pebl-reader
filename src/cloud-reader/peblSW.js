@@ -150,9 +150,9 @@ let sendMsg = (client, eventName, payload) => {
 
 let addToCache = (client, payload) => {
     let resp = () => {
-        sendMsg(client, "addedToCache", true);
+        sendMsg(client, "addedToCache", {});
     };
-    caches.open(payload.rootUrl).then((openCache) => {
+    caches.open(payload.root).then((openCache) => {
         openCache.addAll(payload.items).then(resp).catch(resp);
     });
 };
