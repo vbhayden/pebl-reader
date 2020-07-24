@@ -125,9 +125,6 @@ devDependencies:
 # see readium-shared-js:
 # "requirejs", "almond", "jquery"
 
-    #"keymaster": 'latest'
-    "keymaster": 'github:danielweck/keymaster#master'
-
     #"jath": 'latest'
     "jath": 'github:danielweck/jath#master'
     # "libxmljs" node-gyp python < v3 :(
