@@ -331,6 +331,7 @@
     }
 
     function stringToCompound(s) {
+        s = s.replace(/\\"/g, '"');
         var a = JSON.parse(s),
             l = a.length,
             rv = new Array(l);
