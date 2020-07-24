@@ -325,6 +325,8 @@
             else
                 rv[i] = (part < 0 ? "N" : "n") + unipack(part, 5, 4);
         }
+        rv = JSON.stringify(rv);
+        rv = rv.replace(/"/g, '\\"');
         return JSON.stringify(rv);
     }
 
