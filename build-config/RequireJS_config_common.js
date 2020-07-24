@@ -44,9 +44,6 @@ require.config({
     {
         // ------ NPM MODULEs
 
-        'keymaster':
-            process._RJS_rootDir(2) + '/node_modules/keymaster/keymaster',
-
         'screenfull':
             process._RJS_rootDir(2) + '/node_modules/screenfull/dist/screenfull',
 
@@ -99,9 +96,6 @@ require.config({
     {
         screenfull : {
             exports: 'screenfull'
-        },
-        keymaster : {
-            exports: 'key'
         },
         jath : {
             exports: 'Jath'
