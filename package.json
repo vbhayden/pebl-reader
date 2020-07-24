@@ -51,7 +51,6 @@
     "opener": "^1.4.3"
   },
   "devDependencies": {
-    "keymaster": "github:danielweck/keymaster#master",
     "jath": "github:danielweck/jath#master",
     "mathjax-single-file": "github:danielweck/MathJax-single-file#master",
     "bootstrap": "3.x",
