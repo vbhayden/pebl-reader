@@ -1,4 +1,4 @@
-﻿if (navigator.userAgent.indexOf("edge") !== -1) (function (idb, undefined) {
+﻿if (navigator.userAgent.toLowerCase().indexOf("edge") !== -1) (function (idb, undefined) {
     /* IndexedDB IE Gap polyfill (idb-iegap.js)
      *
      * VERSION: $Format:%d$
