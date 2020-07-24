@@ -434,6 +434,10 @@ define([
                     // background: styleString,
                     height: '5px'
                 });
+            } else if (navigator.userAgent.toLowerCase().indexOf('edge') > -1) {
+                addRule('input[type=range]::-ms-track', {
+                    height: '5px'
+                });
             } else {
                 addRule('input[type=range]::-webkit-slider-runnable-track', {
                     // background: styleString,
