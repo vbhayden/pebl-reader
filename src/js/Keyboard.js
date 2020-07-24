@@ -359,7 +359,7 @@ define(['i18nStrings', 'keymaster', 'Settings'], function(Strings, key, Settings
         },
         on: function(keys, scope, callback)
         {
-            if (!keys) console.error("!KEYS!");
+            if (!keys) consoleError("!KEYS!");
 
             if (!keyBindings.hasOwnProperty(scope))
             {
@@ -507,7 +507,7 @@ define(['i18nStrings', 'keymaster', 'Settings'], function(Strings, key, Settings
     }
     catch(e)
     {
-        console.error(e);
+        consoleError(e);
     }
 
     return Keyboard;

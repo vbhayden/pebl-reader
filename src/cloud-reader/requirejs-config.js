@@ -22,11 +22,11 @@ self.location ? (
   ) : ''
 ;
 
-console.log(currentURL);
+consoleLog(currentURL);
 
 // self.location.origin  == self.location.protocol + '//' + self.location.host
 
-console.log(self.location.origin);
+consoleLog(self.location.origin);
 
 var fontsArray = [];
 if (typeof getFontFaces != "undefined") { // defined externally

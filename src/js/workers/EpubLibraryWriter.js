@@ -144,7 +144,7 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
                     }
                     else {
                         error(Messages.ERROR_EPUB);
-                        console.error('Epub archive or directory missing a required  file: ' + path);
+                        consoleError('Epub archive or directory missing a required  file: ' + path);
                     }
                 }
             });

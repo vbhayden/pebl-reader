@@ -12,6 +12,7 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta name="apple-mobile-web-app-title" content="PeBL eReader">
+        <meta name="theme-color" content="#fff">
 
         <meta name="msapplication-TileImage" content="images/PEBL-icon-144.png">
         <meta name="msapplication-TileColor" content="#000000">
@@ -32,11 +33,11 @@
         <script type="text/javascript" src="scripts/pack.js"></script>
 
         <link rel="stylesheet" type="text/css" href="css/annotations.css" async>
-        <link rel="stylesheet" type="text/css" href="css/all.min.css" async />
+        <link rel="stylesheet" type="text/css" href="css/all.min.css" async>
         <link rel="stylesheet" type="text/css" href="css/readium-all.css" async>
         <link rel="stylesheet" type="text/css" href="css/pebl-login-widget.css" async>
 
-        <script type="text/javascript">
+        <script type="text/javascript">         
          document.getElementById('readerFavicon').setAttribute('href', window.PeBLConfig.favicon);
 
          /* var fnAppCacheSetup = function() {
@@ -57,14 +58,14 @@
 
          if (navigator.serviceWorker) {
              navigator.serviceWorker.register('peblSW.js').then(function (reg) {
-                 console.log("Service worker registered", reg.scope);
+                 consoleLog("Service worker registered", reg.scope);
                  reg.onupdatefound = function () {
-                     console.log("Updating worker");
+                     consoleLog("Updating worker");
                  }
+                 reg.update();                 
                  hookSWWorkerApi();
-                 reg.update();
              }).catch(function (err) {
-                 console.log("Bad service worker", err);
+                 consoleError("Bad service worker", err);
                  /* fnAppCacheSetup(); */
              });
          } else {
@@ -91,7 +92,7 @@
              ) : ''
          ;
 
-         console.log(HTTPServerRootFolder);
+         consoleLog(HTTPServerRootFolder);
 
          var getURLQueryParams = function() {
              var params = {};
@@ -113,7 +114,7 @@
          };
 
          var urlParams = getURLQueryParams();
-         console.log(urlParams);
+         consoleLog(urlParams);
 
          var fontsArray = [];
          if (typeof getFontFaces != "undefined") { // defined externally
@@ -162,6 +163,7 @@
 
     <!-- This is all application-specific HTML -->
     <body>
+        <noscript>Javascript is required to view this site, please enable Javascript and reload the page.</noscript>
         <nav id="app-navbar" class="navbar" role="banner" aria-label="{{Strings.i18n_toolbar}}">
         </nav>
         <div id="app-container">

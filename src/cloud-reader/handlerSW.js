@@ -70,8 +70,9 @@ function unregisterSWListener(eventName, handler) {
     let dispatchHandlerSet = dispatchHandlers[eventName];
     if (dispatchHandlerSet) {
         for (let dispatchHandlerIndex in dispatchHandlerSet) {
+            let dispatchHandler = dispatchHandlerSet[dispatchHandlerIndex];
             if (dispatchHandler == handler) {
-                dispatchHandlerSet[dispatchHandler].splice(dispatchHandlerIndex, 1);
+                dispatchHandlerSet.splice(dispatchHandlerIndex, 1);
             }
         }
         if (dispatchHandlerSet.length == 0) {
@@ -84,7 +85,7 @@ function unregisterSWListeners(eventName) {
     let dispatchHandlerSet = dispatchHandlers[eventName];
     if (dispatchHandlerSet) {
         for (let dispatchHandlerIndex in dispatchHandlerSet) {
-            dispatchHandlerSet[dispatchHandler].splice(dispatchHandlerIndex, 1);
+            dispatchHandlerSet.splice(dispatchHandlerIndex, 1);
         }
         if (dispatchHandlerSet.length == 0) {
             delete dispatchHandlers[eventName];

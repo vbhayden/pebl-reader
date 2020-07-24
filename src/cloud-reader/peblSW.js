@@ -17,12 +17,10 @@ var FILES_TO_CACHE = [
     "./",
     "./?",
 
-
     "./css/all.min.css",
     "./css/readium-all.css",
     "./css/pebl-login-widget.css",
     "./css/annotations.css",
-
 
     // "./scripts/jquery-3.3.1.min.js",
     // "./scripts/PeBLCore.js",
@@ -35,7 +33,6 @@ var FILES_TO_CACHE = [
     "./scripts/zip/z-worker.js",
     "./scripts/pack.js",
     // "./scripts/config.js",
-
 
     // "./font-faces/fonts.js",
     "./fonts/glyphicons-halflings-regular.eot",
@@ -74,9 +71,7 @@ var FILES_TO_CACHE = [
     "./webfonts/fa-solid-900.woff2",
     "./webfonts/fa-solid-900.woff",
 
-
     "./manifest.json",
-
 
     "./images/PEBL-icon-16.ico",
     "./images/covers/cover1.jpg",
@@ -98,12 +93,10 @@ var FILES_TO_CACHE = [
     "./images/margin4_off.png",
     "./images/pagination.svg",
     "./images/pagination1.svg",
-    "./images/partner_logos.png",
     "./images/PEBL-icon-48.png",
     "./images/PEBL-icon-144.png",
     "./images/PEBL-icon-192.png",
     "./images/webreader_logo_eduworks.png",
-    "./images/about_readium_logo.png",
     "./images/eXtension-icon_small.png",
     "./images/PEBL-Logo-Color-small.png",
     "./images/pebl-icons-light_bookmark-list.svg",
@@ -134,6 +127,7 @@ var FILES_TO_CACHE = [
 
 self.addEventListener('install',
     (event) => {
+        self.skipWaiting();
         event.waitUntil(
             caches.open(CACHE_NAME).then((openCache) => {
                 return openCache.addAll(FILES_TO_CACHE);
@@ -148,13 +142,23 @@ let sendMsg = (client, eventName, payload) => {
     client.postMessage(payload);
 }
 
-let addToCache = (client, payload) => {
-    let resp = () => {
-        sendMsg(client, "addedToCache", {});
-    };
-    caches.open(payload.root).then((openCache) => {
-        openCache.addAll(payload.items).then(resp).catch(resp);
-    });
+let addToCache = async (client, payload) => {
+    let openCache = await caches.open(payload.root);
+    let requests = await openCache.keys();
+    let keyLookup = {};
+    for (let request of requests) {
+        keyLookup[request.url] = true;
+    }
+    let toCache = [];
+    for (let item of payload.items) {
+        if (!keyLookup[item]) {
+            toCache.push(item);
+        }
+    }
+    if (toCache.length > 0) {
+        await openCache.addAll(toCache);
+    }
+    sendMsg(client, "addedToCache", {});
 };
 
 let removeFromCache = (client, payload) => {
@@ -179,31 +183,51 @@ self.addEventListener('message', (event) => {
 
 self.addEventListener('activate',
     (e) => {
-        caches.delete(CACHE_NAME).then(() => {
+        console.log("activating");
+        e.waitUntil(self.clients.claim());
+        // caches.delete(CACHE_NAME).then(() => {
 
-        });
+
+        // });
     });
 
-self.addEventListener('fetch', event => {
+self.addEventListener('fetch', (event) => {
     if (event.request.method != 'GET') return;
 
     var request = event.request;
 
     var url = new URL(request.url);
-    console.log(url);
+
+    let root;
+    let indexOEBPS = url.href.indexOf("/OEBPS/");
+    if (indexOEBPS != -1) {
+        root = url.href.substring(0, indexOEBPS + "/OEBPS/".length);
+    }
 
     if (url.origin == location.origin) {
-        event.respondWith(
-            fetch(event.request).then(function(response) {
-                return caches.open(CACHE_NAME).then(function(openCache) {
-                    if (response.status != 206) {
-                        openCache.put(request, response.clone());
-                    }
-                    return response;
-                });
-            }).catch(function() {
-                return caches.match(request);
-            }));
+        if (root) {
+            event.respondWith((async () => {
+                let openCache = await caches.open(root);
+                let cachedResponse = await openCache.match(event.request);
+                if (cachedResponse) {
+                    return cachedResponse;
+                }
+                let externalResponse = await fetch(event.request);
+                if (externalResponse.status < 206) {
+                    openCache.put(request, externalResponse.clone());
+                }
+                return externalResponse;
+            })());
+        } else {
+            event.respondWith((async () => {
+                let externalResponse = await fetch(event.request)
+                let openCache = await caches.open(CACHE_NAME);
+                if (externalResponse.status < 205) {
+                    openCache.put(request, externalResponse.clone());
+                }
+                return externalResponse;
+            })());
+        }
     } else
         event.respondWith(fetch(event.request));
 });
