@@ -434,6 +434,10 @@ define([
                     // background: styleString,
                     height: '5px'
                 });
+            } else if (navigator.userAgent.toLowerCase().indexOf('edge') > -1) {
+                addRule('input[type=range]::-ms-track', {
+                    height: '5px'
+                });
             } else {
                 addRule('input[type=range]::-webkit-slider-runnable-track', {
                     // background: styleString,
@@ -2902,7 +2906,7 @@ define([
 
                 readium.reader.addIFrameEventListener('focus', function(e) {
                     $('#reading-area').addClass("contentFocus");
-                    $(window).trigger("focus");
+                    //$(window).trigger("focus");
                 });
 
                 readium.reader.addIFrameEventListener('blur', function(e) {
