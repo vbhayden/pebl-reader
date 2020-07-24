@@ -327,7 +327,7 @@
         }
         rv = JSON.stringify(rv);
         rv = rv.replace(/"/g, '\\"');
-        return JSON.stringify(rv);
+        return rv;
     }
 
     function stringToCompound(s) {
