@@ -2896,17 +2896,17 @@ define([
                     }
                 });
 
-                // readium.reader.addIFrameEventListener('keydown', function(e) {
-                //     Keyboard.dispatch(document.documentElement, e.originalEvent);
-                // });
+                readium.reader.addIFrameEventListener('keydown', function(e) {
+                    Keyboard.dispatch(document.documentElement, e.originalEvent);
+                });
 
-                // readium.reader.addIFrameEventListener('keyup', function(e) {
-                //     Keyboard.dispatch(document.documentElement, e.originalEvent);
-                // });
+                readium.reader.addIFrameEventListener('keyup', function(e) {
+                    Keyboard.dispatch(document.documentElement, e.originalEvent);
+                });
 
                 readium.reader.addIFrameEventListener('focus', function(e) {
                     $('#reading-area').addClass("contentFocus");
-                    $(window).trigger("focus");
+                    //$(window).trigger("focus");
                 });
 
                 readium.reader.addIFrameEventListener('blur', function(e) {
