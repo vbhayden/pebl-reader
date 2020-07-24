@@ -988,7 +988,10 @@
                 if (!meta) return origFunc.apply(this, arguments);
                 if (meta.compound) {
                     // Compound primary key
-                    key = compoundToString(key);
+                    if (key.lower)
+                        key = compoundToString(key.lower)
+                    else
+                        key = compoundToString(key);
                 }
                 var delReq = origFunc.call(this, key);
                 var indexes = Object.keys(meta.indexes);
