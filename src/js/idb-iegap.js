@@ -707,7 +707,10 @@
         IDBKeyRange.only = override(IDBKeyRange.only, function(orig) {
             return function only(val) {
                 if (!Array.isArray(val)) return orig.apply(this, arguments);
-                else if (val.length === 1) return new IEGAPKeyRange(val[0], val[0]);
+                else if (val.length === 1) {
+                    arguments[0] = val[0];
+                    return orig.apply(this, arguments);
+                }
                 return new IEGAPKeyRange(val, val);
             }
         });
