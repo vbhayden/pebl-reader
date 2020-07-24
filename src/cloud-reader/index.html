@@ -37,7 +37,7 @@
         <link rel="stylesheet" type="text/css" href="css/readium-all.css" async>
         <link rel="stylesheet" type="text/css" href="css/pebl-login-widget.css" async>
 
-        <script type="text/javascript">         
+        <script type="text/javascript">
          document.getElementById('readerFavicon').setAttribute('href', window.PeBLConfig.favicon);
 
          /* var fnAppCacheSetup = function() {
@@ -46,7 +46,7 @@
           *         cache.addEventListener('updateready', function (e) {
           *             if (cache.status == cache.UPDATEREADY) {
           *                 cache.swapCache();
-          *                 if (confirm("New Site Version Available, Reload?")) {
+          *                 if (confirm("New Web Reader Version Available, Reload?")) {
           *                     window.location.reload();
           *                 }
           *             }
@@ -59,11 +59,7 @@
          if (navigator.serviceWorker) {
              navigator.serviceWorker.register('peblSW.js').then(function (reg) {
                  consoleLog("Service worker registered", reg.scope);
-                 reg.onupdatefound = function () {
-                     consoleLog("Updating worker");
-                 }
-                 reg.update();                 
-                 hookSWWorkerApi();
+                 hookSWWorkerApi(reg);
              }).catch(function (err) {
                  consoleError("Bad service worker", err);
                  /* fnAppCacheSetup(); */

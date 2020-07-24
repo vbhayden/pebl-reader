@@ -40,4 +40,8 @@ if (!process.env.UNMINIFIED) {
     path = "dist/cloud-reader/scripts/readium-js-viewer_CLOUDAPP-WORKER.js";
     result = Terser.minify(fs.readFileSync(path, "utf8"));
     fs.writeFileSync(path, result.code);
+
+    path = "dist/cloud-reader/peblSW.js";
+    result = Terser.minify(fs.readFileSync(path, "utf8"));
+    fs.writeFileSync(path, result.code);
 }

@@ -1,17 +1,21 @@
 /*
-Copyright 2020 Eduworks Corporation
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-    http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+  Copyright 2020 Eduworks Corporation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 */
+// ||timestamp||
 
-var CACHE_NAME = "peblV2";
+
+var VERSION = "2";
+var CACHE_PREFIX = "PeBLV";
+var CACHE_NAME = CACHE_PREFIX + VERSION;
 
 var FILES_TO_CACHE = [
     "./",
@@ -127,7 +131,6 @@ var FILES_TO_CACHE = [
 
 self.addEventListener('install',
     (event) => {
-        self.skipWaiting();
         event.waitUntil(
             caches.open(CACHE_NAME).then((openCache) => {
                 return openCache.addAll(FILES_TO_CACHE);
@@ -142,7 +145,14 @@ let sendMsg = (client, eventName, payload) => {
     client.postMessage(payload);
 }
 
+let updateWorker = () => {
+    skipWaiting();
+}
+
 let addToCache = async (client, payload) => {
+    if (!payload.root.endsWith("/")) {
+        payload.root = payload.root + "/";
+    }
     let openCache = await caches.open(payload.root);
     let requests = await openCache.keys();
     let keyLookup = {};
@@ -167,7 +177,8 @@ let removeFromCache = (client, payload) => {
 
 let dispatchFns = {
     addToCache: addToCache,
-    removeFromCache: removeFromCache
+    removeFromCache: removeFromCache,
+    updateWorker: updateWorker
 }
 
 let dispatch = (source, eventName, payload) => {
@@ -183,12 +194,7 @@ self.addEventListener('message', (event) => {
 
 self.addEventListener('activate',
     (e) => {
-        console.log("activating");
-        e.waitUntil(self.clients.claim());
-        // caches.delete(CACHE_NAME).then(() => {
-
-
-        // });
+        // e.waitUntil(self.clients.claim());
     });
 
 self.addEventListener('fetch', (event) => {
@@ -205,29 +211,21 @@ self.addEventListener('fetch', (event) => {
     }
 
     if (url.origin == location.origin) {
-        if (root) {
-            event.respondWith((async () => {
-                let openCache = await caches.open(root);
-                let cachedResponse = await openCache.match(event.request);
-                if (cachedResponse) {
-                    return cachedResponse;
-                }
-                let externalResponse = await fetch(event.request);
-                if (externalResponse.status < 206) {
-                    openCache.put(request, externalResponse.clone());
-                }
-                return externalResponse;
-            })());
-        } else {
-            event.respondWith((async () => {
-                let externalResponse = await fetch(event.request)
-                let openCache = await caches.open(CACHE_NAME);
-                if (externalResponse.status < 205) {
-                    openCache.put(request, externalResponse.clone());
-                }
-                return externalResponse;
-            })());
-        }
-    } else
-        event.respondWith(fetch(event.request));
+        event.respondWith((async () => {
+            let openCache = await caches.open(root || CACHE_NAME);
+            let cachedResponse = await openCache.match(event.request);
+            // console.log(root, event.request.url);
+            if (cachedResponse) {
+                return cachedResponse;
+            }
+            let externalResponse = await fetch(event.request);
+            if (externalResponse.status < 206) {
+                openCache.put(request, externalResponse.clone());
+            } else
+                debugger;
+            return externalResponse;
+        })());
+    } else {
+        event.respondWith(fetch(event.request))
+    }
 });

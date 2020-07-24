@@ -1,5 +1,11 @@
-let dispatchHandlers = {};
 let pending = [];
+let sendPendingMsgs = (sw) => {
+    for (let msg of pending)
+        sendSWMsg(msg[0], msg[1], sw.active);
+    pending = [];
+}
+
+let dispatchHandlers = { ready: [sendPendingMsgs] };
 
 let lookUpDispatch = (eventName) => {
     return dispatchHandlers[eventName];
@@ -15,23 +21,45 @@ let dispatchHandlerFn = (msg) => {
     }
 };
 
-let onStateChange = () => {
-    if (navigator.serviceWorker.controller.state === "activated") {
-        for (let msg of pending) {
-            sendSWMsg(msg[0], msg[1]);
-        }
-        pending = [];
+let preventRefreshLoop;
+let onStateChange = (sw) => {
+    if (!preventRefreshLoop) {
+        preventRefreshLoop = true;
+        window.location.reload();
     }
 }
 
-function hookSWWorkerApi() {
-    navigator.serviceWorker.addEventListener('message', dispatchHandlerFn);
-    navigator.serviceWorker.addEventListener('statechange', onStateChange);
-    if (navigator.serviceWorker.controller && navigator.serviceWorker.controller.state === "activated") {
-        for (let msg of pending) {
-            sendSWMsg(msg[0], msg[1]);
+function hookSWWorkerApi(reg) {
+    reg.addEventListener('updatefound',
+        () => {
+            if (reg.active && confirm("New PeBL Web Reader Version Available, Reload?")) {
+                prompted = true;
+                if (reg.waiting) {
+                    sendSWMsg("updateWorker", {}, reg.waiting);
+                } else {
+                    let fn = (e) => {
+                        if (reg.waiting) {
+                            sendSWMsg("updateWorker", {}, reg.waiting);
+                        }
+                    }
+                    reg.installing.addEventListener("statechange", fn);
+                }
+            }
+        });
+    if (reg.active && (reg.waiting != null)) {
+        if (confirm("New PeBL Web Reader Version Available, Reload?")) {
+            sendSWMsg("updateWorker", {}, reg.waiting);
         }
-        pending = [];
+    }
+    navigator.serviceWorker.addEventListener('message', dispatchHandlerFn);
+    navigator.serviceWorker.addEventListener('controllerchange', onStateChange);
+    setInterval(() => {
+        if (reg) {
+            reg.update();
+        }
+    }, 30 * 60 * 1000);
+    if (navigator.serviceWorker.controller && navigator.serviceWorker.controller.state === "activated") {
+        sendPendingMsgs();
     }
 }
 
@@ -39,14 +67,24 @@ function unhookSWWorkerApi() {
     navigator.serviceWorker.controller.removeEventListener('message', dispatchHandlerFn);
 }
 
-function sendSWMsg(eventName, payload) {
+function sendSWMsg(eventName, payload, sw) {
+    if (typeof payload === "undefined") {
+        payload = {};
+    }
     if (eventName) {
         payload.eventName = eventName;
     }
-    if (navigator.serviceWorker.controller && navigator.serviceWorker.controller.state === "activated") {
+    if (sw) {
+        sw.postMessage(payload);
+    } else if (navigator.serviceWorker.controller && navigator.serviceWorker.controller.state === "activated") {
         navigator.serviceWorker.controller.postMessage(payload);
     } else {
         pending.push([eventName, payload]);
+        if (pending.length == 1) {
+            (async () => {
+                navigator.serviceWorker.ready.then(sendPendingMsgs);
+            })();
+        }
     }
 }
 

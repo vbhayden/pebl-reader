@@ -4,7 +4,7 @@
 
 define(['module'], function(module) {
         var HTTPServerRootFolder = '';
-        if (window) {
+        if (typeof window !== "undefined") {
             var path = (window.location && window.location.pathname) ? window.location.pathname : '';
 
              // extracts path to index.html (or more generally: /PATH/TO/*.[x]html)
