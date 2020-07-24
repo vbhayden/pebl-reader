@@ -101,6 +101,10 @@
         npm run cpy
             src/cloud-reader/config.js
             dist/cloud-reader/scripts/
+        &&
+        npm run cpy
+            src/cloud-reader/idb-iegap.js
+            dist/cloud-reader/scripts/
     '
 
 #=====================
