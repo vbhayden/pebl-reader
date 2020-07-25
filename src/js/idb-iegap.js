@@ -326,10 +326,12 @@
                 rv[i] = (part < 0 ? "N" : "n") + unipack(part, 5, 4);
         }
         rv = JSON.stringify(rv);
+        rv = rv.replace(/"/g, "'");
         return rv;
     }
 
     function stringToCompound(s) {
+        s = s.replace(/'/g, '"');
         var a = JSON.parse(s),
             l = a.length,
             rv = new Array(l);
@@ -412,7 +414,11 @@
                     range;
 
                 if (typeof idbRange === 'undefined') idbRange = null;
-                var req = iegIndex._idx.openCursor(idbRange, dir);
+                var req;
+                if (dir)
+                    req = iegIndex._idx.openCursor(idbRange, dir);
+                else
+                    req = iegIndex._idx.openCursor(idbRange);
                 req.onerror = error;
                 if (includeValue) {
                     req.onsuccess = function(ev) {
