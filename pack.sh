@@ -1,6 +1,6 @@
 cd dist/cloud-reader/scripts/
 
-cat handlerSW.js jquery-3.3.1.min.js config.js > pack.js
+cat handlerSW.js jquery-3.3.1.min.js config.js idb-iegap.js > pack.js
 echo "function consoleLog(...x) { if (DEBUGGING) { console.log(...x); } }" >> pack.js
 echo "function consoleError(...x) { if (DEBUGGING) { console.error(...x); } }" >> pack.js
 cat PeBLCore.js pebl-login-widget.js readium-js-viewer_all.js ../font-faces/fonts.js >> pack.js

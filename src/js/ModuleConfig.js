@@ -1,4 +1,4 @@
-/* 
+/*
 * ModuleConfig.js: Module that contains configuration options for Readium-js-viewer.
 */
 
@@ -29,7 +29,7 @@ define(['module'], function(module) {
         var config = module.config();
         return {
             'imagePathPrefix': config.imagePathPrefix || "",
-            
+
             'epubLibraryPath': config.epubLibraryPath || "epub_content/epub_library.json",
 
             'canHandleUrl': config.canHandleUrl || false,
@@ -44,7 +44,7 @@ define(['module'], function(module) {
             'mathJaxUrl': config.mathJaxUrl || "scripts/mathjax/MathJax.js",
             'jsLibRoot': config.jsLibRoot || "scripts/zip/",
 
-            //Fonts is a list of font objects. 
+            //Fonts is a list of font objects.
             'fonts': config.fonts || [],
 
             'useSimpleLoader': config.useSimpleLoader || false
