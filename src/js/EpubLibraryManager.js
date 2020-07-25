@@ -1,6 +1,6 @@
-define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 'StorageManager', 'i18nStrings', 'URIjs', './EpubLibraryOPDS'], function ($, moduleConfig, PackageParser, WorkerProxy, StorageManager, Strings, URI, EpubLibraryOPDS) {
+define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 'StorageManager', 'i18nStrings', 'URIjs', './EpubLibraryOPDS'], function($, moduleConfig, PackageParser, WorkerProxy, StorageManager, Strings, URI, EpubLibraryOPDS) {
 
-    var LibraryManager = function(){
+    var LibraryManager = function() {
     };
 
     var adjustEpubLibraryPath = function(path) {
@@ -10,11 +10,11 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
         var pathUri = undefined;
         try {
             pathUri = new URI(path);
-        } catch(err) {
+        } catch (err) {
             consoleError(err);
             consoleLog(path);
         }
-        
+
         if (pathUri && pathUri.is("absolute")) return path; // "http://", "https://", "data:", etc.
 
         if (path.indexOf("epub_content/") == 0) {
@@ -32,8 +32,8 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
 
     LibraryManager.prototype = {
 
-	_getFullUrl : function(packageUrl, relativeUrl){
-            if (!relativeUrl){
+        _getFullUrl: function(packageUrl, relativeUrl) {
+            if (!relativeUrl) {
                 return null;
             }
 
@@ -50,7 +50,7 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
         //     this.libraryData = undefined;
         // },
 
-        retrieveAvailableEpubs : function(success, error){
+        retrieveAvailableEpubs: function(success, error) {
             // if (this.libraryData){
             //     success(this.libraryData);
             //     return;
@@ -59,71 +59,71 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
             var self = this;
             if (!moduleConfig.epubLibraryPath)
                 moduleConfig.epubLibraryPath = 'epub_content/epub_library.json';
-            
+
             var indexUrl = StorageManager.getPathUrl(moduleConfig.epubLibraryPath);
 
             var dataFail = function() {
                 consoleError("Ebook library fail: " + indexUrl);
-                
+
                 self.libraryData = [];
                 success([]);
             };
-            
+
             var dataSuccess = function(data) {
                 consoleLog("Ebook library success: " + indexUrl);
-                
+
                 if (moduleConfig.epubLibraryPath) {
                     for (var i = 0; i < data.length; i++) {
                         data[i].coverHref = adjustEpubLibraryPath(data[i].coverHref);
                         data[i].rootUrl = adjustEpubLibraryPath(data[i].rootUrl);
                     }
                 }
-                
+
                 self.libraryData = data;
                 success(data);
             };
-	    
-	    var checkExternal = function (extraData) {
-		if (indexUrl.substr(0, 5) == "db://")
-		    indexUrl = "./" + indexUrl.substr(5);
-		if (/\.json$/.test(indexUrl)) {                   
-                    $.getJSON(indexUrl, function(data){
-			if (extraData != null)
-			    for (var i = 0; i < extraData.length; i++)
-				data.push(extraData[i]);
-			dataSuccess(data);
-                    }).fail(function(){
-			if (extraData!=null)
-			    dataSuccess(extraData);
-			else
-			    dataFail();
+
+            var checkExternal = function(extraData) {
+                if (indexUrl.substr(0, 5) == "db://")
+                    indexUrl = "./" + indexUrl.substr(5);
+                if (/\.json$/.test(indexUrl)) {
+                    $.getJSON(indexUrl, function(data) {
+                        if (extraData != null)
+                            for (var i = 0; i < extraData.length; i++)
+                                data.push(extraData[i]);
+                        dataSuccess(data);
+                    }).fail(function() {
+                        if (extraData != null)
+                            dataSuccess(extraData);
+                        else
+                            dataFail();
                     });
-		} else {
+                } else {
                     EpubLibraryOPDS.tryParse(indexUrl, dataSuccess, dataFail, extraData);
-		}
-	    };
-	    
-	    if (indexUrl.substr(0, 5) == "db://") {
-		StorageManager.getFile(indexUrl.replace('epub_content/', ''),
-				       checkExternal,
-				       function (x) { consoleLog(x); });	
+                }
+            };
 
-	    } else
-		checkExternal();
-	},
+            if (indexUrl.substr(0, 5) == "db://") {
+                StorageManager.getFile(indexUrl.replace('epub_content/', ''),
+                    checkExternal,
+                    function(x) { consoleLog(x); });
 
-        deleteEpubWithId : function(id, success, error){
+            } else
+                checkExternal();
+        },
+
+        deleteEpubWithId: function(id, success, error) {
             WorkerProxy.deleteEpub(id, this.libraryData, {
                 success: this._refreshLibraryFromWorker.bind(this, success),
                 error: error
             });
         },
-        retrieveFullEpubDetails : function(packageUrl, rootUrl, rootDir, noCoverBackground, success, error){
+        retrieveFullEpubDetails: function(packageUrl, rootUrl, rootDir, noCoverBackground, success, error) {
             var self = this;
 
-            $.get(packageUrl, function(data){
-		
-                if(typeof(data) === "string" ) {
+            $.get(packageUrl, function(data) {
+
+                if (typeof (data) === "string") {
                     var parser = new window.DOMParser;
                     data = parser.parseFromString(data, 'text/xml');
                 }
@@ -133,35 +133,35 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
                 jsonObj.rootDir = rootDir;
                 jsonObj.rootUrl = rootUrl;
                 jsonObj.noCoverBackground = noCoverBackground;
-		
+
                 success(jsonObj);
 
             }).fail(error);
         },
-        _refreshLibraryFromWorker : function(callback, newLibraryData){
+        _refreshLibraryFromWorker: function(callback, newLibraryData) {
             this.libraryData = newLibraryData;
             callback();
         },
-        handleZippedEpub : function(options){
+        handleZippedEpub: function(options) {
             WorkerProxy.importZip(options.file, this.libraryData, {
-                progress : options.progress,
+                progress: options.progress,
                 overwrite: options.overwrite,
                 success: this._refreshLibraryFromWorker.bind(this, options.success),
-                error : options.error
+                error: options.error
             });
             //Dialogs.showModalProgress()
             //unzipper.extractAll();
         },
-        handleDirectoryImport : function(options){
+        handleDirectoryImport: function(options) {
 
             var rawFiles = options.files,
                 files = {};
-            for (var i = 0; i < rawFiles.length; i++){
+            for (var i = 0; i < rawFiles.length; i++) {
                 var path = rawFiles[i].webkitRelativePath
                 // don't capture paths that contain . at the beginning of a file or dir.
                 // These are hidden files. I don't think chrome will ever reference
                 // a file using double dot "/.." so this should be safe
-                if (path.indexOf('/.') != -1){
+                if (path.indexOf('/.') != -1) {
                     continue;
                 }
                 var parts = path.split('/');
@@ -173,41 +173,41 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
             }
 
             WorkerProxy.importDirectory(files, this.libraryData, {
-                progress : options.progress,
+                progress: options.progress,
                 overwrite: options.overwrite,
                 success: this._refreshLibraryFromWorker.bind(this, options.success),
-                error : options.error
+                error: options.error
             });
         },
-        handleUrlImport : function(options){
+        handleUrlImport: function(options) {
             WorkerProxy.importUrl(options.url, this.libraryData, {
-                progress : options.progress,
+                progress: options.progress,
                 overwrite: options.overwrite,
                 success: this._refreshLibraryFromWorker.bind(this, options.success),
-                error : options.error
+                error: options.error
 
             });
         },
-        handleMigration : function(options){
+        handleMigration: function(options) {
             WorkerProxy.migrateOldBooks({
-                progress : options.progress,
+                progress: options.progress,
                 success: this._refreshLibraryFromWorker.bind(this, options.success),
-                error : options.error
+                error: options.error
             });
         },
-        handleUrl : function(options){
+        handleUrl: function(options) {
 
         },
-        canHandleUrl : function(){
+        canHandleUrl: function() {
             return moduleConfig.canHandleUrl;
         },
-        canHandleDirectory : function(){
+        canHandleDirectory: function() {
             return moduleConfig.canHandleDirectory;
         }
     }
 
-    window.cleanEntireLibrary = function(){
-        StorageManager.deleteFile('/', function(){
+    window.cleanEntireLibrary = function() {
+        StorageManager.deleteFile('/', function() {
             consoleLog('done');
         }, consoleError);
     }

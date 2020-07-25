@@ -10,12 +10,10 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
-// ||timestamp||
 
-
-var VERSION = "2";
+var timestamp = "||timestamp||";
 var CACHE_PREFIX = "PeBLV";
-var CACHE_NAME = CACHE_PREFIX + VERSION;
+var CACHE_NAME = CACHE_PREFIX + timestamp;
 
 var FILES_TO_CACHE = [
     "./",
@@ -166,17 +164,31 @@ let addToCache = async (client, payload) => {
         }
     }
     if (toCache.length > 0) {
-        await openCache.addAll(toCache);
+        await openCache.addAll(toCache).catch(() => { });
     }
     sendMsg(client, "addedToCache", {});
 };
 
-let removeFromCache = (client, payload) => {
+let removeCache = async (client, payload) => {
+    if (!payload.root.endsWith("/")) {
+        payload.root = payload.root + "/";
+    }
+    await caches.delete(payload.root);
+    sendMsg(client, "removedCache", {});
+};
 
+let removeFromCache = async (client, payload) => {
+    if (!payload.root.endsWith("/")) {
+        payload.root = payload.root + "/";
+    }
+    let openCache = await caches.open(payload.root);
+    await openCache.delete(payload.target);
+    sendMsg(client, "removedFromCache", {});
 };
 
 let dispatchFns = {
     addToCache: addToCache,
+    removeCache: removeCache,
     removeFromCache: removeFromCache,
     updateWorker: updateWorker
 }
@@ -193,9 +205,14 @@ self.addEventListener('message', (event) => {
 });
 
 self.addEventListener('activate',
-    (e) => {
-        // e.waitUntil(self.clients.claim());
-    });
+    (async () => {
+        let keys = await caches.keys();
+        for (let key of keys) {
+            if (key !== CACHE_NAME) {
+                await caches.delete(key);
+            }
+        }
+    }));
 
 self.addEventListener('fetch', (event) => {
     if (event.request.method != 'GET') return;
@@ -210,22 +227,23 @@ self.addEventListener('fetch', (event) => {
         root = url.href.substring(0, indexOEBPS + "/OEBPS/".length);
     }
 
+    console.log("request", request, url.origin == location.origin);
+
     if (url.origin == location.origin) {
         event.respondWith((async () => {
             let openCache = await caches.open(root || CACHE_NAME);
             let cachedResponse = await openCache.match(event.request);
             // console.log(root, event.request.url);
             if (cachedResponse) {
+                console.log("cached", cachedResponse);
                 return cachedResponse;
             }
             let externalResponse = await fetch(event.request);
             if (externalResponse.status < 206) {
                 openCache.put(request, externalResponse.clone());
-            } else
-                debugger;
+            }
+            console.log("eResponse", externalResponse);
             return externalResponse;
         })());
-    } else {
-        event.respondWith(fetch(event.request))
     }
 });
