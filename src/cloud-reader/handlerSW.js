@@ -32,24 +32,44 @@ let onStateChange = (sw) => {
 function hookSWWorkerApi(reg) {
     reg.addEventListener('updatefound',
         () => {
-            if (reg.active && confirm("New PeBL Web Reader Version Available, Reload?")) {
-                prompted = true;
-                if (reg.waiting) {
-                    sendSWMsg("updateWorker", {}, reg.waiting);
-                } else {
-                    let fn = (e) => {
+            if (reg.active) {
+                Dialogs.showModalPrompt("Upgrade Detected",
+                    "New PeBL Web Reader Version Available, Reload?",
+                    "Yes",
+                    "No",
+                    () => {
                         if (reg.waiting) {
                             sendSWMsg("updateWorker", {}, reg.waiting);
+                        } else {
+                            let fn = (e) => {
+                                if (reg.waiting) {
+                                    sendSWMsg("updateWorker", {}, reg.waiting);
+                                }
+                            }
+                            reg.installing.addEventListener("statechange", fn);
                         }
-                    }
-                    reg.installing.addEventListener("statechange", fn);
-                }
+                    },
+                    () => { });
             }
         });
     if (reg.active && (reg.waiting != null)) {
-        if (confirm("New PeBL Web Reader Version Available, Reload?")) {
-            sendSWMsg("updateWorker", {}, reg.waiting);
+        let fn = () => {
+            if (Dialogs) {
+                Dialogs.showModalPrompt("Upgrade Detected",
+                    "New PeBL Web Reader Version Available, Reload?",
+                    "Yes",
+                    "No",
+                    () => {
+                        if (reg.waiting) {
+                            sendSWMsg("updateWorker", {}, reg.waiting);
+                        }
+                    },
+                    () => { });
+            } else {
+                setTimeout(fn, 250);
+            }
         }
+        setTimeout(fn, 250);
     }
     navigator.serviceWorker.addEventListener('message', dispatchHandlerFn);
     navigator.serviceWorker.addEventListener('controllerchange', onStateChange);

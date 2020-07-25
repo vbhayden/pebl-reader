@@ -227,7 +227,7 @@ self.addEventListener('fetch', (event) => {
         root = url.href.substring(0, indexOEBPS + "/OEBPS/".length);
     }
 
-    console.log("request", request, url.origin == location.origin);
+    // console.log("request", request, url.origin == location.origin);
 
     if (url.origin == location.origin) {
         event.respondWith((async () => {
@@ -235,14 +235,14 @@ self.addEventListener('fetch', (event) => {
             let cachedResponse = await openCache.match(event.request);
             // console.log(root, event.request.url);
             if (cachedResponse) {
-                console.log("cached", cachedResponse);
+                // console.log("cached", cachedResponse);
                 return cachedResponse;
             }
             let externalResponse = await fetch(event.request);
             if (externalResponse.status < 206) {
                 openCache.put(request, externalResponse.clone());
             }
-            console.log("eResponse", externalResponse);
+            // console.log("eResponse", externalResponse);
             return externalResponse;
         })());
     }
