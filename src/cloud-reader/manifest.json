@@ -1,9 +1,10 @@
 {
     "name" : "PeBL eReader",
     "short_name": "PeBL",
-    "start_url": "/",
+    "start_url": ".",
     "display": "standalone",
     "background_color": "#fff",
+    "theme_color": "#fff",
     "description": "A PeBL enabled web epub3 reader",
     "icons": [
 	      {

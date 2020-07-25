@@ -8,6 +8,7 @@ index.html
 css/readium-all.css
 css/annotations.css
 css/pebl-login-widget.css
+css/all.min.css
 
 # scripts
 # scripts/jquery-3.3.1.min.js
@@ -100,6 +101,21 @@ font-faces/Open-Sans/Open-Sans-700.woff
 font-faces/Open-Sans/Open-Sans-700italic.woff
 font-faces/Open-Sans/Open-Sans-italic.woff
 font-faces/Open-Sans/Open-Sans-regular.woff
+webfonts/fa-brands-400.eot
+webfonts/fa-brands-400.svg
+webfonts/fa-brands-400.ttf
+webfonts/fa-brands-400.woff2
+webfonts/fa-brands-400.woff
+webfonts/fa-regular-400.eot
+webfonts/fa-regular-400.svg
+webfonts/fa-regular-400.ttf
+webfonts/fa-regular-400.woff2
+webfonts/fa-regular-400.woff
+webfonts/fa-solid-900.eot
+webfonts/fa-solid-900.svg
+webfonts/fa-solid-900.ttf
+webfonts/fa-solid-900.woff2
+webfonts/fa-solid-900.woff
 
 NETWORK:
 

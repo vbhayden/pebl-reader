@@ -41,7 +41,7 @@ function(de, es, en_US, fr, it, id, ja, ko, pt_BR, zh_CN, zh_TW, en_USSkinning){
     var language = navigator.userLanguage || navigator.language;
 //FORCE HERE (for testing)
 //language="es";
-    console.log("Language: [" + language + "]");
+    consoleLog("Language: [" + language + "]");
 
     var allowEnglishFallback = true;
 
@@ -52,7 +52,7 @@ function(de, es, en_US, fr, it, id, ja, ko, pt_BR, zh_CN, zh_TW, en_USSkinning){
              
     for(var prop in i18nObj_en){
         var okay = prop in i18nObj;
-        if (!okay) console.log("Language [" + language + "], missing string: [" + prop + "]");
+        if (!okay) consoleLog("Language [" + language + "], missing string: [" + prop + "]");
 
         i18nObj[prop] = okay ? i18nObj[prop].message : (allowEnglishFallback ? ("*"+i18nObj_en[prop].message) : "");
     }
