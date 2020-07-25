@@ -787,8 +787,10 @@ define([
                             annotationTitle.textContent = stmt.title;
                             annotation.appendChild(annotationTitle);
                             var note = document.createElement('div');
+
                             var noteText = document.createElement('span');
-                            noteText.textContent = stmt.text;
+                            if (stmt.text)
+                                noteText.textContent = stmt.text;
                             note.appendChild(noteText);
 
                             annotationContainer.appendChild(annotation);
@@ -842,8 +844,10 @@ define([
                                 annotationTitle.textContent = stmt.title;
                                 annotation.appendChild(annotationTitle);
                                 var note = document.createElement('div');
+
                                 var noteText = document.createElement('span');
-                                noteText.textContent = stmt.text;
+                                if (noteText)
+                                    noteText.textContent = stmt.text;
                                 note.appendChild(noteText);
 
 
