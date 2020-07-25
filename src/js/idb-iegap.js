@@ -326,12 +326,10 @@
                 rv[i] = (part < 0 ? "N" : "n") + unipack(part, 5, 4);
         }
         rv = JSON.stringify(rv);
-        rv = rv.replace(/"/g, '\\"');
         return rv;
     }
 
     function stringToCompound(s) {
-        s = s.replace(/\\"/g, '"');
         var a = JSON.parse(s),
             l = a.length,
             rv = new Array(l);
