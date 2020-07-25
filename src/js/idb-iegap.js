@@ -414,7 +414,11 @@
                     range;
 
                 if (typeof idbRange === 'undefined') idbRange = null;
-                var req = iegIndex._idx.openCursor(idbRange, dir);
+                var req;
+                if (dir)
+                    req = iegIndex._idx.openCursor(idbRange, dir);
+                else
+                    req = iegIndex._idx.openCursor(idbRange);
                 req.onerror = error;
                 if (includeValue) {
                     req.onsuccess = function(ev) {
