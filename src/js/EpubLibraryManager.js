@@ -106,7 +106,7 @@ define(['jquery', './ModuleConfig', './PackageParser', './workers/WorkerProxy', 
             if (indexUrl.substr(0, 5) == "db://") {
                 StorageManager.getFile(indexUrl.replace('epub_content/', ''),
                     checkExternal,
-                    function(x) { consoleLog(x); });
+                    consoleLog);
 
             } else
                 checkExternal();

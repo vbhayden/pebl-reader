@@ -300,26 +300,35 @@ define([
                                    var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: URL.createObjectURL(data), strings: Strings, noCoverBackground: noCoverBackground});
                                else
                                    var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: background, strings: Strings, noCoverBackground: noCoverBackground});
-                               if (epub.rootUrl.substr(0, 5) == "db://")
+                               if (epub.rootUrl.substr(0, 5) == "db://") {
+                                   if ($('.library-items.local-library').length > 0) {
+                                       $("#downloaded-bookshelf").show();
+                                   }
                                    $('.library-items.local-library').append(elem);
-                               else
+                               } else
                                    $('.library-items.cloud-library').append(elem);
 
                                processEpub(epubs, ++count);
                            }, function() {
                                var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, strings: Strings, noCoverBackground: noCoverBackground});
-                               if (epub.rootUrl.substr(0, 5) == "db://")
+                               if (epub.rootUrl.substr(0, 5) == "db://"){
+                                   if ($('.library-items.local-library').length > 0) {
+                                       $("#downloaded-bookshelf").show();
+                                   }
                                    $('.library-items.local-library').append(elem);
-                               else
+                               } else
                                    $('.library-items.cloud-library').append(elem);
 
                                processEpub(epubs, ++count);
                            });
                        } else {
                            var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: background, strings: Strings, noCoverBackground: noCoverBackground});
-                           if (epub.rootUrl.substr(0, 5) == "db://")
+                           if (epub.rootUrl.substr(0, 5) == "db://") {
+                               if ($('.library-items.local-library').length > 0) {
+                                   $("#downloaded-bookshelf").show();
+                               }
                                $('.library-items.local-library').append(elem);
-                           else
+                           } else
                                $('.library-items.cloud-library').append(elem);
                            processEpub(epubs, ++count);
                        }
@@ -911,7 +920,7 @@ define([
                                        request.send();
                                    } else {
                                        var request = new XMLHttpRequest();
-                                       let adjRoot = rootUrl + (rootUrl.endsWith("/")?"":"/") + "OEBPS/";
+                                       let adjRoot = location.origin + "/" + rootUrl + (rootUrl.endsWith("/")?"":"/") + "OEBPS/";
                                        request.onload = function() {
                                            let xml = new DOMParser().parseFromString(this.response, "text/xml");
                                            let items = xml.getElementsByTagName("package")[0].getElementsByTagName("manifest")[0].getElementsByTagName("item");
@@ -919,7 +928,8 @@ define([
                                            for (let item of items) {
                                                hrefs.push(adjRoot + item.getAttribute("href"));
                                            }
-                                           let fn = () =>{
+                                           let fn = () => {
+                                               debugger
                                                unregisterSWListener("addedToCache", fn);
                                                handleLibraryChange();
                                                callback();
@@ -930,7 +940,7 @@ define([
                                                items: hrefs
                                            });
                                        }
-                                       request.open('GET', adjRoot+"/content.opf");
+                                       request.open('GET', adjRoot+"content.opf");
                                        request.send();
                                    }
                                }
