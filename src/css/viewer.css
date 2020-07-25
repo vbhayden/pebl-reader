@@ -985,8 +985,7 @@ div.annotation.pinned > div:not(:first-child) {
   opacity: 1;
 }
 
-.sliderContainer > input::-webkit-slider-thumb,
-.sliderContainer > input::-ms-thumb {
+.sliderContainer > input::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 20px;
