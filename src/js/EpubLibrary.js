@@ -1009,7 +1009,12 @@ Helpers){
             $(document.body).removeClass('list-view');
             setTimeout(function(){ $('.icon-list-view')[0].focus(); }, 50);
         });
-        PeBL.extension.hardcodeLogin.hookLoginButton("loginButt");
+        try {
+            PeBL.extension.hardcodeLogin.hookLoginButton("loginButt");
+        } catch (e) {
+            console.log('Unable to hook login button', e);
+        }
+        
         findHeightRule();
         setItemHeight();
         StorageManager.initStorage(function(){
