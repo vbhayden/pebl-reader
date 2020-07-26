@@ -130,11 +130,17 @@ var FILES_TO_CACHE = [
 
 self.addEventListener('install',
     (event) => {
-        event.waitUntil(
-            caches.open(CACHE_NAME).then((openCache) => {
-                return openCache.addAll(FILES_TO_CACHE);
-            })
-        );
+        event.waitUntil((async () => {
+            let openCache = await caches.open(CACHE_NAME);
+            let p = async () => {
+                let file = FILES_TO_CACHE.pop();
+                if (file) {
+                    await openCache.add(file);
+                    p();
+                }
+            }
+            p();
+        })());
     });
 
 let sendMsg = (client, eventName, payload) => {
