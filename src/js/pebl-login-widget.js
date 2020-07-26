@@ -305,7 +305,7 @@ window.Lightbox = {
 
                         xhr.addEventListener('load', () => {
                             if (xhr.status < 300) {
-                                console.log(JSON.parse(xhr.response));
+                                consoleLog(JSON.parse(xhr.response));
                                 let payload = JSON.parse(xhr.response);
                                 let userProfile = {
                                     identity: payload.preferred_username,
@@ -347,7 +347,7 @@ window.Lightbox = {
                         });
 
                         xhr.addEventListener('error', (e) => {
-                            console.log('failed to retrieve user profile', e);
+                            consoleLog('failed to retrieve user profile', e);
                             window.location = window.PeBLConfig.PeBLServicesURL + "/login?redirectUrl=" + encodeURIComponent(window.location.href);
                         });
 
@@ -356,7 +356,7 @@ window.Lightbox = {
                         xhr.withCredentials = true;
                         xhr.send();
                     } else {
-                        console.log("!loggedIn");
+                        consoleLog("!loggedIn");
                     }
                 });
             } else {
@@ -515,14 +515,14 @@ window.Lightbox = {
     apiGetAccessToken: function(application, authToken, success, failure) {
         var xhr = new XMLHttpRequest();
         xhr.addEventListener('load', function() {
-            console.log('success', xhr);
+            consoleLog('success', xhr);
             if (success) {
                 success(JSON.parse(xhr.response));
                 localStorage.removeItem('linkedInOauthState');
             }
         });
         xhr.addEventListener('error', function(e) {
-            console.log('error', xhr);
+            consoleLog('error', xhr);
             if (failure) {
                 failure(e);
                 localStorage.removeItem('linkedInOauthState');
@@ -536,13 +536,13 @@ window.Lightbox = {
     apiGetProfile: function(accessToken, success, failure) {
         var xhr = new XMLHttpRequest();
         xhr.addEventListener('load', function() {
-            console.log('success', xhr);
+            consoleLog('success', xhr);
             if (success) {
                 success(JSON.parse(xhr.response), accessToken);
             }
         });
         xhr.addEventListener('error', function(e) {
-            console.log('error', xhr);
+            consoleLog('error', xhr);
             if (failure) {
                 failure(e);
             }
@@ -555,13 +555,13 @@ window.Lightbox = {
     apiGetOtherProfile: function(accessToken, userId, success, failure) {
         var xhr = new XMLHttpRequest();
         xhr.addEventListener('load', function() {
-            console.log('success', xhr);
+            consoleLog('success', xhr);
             if (success) {
                 success(JSON.parse(xhr.response), accessToken);
             }
         });
         xhr.addEventListener('error', function(e) {
-            console.log('error', xhr);
+            consoleLog('error', xhr);
             if (failure) {
                 failure(e);
             }
@@ -638,11 +638,11 @@ window.Lightbox = {
                                                               window.Lightbox.apiGetProfile(authObj.access_token,
                                                                                             loginUser,
                                                                                             function(error) {
-                                                                                                console.log(error);
+                                                                                                consoleError(error);
                                                                                             });
                                                           },
                                                           function(error) {
-                                                              console.log(error);
+                                                              consoleError(error);
                                                           });
                     }
                 }

@@ -1,27 +1,28 @@
 /*
-Copyright 2020 Eduworks Corporation
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-    http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+  Copyright 2020 Eduworks Corporation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 */
 
-var CACHE_NAME = "peblV2";
+var timestamp = "||timestamp||";
+var CACHE_PREFIX = "PeBLV";
+var CACHE_NAME = CACHE_PREFIX + timestamp;
 
 var FILES_TO_CACHE = [
     "./",
     "./?",
 
-
+    "./css/all.min.css",
     "./css/readium-all.css",
     "./css/pebl-login-widget.css",
     "./css/annotations.css",
-
 
     // "./scripts/jquery-3.3.1.min.js",
     // "./scripts/PeBLCore.js",
@@ -34,7 +35,6 @@ var FILES_TO_CACHE = [
     "./scripts/zip/z-worker.js",
     "./scripts/pack.js",
     // "./scripts/config.js",
-
 
     // "./font-faces/fonts.js",
     "./fonts/glyphicons-halflings-regular.eot",
@@ -57,11 +57,25 @@ var FILES_TO_CACHE = [
     "./font-faces/Open-Sans/Open-Sans-700italic.woff",
     "./font-faces/Open-Sans/Open-Sans-italic.woff",
     "./font-faces/Open-Sans/Open-Sans-regular.woff",
-
+    "./webfonts/fa-brands-400.eot",
+    "./webfonts/fa-brands-400.svg",
+    "./webfonts/fa-brands-400.ttf",
+    "./webfonts/fa-brands-400.woff2",
+    "./webfonts/fa-brands-400.woff",
+    "./webfonts/fa-regular-400.eot",
+    "./webfonts/fa-regular-400.svg",
+    "./webfonts/fa-regular-400.ttf",
+    "./webfonts/fa-regular-400.woff2",
+    "./webfonts/fa-regular-400.woff",
+    "./webfonts/fa-solid-900.eot",
+    "./webfonts/fa-solid-900.svg",
+    "./webfonts/fa-solid-900.ttf",
+    "./webfonts/fa-solid-900.woff2",
+    "./webfonts/fa-solid-900.woff",
 
     "./manifest.json",
 
-
+    "./images/pebl-icons-search.svg",
     "./images/PEBL-icon-16.ico",
     "./images/covers/cover1.jpg",
     "./images/covers/cover2.jpg",
@@ -82,12 +96,10 @@ var FILES_TO_CACHE = [
     "./images/margin4_off.png",
     "./images/pagination.svg",
     "./images/pagination1.svg",
-    "./images/partner_logos.png",
     "./images/PEBL-icon-48.png",
     "./images/PEBL-icon-144.png",
     "./images/PEBL-icon-192.png",
     "./images/webreader_logo_eduworks.png",
-    "./images/about_readium_logo.png",
     "./images/eXtension-icon_small.png",
     "./images/PEBL-Logo-Color-small.png",
     "./images/pebl-icons-light_bookmark-list.svg",
@@ -117,38 +129,127 @@ var FILES_TO_CACHE = [
 ];
 
 self.addEventListener('install',
-                      function (event) {
-                          event.waitUntil(
-                              caches.open(CACHE_NAME).then(function (openCache) {
-                                  return openCache.addAll(FILES_TO_CACHE);
-                              })
-                          );
-                      });
+    (event) => {
+        event.waitUntil(
+            caches.open(CACHE_NAME).then((openCache) => {
+                return openCache.addAll(FILES_TO_CACHE);
+            })
+        );
+    });
+
+let sendMsg = (client, eventName, payload) => {
+    if (eventName) {
+        payload.eventName = eventName;
+    }
+    client.postMessage(payload);
+}
+
+let updateWorker = () => {
+    skipWaiting();
+}
+
+let addToCache = async (client, payload) => {
+    if (!payload.root.endsWith("/")) {
+        payload.root = payload.root + "/";
+    }
+    let openCache = await caches.open(payload.root);
+    let requests = await openCache.keys();
+    let keyLookup = {};
+    for (let request of requests) {
+        keyLookup[request.url] = true;
+    }
+    let toCache = [];
+    for (let item of payload.items) {
+        if (!keyLookup[item]) {
+            toCache.push(item);
+        }
+    }
+    if (toCache.length > 0) {
+        await openCache.addAll(toCache).catch(() => { });
+    }
+    sendMsg(client, "addedToCache", {});
+};
+
+let removeCache = async (client, payload) => {
+    if (!payload.root.endsWith("/")) {
+        payload.root = payload.root + "/";
+    }
+    await caches.delete(payload.root);
+    sendMsg(client, "removedCache", {});
+};
+
+let removeFromCache = async (client, payload) => {
+    if (!payload.root.endsWith("/")) {
+        payload.root = payload.root + "/";
+    }
+    let openCache = await caches.open(payload.root);
+    await openCache.delete(payload.target);
+    sendMsg(client, "removedFromCache", {});
+};
+
+let dispatchFns = {
+    addToCache: addToCache,
+    removeCache: removeCache,
+    removeFromCache: removeFromCache,
+    updateWorker: updateWorker
+}
+
+let dispatch = (source, eventName, payload) => {
+    let dispatchFn = dispatchFns[eventName];
+    if (dispatchFn) {
+        dispatchFn(source, payload);
+    }
+};
+
+self.addEventListener('message', (event) => {
+    dispatch(event.source, event.data.eventName, event.data);
+});
 
 self.addEventListener('activate',
-                      function (e) {
+    (async () => {
+        let keys = await caches.keys();
+        for (let key of keys) {
+            if (key !== CACHE_NAME) {
+                await caches.delete(key);
+            }
+        }
+    }));
 
-                      });
-
-self.addEventListener('fetch', event => {
+self.addEventListener('fetch', (event) => {
     if (event.request.method != 'GET') return;
 
     var request = event.request;
 
     var url = new URL(request.url);
 
+    let root;
+    let indexOEBPS = url.href.indexOf("/OEBPS/");
+    if (indexOEBPS != -1) {
+        root = url.href.substring(0, indexOEBPS + "/OEBPS/".length);
+    }
+
     if (url.origin == location.origin) {
-        event.respondWith(
-            fetch(event.request).then(function (response) {
-                return caches.open(CACHE_NAME).then(function (openCache) {
-                    if (response.status != 206) {
-                        openCache.put(request, response.clone());
+        event.respondWith((async () => {
+            let openCache = await caches.open(root || CACHE_NAME);
+            let cachedResponse = await openCache.match(event.request);
+            if (cachedResponse) {
+                return cachedResponse;
+            } else {
+                let url = new URL(event.request.url);
+                if (url.search !== "") {
+                    cachedResponse = await openCache.match(url.origin + url.pathname);
+                    if (cachedResponse) {
+                        return cachedResponse;
                     }
-                    return response;
-                });
-            }).catch(function () {
-                return caches.match(request);
-            }));
-    } else
-        event.respondWith(fetch(event.request));
+                }
+            }
+
+            let externalResponse = await fetch(event.request);
+            if (externalResponse && externalResponse.status < 206) {
+                openCache.put(request, externalResponse.clone());
+            }
+
+            return externalResponse;
+        })());
+    }
 });

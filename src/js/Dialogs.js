@@ -63,7 +63,7 @@ define(['hgn!readium_js_viewer_html_templates/managed-dialog.html', 'hgn!readium
                     break;
                 default:
                     msg = Strings.err_unknown;
-                    console.trace();
+                    consoleLog(msg);
                     break;
             }
             Dialogs.showModalMessage(Strings.err_dlg_title, msg);

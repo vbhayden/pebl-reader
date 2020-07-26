@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html manifest="offlinePebl.appcache">
+<html><!-- manifest="offlinePebl.appcache" -->
     <head>
         <meta name="google-site-verification" content="viy9G5ltZp2BNyGobWevcRefx2Xi-BxIBUNRD6maJX4" />
         <meta charset="utf-8">
@@ -12,10 +12,10 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta name="apple-mobile-web-app-title" content="PeBL eReader">
+        <meta name="theme-color" content="#fff">
 
         <meta name="msapplication-TileImage" content="images/PEBL-icon-144.png">
         <meta name="msapplication-TileColor" content="#000000">
-
 
         <style>
          .library-item{
@@ -30,45 +30,42 @@
          }
         </style>
 
-        <link rel="preload" href="fonts/glyphicons-halflings-regular.woff2" as="font">
-        <link rel="preload" href="css/annotations.css" as="style">
-
         <script type="text/javascript" src="scripts/pack.js"></script>
-        
-        <link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous" />
+
+        <link rel="stylesheet" type="text/css" href="css/annotations.css" async>
+        <link rel="stylesheet" type="text/css" href="css/all.min.css" async>
         <link rel="stylesheet" type="text/css" href="css/readium-all.css" async>
         <link rel="stylesheet" type="text/css" href="css/pebl-login-widget.css" async>
 
         <script type="text/javascript">
          document.getElementById('readerFavicon').setAttribute('href', window.PeBLConfig.favicon);
 
+         /* var fnAppCacheSetup = function() {
+          *     var cache = window.applicationCache;
+          *     if (cache) {
+          *         cache.addEventListener('updateready', function (e) {
+          *             if (cache.status == cache.UPDATEREADY) {
+          *                 cache.swapCache();
+          *                 if (confirm("New Web Reader Version Available, Reload?")) {
+          *                     window.location.reload();
+          *                 }
+          *             }
+          *         });
+          *         if (cache.status == 1 || cache.status > 3)
+          *             cache.update();
+          *     }
+          * }; */
+
          if (navigator.serviceWorker) {
              navigator.serviceWorker.register('peblSW.js').then(function (reg) {
-                 console.log("Service worker registered", reg.scope);
-
-                 reg.onupdatefound = function () {
-                     console.log("Updating worker");
-                 }
-
-                 reg.update();
+                 consoleLog("Service worker registered", reg.scope);
+                 hookSWWorkerApi(reg);
              }).catch(function (err) {
-                 console.log("Bad service worker", err);
+                 consoleError("Bad service worker", err);
+                 /* fnAppCacheSetup(); */
              });
-
-         }
-
-         var cache = window.applicationCache;
-         if (cache) {
-             cache.addEventListener('updateready', function (e) {
-                 if (cache.status == cache.UPDATEREADY) {
-                     cache.swapCache();
-                     if (confirm("New Site Version Available, Reload?")) {
-                         window.location.reload();
-                     }
-                 }
-             });
-             if (cache.status == 1 || cache.status > 3)
-                cache.update();
+         } else {
+             /* fnAppCacheSetup(); */
          }
 
          var path = (window.location && window.location.pathname) ? window.location.pathname : '';
@@ -91,7 +88,7 @@
              ) : ''
          ;
 
-         console.log(HTTPServerRootFolder);
+         consoleLog(HTTPServerRootFolder);
 
          var getURLQueryParams = function() {
              var params = {};
@@ -113,7 +110,7 @@
          };
 
          var urlParams = getURLQueryParams();
-         console.log(urlParams);
+         consoleLog(urlParams);
 
          var fontsArray = [];
          if (typeof getFontFaces != "undefined") { // defined externally
@@ -146,7 +143,6 @@
                      'canHandleUrl' : false,
                      'canHandleDirectory' : false,
 
-
                      'workerUrl': 'scripts/readium-js-viewer_CLOUDAPP-WORKER.js',
                      'epubReadingSystemUrl': undefined
                  }
@@ -163,6 +159,7 @@
 
     <!-- This is all application-specific HTML -->
     <body>
+        <noscript>Javascript is required to view this site, please enable Javascript and reload the page.</noscript>
         <nav id="app-navbar" class="navbar" role="banner" aria-label="{{Strings.i18n_toolbar}}">
         </nav>
         <div id="app-container">
