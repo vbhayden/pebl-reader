@@ -233,16 +233,23 @@ self.addEventListener('fetch', (event) => {
         event.respondWith((async () => {
             let openCache = await caches.open(root || CACHE_NAME);
             let cachedResponse = await openCache.match(event.request);
-            // console.log(root, event.request.url);
             if (cachedResponse) {
-                // console.log("cached", cachedResponse);
                 return cachedResponse;
+            } else {
+                let url = new URL(event.request.url);
+                if (url.search !== "") {
+                    cachedResponse = await openCache.match(url.origin + url.pathname);
+                    if (cachedResponse) {
+                        return cachedResponse;
+                    }
+                }
             }
+
             let externalResponse = await fetch(event.request);
-            if (externalResponse.status < 206) {
+            if (externalResponse && externalResponse.status < 206) {
                 openCache.put(request, externalResponse.clone());
             }
-            // console.log("eResponse", externalResponse);
+
             return externalResponse;
         })());
     }

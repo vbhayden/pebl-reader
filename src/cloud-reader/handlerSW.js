@@ -34,7 +34,7 @@ function hookSWWorkerApi(reg) {
         () => {
             if (reg.active) {
                 Dialogs.showModalPrompt("Upgrade Detected",
-                    "New PeBL Web Reader Version Available, Reload?",
+                    "New PeBL Web Reader version available, Reload?",
                     "Yes",
                     "No",
                     () => {
@@ -56,7 +56,7 @@ function hookSWWorkerApi(reg) {
         let fn = () => {
             if (Dialogs) {
                 Dialogs.showModalPrompt("Upgrade Detected",
-                    "New PeBL Web Reader Version Available, Reload?",
+                    "New PeBL Web Reader version available, Reload?",
                     "Yes",
                     "No",
                     () => {
