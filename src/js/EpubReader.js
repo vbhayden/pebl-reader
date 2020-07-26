@@ -2674,8 +2674,8 @@ define([
 
                PeBL.emitEvent(PeBL.events.newBook, {
                    book: window.location.origin + '/?epub=' + encodeURIComponent(ebookURL_filepath),
-                   bookTitle: ebookURL_filepath.replace('epub_content/bookshelf/', ''),
-                   bookId: ebookURL_filepath.replace('epub_content/bookshelf/', '')
+                   bookTitle: ebookURL_filepath.split('epub_content/bookshelf/').pop(),
+                   bookId: ebookURL_filepath.split('epub_content/bookshelf/').pop()
                });
 
                Analytics.trackView('/reader');
