@@ -75,6 +75,7 @@ var FILES_TO_CACHE = [
 
     "./manifest.json",
 
+    "./images/pebl-icons-search.svg",
     "./images/PEBL-icon-16.ico",
     "./images/covers/cover1.jpg",
     "./images/covers/cover2.jpg",
@@ -226,8 +227,6 @@ self.addEventListener('fetch', (event) => {
     if (indexOEBPS != -1) {
         root = url.href.substring(0, indexOEBPS + "/OEBPS/".length);
     }
-
-    // console.log("request", request, url.origin == location.origin);
 
     if (url.origin == location.origin) {
         event.respondWith((async () => {
