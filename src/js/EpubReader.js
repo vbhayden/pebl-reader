@@ -1622,11 +1622,11 @@ define([
                        PeBL.subscribeEvent(PeBL.events.incomingSharedAnnotations,
                                            false,
                                            function(stmts) {
-                                               for (var stmt of stmts) {
-                                                   PeBL.storage.getCurrentUser(function(identity) {
+                                               PeBL.storage.getCurrentUser(function(identity) {
+                                                   for (var stmt of stmts) {
                                                        if (stmt.type == 3) {
                                                            if (stmt.owner !== identity && readium.reader.disableSharedHighlights)
-                                                               return;
+                                                               continue;
                                                            try {
                                                                readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, identity == stmt.owner ? 'shared-my-highlight' : 'shared-highlight');
                                                            } catch (e) {
@@ -1637,9 +1637,9 @@ define([
                                                            $("#annotation-" + stmt.target).remove();
                                                            $("#bookmark-" + stmt.target).remove();
                                                            $("#sharedAnnotation-" + stmt.target).remove();
-                                                       }
-                                                   });
-                                               }
+                                                       }  
+                                                    }
+                                                });
                                            });
                    }
 
@@ -1678,7 +1678,7 @@ define([
                            for (var stmt of stmts) {
                                if (stmt.type === 3) {
                                    if (stmt.owner !== userName && readium.reader.disableSharedHighlights)
-                                       return;
+                                       continue;
                                    // consoleLog(stmt);
                                    var highlightType = 'shared-highlight';
                                    if (stmt.owner === userName)
