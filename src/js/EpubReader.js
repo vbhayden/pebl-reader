@@ -1622,8 +1622,8 @@ define([
                        PeBL.subscribeEvent(PeBL.events.incomingSharedAnnotations,
                                            false,
                                            function(stmts) {
-                                               for (var stmt of stmts) {
-                                                   PeBL.storage.getCurrentUser(function(identity) {
+                                               PeBL.storage.getCurrentUser(function(identity) {
+                                                   for (var stmt of stmts) {
                                                        if (stmt.type == 3) {
                                                            if (stmt.owner !== identity && readium.reader.disableSharedHighlights)
                                                                continue;
@@ -1637,9 +1637,9 @@ define([
                                                            $("#annotation-" + stmt.target).remove();
                                                            $("#bookmark-" + stmt.target).remove();
                                                            $("#sharedAnnotation-" + stmt.target).remove();
-                                                       }
-                                                   });
-                                               }
+                                                       }  
+                                                    }
+                                                });
                                            });
                    }
 
