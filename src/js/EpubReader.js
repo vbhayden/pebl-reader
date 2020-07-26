@@ -1626,7 +1626,7 @@ define([
                                                    PeBL.storage.getCurrentUser(function(identity) {
                                                        if (stmt.type == 3) {
                                                            if (stmt.owner !== identity && readium.reader.disableSharedHighlights)
-                                                               return;
+                                                               continue;
                                                            try {
                                                                readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, identity == stmt.owner ? 'shared-my-highlight' : 'shared-highlight');
                                                            } catch (e) {
@@ -1678,7 +1678,7 @@ define([
                            for (var stmt of stmts) {
                                if (stmt.type === 3) {
                                    if (stmt.owner !== userName && readium.reader.disableSharedHighlights)
-                                       return;
+                                       continue;
                                    // consoleLog(stmt);
                                    var highlightType = 'shared-highlight';
                                    if (stmt.owner === userName)
