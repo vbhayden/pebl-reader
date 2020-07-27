@@ -36,10 +36,10 @@ var FILES_TO_CACHE = [
     "./scripts/pack.js",
     // "./scripts/config.js",
 
-    // "./fonts/glyphicons-halflings-regular.woff",
-    "./webfonts/fa-brands-400.woff",
-    "./webfonts/fa-regular-400.woff",
-    "./webfonts/fa-solid-900.woff",
+    "./fonts/glyphicons-halflings-regular.woff2",
+    "./webfonts/fa-brands-400.woff2",
+    "./webfonts/fa-regular-400.woff2",
+    "./webfonts/fa-solid-900.woff2",
 
     "./manifest.json",
 
