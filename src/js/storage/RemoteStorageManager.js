@@ -1,4 +1,4 @@
-define(['remotestorage', 'jquery'], function(rs, $){
+define(['remotestorage'], function(rs){
 
     var client;
 

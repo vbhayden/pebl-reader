@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html><!-- manifest="offlinePebl.appcache" -->
+<html>
     <head>
         <meta name="google-site-verification" content="viy9G5ltZp2BNyGobWevcRefx2Xi-BxIBUNRD6maJX4" />
         <meta charset="utf-8">
@@ -30,43 +30,24 @@
          }
         </style>
 
-        <script type="text/javascript" src="scripts/pack.js"></script>
-
         <link rel="stylesheet" type="text/css" href="css/annotations.css" async>
         <link rel="stylesheet" type="text/css" href="css/all.min.css" async>
         <link rel="stylesheet" type="text/css" href="css/readium-all.css" async>
         <link rel="stylesheet" type="text/css" href="css/pebl-login-widget.css" async>
 
+        <script type="text/javascript" src="scripts/pack.js"></script>
+
         <script type="text/javascript">
-         document.getElementById('readerFavicon').setAttribute('href', window.PeBLConfig.favicon);
-
-         /* var fnAppCacheSetup = function() {
-          *     var cache = window.applicationCache;
-          *     if (cache) {
-          *         cache.addEventListener('updateready', function (e) {
-          *             if (cache.status == cache.UPDATEREADY) {
-          *                 cache.swapCache();
-          *                 if (confirm("New Web Reader Version Available, Reload?")) {
-          *                     window.location.reload();
-          *                 }
-          *             }
-          *         });
-          *         if (cache.status == 1 || cache.status > 3)
-          *             cache.update();
-          *     }
-          * }; */
-
          if (navigator.serviceWorker) {
              navigator.serviceWorker.register('peblSW.js').then(function (reg) {
                  consoleLog("Service worker registered", reg.scope);
                  hookSWWorkerApi(reg);
              }).catch(function (err) {
                  consoleError("Bad service worker", err);
-                 /* fnAppCacheSetup(); */
              });
-         } else {
-             /* fnAppCacheSetup(); */
          }
+
+         document.getElementById('readerFavicon').setAttribute('href', window.PeBLConfig.favicon);
 
          var path = (window.location && window.location.pathname) ? window.location.pathname : '';
 
@@ -144,10 +125,6 @@
              }
          });
 
-         // PEBL.registerReadyCallback(function () {
-         //       loadReadiumReader();
-         // });
-         // loadReadiumReader();
         </script>
 
     </head>

@@ -1,6 +1,5 @@
 define([
     './ModuleConfig',
-    'jquery',
     'StorageManager',
     'Settings',
     './EpubLibraryManager',
@@ -25,7 +24,6 @@ define([
 
        function(
            moduleConfig,
-           $,
            StorageManager,
            Settings,
            libraryManager,

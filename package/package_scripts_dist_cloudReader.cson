@@ -67,10 +67,6 @@
             dist/cloud-reader/css/
         &&
         npm run cpy
-            src/cloud-reader/offlinePebl.appcache
-            dist/cloud-reader/
-        &&
-        npm run cpy
             src/cloud-reader/manifest.json
             dist/cloud-reader/
         &&
@@ -90,6 +86,10 @@
             src/js/jquery-3.5.1.min.js
             dist/cloud-reader/scripts/
         &&
+        npm run cpy
+            src/js/jquerySizes.js
+            dist/cloud-reader/scripts/
+        &&        
         npm run cpy
             src/css/pebl-discussion-widget.css
             dist/cloud-reader/css/

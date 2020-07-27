@@ -16,8 +16,8 @@ var CACHE_PREFIX = "PeBLV";
 var CACHE_NAME = CACHE_PREFIX + timestamp;
 
 var FILES_TO_CACHE = [
-    "./",
-    "./?",
+    // "./",
+    // "./?",
 
     "./css/all.min.css",
     "./css/readium-all.css",
@@ -68,7 +68,7 @@ var FILES_TO_CACHE = [
     "./images/PEBL-icon-144.png",
     "./images/PEBL-icon-192.png",
     "./images/webreader_logo_eduworks.png",
-    "./images/eXtension-icon_small.png",
+    // "./images/eXtension-icon_small.png",
     "./images/PEBL-Logo-Color-small.png",
     "./images/pebl-icons-light_bookmark-list.svg",
     "./images/pebl-icons-light_download.svg",
@@ -96,7 +96,7 @@ var FILES_TO_CACHE = [
     "./images/pebl-icons-wip_toc.svg"
 ];
 
-let batchFetchFiles = async (batchSize, incomingFiles, cacheName) => {
+let batchFetchFiles = async (batchSize, incomingFiles, cacheName, client) => {
     let files = incomingFiles.slice(0);
     let openCache;
     if (typeof cacheName === "string") {
@@ -105,6 +105,13 @@ let batchFetchFiles = async (batchSize, incomingFiles, cacheName) => {
         openCache = cacheName;
     }
     let p = async () => {
+        if (client)
+            sendMsg(client,
+                "addToCacheProgress",
+                {
+                    total: incomingFiles.length,
+                    remaining: files.length
+                });
         let pending = [];
         for (let i = 0; i < batchSize; i++) {
             let file = files.pop();
@@ -160,7 +167,7 @@ let addToCache = async (client, payload) => {
         }
     }
     if (toCache.length > 0) {
-        await batchFetchFiles(4, toCache, openCache);
+        await batchFetchFiles(4, toCache, openCache, client);
     }
     sendMsg(client, "addedToCache", {});
 };

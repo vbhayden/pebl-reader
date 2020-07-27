@@ -31,7 +31,7 @@ let Terser = require("terser");
 // // fs.writeFileSync(minPath, result.code);
 // fs.writeFileSync(path, result.code);
 
-if (process.env.MINIMIZE) {
+if (process.env.MINIMIZE === "true") {
     console.log("Minifing");
     let path = "dist/cloud-reader/scripts/pack.js";
     let result = Terser.minify(fs.readFileSync(path, "utf8"));

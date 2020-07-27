@@ -271,7 +271,7 @@ buildQA:
   - mv dist/PeBLCore.js src/js/
   - chmod +x pack.sh
   - npm run prepare:all
-  - npm run dist
+  - export MINIMIZE=true && npm run dist
   artifacts:
     paths:
     - dist/cloud-reader
@@ -295,7 +295,7 @@ buildDev:
   - mv dist/PeBLCore.js src/js/
   - chmod +x pack.sh
   - npm run prepare:all
-  - export UNMINIFIED=true && npm run dist
+  - npm run dist
   artifacts:
     paths:
     - dist/cloud-reader
