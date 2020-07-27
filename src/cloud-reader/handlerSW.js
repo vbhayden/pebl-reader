@@ -46,7 +46,8 @@ function hookSWWorkerApi(reg) {
                                     sendSWMsg("updateWorker", {}, reg.waiting);
                                 }
                             }
-                            reg.installing.addEventListener("statechange", fn);
+                            if (reg.installing)
+                                reg.installing.addEventListener("statechange", fn);
                         }
                     },
                     () => { });

@@ -112,11 +112,6 @@
          var urlParams = getURLQueryParams();
          consoleLog(urlParams);
 
-         var fontsArray = [];
-         if (typeof getFontFaces != "undefined") { // defined externally
-             fontsArray = getFontFaces(HTTPServerRootFolder + "/font-faces/");
-         }
-
          // MUST BE *SINGLE* CALL TO require.config() FOR ALMOND (SINGLE BUNDLE) TO WORK CORRECTLY!!!
          require.config({
              /* http://requirejs.org/docs/api.html#config-waitSeconds */
@@ -128,7 +123,7 @@
 
                      'mathJaxUrl': HTTPServerRootFolder + '/scripts/mathjax/MathJax.js',
 
-                     'fonts': fontsArray,
+                     'fonts': [],
 
                      'annotationCSSUrl': HTTPServerRootFolder + '/css/annotations.css',
 

@@ -14,8 +14,10 @@ limitations under the License.
 window.PeBLConfig = {}
 // window.PeBLConfig.PeBLServicesURL = 'https://dev.services.peblproject.org';
 // window.PeBLConfig.PeBLServicesWSURL = 'wss://dev.services.peblproject.org';
-window.PeBLConfig.PeBLServicesURL = 'https://localhost:8080';
-window.PeBLConfig.PeBLServicesWSURL = 'wss://localhost:8080';
+window.PeBLConfig.PeBLServicesURL = 'https://eduweb.vedbyte.com:8080';
+window.PeBLConfig.PeBLServicesWSURL = 'wss://eduweb.vedbyte.com:8080';
+// window.PeBLConfig.PeBLServicesURL = 'https://localhost:8080';
+// window.PeBLConfig.PeBLServicesWSURL = 'wss://localhost:8080';
 window.PeBLConfig.useOpenID = true;
 window.PeBLConfig.favicon = 'images/PEBL-icon-16.ico';
 window.PeBLConfig.loginImage = 'images/PEBL-Logo-Color-small.png';

@@ -118,10 +118,6 @@
 #=====================
     'dist:cloudReader:copy:fonts': '
         npm run ncp
-            src/fonts/
-            dist/cloud-reader/font-faces/
-        &&
-        npm run ncp
             src/webfonts/
             dist/cloud-reader/webfonts/
             
