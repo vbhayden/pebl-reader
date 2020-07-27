@@ -1,3 +1,6 @@
+#readerCurrentClass {
+    color: gray;
+}
 
 #app-container{
     overflow-x: hidden;
