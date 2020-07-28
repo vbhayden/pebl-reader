@@ -1,3 +1,7 @@
+#readerCurrentClass {
+  color: gray;
+}
+
 #epub-reader-frame{
   display: inline-block;
   height: 100%;

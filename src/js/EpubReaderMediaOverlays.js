@@ -1,6 +1,6 @@
 
-define(['readium_shared_js/globals', 'module','jquery', 'underscore', 'bootstrap', 'readium_js/Readium', './Spinner', 'Settings', 'i18nStrings', './Dialogs', './Keyboard'], 
-        function (Globals, module, $, _, bootstrap, Readium, spinner, Settings, Strings, Dialogs, Keyboard) {
+define(['readium_shared_js/globals', 'module', 'underscore', 'bootstrap', 'readium_js/Readium', './Spinner', 'Settings', 'i18nStrings', './Dialogs', './Keyboard'], 
+        function (Globals, module, _, bootstrap, Readium, spinner, Settings, Strings, Dialogs, Keyboard) {
 
     var init = function(readium) {
 

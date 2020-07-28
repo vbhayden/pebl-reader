@@ -25,7 +25,7 @@ Modified in commit 994a17c6cf0b38051b98f4b9a126a18f28fd0e7e
 //  used to endorse or promote products derived from this software without specific
 //  prior written permission.
 
-define(['readium_shared_js/globals', 'jquery','jquery_hammer','hammerjs'], function(Globals, $,jqueryHammer,Hammer) {
+define(['readium_shared_js/globals'], function(Globals) {
 
     var gesturesHandler = function(reader, viewport){
 
@@ -51,9 +51,9 @@ define(['readium_shared_js/globals', 'jquery','jquery_hammer','hammerjs'], funct
             reader.on(ReadiumSDK.Events.CONTENT_DOCUMENT_LOADED, function(iframe, spineItem) {
                 Globals.logEvent("CONTENT_DOCUMENT_LOADED", "ON", "gestures.js [ " + spineItem.href + " ]");
 
-                delete Hammer.defaults.cssProps.userSelect;
+                // delete Hammer.defaults.cssProps.userSelect;
 
-                var hammer = new Hammer(iframe[0].contentDocument);
+                // var hammer = new Hammer(iframe[0].contentDocument);
 
                 var isIos = function() {
                   var userAgent = window.navigator.userAgent.toLowerCase();
@@ -75,67 +75,22 @@ define(['readium_shared_js/globals', 'jquery','jquery_hammer','hammerjs'], funct
                         }
                     }
                 }
-
-                //set hammer's document root
-                // Hammer.DOCUMENT = iframe.contents();
-                //hammer's internal touch events need to be redefined? (doesn't work without)
-                // Hammer.event.onTouch(Hammer.DOCUMENT, Hammer.EVENT_MOVE, Hammer.detection.detect);
-                // Hammer.event.onTouch(Hammer.DOCUMENT, Hammer.EVENT_END, Hammer.detection.detect);
-
                 //set up the hammer gesture events
                 //swiping handlers
                 // var swipingOptions = {prevent_mouseevents: true};
-                hammer.on("swipeleft", function (event) {
-                    if (event.pointerType === 'touch') {
-                        clearIosKeyboard();
-                        reader.openPageRight();
-                    }
-                });
-                hammer.on("swiperight", function (event) {
-                    if (event.pointerType === 'touch') {
-                        clearIosKeyboard();
-                        reader.openPageLeft();
-                    }
-                });
-
-                // Hammer(Hammer.DOCUMENT,swipingOptions).on("swipeleft", function() {
-                //     onSwipeLeft();
-                // });
-                // Hammer(Hammer.DOCUMENT,swipingOptions).on("swiperight", function() {
-                //     onSwipeRight();
-                // });
-
-                //remove stupid ipad safari elastic scrolling
-                //TODO: test this with reader ScrollView and FixedView
-                // $(Hammer.DOCUMENT).on(
-                //     'touchmove',
-                //     function(e) {
-                //         //hack: check if we are not dealing with a scrollview
-                //         if(isGestureHandled()){
-                //             e.preventDefault();
-                //         }
+                // hammer.on("swipeleft", function (event) {
+                //     if (event.pointerType === 'touch') {
+                //         clearIosKeyboard();
+                //         reader.openPageRight();
                 //     }
-                // );
+                // });
+                // hammer.on("swiperight", function (event) {
+                //     if (event.pointerType === 'touch') {
+                //         clearIosKeyboard();
+                //         reader.openPageLeft();
+                //     }
+                // });
             });
-
-            //remove stupid ipad safari elastic scrolling (improves UX for gestures)
-            //TODO: test this with reader ScrollView and FixedView
-            // $(viewport).on(
-            //     'touchmove',
-            //     function(e) {
-            //         if(isGestureHandled()) {
-            //             e.preventDefault();
-            //         }
-            //     }
-            // );
-
-            // //handlers on viewport
-            // $(viewport).hammer().on("swipeleft", function() {
-            //     onSwipeLeft();
-            // });
-            // $(viewport).hammer().on("swiperight", function() {
-            //     onSwipeRight();
-            // });
         };
 
     };

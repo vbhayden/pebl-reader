@@ -1,6 +1,5 @@
 define([
     './ModuleConfig',
-    'jquery',
     'StorageManager',
     'Settings',
     './EpubLibraryManager',
@@ -25,7 +24,6 @@ define([
 
        function(
            moduleConfig,
-           $,
            StorageManager,
            Settings,
            libraryManager,
@@ -752,6 +750,8 @@ define([
                                            let package = PackageParser.parsePackageDom(xml);
                                            let items = xml.getElementsByTagName("package")[0].getElementsByTagName("manifest")[0].getElementsByTagName("item");
                                            let hrefs = [];
+                                           var title = Strings.import_dlg_title + " [ " + package.title + " ]";
+                                           Dialogs.showModalProgress(title, Strings.storing_file);
                                            for (let item of items) {
                                                hrefs.push(adjRoot + item.getAttribute("href"));
                                            }
@@ -766,11 +766,17 @@ define([
                                                coverPath: package.coverHref,
                                                coverHref: adjRoot + package.coverHref
                                            });
+                                           let pFn = (data)=>{
+                                               let percent = 100*((data.total - data.remaining) / data.total);
+                                               Dialogs.updateProgress(percent, Messages.PROGRESS_WRITING, package.title);
+                                           }
                                            let fn = () => {
                                                unregisterSWListener("addedToCache", fn);
+                                               unregisterSWListener("addToCacheProgress", pFn);
                                                callback();
                                                handleLibraryChange();
                                            }
+                                           registerSWListener("addToCacheProgress", pFn);
                                            registerSWListener("addedToCache", fn);
                                            sendSWMsg("addToCache", {
                                                root: adjRoot,
@@ -883,13 +889,13 @@ define([
                    $(document.body).removeClass('list-view');
                    setTimeout(function(){ $('.icon-list-view')[0].focus(); }, 50);
                });
-               
+
                try {
                    PeBL.extension.hardcodeLogin.hookLoginButton("loginButt");
                } catch (e) {
                    console.log('Unable to hook login button', e);
                }
-               
+
                findHeightRule();
                setItemHeight();
                StorageManager.initStorage(function(){

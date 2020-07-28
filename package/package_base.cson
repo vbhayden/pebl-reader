@@ -127,7 +127,7 @@ devDependencies:
     # "opener": '^1.4.3'
 
     #"keymaster": 'latest'
-    "keymaster": 'github:danielweck/keymaster#master'
+    #"keymaster": 'github:danielweck/keymaster#master'
 
     #"jath": 'latest'
     "jath": 'github:danielweck/jath#master'
@@ -139,10 +139,6 @@ devDependencies:
     "bootstrap": '3.x'
 
     "bootstrap-accessibility-plugin": 'github:paypal/bootstrap-accessibility-plugin#master'
-
-    "hammerjs": '^2.0.8'
-
-    "jquery-hammerjs": '^2.0.0'
 
     "screenfull": '^3.3.2'
 

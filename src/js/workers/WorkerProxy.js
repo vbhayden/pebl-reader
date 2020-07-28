@@ -1,4 +1,4 @@
-define(['../storage/IndexedDBStorageManager', '../ModuleConfig', './Messages', 'jquery', '../PackageParser', 'readium_js/epub-fetch/encryption_handler'], function(StorageManager, moduleConfig, Messages, $, PackageParser, EncryptionHandler){
+define(['../storage/IndexedDBStorageManager', '../ModuleConfig', './Messages', '../PackageParser', 'readium_js/epub-fetch/encryption_handler'], function(StorageManager, moduleConfig, Messages, PackageParser, EncryptionHandler){
 
     var worker;
     var cleanupWorker = function(){

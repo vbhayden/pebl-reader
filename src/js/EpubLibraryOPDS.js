@@ -1,13 +1,11 @@
 define([
 './ModuleConfig',
-'jquery',
 'readium_shared_js/helpers',
 'URIjs'
 ],
 
 function(
 moduleConfig,
-$,
 Helpers,
 URI){
 
