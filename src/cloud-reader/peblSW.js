@@ -16,43 +16,23 @@ var CACHE_PREFIX = "PeBLV";
 var CACHE_NAME = CACHE_PREFIX + timestamp;
 
 var FILES_TO_CACHE = [
-    // "./",
-    // "./?",
 
-    "./css/all.min.css",
-    "./css/readium-all.css",
     "./css/pebl-login-widget.css",
     "./css/annotations.css",
 
-    // "./scripts/jquery-3.3.1.min.js",
-    // "./scripts/PeBLCore.js",
-    // "./scripts/readium-js-viewer_all.js",
-    // "./scripts/pebl-login-widget.js",
-    // "./scripts/readium-js-viewer_CLOUDAPP-WORKER.js",
     // "./scripts/mathjax/MathJax.js",
     "./scripts/zip/deflate.js",
     "./scripts/zip/inflate.js",
     "./scripts/zip/z-worker.js",
-    "./scripts/pack.js",
-    // "./scripts/config.js",
 
     "./fonts/glyphicons-halflings-regular.woff2",
-    "./webfonts/fa-brands-400.woff2",
     "./webfonts/fa-regular-400.woff2",
-    "./webfonts/fa-solid-900.woff2",
 
     "./manifest.json",
 
     "./images/pebl-icons-search.svg",
     "./images/PEBL-icon-16.ico",
-    "./images/covers/cover1.jpg",
-    "./images/covers/cover2.jpg",
-    "./images/covers/cover3.jpg",
-    "./images/covers/cover4.jpg",
-    "./images/covers/cover5.jpg",
-    "./images/covers/cover6.jpg",
-    "./images/covers/cover7.jpg",
-    "./images/covers/cover8.jpg",
+
     "./images/epub_favicon.ico",
     "./images/epub-touch-icon.png",
     "./images/glyphicons_115_text_smaller.png",
@@ -93,7 +73,24 @@ var FILES_TO_CACHE = [
     "./images/pebl-icons-wip_new-bookmark.svg",
     "./images/pebl-icons-wip_new-highlight.svg",
     "./images/pebl-icons-wip_settings.svg",
-    "./images/pebl-icons-wip_toc.svg"
+    "./images/pebl-icons-wip_toc.svg",
+
+    "./images/covers/cover1.jpg",
+    "./images/covers/cover2.jpg",
+    "./images/covers/cover3.jpg",
+    "./images/covers/cover4.jpg",
+    "./images/covers/cover5.jpg",
+    "./images/covers/cover6.jpg",
+    "./images/covers/cover7.jpg",
+    "./images/covers/cover8.jpg",
+
+    "./css/all.min.css",
+    "./webfonts/fa-brands-400.woff2",
+    "./webfonts/fa-solid-900.woff2",
+
+    "./css/readium-all.css",
+
+    "./scripts/pack.js"
 ];
 
 let batchFetchFiles = async (batchSize, incomingFiles, cacheName, client) => {
@@ -112,21 +109,17 @@ let batchFetchFiles = async (batchSize, incomingFiles, cacheName, client) => {
                     total: incomingFiles.length,
                     remaining: files.length
                 });
-        let pending = [];
-        for (let i = 0; i < batchSize; i++) {
-            let file = files.pop();
-            if (file)
-                pending.push(openCache.add(file));
-        }
-        for (let x = 0; x < pending.length; x++) {
-            await pending[x];
-        }
-        if (files.length > 0) {
+        let file = files.pop();
+        if (file)
+            await openCache.add(file);
+        if (files.length > 0)
             return p();
-        }
-        return;
     }
-    return p();
+    let pending = [];
+    for (let i = 0; i < batchSize; i++)
+        pending.push(p(i));
+    for (let i = 0; i < batchSize; i++)
+        await pending[i];
 }
 
 self.addEventListener('install',
@@ -151,10 +144,10 @@ let addToCache = async (client, payload) => {
     if (!payload.root.endsWith("/")) {
         payload.root = payload.root + "/";
     }
-    let defaultCache = await caches.open(CACHE_NAME);
+    // let defaultCache = await caches.open(CACHE_NAME);
     let openCache = await caches.open(payload.root);
     let cachedRequests = await openCache.keys();
-    let cachedDefaultRequests = await defaultCache.keys();
+    // let cachedDefaultRequests = await defaultCache.keys();
     let keyLookup = {};
     for (let request of cachedRequests) {
         keyLookup[request.url] = true;
