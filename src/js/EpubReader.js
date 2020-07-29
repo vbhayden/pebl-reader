@@ -818,61 +818,63 @@ define([
            };
 
            var sharedAnnotationCallback = function(stmts) {
-               PeBL.storage.getCurrentUser(function(userName) {
+               PeBL.user.getUser(function(userProfile) {
                    for (var stmt of stmts) {
-                       if (stmt.type === 3) {
-                           (function(stmt) {
-                               if ($("#sharedAnnotation-" + stmt.id).length == 0) {
-                                   var annotationContainer = document.createElement('div');
-                                   annotationContainer.id = "sharedAnnotation-" + stmt.id;``
-                                   annotationContainer.classList.add('annotation');
+                       if (stmt.groupId === userProfile.currentTeam || stmt.groupId === userProfile.currentClass) {
+                           if (stmt.type === 3) {
+                               (function(stmt) {
+                                   if ($("#sharedAnnotation-" + stmt.id).length == 0) {
+                                       var annotationContainer = document.createElement('div');
+                                       annotationContainer.id = "sharedAnnotation-" + stmt.id;
+                                       annotationContainer.classList.add('annotation');
 
-                                   var annotation = document.createElement('div');
+                                       var annotation = document.createElement('div');
 
-                                   var pinnedIcon = document.createElement('i');
-                                   pinnedIcon.classList.add('fa', 'fa-star', 'pinnedIcon');
-                                   annotation.appendChild(pinnedIcon);
+                                       var pinnedIcon = document.createElement('i');
+                                       pinnedIcon.classList.add('fa', 'fa-star', 'pinnedIcon');
+                                       annotation.appendChild(pinnedIcon);
 
-                                   if (stmt.pinned)
-                                       annotationContainer.classList.add('pinned');
+                                       if (stmt.pinned)
+                                           annotationContainer.classList.add('pinned');
 
-                                   var annotationTitle = document.createElement('span');
-                                   annotationTitle.textContent = stmt.title;
-                                   annotation.appendChild(annotationTitle);
-                                   var note = document.createElement('div');
-                                   var noteText = document.createElement('span');
-                                   if (stmt.text)
-                                       noteText.textContent = stmt.text;
-                                   note.appendChild(noteText);
+                                       var annotationTitle = document.createElement('span');
+                                       annotationTitle.textContent = stmt.title;
+                                       annotation.appendChild(annotationTitle);
+                                       var note = document.createElement('div');
+                                       var noteText = document.createElement('span');
+                                       if (stmt.text)
+                                           noteText.textContent = stmt.text;
+                                       note.appendChild(noteText);
 
 
-                                   annotationContainer.appendChild(annotation);
-                                   annotationContainer.appendChild(note);
+                                       annotationContainer.appendChild(annotation);
+                                       annotationContainer.appendChild(note);
 
-                                   annotationContainer.addEventListener('click', function() {
-                                       PeBL.emitEvent(PeBL.events.eventAccessed, {
-                                           type: 'annotation',
-                                           activityType: 'reader-annotation',
-                                           activityId: stmt.id,
-                                           name: stmt.title,
-                                           description: stmt.text,
-                                           idref: stmt.idRef,
-                                           cfi: stmt.cfi
+                                       annotationContainer.addEventListener('click', function() {
+                                           PeBL.emitEvent(PeBL.events.eventAccessed, {
+                                               type: 'annotation',
+                                               activityType: 'reader-annotation',
+                                               activityId: stmt.id,
+                                               name: stmt.title,
+                                               description: stmt.text,
+                                               idref: stmt.idRef,
+                                               cfi: stmt.cfi
+                                           });
+                                           readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
                                        });
-                                       readium.reader.openSpineItemElementCfi(stmt.idRef, stmt.cfi);
-                                   });
 
-                                   annotationContainer.addEventListener('contextmenu', function(evt) {
-                                       evt.preventDefault();
-                                       showAnnotationContextMenu(evt, stmt, true);
-                                   });
+                                       annotationContainer.addEventListener('contextmenu', function(evt) {
+                                           evt.preventDefault();
+                                           showAnnotationContextMenu(evt, stmt, true);
+                                       });
 
-                                   if (stmt.owner === userName)
-                                       $('#my-shared-annotations div[data-id="' + stmt.idRef + '"]').append($(annotationContainer));
-                                   else
-                                       $('#general-shared-annotations div[data-id="' + stmt.idRef + '"]').append($(annotationContainer));
-                               }
-                           })(stmt);
+                                       if (stmt.owner === userProfile.identity)
+                                           $('#my-shared-annotations div[data-id="' + stmt.idRef + '"]').append($(annotationContainer));
+                                       else
+                                           $('#general-shared-annotations div[data-id="' + stmt.idRef + '"]').append($(annotationContainer));
+                                   }
+                               })(stmt);
+                           }
                        }
                    }
                });
@@ -1079,7 +1081,7 @@ define([
                        activityId: annotation.id
                    });
                } else if (annotation.type === 3) {
-                   PeBL.emitEvent(PeBL.events.removedSharedAnnotation, annotation.id);
+                   PeBL.emitEvent(PeBL.events.removedSharedAnnotation, annotation);
                    PeBL.emitEvent(PeBL.events.eventUnsharedAnnotation, {
                        cfi: annotation.cfi,
                        idref: annotation.idRef,
@@ -1093,10 +1095,20 @@ define([
            };
 
            var shareHighlight = function(annotation) {
-               removeHighlight(annotation);
-               annotation.type = 3;
-               PeBL.emitEvent(PeBL.events.newSharedAnnotation, annotation);
-               annotationsShowHideToggle(true);
+               PeBL.user.getUser(function(userProfile) {
+                   var groupId = '';
+                   if (userProfile.currentTeam)
+                       groupId = userProfile.currentTeam;
+                   else if (userProfile.currentClass)
+                       groupId = userProfile.currentClass;
+
+                   annotation.groupId = groupId;
+
+                   removeHighlight(annotation);
+                   annotation.type = 3;
+                   PeBL.emitEvent(PeBL.events.newSharedAnnotation, annotation);
+                   annotationsShowHideToggle(true);
+               });
            };
 
            var pinHighlight = function(annotation) {
@@ -1622,22 +1634,25 @@ define([
                        PeBL.subscribeEvent(PeBL.events.incomingSharedAnnotations,
                                            false,
                                            function(stmts) {
-                                               PeBL.storage.getCurrentUser(function(identity) {
+                                               PeBL.user.getUser(function(userProfile) {
                                                    for (var stmt of stmts) {
-                                                       if (stmt.type == 3) {
-                                                           if (stmt.owner !== identity && readium.reader.disableSharedHighlights)
-                                                               continue;
-                                                           try {
-                                                               readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, identity == stmt.owner ? 'shared-my-highlight' : 'shared-highlight');
-                                                           } catch (e) {
-                                                               consoleError(e);
-                                                           }
-                                                       } else if (stmt.target) {
-                                                           readium.reader.plugins.highlights.removeHighlight(stmt.target);
-                                                           $("#annotation-" + stmt.target).remove();
-                                                           $("#bookmark-" + stmt.target).remove();
-                                                           $("#sharedAnnotation-" + stmt.target).remove();
-                                                       }  
+                                                       
+                                                           if (stmt.type == 3) {
+                                                               if (stmt.groupId === userProfile.currentTeam || stmt.groupId === userProfile.currentClass) {
+                                                                   if (stmt.owner !== userProfile.identity && readium.reader.disableSharedHighlights)
+                                                                       continue;
+                                                                   try {
+                                                                       readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, userProfile.identity == stmt.owner ? 'shared-my-highlight' : 'shared-highlight');
+                                                                   } catch (e) {
+                                                                       consoleError(e);
+                                                                   }
+                                                               }
+                                                           } else if (stmt.target) {
+                                                               readium.reader.plugins.highlights.removeHighlight(stmt.target);
+                                                               $("#annotation-" + stmt.target).remove();
+                                                               $("#bookmark-" + stmt.target).remove();
+                                                               $("#sharedAnnotation-" + stmt.target).remove();
+                                                           }  
                                                     }
                                                 });
                                            });
@@ -2481,18 +2496,27 @@ define([
                    }
                });
                $('#add-note-submit').on('click', function(evt) {
-                   var annotation = $(evt.currentTarget).data('annotation');
+                   PeBL.user.getUser(function(userProfile) {
+                       var groupId = '';
+                       if (userProfile.currentTeam)
+                           groupId = userProfile.currentTeam;
+                       else if (userProfile.currentClass)
+                           groupId = userProfile.currentClass;
 
-                   var note = $('#annotationInput').val();
-                   removeHighlight(annotation);
+                       var annotation = $(evt.currentTarget).data('annotation');
 
-                   annotation.text = note;
-                   if (annotation.type === 2) {
-                       PeBL.emitEvent(PeBL.events.eventAnnotated, annotation);
-                   } else if (annotation.type === 3) {
-                       PeBL.emitEvent(PeBL.events.newSharedAnnotation, annotation);
-                   }
-                   annotationsShowHideToggle(true);
+                       var note = $('#annotationInput').val();
+                       removeHighlight(annotation);
+
+                       annotation.text = note;
+                       if (annotation.type === 2) {
+                           PeBL.emitEvent(PeBL.events.eventAnnotated, annotation);
+                       } else if (annotation.type === 3) {
+                           annotation.groupId = groupId;
+                           PeBL.emitEvent(PeBL.events.newSharedAnnotation, annotation);
+                       }
+                       annotationsShowHideToggle(true);
+                   });
                });
 
                window.addEventListener('message', function(event) {
