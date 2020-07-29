@@ -16,75 +16,23 @@ var CACHE_PREFIX = "PeBLV";
 var CACHE_NAME = CACHE_PREFIX + timestamp;
 
 var FILES_TO_CACHE = [
-    "./",
-    "./?",
 
-    "./css/all.min.css",
-    "./css/readium-all.css",
     "./css/pebl-login-widget.css",
     "./css/annotations.css",
 
-    // "./scripts/jquery-3.3.1.min.js",
-    // "./scripts/PeBLCore.js",
-    // "./scripts/readium-js-viewer_all.js",
-    // "./scripts/pebl-login-widget.js",
-    // "./scripts/readium-js-viewer_CLOUDAPP-WORKER.js",
     // "./scripts/mathjax/MathJax.js",
     "./scripts/zip/deflate.js",
     "./scripts/zip/inflate.js",
     "./scripts/zip/z-worker.js",
-    "./scripts/pack.js",
-    // "./scripts/config.js",
 
-    // "./font-faces/fonts.js",
-    "./fonts/glyphicons-halflings-regular.eot",
-    "./fonts/glyphicons-halflings-regular.svg",
-    "./fonts/glyphicons-halflings-regular.ttf",
-    "./fonts/glyphicons-halflings-regular.woff",
     "./fonts/glyphicons-halflings-regular.woff2",
-    "./font-faces/Noto-Serif/Noto-Serif.css",
-    "./font-faces/Noto-Serif/Noto-Serif-700.woff",
-    "./font-faces/Noto-Serif/Noto-Serif-700italic.woff",
-    "./font-faces/Noto-Serif/Noto-Serif-italic.woff",
-    "./font-faces/Noto-Serif/Noto-Serif-regular.woff",
-    "./font-faces/OpenDyslexic/OpenDyslexic.css",
-    "./font-faces/OpenDyslexic/OpenDyslexic-Bold.woff",
-    "./font-faces/OpenDyslexic/OpenDyslexic-BoldItalic.woff",
-    "./font-faces/OpenDyslexic/OpenDyslexic-Italic.woff",
-    "./font-faces/OpenDyslexic/OpenDyslexic-Regular.woff",
-    "./font-faces/Open-Sans/Open-Sans.css",
-    "./font-faces/Open-Sans/Open-Sans-700.woff",
-    "./font-faces/Open-Sans/Open-Sans-700italic.woff",
-    "./font-faces/Open-Sans/Open-Sans-italic.woff",
-    "./font-faces/Open-Sans/Open-Sans-regular.woff",
-    "./webfonts/fa-brands-400.eot",
-    "./webfonts/fa-brands-400.svg",
-    "./webfonts/fa-brands-400.ttf",
-    "./webfonts/fa-brands-400.woff2",
-    "./webfonts/fa-brands-400.woff",
-    "./webfonts/fa-regular-400.eot",
-    "./webfonts/fa-regular-400.svg",
-    "./webfonts/fa-regular-400.ttf",
     "./webfonts/fa-regular-400.woff2",
-    "./webfonts/fa-regular-400.woff",
-    "./webfonts/fa-solid-900.eot",
-    "./webfonts/fa-solid-900.svg",
-    "./webfonts/fa-solid-900.ttf",
-    "./webfonts/fa-solid-900.woff2",
-    "./webfonts/fa-solid-900.woff",
 
     "./manifest.json",
 
     "./images/pebl-icons-search.svg",
     "./images/PEBL-icon-16.ico",
-    "./images/covers/cover1.jpg",
-    "./images/covers/cover2.jpg",
-    "./images/covers/cover3.jpg",
-    "./images/covers/cover4.jpg",
-    "./images/covers/cover5.jpg",
-    "./images/covers/cover6.jpg",
-    "./images/covers/cover7.jpg",
-    "./images/covers/cover8.jpg",
+
     "./images/epub_favicon.ico",
     "./images/epub-touch-icon.png",
     "./images/glyphicons_115_text_smaller.png",
@@ -100,7 +48,7 @@ var FILES_TO_CACHE = [
     "./images/PEBL-icon-144.png",
     "./images/PEBL-icon-192.png",
     "./images/webreader_logo_eduworks.png",
-    "./images/eXtension-icon_small.png",
+    // "./images/eXtension-icon_small.png",
     "./images/PEBL-Logo-Color-small.png",
     "./images/pebl-icons-light_bookmark-list.svg",
     "./images/pebl-icons-light_download.svg",
@@ -125,22 +73,60 @@ var FILES_TO_CACHE = [
     "./images/pebl-icons-wip_new-bookmark.svg",
     "./images/pebl-icons-wip_new-highlight.svg",
     "./images/pebl-icons-wip_settings.svg",
-    "./images/pebl-icons-wip_toc.svg"
+    "./images/pebl-icons-wip_toc.svg",
+
+    "./images/covers/cover1.jpg",
+    "./images/covers/cover2.jpg",
+    "./images/covers/cover3.jpg",
+    "./images/covers/cover4.jpg",
+    "./images/covers/cover5.jpg",
+    "./images/covers/cover6.jpg",
+    "./images/covers/cover7.jpg",
+    "./images/covers/cover8.jpg",
+
+    "./css/all.min.css",
+    "./webfonts/fa-brands-400.woff2",
+    "./webfonts/fa-solid-900.woff2",
+
+    "./css/readium-all.css",
+
+    "./scripts/pack.js"
 ];
+
+let batchFetchFiles = async (batchSize, incomingFiles, cacheName, client) => {
+    let files = incomingFiles.slice(0);
+    let openCache;
+    if (typeof cacheName === "string") {
+        openCache = await caches.open(cacheName);
+    } else {
+        openCache = cacheName;
+    }
+    let p = async () => {
+        if (client)
+            sendMsg(client,
+                "addToCacheProgress",
+                {
+                    total: incomingFiles.length,
+                    remaining: files.length
+                });
+        let file = files.pop();
+        if (file)
+            await openCache.add(file);
+        if (files.length > 0)
+            return p();
+    }
+    let pending = [];
+    for (let i = 0; i < batchSize; i++)
+        pending.push(p(i));
+    for (let i = 0; i < batchSize; i++)
+        await pending[i];
+}
 
 self.addEventListener('install',
     (event) => {
-        event.waitUntil((async () => {
-            let openCache = await caches.open(CACHE_NAME);
-            let p = async () => {
-                let file = FILES_TO_CACHE.pop();
-                if (file) {
-                    await openCache.add(file);
-                    p();
-                }
-            }
-            p();
-        })());
+        event.waitUntil(batchFetchFiles(4,
+            FILES_TO_CACHE,
+            CACHE_NAME));
     });
 
 let sendMsg = (client, eventName, payload) => {
@@ -158,12 +144,15 @@ let addToCache = async (client, payload) => {
     if (!payload.root.endsWith("/")) {
         payload.root = payload.root + "/";
     }
+    // let defaultCache = await caches.open(CACHE_NAME);
     let openCache = await caches.open(payload.root);
-    let requests = await openCache.keys();
+    let cachedRequests = await openCache.keys();
+    // let cachedDefaultRequests = await defaultCache.keys();
     let keyLookup = {};
-    for (let request of requests) {
+    for (let request of cachedRequests) {
         keyLookup[request.url] = true;
     }
+    // debugger;
     let toCache = [];
     for (let item of payload.items) {
         if (!keyLookup[item]) {
@@ -171,7 +160,7 @@ let addToCache = async (client, payload) => {
         }
     }
     if (toCache.length > 0) {
-        await openCache.addAll(toCache).catch(() => { });
+        await batchFetchFiles(4, toCache, openCache, client);
     }
     sendMsg(client, "addedToCache", {});
 };

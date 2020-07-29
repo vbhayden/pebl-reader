@@ -1,4 +1,4 @@
-define(['jquery', './EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 'URIjs', 'StorageManager'], function($, EpubLibrary, EpubReader, Helpers, URI, StorageManager) {
+define(['./EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 'URIjs', 'StorageManager'], function(EpubLibrary, EpubReader, Helpers, URI, StorageManager) {
 
     var _initialLoad = true; // replaces pushState() with replaceState() at first load 
     var initialLoad = function() {

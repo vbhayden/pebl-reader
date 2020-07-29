@@ -100,7 +100,7 @@
 	"message": "Examining EPUB content..."
     },
     "storing_file" : {
-	"message": "Storing file"
+	"message": "For initial viewing the eBook must be processed:"
     },
     "err_unknown" : {
 	"message": "Unknown error. Check console for more details."
