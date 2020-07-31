@@ -13,6 +13,7 @@ define([
     'hgn!readium_js_viewer_html_templates/install-reader-dialog.html',
     'hgn!readium_js_viewer_html_templates/install-ios-reader-dialog.html',
     'hgn!readium_js_viewer_html_templates/spinner-dialog.html',
+    'hgn!readium_js_viewer_html_templates/analytics-spinner-dialog.html',
     './Spinner',
     './ReaderSettingsDialog',
     './Dialogs',
@@ -37,6 +38,7 @@ define([
            InstallReaderDialog,
            InstallIosReaderDialog,
            SpinnerDialog,
+           AnalyticsSpinnerDialog,
            spinner,
            SettingsDialog,
            Dialogs,
@@ -50,7 +52,7 @@ define([
            noCoverRule;
            //maxHeightRule
 
-           var spinLibrary = function(on) {
+           var spinLibrary = function(on, target) {
                if (on) {
                    //consoleError("do SPIN: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
                    if (spinner.willSpin || spinner.isSpinning) return;
@@ -66,7 +68,7 @@ define([
                        }
                        //console.debug("SPIN: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
                        spinner.isSpinning = true;
-                       spinner.spin($('#install-spinner-body')[0]);
+                       spinner.spin(target);
 
                        spinner.willSpin = false;
 
@@ -847,6 +849,10 @@ define([
                    strings: Strings
                }));
 
+               $appContainer.append(AnalyticsSpinnerDialog({
+                   strings: Strings
+               }));
+
                $('#about-dialog').on('hidden.bs.modal', function () {
                    Keyboard.scope('library');
 
@@ -975,7 +981,7 @@ define([
                $(document.body).on('click', '.download-book-button', function(evt) {
                    var url = $(evt.currentTarget).attr('data-root');
                    $('#install-spinner-dialog').modal('show');
-                   spinLibrary(true);
+                   spinLibrary(true, $('#install-spinner-body')[0]);
                    storeBookOffline(url, function() {
                        if (window.existingBookshelf) {
                            for (var i = 0; i < window.existingBookshelf.length; i++) {
@@ -1038,21 +1044,289 @@ define([
                    PeBL.user.getUser(function(userProfile) {
                        window.Lightbox.createGroupSelectForm(userProfile.groups, function(classObj, teamObj) {
                            if (classObj) {
-                               userProfile.currentClass = classObj.id;
-                               userProfile.currentClassName = classObj.name;
-                           }
-
-                           if (teamObj) {
-                               userProfile.currentTeam = teamObj.id;
-                               userProfile.currentTeamName = teamObj.name;
-                           }
+                                userProfile.currentClass = classObj;
+                                userProfile.currentClassName = classObj.split('/').pop();
+                            }
+                            
+                            if (teamObj) {
+                                userProfile.currentTeam = teamObj;
+                                userProfile.currentTeamName = teamObj.split('/').pop();
+                            }
                            window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
                            window.Lightbox.close();
                        });
                    });
                });
 
-               document.addEventListener('eventLoggedIn', function(e) {
+               $(document.body).on('click', '#adminSidebarToggleButton', function() {
+                   $('#adminSidebar').toggleClass('is-collapsed');
+               });
+
+               $(document.body).on('click', '#adminSidebarLibraryButton', function() {
+                   $('#library-body').show();
+                   $('#analytics-body').hide();
+                   $('#adminSidebarLibraryButton').addClass('is-active');
+                   $('#adminSidebarAnalyticsButton').removeClass('is-active');
+               });
+
+               $(document.body).on('click', '#adminSidebarAnalyticsButton', function() {
+                   $('#library-body').hide();
+                   $('#analytics-body').show();
+                   $('#adminSidebarAnalyticsButton').addClass('is-active');
+                   $('#adminSidebarLibraryButton').removeClass('is-active');
+               });
+
+               var showAnalytics = function() {
+                   window.peblAnalyticsLoading--;
+                   if (window.peblAnalyticsLoading === 0) {
+                       spinLibrary(false);
+                       $('#analytics-spinner-dialog').modal('hide');
+                       $('#retrieveAnalyticsButton').hide();
+                       $('#analytics-content').show();
+                   }
+               }
+
+               $(document.body).on('click', '#retrieveAnalyticsButton', function() { 
+                   PeBL.user.getUser(function(userProfile) {
+                       if (userProfile) {
+                           $('#analytics-spinner-dialog').modal('show');
+                           spinLibrary(true, $('#analytics-spinner-body')[0]);
+                           window.peblAnalyticsLoading = 4;
+                           PeBL.storage.saveOutgoingXApi(userProfile, {
+                               identity: userProfile.identity,
+                               requestType: 'getChapterCompletionPercentages',
+                               id: PeBL.utils.getUuid(),
+                               params: {
+                                   bookId: 'mcdp-7.epub',
+                                   teamId: userProfile.currentTeam,
+                                   classId: userProfile.currentClass,
+                                   timestamp: 1
+                               }
+                           })
+
+                           PeBL.storage.saveOutgoingXApi(userProfile, {
+                               identity: userProfile.identity,
+                               requestType: 'getMostAnsweredQuestions',
+                               id: PeBL.utils.getUuid(),
+                               params: {
+                                   bookId: 'mcdp-7.epub',
+                                   teamId: userProfile.currentTeam,
+                                   classId: userProfile.currentClass
+                               }
+                           })
+
+                           PeBL.storage.saveOutgoingXApi(userProfile, {
+                               identity: userProfile.identity,
+                               requestType: 'getLeastAnsweredQuestions',
+                               id: PeBL.utils.getUuid(),
+                               params: {
+                                   bookId: 'mcdp-7.epub',
+                                   teamId: userProfile.currentTeam,
+                                   classId: userProfile.currentClass
+                               }
+                           })
+
+                           PeBL.storage.saveOutgoingXApi(userProfile, {
+                               identity: userProfile.identity,
+                               requestType: 'getQuizAttempts',
+                               id: PeBL.utils.getUuid(),
+                               params: {
+                                   bookId: 'mcdp-7.epub',
+                                   teamId: userProfile.currentTeam,
+                                   classId: userProfile.currentClass
+                               }
+                           })
+                       }
+                   })
+               })
+
+               $(document).off('getChapterCompletionPercentages').on('getChapterCompletionPercentages', function(e) {
+                   showAnalytics();
+                   var keys = Object.keys(e.detail);
+                   var container = document.getElementById('percentageCompletionContainer');
+                   $(container).children().remove();
+                   for (var i = 0; i < keys.length; i++) {
+                       var canvas = document.createElement('canvas');
+                       var canvasContainer = document.createElement('div');
+                       var title = document.createElement('h4');
+                       title.textContent = keys[i];
+
+                       e.detail[keys[i]] = parseInt(e.detail[keys[i]]);
+
+                       canvasContainer.appendChild(title);
+                       canvasContainer.appendChild(canvas);
+                       container.appendChild(canvasContainer);
+                       var ctx = canvas.getContext('2d');
+                       var chart = new Chart(ctx, {
+                            // The type of chart we want to create
+                            type: 'doughnut',
+
+                            // The data for our dataset
+                            data: {
+                                labels: ['Complete', 'Incomplete'],
+                                datasets: [{
+                                    backgroundColor: ['#ffb74d', '#e0e0e0'],
+                                    borderColor: ['#ffb74d', '#e0e0e0'],
+                                    data: [e.detail[keys[i]], (100 - e.detail[keys[i]])]
+                                }]
+                            },
+
+                            plugins: [{
+                                beforeDraw: function (chart) {
+                                    if (chart.config.options.elements.center) {
+                                        var width = chart.chart.width,
+                                        height = chart.chart.height,
+                                        ctx = chart.chart.ctx;
+                                        ctx.restore();
+                                        var fontSize = (height / 114).toFixed(2);
+                                        ctx.font = fontSize + "em sans-serif";
+                                        ctx.textBaseline = "middle";
+                                        var text = chart.config.options.elements.center.text,
+                                            textX = Math.round((width - ctx.measureText(text).width) / 2),
+                                            textY = height / 2;
+                                        ctx.fillText(text, textX, textY);
+                                        ctx.save();
+                                    }
+                                }
+                            }],
+
+                            // Configuration options go here
+                            options: {
+                                elements: {
+                                    center: {
+                                        text: e.detail[keys[i]] + '%'
+                                    }
+                                },
+                                legend: {
+                                    display: false
+                                },
+                                cutoutPercentage: 75
+                            }
+                        });
+                   }
+               });
+
+               $(document).off('getMostAnsweredQuestions').on('getMostAnsweredQuestions', function(e) {
+                   showAnalytics();
+                   console.log(e.detail);
+                   var container = document.getElementById('mostAnsweredQuestionCountsContainer');
+                   $(container).children().remove();
+                   for (var i = 0; i < e.detail.length; i++) {
+                       var elem = document.createElement('div');
+                       var count = document.createElement('span');
+                       var prompt = document.createElement('a');
+
+                       count.textContent = e.detail[i].count;
+                       elem.appendChild(count);
+
+                       prompt.textContent = e.detail[i].prompt.trim();
+                       prompt.href = e.detail[i].url;
+                       elem.appendChild(prompt);
+
+                       container.appendChild(elem);
+                   }
+               })
+
+               $(document).off('getLeastAnsweredQuestions').on('getLeastAnsweredQuestions', function(e) {
+                   showAnalytics();
+                   console.log(e.detail);
+                   var container = document.getElementById('leastAnsweredQuestionCountsContainer');
+                   $(container).children().remove();
+                   for (var i = 0; i < e.detail.length; i++) {
+                       var elem = document.createElement('div');
+                       var count = document.createElement('span');
+                       var prompt = document.createElement('a');
+
+                       count.textContent = e.detail[i].count;
+                       elem.appendChild(count);
+
+                       prompt.textContent = e.detail[i].prompt.trim();
+                       prompt.href = e.detail[i].url;
+                       elem.appendChild(prompt);
+
+                       container.appendChild(elem);
+                   }
+               })
+
+               $(document).off('getQuizAttempts').on('getQuizAttempts', function(e) {
+                   showAnalytics();
+                   console.log(e.detail);
+                   var container = document.getElementById('quizChartContainer');
+                   $(container).children().remove();
+                   var quizes = Object.keys(e.detail);
+                   for (var i = 0; i < quizes.length; i++) {
+                       var responses = Object.keys(e.detail[quizes[i]].responses).sort();
+                       var backgroundColors = [];
+                       var responseCounts = [];
+                       for (var j = 0; j < responses.length; j++) {
+                           if (e.detail[quizes[i]].responses[responses[j]].success)
+                               backgroundColors.push('#ffb74d');
+                           else
+                               backgroundColors.push('#e0e0e0');
+
+                           responseCounts.push(e.detail[quizes[i]].responses[responses[j]].count);
+                       }
+                       
+                       var quizContainer = document.createElement('div');
+
+                       var quizPrompt = document.createElement('a');
+                       quizPrompt.href = e.detail[quizes[i]].url;
+                       quizPrompt.textContent = e.detail[quizes[i]].prompt;
+
+                       var canvas = document.createElement('canvas');
+
+                       var ctx = canvas.getContext('2d');
+                       var chart = new Chart(ctx, {
+                            // The type of chart we want to create
+                            type: 'horizontalBar',
+
+                            // The data for our dataset
+                            data: {
+                                labels: responses,
+                                datasets: [{
+                                    backgroundColor: backgroundColors,
+                                    borderColor: backgroundColors,
+                                    data: responseCounts,
+                                    barThickness: 'flex'
+                                }]
+                            },
+
+                            plugins: [{
+                                beforeInit: function(chart) {
+                                  chart.data.labels.forEach(function(e, i, a) {
+                                     if (/\n/.test(e)) {
+                                        a[i] = e.split(/\n/);
+                                     }
+                                     if (e.length > 23)
+                                         a[i] = e.substr(0,20) + '...';
+                                  });
+                               }
+                            }],
+
+                            // Configuration options go here
+                            options: {
+                                legend: {
+                                    display: false
+                                },
+                                scales: {
+                                    xAxes: [{
+                                        ticks: {
+                                            beginAtZero: true,
+                                            precision: 0
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+
+                       quizContainer.appendChild(quizPrompt);
+                       quizContainer.appendChild(canvas);
+
+                       container.appendChild(quizContainer);
+                   }
+               })
+
+               $(document).on('eventLoggedIn', function(e) {
                    var userProfile = e.detail;
                    if (userProfile.currentTeamName) {
                        $('#readerCurrentClassContainer').show();
@@ -1062,6 +1336,23 @@ define([
                        $('#readerCurrentClass').text(userProfile.currentClassName);
                    } else {
                        $('#readerCurrentClassContainer').hide();
+                   }
+
+                   var analyticsPermission = false;
+
+                   if (userProfile.currentTeam && userProfile.memberships[userProfile.currentTeam] === 'instructor')
+                       analyticsPermission = true;
+                   if (userProfile.currentClass && userProfile.memberships[userProfile.currentClass] === 'instructor')
+                       analyticsPermission = true;
+                   if (userProfile.currentTeam && userProfile.memberships[userProfile.currentTeam] === 'admin')
+                       analyticsPermission = true;
+                   if (userProfile.currentClass && userProfile.memberships[userProfile.currentClass] === 'admin')
+                       analyticsPermission = true;
+
+                   if (analyticsPermission) {
+                       $('#app-container').addClass('show-adminSidebar');
+                   } else {
+                       $('#app-container').removeClass('show-adminSidebar');
                    }
                });
 
