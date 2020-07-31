@@ -1097,7 +1097,7 @@ define([
                                requestType: 'getChapterCompletionPercentages',
                                id: PeBL.utils.getUuid(),
                                params: {
-                                   bookId: 'mcdp-7.epub',
+                                   bookId: 'mcdp-7',
                                    teamId: userProfile.currentTeam,
                                    classId: userProfile.currentClass,
                                    timestamp: 1
@@ -1109,7 +1109,7 @@ define([
                                requestType: 'getMostAnsweredQuestions',
                                id: PeBL.utils.getUuid(),
                                params: {
-                                   bookId: 'mcdp-7.epub',
+                                   bookId: 'mcdp-7',
                                    teamId: userProfile.currentTeam,
                                    classId: userProfile.currentClass
                                }
@@ -1120,7 +1120,7 @@ define([
                                requestType: 'getLeastAnsweredQuestions',
                                id: PeBL.utils.getUuid(),
                                params: {
-                                   bookId: 'mcdp-7.epub',
+                                   bookId: 'mcdp-7',
                                    teamId: userProfile.currentTeam,
                                    classId: userProfile.currentClass
                                }
@@ -1131,7 +1131,7 @@ define([
                                requestType: 'getQuizAttempts',
                                id: PeBL.utils.getUuid(),
                                params: {
-                                   bookId: 'mcdp-7.epub',
+                                   bookId: 'mcdp-7',
                                    teamId: userProfile.currentTeam,
                                    classId: userProfile.currentClass
                                }
