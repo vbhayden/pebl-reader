@@ -291,6 +291,16 @@ buildDev:
 
   - cp "$DEV_WEB_READER_CONFIG" src/cloud-reader/config.js
 
+  - cp "$DEV_MANIFEST" src/cloud-reader/manifest.json
+
+  - echo "{" > src/i18n/_locales/en_US/skinning.json
+
+  - "echo '\"i18n_pebl_library\" : { \"message\" : \"USMC Library\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_reader\" : { \"message\" : \"USMC Reader\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_webreader_logo\" : { \"message\" : \"images/usmc-favicon-32x32.png\" }' >> src/i18n/_locales/en_US/skinning.json"
+
+  - echo "}" >> src/i18n/_locales/en_US/skinning.json
+
   - unzip artifacts.zip
   - mv dist/PeBLCore.js src/js/
   - chmod +x pack.sh
