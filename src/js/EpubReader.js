@@ -2448,15 +2448,15 @@ define([
                $('#readerCurrentClassContainer').on('click', function() {
                    PeBL.user.getUser(function(userProfile) {
                        window.Lightbox.createGroupSelectForm(userProfile.groups, function(classObj, teamObj) {
-                           if (classObj) {
-                               userProfile.currentClass = classObj.id;
-                               userProfile.currentClassName = classObj.name;
-                           }
-
-                           if (teamObj) {
-                               userProfile.currentTeam = teamObj.id;
-                               userProfile.currentTeamName = teamObj.name;
-                           }
+                            if (classObj) {
+                                userProfile.currentClass = classObj;
+                                userProfile.currentClassName = classObj.split('/').pop();
+                            }
+                            
+                            if (teamObj) {
+                                userProfile.currentTeam = teamObj;
+                                userProfile.currentTeamName = teamObj.split('/').pop();
+                            }
                            window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
                            window.Lightbox.close();
                            window.location.href = window.location.href;

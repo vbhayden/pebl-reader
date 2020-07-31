@@ -8,13 +8,13 @@
         <link rel="manifest" href="manifest.json" />
 
         <link id="readerFavicon" href="" rel="shortcut icon"/>
-        <link href="images/PEBL-icon-144.png" rel="apple-touch-icon"/>
+        <link id="appleTouchIcon" href="images/PEBL-icon-144.png" rel="apple-touch-icon"/>
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta name="apple-mobile-web-app-title" content="PeBL eReader">
         <meta name="theme-color" content="#fff">
 
-        <meta name="msapplication-TileImage" content="images/PEBL-icon-144.png">
+        <meta id="msapplicationTileImage" name="msapplication-TileImage" content="images/PEBL-icon-144.png">
         <meta name="msapplication-TileColor" content="#000000">
 
         <style>
@@ -49,7 +49,7 @@
 
         <script type="text/javascript">
          if (navigator.serviceWorker) {
-             navigator.serviceWorker.register('peblSW.js').then(function (reg) {
+             navigator.serviceWorker.register('peblSW.js').then((reg) => {
                  consoleLog("Service worker registered", reg.scope);
                  hookSWWorkerApi(reg);
              }).catch(function (err) {
@@ -58,6 +58,10 @@
          }
 
          document.getElementById('readerFavicon').setAttribute('href', window.PeBLConfig.favicon);
+         if (window.PeBLConfig.appleTouchIcon)
+            document.getElementById('appleTouchIcon').setAttribute('href', window.PeBLConfig.appleTouchIcon);
+        if (window.PeBLConfig.msapplicationTileImage)
+            document.getElementById('msapplicationTileImage').setAttribute('content', window.PeBLConfig.msapplicationTileImage);
 
          var path = (window.location && window.location.pathname) ? window.location.pathname : '';
 

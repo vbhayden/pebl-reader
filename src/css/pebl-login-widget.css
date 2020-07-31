@@ -157,18 +157,17 @@ lightBoxLoginForm h2, h3, h4 {
 .select-username, 
 .select-wrapper {
     display: block;
-    max-width: 400px;
     margin: auto;
     width: 100%;
     padding: .5rem 0rem;
 }
 .login__label {
-    width: 49%;
+    width: 15%;
     padding: .5rem 0rem;
     display: inline-block;
 }
 .login__input {
-    width: 49%;
+    width: 85%;
     display: inline-block;
 }
 .login__input input {

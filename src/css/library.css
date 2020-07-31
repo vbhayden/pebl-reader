@@ -6,6 +6,12 @@
     overflow-x: hidden;
 }
 
+#library-body,
+#analytics-body {
+    width: 100%;
+    padding-left: 6em;
+}
+
 #empty-message{
     display: inline-block;
     font-size: 28px;
@@ -292,7 +298,8 @@ body:not(.list-view) .library-item {
     margin-bottom: 30px;
 }
 
-#install-spinner-body > .spinner {
+#install-spinner-body > .spinner,
+#analytics-spinner-body > .spinner {
     height: 100px;
     margin-top: 100px;
     position: relative !important;
@@ -342,6 +349,155 @@ body:not(.list-view) .library-item {
     right: -1px;
     bottom: 0;
 }
+
+#app-container.show-adminSidebar #adminSidebar {
+    display: flex;
+}
+
+#adminSidebar {
+    left: 0;
+    position: fixed;
+    top: 38px;
+    bottom: 0;
+    background-color: #2B3137;
+    z-index: 100;
+    border-radius: 0 1rem 0 0;
+    padding: 1em;
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+h2.adminSidebar_title {
+    color: white;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.adminSidebar_title .fas {
+    color: #0AA6BF;
+}
+
+.adminSidebar_toolWrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.adminSidebar_toolWrapper .button {
+    opacity: 0.5;
+}
+
+.adminSidebar-button {
+    text-align: left;
+    background-color: transparent;
+    color: white;
+    border: none;
+    padding: 0.5em;
+    margin: 0;
+    opacity: 0.5;
+    border-radius: 0.3em;
+    min-width: 3em;
+}
+
+.adminSidebar-button:hover,
+.adminSidebar-button.is-active {
+    opacity: 1;
+    background-color: #15171B;
+}
+
+
+.adminSidebar-button i.fas {
+    margin-right: 1em;
+}
+
+
+.adminSidebar_footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 1em 0 0 0;
+}
+
+/* Collapsed styles */
+
+.show-on-collapse {
+    display: none;
+}
+
+.is-collapsed .show-on-collapse {
+    display: block;
+}
+
+#adminSidebar.is-collapsed {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#adminSidebar.is-collapsed .adminSidebar-button {
+    text-align: center;
+}
+
+#adminSidebar.is-collapsed .button .fas {
+    margin: 0;
+}
+
+#adminSidebar.is-collapsed .hide-on-collapse {
+    display: none;
+}
+
+#adminSidebar.is-collapsed .show-on-collapse {
+    display: block;
+}
+
+#percentageCompletionContainer {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 5em;
+}
+
+#percentageCompletionContainer > div {
+    width: 25%;
+}
+
+#percentageCompletionContainer > div > h4 {
+    text-align: center;
+}
+
+#mostAnsweredQuestionCountsContainer > div,
+#leastAnsweredQuestionCountsContainer > div {
+    display: flex;
+    margin-bottom: 1em;
+}
+
+#mostAnsweredQuestionCountsContainer > div > span,
+#leastAnsweredQuestionCountsContainer > div > span {
+    margin-right: 1em;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+#questionCountsContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5em;
+}
+
+#questionCountsContainer > div {
+    width: 100%;
+    margin-right: 2em;
+}
+
+#quizChartContainer {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#quizChartContainer > div {
+    text-align: center;
+    width: 50%;
+    padding: 1em;
+    margin-bottom: 1em;
+}
+
+
 
 @media (max-width:768px){
 
