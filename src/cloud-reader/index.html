@@ -49,7 +49,7 @@
 
         <script type="text/javascript">
          if (navigator.serviceWorker) {
-             navigator.serviceWorker.register('peblSW.js').then(function (reg) {
+             navigator.serviceWorker.register('peblSW.js').then((reg) => {
                  consoleLog("Service worker registered", reg.scope);
                  hookSWWorkerApi(reg);
              }).catch(function (err) {
