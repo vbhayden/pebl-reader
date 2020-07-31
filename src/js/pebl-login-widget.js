@@ -194,7 +194,7 @@ window.Lightbox = {
         var classSelect = $(
             '<div class="login__input-wrapper">' +
                 '<div class="login__label">' +
-                '<label>School:</label>' +
+                '<label>School / Unit:</label>' +
                 '</div>' +
                 '<div class="login__input">' +
                 '<select id="loginClassSelect"></select>' +
