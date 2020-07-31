@@ -4,7 +4,7 @@
     background-color: yellow;
 }
 
-.rd-highlight.hover-user-highlight {
+.rd-highlight.user-highlight:hover {
     position: absolute;
     opacity: 0.4;
     background-color: yellow;
@@ -16,7 +16,7 @@
 	background-color: red;
 }
 
-.rd-highlight.hover-shared-highlight {
+.rd-highlight.shared-highlight:hover {
 	position: absolute;
 	opacity: 0.4;
 	background-color: red;
@@ -28,7 +28,7 @@
 	background-color: #0070ff;
 }
 
-.rd-highlight.hover-shared-my-highlight {
+.rd-highlight.shared-my-highlight:hover {
 	position: absolute;
 	opacity: 0.4;
 	background-color: #0070ff;
