@@ -102,12 +102,13 @@ var FILES_TO_CACHE = [
 let batchFetchFiles = async (batchSize, incomingFiles, cacheName, client) => {
     let files = incomingFiles.slice(0);
     let openCache;
+    let retries = {};
     if (typeof cacheName === "string") {
         openCache = await caches.open(cacheName);
     } else {
         openCache = cacheName;
     }
-    let p = async () => {
+    let p = async (f) => {
         if (client)
             sendMsg(client,
                 "addToCacheProgress",
@@ -115,15 +116,25 @@ let batchFetchFiles = async (batchSize, incomingFiles, cacheName, client) => {
                     total: incomingFiles.length,
                     remaining: files.length
                 });
-        let file = files.pop();
+        let file = f || files.pop();
         if (file)
-            await openCache.add(file);
+            await openCache.add(file).catch((e)=>{
+                if (!retries[file]) {
+                    retries[file] = 0
+                }
+                retries[file] = retries[file] + 1;
+                if(retries[file] < 7) {
+                    return p(file);
+                } else {
+                    console.log("Failed to retrieve", file, e);
+                }
+            });
         if (files.length > 0)
             return p();
     }
     let pending = [];
     for (let i = 0; i < batchSize; i++)
-        pending.push(p(i));
+        pending.push(p());
     for (let i = 0; i < batchSize; i++)
         await pending[i];
 }
