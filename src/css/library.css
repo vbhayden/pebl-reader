@@ -4,7 +4,6 @@
 
 #app-container{
     overflow-x: hidden;
-    display: flex;
 }
 
 #library-body,
