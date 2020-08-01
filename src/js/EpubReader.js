@@ -1906,7 +1906,12 @@ define([
                            var container = document.createElement('div');
 
                            var header = document.createElement('h3');
-                           header.textContent = chapter.title;
+                           for (var chapterMapping of readium.reader.chaptersMap) {
+                               if (chapterMapping.idref === chapter.title) {
+                                   header.textContent = chapterMapping.chapterTitle;
+                                   break;
+                               }
+                           }
                            container.appendChild(header);
 
                            var list = document.createElement('div');
