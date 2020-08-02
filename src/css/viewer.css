@@ -857,8 +857,9 @@ ul.nav-tabs li:not(.active) button:hover
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
-  height: 50px;
+  height: 70px;
   width: 100%;
+  font-size: .8em;
 }
 
 #annotationContextMenu > .annotationContextButtonWrapper > div {
