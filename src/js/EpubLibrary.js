@@ -805,7 +805,7 @@ define([
                }
                // Detects if device is in standalone mode
                var isInStandaloneMode = function () {
-                   return ('standalone' in window.navigator) && (window.navigator.standalone);
+                   return (window.matchMedia('(display-mode: standalone)').matches) || (window.navigator.standalone) || document.referrer.includes('android-app://');
                }
 
                // Checks if should display install popup notification:
@@ -997,6 +997,9 @@ define([
                        StorageManager.saveBookshelf('db://epub_library.json', window.tempBookshelf, function() {
                            spinLibrary(false);
                            $('#install-spinner-dialog').modal('hide');
+                           if (isInStandaloneMode()) {
+                             $('#install-reader-dialog').modal('show');
+                           }
                        }, function() {
                            consoleLog('error thing');
                        });
@@ -1074,24 +1077,11 @@ define([
                    $('#analytics-body').show();
                    $('#adminSidebarAnalyticsButton').addClass('is-active');
                    $('#adminSidebarLibraryButton').removeClass('is-active');
-               });
-
-               var showAnalytics = function() {
-                   window.peblAnalyticsLoading--;
-                   if (window.peblAnalyticsLoading === 0) {
-                       spinLibrary(false);
-                       $('#analytics-spinner-dialog').modal('hide');
-                       $('#retrieveAnalyticsButton').hide();
-                       $('#analytics-content').show();
-                   }
-               }
-
-               $(document.body).on('click', '#retrieveAnalyticsButton', function() { 
                    PeBL.user.getUser(function(userProfile) {
                        if (userProfile) {
                            $('#analytics-spinner-dialog').modal('show');
                            spinLibrary(true, $('#analytics-spinner-body')[0]);
-                           window.peblAnalyticsLoading = 4;
+                           window.peblAnalyticsLoading = 3;
                            PeBL.storage.saveOutgoingXApi(userProfile, {
                                identity: userProfile.identity,
                                requestType: 'getChapterCompletionPercentages',
@@ -1117,17 +1107,6 @@ define([
 
                            PeBL.storage.saveOutgoingXApi(userProfile, {
                                identity: userProfile.identity,
-                               requestType: 'getLeastAnsweredQuestions',
-                               id: PeBL.utils.getUuid(),
-                               params: {
-                                   bookId: 'mcdp-7',
-                                   teamId: userProfile.currentTeam,
-                                   classId: userProfile.currentClass
-                               }
-                           })
-
-                           PeBL.storage.saveOutgoingXApi(userProfile, {
-                               identity: userProfile.identity,
                                requestType: 'getQuizAttempts',
                                id: PeBL.utils.getUuid(),
                                params: {
@@ -1138,7 +1117,17 @@ define([
                            })
                        }
                    })
-               })
+               });
+
+               var showAnalytics = function() {
+                   window.peblAnalyticsLoading--;
+                   if (window.peblAnalyticsLoading === 0) {
+                       spinLibrary(false);
+                       $('#analytics-spinner-dialog').modal('hide');
+                       $('#retrieveAnalyticsButton').hide();
+                       $('#analytics-content').show();
+                   }
+               }
 
                $(document).off('getChapterCompletionPercentages').on('getChapterCompletionPercentages', function(e) {
                    showAnalytics();
@@ -1253,25 +1242,31 @@ define([
                    console.log(e.detail);
                    var container = document.getElementById('quizChartContainer');
                    $(container).children().remove();
-                   var quizes = Object.keys(e.detail);
+
+                   var quizes = Object.keys(e.detail).map(function(x) {
+                     return e.detail[x];
+                   }).sort(function(a, b) {
+                     return b.count - a.count;
+                   });
+
                    for (var i = 0; i < quizes.length; i++) {
-                       var responses = Object.keys(e.detail[quizes[i]].responses).sort();
+                       var responses = Object.keys(quizes[i].responses).sort();
                        var backgroundColors = [];
                        var responseCounts = [];
                        for (var j = 0; j < responses.length; j++) {
-                           if (e.detail[quizes[i]].responses[responses[j]].success)
+                           if (quizes[i].responses[responses[j]].success)
                                backgroundColors.push('#ffb74d');
                            else
                                backgroundColors.push('#e0e0e0');
 
-                           responseCounts.push(e.detail[quizes[i]].responses[responses[j]].count);
+                           responseCounts.push(quizes[i].responses[responses[j]].count);
                        }
                        
                        var quizContainer = document.createElement('div');
 
                        var quizPrompt = document.createElement('a');
-                       quizPrompt.href = e.detail[quizes[i]].url;
-                       quizPrompt.textContent = e.detail[quizes[i]].prompt;
+                       quizPrompt.href = quizes[i].url;
+                       quizPrompt.textContent = quizes[i].prompt;
 
                        var canvas = document.createElement('canvas');
 
