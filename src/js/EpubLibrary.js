@@ -1131,7 +1131,7 @@ define([
 
                $(document).off('getChapterCompletionPercentages').on('getChapterCompletionPercentages', function(e) {
                    showAnalytics();
-                   var keys = Object.keys(e.detail);
+                   var keys = Object.keys(e.detail).sort();
                    var container = document.getElementById('percentageCompletionContainer');
                    $(container).children().remove();
                    for (var i = 0; i < keys.length; i++) {
