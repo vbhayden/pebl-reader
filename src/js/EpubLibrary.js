@@ -1246,7 +1246,7 @@ define([
                    var quizes = Object.keys(e.detail).map(function(x) {
                      return e.detail[x];
                    }).sort(function(a, b) {
-                     return b.count - a.count;
+                     return a.count - b.count;
                    });
 
                    for (var i = 0; i < quizes.length; i++) {
