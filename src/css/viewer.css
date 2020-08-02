@@ -765,7 +765,7 @@ ul.nav-tabs li:not(.active) button:hover
     border-bottom-right-radius: 0 !important;
 }
 
-@media (max-width:768px) {
+@media (max-width:960px) {
   .navbar-left #webreaderTitle {
     display: none;
   }
