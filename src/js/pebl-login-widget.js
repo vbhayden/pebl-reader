@@ -232,7 +232,7 @@ window.Lightbox = {
 
         var submit = $(
             '<div class="login__input-wrapper">' +
-                '<input class="login__button btn btn-primary" type="button" value="Submit" id="loginGroupSelectSubmit" />' +
+                '<input class="btn btn-primary" type="button" value="Submit" id="loginGroupSelectSubmit" />' +
                 '</div>'
         );
         submit.find('#loginGroupSelectSubmit').on('click', function() {
@@ -423,7 +423,7 @@ window.Lightbox = {
             $(form).append(teamSelect);
             var login = $(
                 '<div class="login__input-wrapper">' +
-                    '<input class="login__button btn btn-primary" type="button" value="Login" id="loginUserNameSubmit" />' +
+                    '<input class="btn btn-primary" type="button" value="Login" id="loginUserNameSubmit" />' +
                     '</div>'
             );
             $(form).append(login);
