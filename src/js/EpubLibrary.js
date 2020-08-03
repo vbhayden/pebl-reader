@@ -997,7 +997,7 @@ define([
                        StorageManager.saveBookshelf('db://epub_library.json', window.tempBookshelf, function() {
                            spinLibrary(false);
                            $('#install-spinner-dialog').modal('hide');
-                           if (isInStandaloneMode()) {
+                           if (!isInStandaloneMode()) {
                              $('#install-reader-dialog').modal('show');
                            }
                        }, function() {
