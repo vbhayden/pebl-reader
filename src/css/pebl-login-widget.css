@@ -33,7 +33,7 @@ limitations under the License.
     left: 0;
     top: 5%;
     top: 5%;
-    width: 90%;
+    max-width: 70rem;
     overflow: hidden;
     background-color: rgb(240, 240, 240);
     border-radius: 15px;
@@ -162,12 +162,12 @@ lightBoxLoginForm h2, h3, h4 {
     padding: .5rem 0rem;
 }
 .login__label {
-    width: 15%;
+    width: 20%;
     padding: .5rem 0rem;
     display: inline-block;
 }
 .login__input {
-    width: 85%;
+    width: 75%;
     display: inline-block;
 }
 .login__input input {
@@ -314,11 +314,11 @@ label {
 
 @media screen and (orientation:landscape) and (max-width: 1025px), (max-height: 560px) and (max-width: 1025px){
     .login__label {
-        width: 50%;
+        /* width: 50%; */
         display: inline-block;
     }
     .login__input {
-        width: 50%;
+        /* width: 50%; */
         display: inline-block;
     }
     .login__input-wrapper {
