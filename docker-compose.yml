@@ -1,0 +1,19 @@
+version: '3'
+services:
+  nginx:
+    image: git.eduworks.us:5050/pebl/webreader/pebl-reader:1.4.3
+    sysctls:
+      - net.core.somaxconn=4096
+    restart: always
+    environment:
+      - READER_SERVER_NAME=localhost
+      - WS_SERVICES_ENDPOINT=wss://local2
+      - HTTP_SERVICES_ENDPOINT=https://local2
+    volumes:
+      - ./epub_content/:/usr/share/nginx/html/epub_content
+    #   - /etc/letsencrypt/live/<domain>/fullchain.pem:/ssl/fullchain.pem:ro
+    #   - /etc/letsencrypt/live/<domain>/privkey.pem:/ssl/privkey.pem:ro
+    #   - /etc/letsencrypt/dhparam.pem:/ssl/dhparam.pem:ro
+    ports:
+      - "80:80"
+      - "443:443"
