@@ -997,7 +997,7 @@ define([
                        StorageManager.saveBookshelf('db://epub_library.json', window.tempBookshelf, function() {
                            spinLibrary(false);
                            $('#install-spinner-dialog').modal('hide');
-                           if (isInStandaloneMode()) {
+                           if (!isInStandaloneMode()) {
                              $('#install-reader-dialog').modal('show');
                            }
                        }, function() {
@@ -1335,13 +1335,9 @@ define([
 
                    var analyticsPermission = false;
 
-                   if (userProfile.currentTeam && userProfile.memberships[userProfile.currentTeam] === 'instructor')
+                   if (userProfile.currentTeam && userProfile.role === 'instructor')
                        analyticsPermission = true;
-                   if (userProfile.currentClass && userProfile.memberships[userProfile.currentClass] === 'instructor')
-                       analyticsPermission = true;
-                   if (userProfile.currentTeam && userProfile.memberships[userProfile.currentTeam] === 'admin')
-                       analyticsPermission = true;
-                   if (userProfile.currentClass && userProfile.memberships[userProfile.currentClass] === 'admin')
+                   if (userProfile.currentTeam && userProfile.role === 'admin')
                        analyticsPermission = true;
 
                    if (analyticsPermission) {
