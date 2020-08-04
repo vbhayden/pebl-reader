@@ -318,6 +318,7 @@ window.Lightbox = {
                                         ul: 'https://peblproject.com/registry/api/downloadContent?guid='
                                     },
                                     memberships: payload.memberships,
+                                    role: payload.role,
                                     groups: payload.groups
                                 };
 

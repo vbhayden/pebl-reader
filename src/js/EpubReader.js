@@ -1143,28 +1143,20 @@ define([
            }
 
            var deleteAnnotationPermission = function(userProfile) {
-               if (userProfile.memberships) {
-                   if (userProfile.currentTeam && userProfile.memberships[userProfile.currentTeam] === 'instructor')
+               if (userProfile.role) {
+                   if (userProfile.currentTeam && userProfile.role === 'instructor')
                        return true;
-                   if (userProfile.currentClass && userProfile.memberships[userProfile.currentClass] === 'instructor')
-                       return true;
-                   if (userProfile.currentTeam && userProfile.memberships[userProfile.currentTeam] === 'admin')
-                       return true;
-                   if (userProfile.currentClass && userProfile.memberships[userProfile.currentClass] === 'admin')
+                   if (userProfile.currentTeam && userProfile.role === 'admin')
                        return true;
                }
                return false;
            }
 
            var pinAnnotationPermission = function(userProfile) {
-               if (userProfile.memberships) {
-                   if (userProfile.currentTeam && userProfile.memberships[userProfile.currentTeam] === 'instructor')
+               if (userProfile.role) {
+                   if (userProfile.currentTeam && userProfile.role === 'instructor')
                        return true;
-                   if (userProfile.currentClass && userProfile.memberships[userProfile.currentClass] === 'instructor')
-                       return true;
-                   if (userProfile.currentTeam && userProfile.memberships[userProfile.currentTeam] === 'admin')
-                       return true;
-                   if (userProfile.currentClass && userProfile.memberships[userProfile.currentClass] === 'admin')
+                   if (userProfile.currentTeam && userProfile.role === 'admin')
                        return true;
                }
                return false;
