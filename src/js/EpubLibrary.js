@@ -1335,13 +1335,9 @@ define([
 
                    var analyticsPermission = false;
 
-                   if (userProfile.currentTeam && userProfile.memberships[userProfile.currentTeam] === 'instructor')
+                   if (userProfile.currentTeam && userProfile.role === 'instructor')
                        analyticsPermission = true;
-                   if (userProfile.currentClass && userProfile.memberships[userProfile.currentClass] === 'instructor')
-                       analyticsPermission = true;
-                   if (userProfile.currentTeam && userProfile.memberships[userProfile.currentTeam] === 'admin')
-                       analyticsPermission = true;
-                   if (userProfile.currentClass && userProfile.memberships[userProfile.currentClass] === 'admin')
+                   if (userProfile.currentTeam && userProfile.role === 'admin')
                        analyticsPermission = true;
 
                    if (analyticsPermission) {
