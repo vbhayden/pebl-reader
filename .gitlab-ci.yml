@@ -49,6 +49,7 @@ buildProdExtension:
     paths:
       - dist/cloud-reader
 
+############
 
 buildProdUSMC:
   stage: build
@@ -70,6 +71,7 @@ buildProdUSMC:
     paths:
       - dist/cloud-reader
 
+############
 
 buildExtensionQa:
   stage: build
@@ -101,6 +103,7 @@ buildExtensionQa:
     paths:
       - dist/cloud-reader
 
+############
 
 buildProdExtensionEEO:
   stage: build
@@ -141,6 +144,8 @@ buildProdExtensionEEO:
     paths:
       - dist/cloud-reader
 
+############
+
 buildNpsProd:
   stage: build
 
@@ -169,6 +174,8 @@ buildNpsProd:
     paths:
     - dist/cloud-reader
 
+############
+
 buildAdlProd:
   stage: build
 
@@ -191,6 +198,8 @@ buildAdlProd:
   artifacts:
     paths:
     - dist/cloud-reader
+
+############
 
 buildLwProd:
   stage: build
@@ -221,6 +230,7 @@ buildLwProd:
     paths:
     - dist/cloud-reader
 
+############
 
 buildProd:
   stage: build
@@ -276,6 +286,43 @@ buildQA:
     paths:
     - dist/cloud-reader
 
+############
+
+buildADLDocker:
+  stage: build
+  only:
+    - tags
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --init --recursive readium-js
+  script:
+  - 'curl -L --output artifacts.zip --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://git.eduworks.us/api/v4/projects/94/jobs/artifacts/dev/download?job=buildDev"'
+  - LAST_TAG=$(git describe --tags)
+  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
+
+  - cp src/cloud-reader/sampleConfig.js src/cloud-reader/config.js
+
+  - cp "$DEV_MANIFEST" src/cloud-reader/manifest.json
+
+  - echo "{" > src/i18n/_locales/en_US/skinning.json
+
+  - "echo '\"i18n_pebl_library\" : { \"message\" : \"USMC Library\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_reader\" : { \"message\" : \"USMC Reader\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_webreader_logo\" : { \"message\" : \"images/usmc-favicon-32x32.png\" }' >> src/i18n/_locales/en_US/skinning.json"
+
+  - echo "}" >> src/i18n/_locales/en_US/skinning.json
+
+  - unzip artifacts.zip
+  - mv dist/PeBLCore.js src/js/
+  - chmod +x pack.sh
+  - npm run prepare:all
+  - npm run dist
+  artifacts:
+    paths:
+    - dist/cloud-reader
+
+############
+
 buildDev:
   stage: build
   only:
@@ -310,7 +357,21 @@ buildDev:
     paths:
     - dist/cloud-reader
 
+
 ### DEPLOYMENTS
+
+deployDocker:
+  stage: deploy
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE/pebl-reader:$CI_COMMIT_TAG
+  only:
+    - tags
+
+############
 
 prodExtensionDeploy:
   stage: deploy

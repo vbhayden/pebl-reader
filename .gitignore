@@ -18,3 +18,5 @@ http_app-ebooks.log
 /package.json.save
 /workbench.xmi
 /src/js/PeBLCore.js
+/adl-1-docker-compose.yml
+/pullReader.sh
