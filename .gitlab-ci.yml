@@ -316,7 +316,7 @@ buildADLDocker:
   - mv dist/PeBLCore.js src/js/
   - chmod +x pack.sh
   - npm run prepare:all
-  - npm run dist
+  - export MINIMIZE=true && npm run dist
   artifacts:
     paths:
     - dist/cloud-reader
