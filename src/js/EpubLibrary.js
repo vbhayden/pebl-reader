@@ -1393,7 +1393,7 @@ define([
                               var mailToForm = document.createElement('form');
                               mailToForm.style = 'display:none;';
                               mailToForm.target = '_blank';
-                              var mailtoLink = 'mailto:mile.divovic@eduworks.com?';
+                              var mailtoLink = 'mailto:mcdp7_workbook@usmc.mil?';
                               mailtoLink += ('subject=' + encodeURI('MCDP7 Admin Request'));
                               mailtoLink += ('&body=' + encodeURI(userProfile.identity.toUpperCase() + ' requests removal of ' + parsedMessage.actor.account.name.toUpperCase() + ' from ' + parsedMessage.currentTeam));
                               mailToForm.action = mailtoLink;
