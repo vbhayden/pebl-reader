@@ -186,7 +186,7 @@ label {
     overflow: hidden;
     white-space: pre;
     text-overflow: ellipsis;
-    -webkit-appearance: none;
+    /* -webkit-appearance: none; */
 }
 
 .login__button {
