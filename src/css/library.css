@@ -462,32 +462,51 @@ h2.adminSidebar_title {
 }
 
 #mostAnsweredQuestionCountsContainer > div,
-#leastAnsweredQuestionCountsContainer > div {
+#leastAnsweredQuestionCountsContainer > div,
+#reportedMessagesCountsContainer > div {
     display: flex;
     margin-bottom: 1em;
 }
 
 #mostAnsweredQuestionCountsContainer > div > span,
-#leastAnsweredQuestionCountsContainer > div > span {
+#leastAnsweredQuestionCountsContainer > div > span,
+#reportedMessagesCountsContainer > div > span {
     margin-right: 1em;
     font-weight: bold;
     font-size: 16px;
 }
 
-#questionCountsContainer {
+#questionCountsContainer,
+#reportedMessagesContainer {
     display: flex;
     justify-content: space-between;
     margin-bottom: 5em;
 }
 
-#questionCountsContainer > div {
+#questionCountsContainer > div,
+#reportedMessagesContainer > div {
     width: 100%;
     margin-right: 2em;
+}
+
+#reportedMessagesCountsContainer > div > div {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#reportedMessagesCountsContainer span.username {
+    font-weight: bold;
+}
+
+#reportedMessagesCountsContainer button {
+    margin-right: 1em;
 }
 
 #quizChartContainer {
     display: flex;
     flex-wrap: wrap;
+    margin-bottom: 5em;
 }
 
 #quizChartContainer > div {

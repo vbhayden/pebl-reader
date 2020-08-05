@@ -1085,7 +1085,7 @@ define([
                        if (userProfile) {
                            $('#analytics-spinner-dialog').modal('show');
                            spinLibrary(true, $('#analytics-spinner-body')[0]);
-                           window.peblAnalyticsLoading = 3;
+                           window.peblAnalyticsLoading = 4;
                            PeBL.storage.saveOutgoingXApi(userProfile, {
                                identity: userProfile.identity,
                                requestType: 'getChapterCompletionPercentages',
@@ -1117,6 +1117,17 @@ define([
                                    bookId: 'mcdp-7',
                                    teamId: userProfile.currentTeam,
                                    classId: userProfile.currentClass
+                               }
+                           })
+
+                           PeBL.storage.saveOutgoingXApi(userProfile, {
+                               identity: userProfile.identity,
+                               requestType: 'getReportedThreadedMessages',
+                               id: PeBL.utils.getUuid(),
+                               params: {
+                                 bookId: 'mcdp-7',
+                                 teamId: userProfile.currentTeam,
+                                 classId: userProfile.currentClass
                                }
                            })
                        }
@@ -1323,6 +1334,89 @@ define([
 
                        container.appendChild(quizContainer);
                    }
+               })
+
+               $(document).off('getReportedThreadedMessages').on('getReportedThreadedMessages', function(e) {
+                   showAnalytics();
+                   console.log(e.detail);
+                   
+                   PeBL.user.getUser(function(userProfile) {
+                     var messages = e.detail.sort(function(a, b) {
+                       return b.count - a.count;
+                     })
+
+                     var container = document.getElementById('reportedMessagesCountsContainer');
+                     $(container).children().remove();
+                     for (var i = 0; i < messages.length; i++) {
+                         var message = messages[i];
+                         var parsedMessage = JSON.parse(message.message);
+                         var elem = document.createElement('div');
+                         elem.id = message.messageid;
+
+                         var count = document.createElement('span');
+                         count.textContent = messages[i].count;
+                         elem.appendChild(count);
+
+                         var prompt = document.createElement('a');
+                         prompt.textContent = messages[i].prompt.trim();
+                         prompt.href = messages[i].url;
+
+                         var username = document.createElement('span');
+                         username.classList.add('username');
+                         username.textContent = message.identity;
+
+                         var messageText = document.createElement('span');
+                         messageText.textContent = parsedMessage.result.response;
+
+                         var controlsWrapper = document.createElement('div');
+                         var deleteButton = document.createElement('button');
+                         deleteButton.classList.add('btn', 'btn-primary')
+                         deleteButton.textContent = 'Delete Message';
+                         (function(parsedMessage) {
+                           deleteButton.addEventListener('click', function() {
+                             if (window.confirm('Delete this message?')) {
+                               $('#' + parsedMessage.id).remove();
+                               PeBL.emitEvent(PeBL.events.removedMessage, {
+                                 message: parsedMessage,
+                                 activityType: 'discussion',
+                                 activityId: parsedMessage.thread
+                               });
+                             }
+                           });
+                         })(parsedMessage);
+                         
+                         var adminButton = document.createElement('button');
+                         adminButton.classList.add('btn', 'btn-default');
+                         adminButton.textContent = 'Elevate to Admin';
+                         (function(parsedMessage) {
+                           adminButton.addEventListener('click', function() {
+                              var mailToForm = document.createElement('form');
+                              mailToForm.style = 'display:none;';
+                              mailToForm.target = '_blank';
+                              var mailtoLink = 'mailto:mile.divovic@eduworks.com?';
+                              mailtoLink += ('subject=' + encodeURI('MCDP7 Admin Request'));
+                              mailtoLink += ('&body=' + encodeURI(userProfile.identity.toUpperCase() + ' requests removal of ' + parsedMessage.actor.account.name.toUpperCase() + ' from ' + parsedMessage.currentTeam));
+                              mailToForm.action = mailtoLink;
+                              mailToForm.method = 'post';
+                              document.body.appendChild(mailToForm);
+                              mailToForm.submit();
+                              document.body.removeChild(mailToForm);
+                           });
+                         })(parsedMessage);
+                         
+                         controlsWrapper.appendChild(deleteButton);
+                         controlsWrapper.appendChild(adminButton);
+
+                         var wrapper = document.createElement('div');
+                         wrapper.appendChild(prompt);
+                         wrapper.appendChild(username);
+                         wrapper.appendChild(messageText);
+                         wrapper.appendChild(controlsWrapper);
+                         elem.appendChild(wrapper);
+
+                         container.appendChild(elem);
+                     }
+                   })
                })
 
                $(document).on('eventLoggedIn', function(e) {
