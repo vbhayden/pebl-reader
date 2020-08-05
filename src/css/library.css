@@ -506,6 +506,7 @@ h2.adminSidebar_title {
 #quizChartContainer {
     display: flex;
     flex-wrap: wrap;
+    margin-bottom: 5em;
 }
 
 #quizChartContainer > div {
