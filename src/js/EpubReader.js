@@ -2973,7 +2973,11 @@ define([
                    });
 
 
-                   SettingsDialog.initDialog(readium.reader, {});
+                   SettingsDialog.initDialog(readium.reader, {
+                       readiumJsViewer: {
+                           version:window.PeBLConfig ? window.PeBLConfig.version : "N/a"
+                       }
+                   });
 
                    $('#settings-dialog').on('hidden.bs.modal', function() {
 
