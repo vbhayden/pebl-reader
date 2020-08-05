@@ -22,4 +22,5 @@ window.PeBLConfig.useOpenID = true;
 window.PeBLConfig.favicon = 'images/PEBL-icon-16.ico';
 window.PeBLConfig.loginImage = 'images/PEBL-Logo-Color-small.png';
 window.PeBLConfig.userList = ['Learner', 'Learner1', 'Learner2', 'Learner3', 'Learner5', 'Learner7'];
+window.PeBLConfig.version = "VERSION";
 window.DEBUGGING = false;

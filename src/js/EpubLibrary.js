@@ -830,7 +830,11 @@ define([
                    strings: Strings
                }));
 
-               SettingsDialog.initDialog(undefined, {});
+               SettingsDialog.initDialog(undefined, {
+                   readiumJsViewer: {
+                       version:window.PeBLConfig ? window.PeBLConfig.version : "N/a"
+                   }
+               });
 
                $appContainer.append(DownloadBooksDialog({
                    strings: Strings

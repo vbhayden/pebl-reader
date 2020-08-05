@@ -19,4 +19,5 @@ window.PeBLConfig.favicon = 'images/usmc-favicon-16x16.png';
 window.PeBLConfig.loginImage = 'images/usmc-android-chrome-192x192.png';
 window.PeBLConfig.appleTouchIcon = 'images/usmc-apple-touch-icon.png';
 window.PeBLConfig.userList = ['Learner', 'Learner1', 'Learner2', 'Learner3', 'Learner5', 'Learner7'];
+window.PeBLConfig.version = "VERSION";
 window.DEBUGGING = false;

@@ -272,10 +272,9 @@ buildQA:
   script:
   - 'curl -L --output artifacts.zip --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://git.eduworks.us/api/v4/projects/94/jobs/artifacts/qa/download?job=buildQA"'
   - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
-  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
-  # - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
 
   - cp "$QA_WEB_READER_CONFIG" src/cloud-reader/config.js
+  - sed -i "s/VERSION/$LAST_TAG/" src/cloud-reader/config.js
 
   - unzip artifacts.zip
   - mv dist/PeBLCore.js src/js/
@@ -298,9 +297,9 @@ buildADLDocker:
   script:
   - 'curl -L --output artifacts.zip --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://git.eduworks.us/api/v4/projects/94/jobs/artifacts/dev/download?job=buildDev"'
   - LAST_TAG=$(git describe --tags)
-  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
 
   - cp src/cloud-reader/sampleConfig.js src/cloud-reader/config.js
+  - sed -i "s/VERSION/$LAST_TAG/" src/cloud-reader/config.js
 
   - cp "$DEV_MANIFEST" src/cloud-reader/manifest.json
 
@@ -333,10 +332,10 @@ buildDev:
   script:
   - 'curl -L --output artifacts.zip --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://git.eduworks.us/api/v4/projects/94/jobs/artifacts/dev/download?job=buildDev"'
   - LAST_TAG=$(git describe --tags)
-  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
   # - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
 
   - cp "$DEV_WEB_READER_CONFIG" src/cloud-reader/config.js
+  - sed -i "s/VERSION/$LAST_TAG/" src/cloud-reader/config.js
 
   - cp "$DEV_MANIFEST" src/cloud-reader/manifest.json
 
