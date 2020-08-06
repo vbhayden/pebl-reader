@@ -2452,7 +2452,7 @@ define([
                             
                             if (teamObj) {
                                 userProfile.currentTeam = teamObj;
-                                userProfile.currentTeamName = teamObj.split('/').pop();
+                                userProfile.currentTeamName = teamObj.replace(/([^\/]*\/){2}/, '');
                             }
                            window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
                            window.Lightbox.close();
