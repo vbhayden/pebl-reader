@@ -1,9 +1,5 @@
 FROM nginx:1.19.1
 
-EXPOSE 80 443
-
-VOLUME ["/usr/share/nginx/html/epub_content"]
-
 COPY nginx/*.pem /ssl/
 
 COPY nginx/startNginx.sh /etc/nginx/

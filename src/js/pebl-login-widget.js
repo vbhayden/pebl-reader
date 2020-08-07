@@ -223,7 +223,7 @@ window.Lightbox = {
 
         var teamSelectElement = teamSelect.find('#loginTeamSelect');
         for (var team of teams) {
-            teamSelectElement.append($('<option></option').data("value", team).text(team.split('/').pop()));
+            teamSelectElement.append($('<option></option').data("value", team).text(team.replace(/([^\/]*\/){2}/, '')));
         }
 
         if (teams.length > 0)
@@ -331,7 +331,7 @@ window.Lightbox = {
                                         
                                         if (teamObj) {
                                             userProfile.currentTeam = teamObj;
-                                            userProfile.currentTeamName = teamObj.split('/').pop();
+                                            userProfile.currentTeamName = teamObj.replace(/([^\/]*\/){2}/, '');
                                         }
                                         window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
                                         window.Lightbox.close();
