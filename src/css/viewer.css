@@ -769,7 +769,8 @@ ul.nav-tabs li:not(.active) button:hover {
     font-size: 30px;
   }
   #reading-area {
-    top: 25px;
+    top: 25px; 
+    
   }
   .pebl__discussion--lightbox__header {
     align-items: flex-start;
