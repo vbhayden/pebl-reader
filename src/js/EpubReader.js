@@ -895,9 +895,10 @@ define([
                    $('#hideSharedAnnotationsButton').on('click', function() {
                        readium.reader.disableSharedHighlights = false;
                        PeBL.utils.getSharedAnnotations(function(stmts) {
-                           PeBL.storage.getCurrentUser(function(userName) {
+                           PeBL.user.getUser(function(userProfile) {
                                for (var stmt of stmts) {
-                                   if (stmt.type === 3 && stmt.owner !== userName) {
+                                 if (stmt.groupId === userProfile.currentTeam || stmt.groupId === userProfile.currentClass) {
+                                   if (stmt.type === 3 && stmt.owner !== userProfile.identity) {
                                        // consoleLog(stmt);
                                        var highlightType = 'shared-highlight';
 
@@ -907,6 +908,7 @@ define([
                                            consoleError(e);
                                        }
                                    }
+                                 }
                                }
                            });
                        });
@@ -1679,14 +1681,15 @@ define([
                    });
 
                    PeBL.utils.getSharedAnnotations(function(stmts) {
-                       PeBL.storage.getCurrentUser(function(userName) {
+                       PeBL.user.getUser(function(userProfile) {
                            for (var stmt of stmts) {
+                             if (stmt.groupId === userProfile.currentTeam || stmt.groupId === userProfile.currentClass) {
                                if (stmt.type === 3) {
-                                   if (stmt.owner !== userName && readium.reader.disableSharedHighlights)
+                                   if (stmt.owner !== userProfile.identity && readium.reader.disableSharedHighlights)
                                        continue;
                                    // consoleLog(stmt);
                                    var highlightType = 'shared-highlight';
-                                   if (stmt.owner === userName)
+                                   if (stmt.owner === userProfile.identity)
                                        highlightType = 'shared-my-highlight';
 
                                    try {
@@ -1695,6 +1698,7 @@ define([
                                        consoleError(e);
                                    }
                                }
+                             }
                            }
                        });
                    });
