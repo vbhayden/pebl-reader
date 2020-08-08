@@ -40,6 +40,14 @@
         <noscript>Javascript is required to view this site, please enable Javascript and reload the page.</noscript>
         <nav id="app-navbar" class="navbar" role="banner" aria-label="{{Strings.i18n_toolbar}}">
         </nav>
+
+        <script type="text/javascript">
+            if (window.navigator.userAgent.indexOf('MSIE ') || window.navigator.userAgent.indexOf('Trident/')) {
+                $('#app-container').children().remove();
+                $('#app-container').append($('<h1 style="text-align: center;">Internet Explorer is not supported.</h1> <h1 style="text-align: center;">Consider using Microsoft Edge or Google Chrome.</h1>'));
+            }
+        </script>
+
         <div id="app-container">
             <Label>Reader is being downloaded, please wait...</label>
             <Label>After the initial download, you should not have this delay again.</label>
