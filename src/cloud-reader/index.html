@@ -41,6 +41,11 @@
         <nav id="app-navbar" class="navbar" role="banner" aria-label="{{Strings.i18n_toolbar}}">
         </nav>
 
+        <div id="app-container">
+            <Label>Reader is being downloaded, please wait...</label>
+            <Label>After the initial download, you should not have this delay again.</label>
+        </div>
+
         <script type="text/javascript">
             if (window.navigator.userAgent.indexOf('MSIE ') || window.navigator.userAgent.indexOf('Trident/')) {
                 var container = document.getElementById('app-container');
@@ -58,11 +63,6 @@
                 container.appendChild(msg2);
             }
         </script>
-
-        <div id="app-container">
-            <Label>Reader is being downloaded, please wait...</label>
-            <Label>After the initial download, you should not have this delay again.</label>
-        </div>
 
         <script type="text/javascript" src="scripts/pack.js"></script>
 
