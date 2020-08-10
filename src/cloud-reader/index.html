@@ -43,8 +43,19 @@
 
         <script type="text/javascript">
             if (window.navigator.userAgent.indexOf('MSIE ') || window.navigator.userAgent.indexOf('Trident/')) {
-                $('#app-container').children().remove();
-                $('#app-container').append($('<h1 style="text-align: center;">Internet Explorer is not supported.</h1> <h1 style="text-align: center;">Consider using Microsoft Edge or Google Chrome.</h1>'));
+                var container = document.getElementById('app-container');
+                container.innerHTML = '';
+
+                var msg1 = document.createElement('h1');
+                msg1.textContent = 'Internet Explorer is not supported.';
+                msg1.setAttribute('style', 'text-align: center;');
+
+                var msg2 = document.createElement('h1');
+                msg2.textContent = 'Consider using Microsoft Edge or Google Chrome.';
+                msg2.setAttribute('style', 'text-align: center;');
+
+                container.appendChild(msg1);
+                container.appendChild(msg2);
             }
         </script>
 
