@@ -888,6 +888,102 @@ define([
                }
            }
 
+           var setDownloadAnnotationsButton = function() {
+             $('#downloadAnnotationsButton').off();
+             $('#downloadAnnotationsButton').on('click', function() {
+               var annotationsByIdref = {};
+               var annotationsByChapter = {};
+               PeBL.user.getUser(function(userProfile) {
+                   PeBL.utils.getAnnotations(function(stmts) {
+                     for (var stmt of stmts) {
+                         if (stmt.type === 2) {
+                             if (!annotationsByIdref[stmt.idRef])
+                               annotationsByIdref[stmt.idRef] = [];
+                             annotationsByIdref[stmt.idRef].push(stmt);
+                         }
+                     }
+
+                     for (var idRef of Object.keys(annotationsByIdref)) {
+                       for (var chapter of readium.reader.chaptersMap) {
+                         if (idRef === chapter.idref) {
+                           annotationsByChapter[chapter.chapterTitle] = annotationsByIdref[idRef];
+                           break;
+                         }
+                       }
+                     }
+
+                     var text = 'My Annotations\n\r';
+                     for (var chapter in annotationsByChapter) {
+                       text += chapter + '\n\r\n\r';
+
+                       for (var stmt of annotationsByChapter[chapter]) {
+                         text += stmt.title + '\n\r';
+                         if (stmt.text !== undefined) {
+                           text += ('Note: ' + stmt.text + '\n\r');
+                         }
+                         text += '\n\r';
+                       }
+                     }
+
+                     PeBL.utils.getSharedAnnotations(function(stmts) {
+                       var sharedAnnotationsByIdref = {};
+                       var sharedAnnotationsByChapter = {};
+                       for (var stmt of stmts) {
+                           if (stmt.type === 3 && stmt.owner === userProfile.identity) {
+                               if (!sharedAnnotationsByIdref[stmt.idRef])
+                                 sharedAnnotationsByIdref[stmt.idRef] = [];
+                               sharedAnnotationsByIdref[stmt.idRef].push(stmt);
+                           }
+                       }
+
+                       for (var idRef of Object.keys(sharedAnnotationsByIdref)) {
+                         for (var chapter of readium.reader.chaptersMap) {
+                           if (idRef === chapter.idref) {
+                             sharedAnnotationsByChapter[chapter.chapterTitle] = sharedAnnotationsByIdref[idRef];
+                             break;
+                           }
+                         }
+                       }
+
+                       text += '----------------------\n\r' + 'My Shared Annotations\n\r';
+                       for (var chapter in sharedAnnotationsByChapter) {
+                         text += chapter + '\n\r\n\r';
+
+                         for (var stmt of sharedAnnotationsByChapter[chapter]) {
+                           text += stmt.title + '\n\r';
+                           if (stmt.text !== undefined) {
+                             text += ('Note: ' + stmt.text + '\n\r');
+                           }
+                           text += '\n\r';
+                         }
+                       }
+
+                       //TODO: Don't hardcode this
+                       PeBL.utils.getMessages('ad395c22-f03f-4e4f-bf51-79724743f131_user-' + userProfile.identity, function(stmts) {
+                         text += '----------------------\n\r' + 'My Notes\n\r';
+
+                         for (var stmt of stmts) {
+                           text += stmt.text + '\n\r\n\r';
+                         }
+
+                         var blob = new Blob([text], {type: 'text'});
+                         if (window.navigator.msSaveOrOpenBlob) {
+                           window.navigator.msSaveBlob(blob, 'MyAnnotations.txt');
+                         } else {
+                           var elem = window.document.createElement('a');
+                           elem.href = window.URL.createObjectURL(blob);
+                           elem.download = 'MyAnnotations.txt';        
+                           document.body.appendChild(elem);
+                           elem.click();        
+                           document.body.removeChild(elem);
+                         }
+                       })
+                     });
+                 });
+               });
+             })
+           }
+
            var setHideSharedAnnotationsButton = function() {
                $('#hideSharedAnnotationsButton').off();
                if (readium.reader.disableSharedHighlights) {
@@ -895,9 +991,10 @@ define([
                    $('#hideSharedAnnotationsButton').on('click', function() {
                        readium.reader.disableSharedHighlights = false;
                        PeBL.utils.getSharedAnnotations(function(stmts) {
-                           PeBL.storage.getCurrentUser(function(userName) {
+                           PeBL.user.getUser(function(userProfile) {
                                for (var stmt of stmts) {
-                                   if (stmt.type === 3 && stmt.owner !== userName) {
+                                 if (stmt.groupId === userProfile.currentTeam || stmt.groupId === userProfile.currentClass) {
+                                   if (stmt.type === 3 && stmt.owner !== userProfile.identity) {
                                        // consoleLog(stmt);
                                        var highlightType = 'shared-highlight';
 
@@ -907,6 +1004,7 @@ define([
                                            consoleError(e);
                                        }
                                    }
+                                 }
                                }
                            });
                        });
@@ -966,6 +1064,8 @@ define([
                        $('#general-shared-annotations').prepend('<p class="hideWhenSiblingPresent">When other users share their annotations, they will appear here.</p>');
 
                        setHideSharedAnnotationsButton();
+
+                       setDownloadAnnotationsButton();
 
                        PeBL.subscribeEvent(PeBL.events.incomingAnnotations,
                                            false,
@@ -1679,14 +1779,15 @@ define([
                    });
 
                    PeBL.utils.getSharedAnnotations(function(stmts) {
-                       PeBL.storage.getCurrentUser(function(userName) {
+                       PeBL.user.getUser(function(userProfile) {
                            for (var stmt of stmts) {
+                             if (stmt.groupId === userProfile.currentTeam || stmt.groupId === userProfile.currentClass) {
                                if (stmt.type === 3) {
-                                   if (stmt.owner !== userName && readium.reader.disableSharedHighlights)
+                                   if (stmt.owner !== userProfile.identity && readium.reader.disableSharedHighlights)
                                        continue;
                                    // consoleLog(stmt);
                                    var highlightType = 'shared-highlight';
-                                   if (stmt.owner === userName)
+                                   if (stmt.owner === userProfile.identity)
                                        highlightType = 'shared-my-highlight';
 
                                    try {
@@ -1695,6 +1796,7 @@ define([
                                        consoleError(e);
                                    }
                                }
+                             }
                            }
                        });
                    });
