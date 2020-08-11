@@ -629,7 +629,13 @@ define([
                if (offsetTop % pageHeight === 0)
                    temp1 += 0.0001;
 
-               var temp2 = Math.ceil(temp1 / columnCount);
+               var temp2;
+               if (navigator.userAgent.toLowerCase().indexOf('edge') > -1 || navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+                 temp2 = Math.ceil(temp1);
+               } else {
+                 temp2 = Math.ceil(temp1 / columnCount);
+               }
+                
 
                if (temp2 < 1)
                    temp2 = 1;
