@@ -743,7 +743,7 @@ ul.nav-tabs li:not(.active) button:hover {
   border-bottom-right-radius: 0 !important;
 }
 
-@media (max-device-width: 960px) {
+@media (max-device-width: 960px), (max-width: 960px) {
   .navbar-left #webreaderTitle {
     display: none !important;
   }
