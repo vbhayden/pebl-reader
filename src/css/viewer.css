@@ -745,7 +745,7 @@ ul.nav-tabs li:not(.active) button:hover {
 
 @media (max-device-width: 960px) {
   .navbar-left #webreaderTitle {
-    display: none;
+    display: none !important;
   }
   .navbar {
   }
@@ -759,7 +759,7 @@ ul.nav-tabs li:not(.active) button:hover {
   }
   #readerCurrentClassContainer,
   .navbar .btn-group > .btn.icon-full-screen {
-    display: none;
+    display: none !important;
   }
   #epub-reader-frame {
     border-left: 30px solid transparent;
