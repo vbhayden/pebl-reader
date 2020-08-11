@@ -606,6 +606,7 @@ define([
                var $html = $body.parent();
                var contentHeight = parseInt($body.css('height'));
                var pageHeight = parseInt($html.css('height'));
+               var pageWidth = $html.width();
                var columnCount = $html.css('column-count') === 'auto' ? 1 : $html.css('column-count');
 
                var firstElement = element;
@@ -618,9 +619,9 @@ define([
 
                var temp1;
 
-               //Edge and firefox need to use offsetLeft
+               //Edge and firefox need to use offsetLeft and pageWidth
                if (navigator.userAgent.toLowerCase().indexOf('edge') > -1 || navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-                 temp1 = offsetLeft / pageHeight;
+                 temp1 = offsetLeft / pageWidth;
                } else {
                  temp1 = offsetTop / pageHeight;
                }
@@ -629,7 +630,13 @@ define([
                if (offsetTop % pageHeight === 0)
                    temp1 += 0.0001;
 
-               var temp2 = Math.ceil(temp1 / columnCount);
+               var temp2;
+               if (navigator.userAgent.toLowerCase().indexOf('edge') > -1 || navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+                 temp2 = Math.ceil(temp1);
+               } else {
+                 temp2 = Math.ceil(temp1 / columnCount);
+               }
+                
 
                if (temp2 < 1)
                    temp2 = 1;
