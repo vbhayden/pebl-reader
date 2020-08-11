@@ -614,8 +614,16 @@ define([
                        firstElement = firstElement.parent();
 
                var offsetTop = firstElement[0].offsetTop;
+               var offsetLeft = firstElement[0].offsetLeft;
 
-               var temp1 = offsetTop / pageHeight;
+               var temp1;
+
+               //Edge and firefox need to use offsetLeft
+               if (navigator.userAgent.toLowerCase().indexOf('edge') > -1 || navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+                 temp1 = offsetLeft / pageHeight;
+               } else {
+                 temp1 = offsetTop / pageHeight;
+               }
 
                //Nudge it over the edge if the pageHeight happens to match the offset exactly
                if (offsetTop % pageHeight === 0)
