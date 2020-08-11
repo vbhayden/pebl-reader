@@ -792,32 +792,6 @@ ul.nav-tabs li:not(.active) button:hover {
     #reading-area {
         top: 25px;
     }
-
-    .pebl__discussion--lightbox__header {
-        align-items: flex-start;
-        line-height: 1.2em;
-        text-transform: inherit;
-        letter-spacing: inherit;
-        padding: 8px;
-    }
-
-    .pebl__discussion--lightbox__textarea {
-        height: initial;
-        margin: 0.5em !important;
-    }
-
-    .discussionSubmitButton {
-        margin: 0 0.5em 0.5em 0;
-    }
-
-    .discussionInputBody {
-        min-height: auto;
-        margin: 0;
-    }
-
-    .discussionResponseBody {
-        margin-top: 0;
-    }
 }
 
 .zoom-wrapper {
