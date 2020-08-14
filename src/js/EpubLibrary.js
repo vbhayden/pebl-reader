@@ -156,7 +156,7 @@ define([
                var currentScrollPos = $('#app-container').scrollTop();
                $('#app-container .library-row-title').remove();
                $('#app-container .library-items.cloud-library').remove();
-               $('#app-container .library-items.local-library').remove();
+               //$('#app-container .library-items.local-library').remove();
                $('#app-container').append(LibraryBody({strings: Strings}));
 
                if (!epubs.length){
@@ -195,35 +195,36 @@ define([
                                else
                                    var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: background, strings: Strings, noCoverBackground: noCoverBackground});
                                if ((epub.rootUrl.substr(0, 5) == "db://") || epub.isLocal) {
-                                   if ($('.library-items.local-library').length > 0) {
-                                       $("#downloaded-bookshelf").show();
-                                   }
-                                   $('.library-items.local-library').append(elem);
-                               } else
+                                 $('.library-items.cloud-library').append(elem);
+                               } else {
+                                 var cachedBook = document.getElementById(epub.id);
+                                 if (!cachedBook)
                                    $('.library-items.cloud-library').append(elem);
-
+                               }
+                               
                                processEpub(epubs, ++count);
                            }, function() {
                                var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, strings: Strings, noCoverBackground: noCoverBackground});
-                               if ((epub.rootUrl.substr(0, 5) == "db://") || epub.isLocal){
-                                   if ($('.library-items.local-library').length > 0) {
-                                       $("#downloaded-bookshelf").show();
-                                   }
-                                   $('.library-items.local-library').append(elem);
-                               } else
+                               if ((epub.rootUrl.substr(0, 5) == "db://") || epub.isLocal) {
+                                 $('.library-items.cloud-library').append(elem);
+                               } else {
+                                 var cachedBook = document.getElementById(epub.id);
+                                 if (!cachedBook)
                                    $('.library-items.cloud-library').append(elem);
+                               }
 
                                processEpub(epubs, ++count);
                            });
                        } else {
                            var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: background, strings: Strings, noCoverBackground: noCoverBackground});
                            if ((epub.rootUrl.substr(0, 5) == "db://") || epub.isLocal) {
-                               if ($('.library-items.local-library').length > 0) {
-                                   $("#downloaded-bookshelf").show();
-                               }
-                               $('.library-items.local-library').append(elem);
-                           } else
+                             $('.library-items.cloud-library').append(elem);
+                           } else {
+                             var cachedBook = document.getElementById(epub.id);
+                             if (!cachedBook)
                                $('.library-items.cloud-library').append(elem);
+                           }
+                           
                            processEpub(epubs, ++count);
                        }
 

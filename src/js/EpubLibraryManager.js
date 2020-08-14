@@ -90,7 +90,7 @@ define(['./ModuleConfig', './PackageParser', './workers/WorkerProxy', 'StorageMa
                     $.getJSON(indexUrl, function(data) {
                         if (extraData != null)
                             for (var i = 0; i < extraData.length; i++)
-                                data.push(extraData[i]);
+                                data.unshift(extraData[i]);
                         dataSuccess(data);
                     }).fail(function() {
                         if (extraData != null)
