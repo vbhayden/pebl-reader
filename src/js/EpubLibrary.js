@@ -439,19 +439,21 @@ define([
                var embedded = urlParams['embedded'];
 
                var ebookURL = $(this).attr('data-book');
+               var ebookTitle = $(this).attr('data-title');
+               var ebookId = $(this).attr('data-id');
 
                if (ebookURL && ebookURL.substr(0, 5) == "db://") {
                    if (ebookURL.endsWith(".epub")) {
                        StorageManager.getFile(ebookURL, function (data) {
-                           var eventPayload = {embedded: embedded, localPath : ebookURL, epub: data, epubs: libraryURL};
+                           var eventPayload = {embedded: embedded, localPath : ebookURL, epub: data, epubs: libraryURL, ebookTitle: ebookTitle, ebookId: ebookId};
                            $(window).triggerHandler('readepub', eventPayload);
                        });
                    } else {
-                       var eventPayload = {embedded: embedded, epub: ebookURL, epubs: libraryURL};
+                       var eventPayload = {embedded: embedded, epub: ebookURL, epubs: libraryURL, ebookTitle: ebookTitle, ebookId: ebookId};
                        $(window).triggerHandler('readepub', eventPayload);
                    }
                } else if (ebookURL) {
-                   var eventPayload = {embedded: embedded, epub: ebookURL, epubs: libraryURL};
+                   var eventPayload = {embedded: embedded, epub: ebookURL, epubs: libraryURL, ebookTitle: ebookTitle, ebookId: ebookId};
                    $(window).triggerHandler('readepub', eventPayload);
                }
                else {
