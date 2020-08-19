@@ -985,6 +985,7 @@ define([
 
                $(document.body).on('click', '.download-book-button', function(evt) {
                    var url = $(evt.currentTarget).attr('data-root');
+                   var bookTitle = $(evt.currentTarget).attr('data-title');
                    $('#install-spinner-dialog').modal('show');
                    spinLibrary(true, $('#install-spinner-body')[0]);
                    storeBookOffline(url, function() {
@@ -1003,6 +1004,7 @@ define([
                            spinLibrary(false);
                            $('#install-spinner-dialog').modal('hide');
                            if (!isInStandaloneMode()) {
+                             $('#downloaded-book-title').text(bookTitle);
                              $('#install-reader-dialog').modal('show');
                            }
                        }, function() {
