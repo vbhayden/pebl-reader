@@ -213,7 +213,7 @@ window.Lightbox = {
             linkedInButton.classList.add('linkedInButton');
 
             linkedInButton.addEventListener('click', function() {
-                window.location = window.PeBLConfig.PeBLServicesURL + "/logout?redirectUrl=" + encodeURIComponent(window.location.href);
+                window.location = window.PeBLConfig.PeBLServicesURL + "/login?redirectUrl=" + encodeURIComponent(window.location.href);
             });
 
             lightBoxContent.appendChild(linkedInButtonWrapper);
@@ -250,7 +250,7 @@ window.Lightbox = {
                                 if (window.PeBLConfig.useLinkedIn) {
                                     createLinkedInButton();
                                 } else {
-                                    window.location = window.PeBLConfig.PeBLServicesURL + "/logout?redirectUrl=" + encodeURIComponent(window.location.href);
+                                    window.location = window.PeBLConfig.PeBLServicesURL + "/login?redirectUrl=" + encodeURIComponent(window.location.href);
                                 }
                             }
                         });
@@ -260,7 +260,7 @@ window.Lightbox = {
                             if (window.PeBLConfig.useLinkedIn) {
                                 createLinkedInButton();
                             } else {
-                                window.location = window.PeBLConfig.PeBLServicesURL + "/logout?redirectUrl=" + encodeURIComponent(window.location.href);
+                                window.location = window.PeBLConfig.PeBLServicesURL + "/login?redirectUrl=" + encodeURIComponent(window.location.href);
                             }
                         });
 
@@ -273,12 +273,7 @@ window.Lightbox = {
                     }
                 });
             } else {
-                if (window.PeBLConfig.useLinkedIn) {
-                    createLinkedInButton();
-                } else {
-                    window.location = window.PeBLConfig.PeBLServicesURL + "/logout?redirectUrl=" + encodeURIComponent(window.location.href);
-                }
-               
+                window.location = window.PeBLConfig.PeBLServicesURL + "/logout?redirectUrl=" + encodeURIComponent(window.location.href);
             }
 
         } else {
