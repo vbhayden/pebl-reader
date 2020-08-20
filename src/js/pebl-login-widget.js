@@ -185,10 +185,39 @@ window.Lightbox = {
             '<div class="login__header">' +
                 '<div class="login__image">' +
                 '<img  src="' + window.PeBLConfig.loginImage + '"></img>' +
-                '<p>' + window.PeBLConfig.loginText ? window.PeBLConfig.loginText : '' + '</p>' +
+                '<p>' + window.PeBLConfig.loginText + '</p>' +
                 '</div>' +
                 '</div>'
         );
+
+        var createLinkedInButton = function() {
+            var linkedInButtonWrapper = document.createElement('div');
+            linkedInButtonWrapper.classList.add('linkedin-button-wrapper');
+            var linkedInButton = document.createElement('div');
+            var linkedInLogo = document.createElement('img');
+            linkedInLogo.src = "./images/linkedin.svg";
+            linkedInLogo.height="36";
+
+            var linkedInCopy = document.createElement('p');
+            linkedInCopy.textContent = 'Sign in with LinkedIn';
+
+            var linkedInCopywright = document.createElement('p');
+            linkedInCopywright.textContent = '®';
+            linkedInCopywright.classList.add('registered-trademark');
+
+            linkedInButton.appendChild(linkedInCopy);
+            linkedInButton.appendChild(linkedInLogo);
+            linkedInButton.appendChild(linkedInCopywright);
+            linkedInButtonWrapper.appendChild(linkedInButton);
+
+            linkedInButton.classList.add('linkedInButton');
+
+            linkedInButton.addEventListener('click', function() {
+                window.location = window.PeBLConfig.PeBLServicesURL + "/logout?redirectUrl=" + encodeURIComponent(window.location.href);
+            });
+
+            lightBoxContent.appendChild(linkedInButtonWrapper);
+        }
 
         $(lightBoxContent).append(loginHeader);
 
@@ -218,13 +247,21 @@ window.Lightbox = {
                                 window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
                                 window.Lightbox.close();
                             } else {
-                                window.location = window.PeBLConfig.PeBLServicesURL + "/login?redirectUrl=" + encodeURIComponent(window.location.href);
+                                if (window.PeBLConfig.useLinkedIn) {
+                                    createLinkedInButton();
+                                } else {
+                                    window.location = window.PeBLConfig.PeBLServicesURL + "/logout?redirectUrl=" + encodeURIComponent(window.location.href);
+                                }
                             }
                         });
 
                         xhr.addEventListener('error', (e) => {
                             console.log('failed to retrieve user profile', e);
-                            window.location = window.PeBLConfig.PeBLServicesURL + "/login?redirectUrl=" + encodeURIComponent(window.location.href);
+                            if (window.PeBLConfig.useLinkedIn) {
+                                createLinkedInButton();
+                            } else {
+                                window.location = window.PeBLConfig.PeBLServicesURL + "/logout?redirectUrl=" + encodeURIComponent(window.location.href);
+                            }
                         });
 
                         xhr.open('GET',
@@ -237,32 +274,7 @@ window.Lightbox = {
                 });
             } else {
                 if (window.PeBLConfig.useLinkedIn) {
-                    var linkedInButtonWrapper = document.createElement('div');
-                    linkedInButtonWrapper.classList.add('linkedin-button-wrapper');
-                    var linkedInButton = document.createElement('div');
-                    var linkedInLogo = document.createElement('img');
-                    linkedInLogo.src = "./images/linkedin.svg";
-                    linkedInLogo.height="36";
-
-                    var linkedInCopy = document.createElement('p');
-                    linkedInCopy.textContent = 'Sign in with LinkedIn';
-
-                    var linkedInCopywright = document.createElement('p');
-                    linkedInCopywright.textContent = '®';
-                    linkedInCopywright.classList.add('registered-trademark');
-
-                    linkedInButton.appendChild(linkedInCopy);
-                    linkedInButton.appendChild(linkedInLogo);
-                    linkedInButton.appendChild(linkedInCopywright);
-                    linkedInButtonWrapper.appendChild(linkedInButton);
-
-                    linkedInButton.classList.add('linkedInButton');
-
-                    linkedInButton.addEventListener('click', function() {
-                        window.location = window.PeBLConfig.PeBLServicesURL + "/logout?redirectUrl=" + encodeURIComponent(window.location.href);
-                    });
-
-                    lightBoxContent.appendChild(linkedInButtonWrapper);
+                    createLinkedInButton();
                 } else {
                     window.location = window.PeBLConfig.PeBLServicesURL + "/logout?redirectUrl=" + encodeURIComponent(window.location.href);
                 }
