@@ -185,44 +185,14 @@ window.Lightbox = {
             '<div class="login__header">' +
                 '<div class="login__image">' +
                 '<img  src="' + window.PeBLConfig.loginImage + '"></img>' +
+                '<p>' + window.PeBLConfig.loginText ? window.PeBLConfig.loginText : '' + '</p>' +
                 '</div>' +
                 '</div>'
         );
 
         $(lightBoxContent).append(loginHeader);
 
-        if (window.PeBLConfig.useLinkedIn) {
-            var linkedInButtonWrapper = document.createElement('div');
-            linkedInButtonWrapper.classList.add('linkedin-button-wrapper');
-            var linkedInButton = document.createElement('div');
-            var linkedInLogo = document.createElement('img');
-            linkedInLogo.src = "./images/linkedin.svg";
-            linkedInLogo.height="36";
-
-            var linkedInCopy = document.createElement('p');
-            linkedInCopy.textContent = 'Sign in with LinkedIn';
-
-            var linkedInCopywright = document.createElement('p');
-            linkedInCopywright.textContent = '®';
-            linkedInCopywright.classList.add('registered-trademark');
-
-            linkedInButton.appendChild(linkedInCopy);
-            linkedInButton.appendChild(linkedInLogo);
-            linkedInButton.appendChild(linkedInCopywright);
-            linkedInButtonWrapper.appendChild(linkedInButton);
-
-            linkedInButton.classList.add('linkedInButton');
-
-            linkedInButton.addEventListener('click', function() {
-                var urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.get('epub'))
-                    window.localStorage.setItem('loginRedirect', window.location.href);
-
-                window.Lightbox.linkedInSignIn();
-            });
-
-            lightBoxContent.appendChild(linkedInButtonWrapper);
-        } else if (window.PeBLConfig.useOpenID) {
+        if (window.PeBLConfig.useOpenID) {
 
             if (!loggingOut) {
                 PeBL.user.isLoggedIn(function(loggedIn) {
@@ -266,7 +236,37 @@ window.Lightbox = {
                     }
                 });
             } else {
-                window.location = window.PeBLConfig.PeBLServicesURL + "/logout?redirectUrl=" + encodeURIComponent(window.location.href);
+                if (window.PeBLConfig.useLinkedIn) {
+                    var linkedInButtonWrapper = document.createElement('div');
+                    linkedInButtonWrapper.classList.add('linkedin-button-wrapper');
+                    var linkedInButton = document.createElement('div');
+                    var linkedInLogo = document.createElement('img');
+                    linkedInLogo.src = "./images/linkedin.svg";
+                    linkedInLogo.height="36";
+
+                    var linkedInCopy = document.createElement('p');
+                    linkedInCopy.textContent = 'Sign in with LinkedIn';
+
+                    var linkedInCopywright = document.createElement('p');
+                    linkedInCopywright.textContent = '®';
+                    linkedInCopywright.classList.add('registered-trademark');
+
+                    linkedInButton.appendChild(linkedInCopy);
+                    linkedInButton.appendChild(linkedInLogo);
+                    linkedInButton.appendChild(linkedInCopywright);
+                    linkedInButtonWrapper.appendChild(linkedInButton);
+
+                    linkedInButton.classList.add('linkedInButton');
+
+                    linkedInButton.addEventListener('click', function() {
+                        window.location = window.PeBLConfig.PeBLServicesURL + "/logout?redirectUrl=" + encodeURIComponent(window.location.href);
+                    });
+
+                    lightBoxContent.appendChild(linkedInButtonWrapper);
+                } else {
+                    window.location = window.PeBLConfig.PeBLServicesURL + "/logout?redirectUrl=" + encodeURIComponent(window.location.href);
+                }
+               
             }
 
         } else {
