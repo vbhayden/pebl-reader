@@ -255,11 +255,16 @@ window.Lightbox = {
 
         var lightBoxContent = document.getElementById('lightBoxContent');
         var lightBoxContentSecondary = document.getElementById('lightBoxContentSecondary');
+
+        var loginText = '';
+        if (window.PeBLConfig.loginText)
+            loginText = window.PeBLConfig.loginText;
+
         var loginHeader = $(
             '<div class="login__header">' +
                 '<div class="login__image">' +
                 '<img  src="' + window.PeBLConfig.loginImage + '"></img>' +
-                '<p>' + window.PeBLConfig.loginText + '</p>' +
+                '<p>' + loginText + '</p>' +
                 '</div>' +
                 '</div>'
         );
