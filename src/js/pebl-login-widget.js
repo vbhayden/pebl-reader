@@ -255,17 +255,21 @@ window.Lightbox = {
 
         var lightBoxContent = document.getElementById('lightBoxContent');
         var lightBoxContentSecondary = document.getElementById('lightBoxContentSecondary');
+
+        var loginText = '';
+        if (window.PeBLConfig.loginText)
+            loginText = window.PeBLConfig.loginText;
+
         var loginHeader = $(
             '<div class="login__header">' +
                 '<div class="login__image">' +
                 '<img  src="' + window.PeBLConfig.loginImage + '"></img>' +
+                '<p>' + loginText + '</p>' +
                 '</div>' +
                 '</div>'
         );
 
-        $(lightBoxContent).append(loginHeader);
-
-        if (window.PeBLConfig.useLinkedIn) {
+        var createLinkedInButton = function() {
             var linkedInButtonWrapper = document.createElement('div');
             linkedInButtonWrapper.classList.add('linkedin-button-wrapper');
             var linkedInButton = document.createElement('div');
@@ -288,15 +292,15 @@ window.Lightbox = {
             linkedInButton.classList.add('linkedInButton');
 
             linkedInButton.addEventListener('click', function() {
-                var urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.get('epub'))
-                    window.localStorage.setItem('loginRedirect', window.location.href);
-
-                window.Lightbox.linkedInSignIn();
+                window.location = window.PeBLConfig.PeBLServicesURL + "/login?redirectUrl=" + encodeURIComponent(window.location.href);
             });
 
             lightBoxContent.appendChild(linkedInButtonWrapper);
-        } else if (window.PeBLConfig.useOpenID) {
+        }
+
+        $(lightBoxContent).append(loginHeader);
+
+        if (window.PeBLConfig.useOpenID) {
 
             if (!loggingOut) {
                 PeBL.user.isLoggedIn(function(loggedIn) {
@@ -343,13 +347,21 @@ window.Lightbox = {
 
                                 
                             } else {
-                                window.location = window.PeBLConfig.PeBLServicesURL + "/login?redirectUrl=" + encodeURIComponent(window.location.href);
+                                if (window.PeBLConfig.useLinkedIn) {
+                                    createLinkedInButton();
+                                } else {
+                                    window.location = window.PeBLConfig.PeBLServicesURL + "/login?redirectUrl=" + encodeURIComponent(window.location.href);
+                                }
                             }
                         });
 
                         xhr.addEventListener('error', (e) => {
-                            consoleLog('failed to retrieve user profile', e);
-                            window.location = window.PeBLConfig.PeBLServicesURL + "/login?redirectUrl=" + encodeURIComponent(window.location.href);
+                            console.log('failed to retrieve user profile', e);
+                            if (window.PeBLConfig.useLinkedIn) {
+                                createLinkedInButton();
+                            } else {
+                                window.location = window.PeBLConfig.PeBLServicesURL + "/login?redirectUrl=" + encodeURIComponent(window.location.href);
+                            }
                         });
 
                         xhr.open('GET',

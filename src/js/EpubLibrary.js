@@ -153,6 +153,7 @@ define([
            }
 
            var loadLibraryItems = function(epubs){
+               window.libraryItems = [];
                var currentScrollPos = $('#app-container').scrollTop();
                $('#app-container .library-row-title').remove();
                $('#app-container .library-items.cloud-library').remove();
@@ -196,10 +197,13 @@ define([
                                    var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: background, strings: Strings, noCoverBackground: noCoverBackground});
                                if ((epub.rootUrl.substr(0, 5) == "db://") || epub.isLocal) {
                                  $('.library-items.cloud-library').append(elem);
+                                 window.libraryItems.push(epub);
                                } else {
                                  var cachedBook = document.getElementById(epub.id);
-                                 if (!cachedBook)
+                                 if (!cachedBook) {
                                    $('.library-items.cloud-library').append(elem);
+                                   window.libraryItems.push(epub);
+                                 }
                                }
                                
                                processEpub(epubs, ++count);
@@ -207,10 +211,13 @@ define([
                                var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, strings: Strings, noCoverBackground: noCoverBackground});
                                if ((epub.rootUrl.substr(0, 5) == "db://") || epub.isLocal) {
                                  $('.library-items.cloud-library').append(elem);
+                                 window.libraryItems.push(epub);
                                } else {
                                  var cachedBook = document.getElementById(epub.id);
-                                 if (!cachedBook)
+                                 if (!cachedBook) {
                                    $('.library-items.cloud-library').append(elem);
+                                   window.libraryItems.push(epub);
+                                 }
                                }
 
                                processEpub(epubs, ++count);
@@ -219,10 +226,13 @@ define([
                            var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: background, strings: Strings, noCoverBackground: noCoverBackground});
                            if ((epub.rootUrl.substr(0, 5) == "db://") || epub.isLocal) {
                              $('.library-items.cloud-library').append(elem);
+                             window.libraryItems.push(epub);
                            } else {
                              var cachedBook = document.getElementById(epub.id);
-                             if (!cachedBook)
+                             if (!cachedBook) {
                                $('.library-items.cloud-library').append(elem);
+                               window.libraryItems.push(epub);
+                             }
                            }
                            
                            processEpub(epubs, ++count);
@@ -439,19 +449,21 @@ define([
                var embedded = urlParams['embedded'];
 
                var ebookURL = $(this).attr('data-book');
+               var ebookTitle = $(this).attr('data-title');
+               var ebookId = $(this).attr('data-id');
 
                if (ebookURL && ebookURL.substr(0, 5) == "db://") {
                    if (ebookURL.endsWith(".epub")) {
                        StorageManager.getFile(ebookURL, function (data) {
-                           var eventPayload = {embedded: embedded, localPath : ebookURL, epub: data, epubs: libraryURL};
+                           var eventPayload = {embedded: embedded, localPath : ebookURL, epub: data, epubs: libraryURL, ebookTitle: ebookTitle, ebookId: ebookId};
                            $(window).triggerHandler('readepub', eventPayload);
                        });
                    } else {
-                       var eventPayload = {embedded: embedded, epub: ebookURL, epubs: libraryURL};
+                       var eventPayload = {embedded: embedded, epub: ebookURL, epubs: libraryURL, ebookTitle: ebookTitle, ebookId: ebookId};
                        $(window).triggerHandler('readepub', eventPayload);
                    }
                } else if (ebookURL) {
-                   var eventPayload = {embedded: embedded, epub: ebookURL, epubs: libraryURL};
+                   var eventPayload = {embedded: embedded, epub: ebookURL, epubs: libraryURL, ebookTitle: ebookTitle, ebookId: ebookId};
                    $(window).triggerHandler('readepub', eventPayload);
                }
                else {
@@ -985,6 +997,7 @@ define([
 
                $(document.body).on('click', '.download-book-button', function(evt) {
                    var url = $(evt.currentTarget).attr('data-root');
+                   var bookTitle = $(evt.currentTarget).attr('data-title');
                    $('#install-spinner-dialog').modal('show');
                    spinLibrary(true, $('#install-spinner-body')[0]);
                    storeBookOffline(url, function() {
@@ -1003,6 +1016,7 @@ define([
                            spinLibrary(false);
                            $('#install-spinner-dialog').modal('hide');
                            if (!isInStandaloneMode()) {
+                             $('#downloaded-book-title').text(bookTitle);
                              $('#install-reader-dialog').modal('show');
                            }
                        }, function() {
@@ -1066,6 +1080,60 @@ define([
                    });
                });
 
+               var getAnalytics = function(id) {
+                 PeBL.user.getUser(function(userProfile) {
+                     if (userProfile) {
+                         $('#analytics-spinner-dialog').modal('show');
+                         spinLibrary(true, $('#analytics-spinner-body')[0]);
+                         window.peblAnalyticsLoading = 4;
+                         PeBL.storage.saveOutgoingXApi(userProfile, {
+                             identity: userProfile.identity,
+                             requestType: 'getChapterCompletionPercentages',
+                             id: PeBL.utils.getUuid(),
+                             params: {
+                                 bookId: id,
+                                 teamId: userProfile.currentTeam,
+                                 classId: userProfile.currentClass,
+                                 timestamp: 1
+                             }
+                         })
+
+                         PeBL.storage.saveOutgoingXApi(userProfile, {
+                             identity: userProfile.identity,
+                             requestType: 'getMostAnsweredQuestions',
+                             id: PeBL.utils.getUuid(),
+                             params: {
+                                 bookId: id,
+                                 teamId: userProfile.currentTeam,
+                                 classId: userProfile.currentClass
+                             }
+                         })
+
+                         PeBL.storage.saveOutgoingXApi(userProfile, {
+                             identity: userProfile.identity,
+                             requestType: 'getQuizAttempts',
+                             id: PeBL.utils.getUuid(),
+                             params: {
+                                 bookId: id,
+                                 teamId: userProfile.currentTeam,
+                                 classId: userProfile.currentClass
+                             }
+                         })
+
+                         PeBL.storage.saveOutgoingXApi(userProfile, {
+                             identity: userProfile.identity,
+                             requestType: 'getReportedThreadedMessages',
+                             id: PeBL.utils.getUuid(),
+                             params: {
+                               bookId: id,
+                               teamId: userProfile.currentTeam,
+                               classId: userProfile.currentClass
+                             }
+                         })
+                     }
+                 })
+               }
+
                $(document.body).on('click', '#adminSidebarToggleButton', function() {
                    $('#adminSidebar').toggleClass('is-collapsed');
                });
@@ -1078,61 +1146,27 @@ define([
                });
 
                $(document.body).on('click', '#adminSidebarAnalyticsButton', function() {
+                   if (window.libraryItems.length > 1) {
+                     $('#analytics-book-title').show();
+                   } else {
+                     $('#analytics-book-title').hide();
+                   }
+                   $('#analytics-book-title').children().remove();
+                   for (var book of window.libraryItems) {
+                     var item = document.createElement('option');
+                     item.textContent = book.title;
+                     item.value = book.id;
+                     $('#analytics-book-title').append(item);
+                   }
                    $('#library-body').hide();
                    $('#analytics-body').show();
                    $('#adminSidebarAnalyticsButton').addClass('is-active');
                    $('#adminSidebarLibraryButton').removeClass('is-active');
-                   PeBL.user.getUser(function(userProfile) {
-                       if (userProfile) {
-                           $('#analytics-spinner-dialog').modal('show');
-                           spinLibrary(true, $('#analytics-spinner-body')[0]);
-                           window.peblAnalyticsLoading = 4;
-                           PeBL.storage.saveOutgoingXApi(userProfile, {
-                               identity: userProfile.identity,
-                               requestType: 'getChapterCompletionPercentages',
-                               id: PeBL.utils.getUuid(),
-                               params: {
-                                   bookId: 'mcdp-7',
-                                   teamId: userProfile.currentTeam,
-                                   classId: userProfile.currentClass,
-                                   timestamp: 1
-                               }
-                           })
+                   getAnalytics(window.libraryItems[0].id);
+               });
 
-                           PeBL.storage.saveOutgoingXApi(userProfile, {
-                               identity: userProfile.identity,
-                               requestType: 'getMostAnsweredQuestions',
-                               id: PeBL.utils.getUuid(),
-                               params: {
-                                   bookId: 'mcdp-7',
-                                   teamId: userProfile.currentTeam,
-                                   classId: userProfile.currentClass
-                               }
-                           })
-
-                           PeBL.storage.saveOutgoingXApi(userProfile, {
-                               identity: userProfile.identity,
-                               requestType: 'getQuizAttempts',
-                               id: PeBL.utils.getUuid(),
-                               params: {
-                                   bookId: 'mcdp-7',
-                                   teamId: userProfile.currentTeam,
-                                   classId: userProfile.currentClass
-                               }
-                           })
-
-                           PeBL.storage.saveOutgoingXApi(userProfile, {
-                               identity: userProfile.identity,
-                               requestType: 'getReportedThreadedMessages',
-                               id: PeBL.utils.getUuid(),
-                               params: {
-                                 bookId: 'mcdp-7',
-                                 teamId: userProfile.currentTeam,
-                                 classId: userProfile.currentClass
-                               }
-                           })
-                       }
-                   })
+               $(document.body).on('change', '#analytics-book-title', function(evt) {
+                 getAnalytics(evt.target.value);
                });
 
                var showAnalytics = function() {
