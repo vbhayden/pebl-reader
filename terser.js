@@ -31,9 +31,17 @@ let Terser = require("terser");
 // // fs.writeFileSync(minPath, result.code);
 // fs.writeFileSync(path, result.code);
 
-console.log("Minifing");
-let path = "dist/cloud-reader/scripts/pack.js";
-// let minPath = "dist/cloud-reader/scripts/PeBLCore.min.js";
-let result = Terser.minify(fs.readFileSync(path, "utf8"));
-// fs.writeFileSync(minPath, result.code);
-fs.writeFileSync(path, result.code);
+if (process.env.MINIMIZE === "true") {
+    console.log("Minifing");
+    let path = "dist/cloud-reader/scripts/pack.js";
+    let result = Terser.minify(fs.readFileSync(path, "utf8"));
+    fs.writeFileSync(path, result.code);
+
+    path = "dist/cloud-reader/scripts/readium-js-viewer_CLOUDAPP-WORKER.js";
+    result = Terser.minify(fs.readFileSync(path, "utf8"));
+    fs.writeFileSync(path, result.code);
+
+    path = "dist/cloud-reader/peblSW.js";
+    result = Terser.minify(fs.readFileSync(path, "utf8"));
+    fs.writeFileSync(path, result.code);
+}

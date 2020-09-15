@@ -44,9 +44,6 @@ require.config({
     {
         // ------ NPM MODULEs
 
-        'keymaster':
-            process._RJS_rootDir(2) + '/node_modules/keymaster/keymaster',
-
         'screenfull':
             process._RJS_rootDir(2) + '/node_modules/screenfull/dist/screenfull',
 
@@ -67,14 +64,6 @@ require.config({
 
         'bootstrapA11y':
             process._RJS_rootDir(2) + '/node_modules/bootstrap-accessibility-plugin/plugins/js/bootstrap-accessibility',
-
-        'jquery_hammer':
-            process._RJS_rootDir(2) + '/node_modules/jquery-hammerjs/jquery.hammer',
-
-        'hammerjs':
-            process._RJS_rootDir(2) + '/node_modules/hammerjs/hammer',
-
-
 
 
         'i18nStrings':
@@ -97,11 +86,11 @@ require.config({
 
     shim:
     {
+        jquery: {
+            exports: '$'
+        },
         screenfull : {
             exports: 'screenfull'
-        },
-        keymaster : {
-            exports: 'key'
         },
         jath : {
             exports: 'Jath'
@@ -110,7 +99,6 @@ require.config({
             exports: 'Spinner'
         },
         bootstrap: {
-            deps: ['jquery'],
             exports: 'bootstrap'
         },
         bootstrapA11y: {
