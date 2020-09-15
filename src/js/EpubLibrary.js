@@ -854,7 +854,8 @@ define([
                }));
 
                $appContainer.append(InstallReaderDialog({
-                   strings: Strings
+                   strings: Strings,
+                   param: window.PeBLConfig.installGuideParam
                }));
 
                $appContainer.append(InstallIosReaderDialog({
