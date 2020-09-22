@@ -95,6 +95,8 @@ buildExtensionQa:
   # - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
   - cp "$QA_EXTENSION_WEB_READER_CONFIG" src/cloud-reader/config.js
 
+  - cp "$QA_EXTENSION_MANIFEST" src/cloud-reader/manifest.json
+
   - echo "{" > src/i18n/_locales/en_US/skinning.json
 
   - "echo '\"i18n_pebl_library\" : { \"message\" : \"eXtension Foundation Library\" },' >> src/i18n/_locales/en_US/skinning.json"
