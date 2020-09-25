@@ -28,27 +28,35 @@ buildProdExtension:
     - git submodule sync --recursive
     - git submodule update --init --recursive readium-js
   script:
+  - 'curl -L --output artifacts.zip --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://git.eduworks.us/api/v4/projects/94/jobs/artifacts/qa/download?job=buildQA"'
   - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
   - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
-  - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
+  - sed -i "s/VERSION/$LAST_TAG/" src/cloud-reader/config.js
+  
+  # - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
   - cp "$PROD_EXTENSION_WEB_READER_CONFIG" src/cloud-reader/config.js
+
+  - cp "$PROD_EXTENSION_MANIFEST" src/cloud-reader/manifest.json
 
   - echo "{" > src/i18n/_locales/en_US/skinning.json
 
-  - "echo '\"i18n_pebl_library\" : { \"message\" : \"eXtension Library\" },' >> src/i18n/_locales/en_US/skinning.json"
-  - "echo '\"i18n_pebl_reader\" : { \"message\" : \"eXtension Reader\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_library\" : { \"message\" : \"eXtension Foundation Library\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_reader\" : { \"message\" : \"eXtension Foundation Reader\" },' >> src/i18n/_locales/en_US/skinning.json"
   - "echo '\"i18n_pebl_title\" : { \"message\" : \"eXtension Foundation\" },' >> src/i18n/_locales/en_US/skinning.json"
   - "echo '\"i18n_pebl_webreader_logo\" : { \"message\" : \"images/eXtension-icon_small.png\" }' >> src/i18n/_locales/en_US/skinning.json"
 
   - echo "}" >> src/i18n/_locales/en_US/skinning.json
 
+  - unzip artifacts.zip
+  - mv dist/PeBLCore.js src/js/
   - chmod +x pack.sh
   - npm run prepare:all
-  - npm run dist
+  - export MINIMIZE=true && npm run dist
   artifacts:
     paths:
       - dist/cloud-reader
 
+############
 
 buildProdUSMC:
   stage: build
@@ -70,6 +78,7 @@ buildProdUSMC:
     paths:
       - dist/cloud-reader
 
+############
 
 buildExtensionQa:
   stage: build
@@ -80,27 +89,35 @@ buildExtensionQa:
     - git submodule sync --recursive
     - git submodule update --init --recursive readium-js
   script:
+  - 'curl -L --output artifacts.zip --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://git.eduworks.us/api/v4/projects/94/jobs/artifacts/qa/download?job=buildQA"'
   - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
   - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
-  - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
+  - sed -i "s/VERSION/$LAST_TAG/" src/cloud-reader/config.js
+  
+  # - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
   - cp "$QA_EXTENSION_WEB_READER_CONFIG" src/cloud-reader/config.js
+
+  - cp "$QA_EXTENSION_MANIFEST" src/cloud-reader/manifest.json
 
   - echo "{" > src/i18n/_locales/en_US/skinning.json
 
-  - "echo '\"i18n_pebl_library\" : { \"message\" : \"eXtension Library\" },' >> src/i18n/_locales/en_US/skinning.json"
-  - "echo '\"i18n_pebl_reader\" : { \"message\" : \"eXtension Reader\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_library\" : { \"message\" : \"eXtension Foundation Library\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_reader\" : { \"message\" : \"eXtension Foundation Reader\" },' >> src/i18n/_locales/en_US/skinning.json"
   - "echo '\"i18n_pebl_title\" : { \"message\" : \"eXtension Foundation\" },' >> src/i18n/_locales/en_US/skinning.json"
   - "echo '\"i18n_pebl_webreader_logo\" : { \"message\" : \"images/eXtension-icon_small.png\" }' >> src/i18n/_locales/en_US/skinning.json"
 
   - echo "}" >> src/i18n/_locales/en_US/skinning.json
-  
+
+  - unzip artifacts.zip
+  - mv dist/PeBLCore.js src/js/
   - chmod +x pack.sh
   - npm run prepare:all
-  - npm run dist
+  - export MINIMIZE=true && npm run dist
   artifacts:
     paths:
       - dist/cloud-reader
 
+############
 
 buildProdExtensionEEO:
   stage: build
@@ -141,6 +158,8 @@ buildProdExtensionEEO:
     paths:
       - dist/cloud-reader
 
+############
+
 buildNpsProd:
   stage: build
 
@@ -169,6 +188,8 @@ buildNpsProd:
     paths:
     - dist/cloud-reader
 
+############
+
 buildAdlProd:
   stage: build
 
@@ -191,6 +212,8 @@ buildAdlProd:
   artifacts:
     paths:
     - dist/cloud-reader
+
+############
 
 buildLwProd:
   stage: build
@@ -221,6 +244,7 @@ buildLwProd:
     paths:
     - dist/cloud-reader
 
+############
 
 buildProd:
   stage: build
@@ -260,18 +284,57 @@ buildQA:
     - git submodule sync --recursive
     - git submodule update --init --recursive readium-js
   script:
+  - 'curl -L --output artifacts.zip --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://git.eduworks.us/api/v4/projects/94/jobs/artifacts/qa/download?job=buildQA"'
   - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
-  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
-  - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
 
   - cp "$QA_WEB_READER_CONFIG" src/cloud-reader/config.js
+  - sed -i "s/VERSION/$LAST_TAG/" src/cloud-reader/config.js
 
+  - unzip artifacts.zip
+  - mv dist/PeBLCore.js src/js/
   - chmod +x pack.sh
   - npm run prepare:all
-  - npm run dist
+  - export MINIMIZE=true && npm run dist
   artifacts:
     paths:
     - dist/cloud-reader
+
+############
+
+buildADLDocker:
+  stage: build
+  only:
+    - tags
+  before_script:
+    - git submodule sync --recursive
+    - git submodule update --init --recursive readium-js
+  script:
+  - 'curl -L --output artifacts.zip --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://git.eduworks.us/api/v4/projects/94/jobs/artifacts/dev/download?job=buildDev"'
+  - LAST_TAG=$(git describe --tags)
+
+  - cp src/cloud-reader/sampleConfig.js src/cloud-reader/config.js
+  - sed -i "s/VERSION/$LAST_TAG/" src/cloud-reader/config.js
+
+  - cp "$DEV_MANIFEST" src/cloud-reader/manifest.json
+
+  - echo "{" > src/i18n/_locales/en_US/skinning.json
+
+  - "echo '\"i18n_pebl_library\" : { \"message\" : \"USMC Library\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_reader\" : { \"message\" : \"USMC Reader\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_webreader_logo\" : { \"message\" : \"images/usmc-favicon-32x32.png\" }' >> src/i18n/_locales/en_US/skinning.json"
+
+  - echo "}" >> src/i18n/_locales/en_US/skinning.json
+
+  - unzip artifacts.zip
+  - mv dist/PeBLCore.js src/js/
+  - chmod +x pack.sh
+  - npm run prepare:all
+  - export MINIMIZE=true && npm run dist
+  artifacts:
+    paths:
+    - dist/cloud-reader
+
+############
 
 buildDev:
   stage: build
@@ -281,12 +344,25 @@ buildDev:
     - git submodule sync --recursive
     - git submodule update --init --recursive readium-js
   script:
+  - 'curl -L --output artifacts.zip --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://git.eduworks.us/api/v4/projects/94/jobs/artifacts/dev/download?job=buildDev"'
   - LAST_TAG=$(git describe --tags)
-  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
-  - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
+  # - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
 
   - cp "$DEV_WEB_READER_CONFIG" src/cloud-reader/config.js
+  - sed -i "s/VERSION/$LAST_TAG/" src/cloud-reader/config.js
 
+  - cp "$DEV_MANIFEST" src/cloud-reader/manifest.json
+
+  - echo "{" > src/i18n/_locales/en_US/skinning.json
+
+  - "echo '\"i18n_pebl_library\" : { \"message\" : \"USMC Library\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_reader\" : { \"message\" : \"USMC Reader\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_webreader_logo\" : { \"message\" : \"images/usmc-favicon-32x32.png\" }' >> src/i18n/_locales/en_US/skinning.json"
+
+  - echo "}" >> src/i18n/_locales/en_US/skinning.json
+
+  - unzip artifacts.zip
+  - mv dist/PeBLCore.js src/js/
   - chmod +x pack.sh
   - npm run prepare:all
   - npm run dist
@@ -294,7 +370,21 @@ buildDev:
     paths:
     - dist/cloud-reader
 
+
 ### DEPLOYMENTS
+
+deployDocker:
+  stage: deploy
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE/pebl-reader:$CI_COMMIT_TAG
+  only:
+    - tags
+
+############
 
 prodExtensionDeploy:
   stage: deploy

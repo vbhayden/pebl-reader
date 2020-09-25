@@ -42,7 +42,7 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
                     options.success(epubObj);
                 }, options.error, newIndex);
             }, function() {
-                console.log('error getting epub_content');
+                consoleLog('error getting epub_content');
             });
             //this.libraryData.push(epubObj);
             
@@ -73,9 +73,9 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
 	    }
 
 	    var commitEpubToLibrary = function(){
-                    console.log('package: ');
-                    console.log(JSON.stringify(packageObj, null, 4));
-                    console.log('packagePath: ' + packagePath);
+                    consoleLog('package: ');
+                    consoleLog(JSON.stringify(packageObj, null, 4));
+                    consoleLog('packagePath: ' + packagePath);
 
                 var epubObj = {
 		    id: packageObj.id,
@@ -95,9 +95,9 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
 	    
 	    StorageManager.saveFile("db://" + rootDirName, blob, function() {
             fileLoader.loadFile('OEBPS/' + packageObj.coverHref, function(image) {
-                StorageManager.saveFile("db://" + rootDirName + '/OEBPS/' + packageObj.coverHref, image, commitEpubToLibrary, function (x) {console.log(x); });
+                StorageManager.saveFile("db://" + rootDirName + '/OEBPS/' + packageObj.coverHref, image, commitEpubToLibrary, function (x) {consoleLog(x); });
             });
-        }, function (x) { console.log(x); });
+        }, function (x) { consoleLog(x); });
 
             //var contentTransformer = new ContentTransformer(encryptionData);
 
@@ -175,7 +175,7 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
                     }
                     else {
                         error(Messages.ERROR_EPUB);
-                        console.error('Epub archive or directory missing a required  file: ' + path);
+                        consoleError('Epub archive or directory missing a required  file: ' + path);
                     }
                 }
             });
@@ -214,7 +214,7 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
                 // var $rootfile = $('rootfile', containerDom);
                 // if (!$rootfile.length){
                 //     this.options.error(Messages.ERROR_EPUB);
-                //     console.error('Epub container.xml missing rootfile element');
+                //     consoleError('Epub container.xml missing rootfile element');
                 // }
 
 

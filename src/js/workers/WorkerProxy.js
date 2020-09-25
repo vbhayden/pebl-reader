@@ -1,4 +1,4 @@
-define(['../storage/IndexedDBStorageManager', '../ModuleConfig', './Messages', 'jquery', '../PackageParser', 'readium_js/epub-fetch/encryption_handler'], function(StorageManager, moduleConfig, Messages, $, PackageParser, EncryptionHandler){
+define(['../storage/IndexedDBStorageManager', '../ModuleConfig', './Messages', '../PackageParser', 'readium_js/epub-fetch/encryption_handler'], function(StorageManager, moduleConfig, Messages, PackageParser, EncryptionHandler){
 
     var worker;
     var cleanupWorker = function(){
@@ -9,7 +9,7 @@ define(['../storage/IndexedDBStorageManager', '../ModuleConfig', './Messages', '
     }
     var doWork = function(job, callbacks){
         if (worker){
-            console.log('dangling worker');
+            consoleLog('dangling worker');
         }
 
         var workerUrl = moduleConfig.workerUrl;
@@ -67,7 +67,7 @@ define(['../storage/IndexedDBStorageManager', '../ModuleConfig', './Messages', '
                     var $rootfile = $('rootfile', containerDom);
                     if (!$rootfile.length){
                         error(Messages.ERROR_EPUB);
-                        console.error('Epub container.xml missing rootfile element');
+                        consoleError('Epub container.xml missing rootfile element');
                     }
                     else{
                         worker.postMessage({msg: Messages.FIND_PACKAGE_RESPONSE, path: $rootfile.attr('full-path')});
@@ -78,7 +78,7 @@ define(['../storage/IndexedDBStorageManager', '../ModuleConfig', './Messages', '
                     var errors = $(packageDom).find('parsererror');
                     if (errors.length) {
                         error(Messages.ERROR_PACKAGE_PARSE, $(errors).find('div').text());
-                        console.error('There was an xml parsing error when trying to parse the package dom');
+                        consoleError('There was an xml parsing error when trying to parse the package dom');
                     }
                     else {
                         var packageObj = PackageParser.parsePackageDom(packageDom);
@@ -100,7 +100,7 @@ define(['../storage/IndexedDBStorageManager', '../ModuleConfig', './Messages', '
         };
         
         worker.onerror = function(){
-            console.error(arguments)
+            consoleError(arguments)
         }
     }
 

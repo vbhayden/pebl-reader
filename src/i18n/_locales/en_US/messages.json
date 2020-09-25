@@ -19,7 +19,7 @@
 	"message" : "Grid View"
     },
     "view_library": {
-	"message" : "PeBL Library"
+	"message" : "Library"
     },
     "highlight_selection" : {
 	"message" : "Highlight Selected Text"
@@ -100,7 +100,7 @@
 	"message": "Examining EPUB content..."
     },
     "storing_file" : {
-	"message": "Storing file"
+	"message": "For initial viewing the e-book must be processed:"
     },
     "err_unknown" : {
 	"message": "Unknown error. Check console for more details."
@@ -232,7 +232,7 @@
 	"message" : "Add Book To Readium Library:"
     },
     "i18n_add_book_to_pebl_library" : {
-	"message" : "Add Book To PeBL Library:"
+	"message" : "Add Book To Library:"
     },    
     "i18n_add_book" : {
 	"message" : "Add to Library"

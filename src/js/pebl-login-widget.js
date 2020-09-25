@@ -175,17 +175,96 @@ window.Lightbox = {
         callback(lrsUsername);
     },
 
+    createGroupSelectForm: function(groups, callback, allowCancel) {
+        window.Lightbox.close();
+        window.Lightbox.create("login", allowCancel);
+
+        var classes = [];
+        var teams = [];
+
+        for (var group of groups) {
+            if ((group.match(/\//g)||[]).length > 1)
+                teams.push(group);
+            else
+                classes.push(group);
+        }
+
+        var lightBoxContent = document.getElementById('lightBoxContent');
+        
+        var classSelect = $(
+            '<div class="login__input-wrapper">' +
+                '<div class="login__label">' +
+                '<label>School / Unit:</label>' +
+                '</div>' +
+                '<div class="login__input">' +
+                '<select id="loginClassSelect"></select>' +
+                '</div>' +
+                '</div>'
+        );
+
+        var classSelectElement = classSelect.find('#loginClassSelect');
+        for (var cls of classes) {
+            classSelectElement.append($('<option></option').data("value", cls).text(cls.split('/').pop()));
+        }
+
+        if (classes.length > 0)
+            $(lightBoxContent).append(classSelect);
+
+        var teamSelect = $(
+            '<div class="login__input-wrapper">' +
+                '<div class="login__label">'+
+                '<label>Class:</label>'+
+                '</div>' +
+                '<div class="login__input">'+
+                '<select id="loginTeamSelect"></select>' +
+                '</div>' +
+                '</div>'
+        );
+
+        var teamSelectElement = teamSelect.find('#loginTeamSelect');
+        for (var team of teams) {
+            teamSelectElement.append($('<option></option').data("value", team).text(team.replace(/([^\/]*\/){2}/, '')));
+        }
+
+        if (teams.length > 0)
+            $(lightBoxContent).append(teamSelect);
+
+
+        var submit = $(
+            '<div class="login__input-wrapper">' +
+                '<input class="btn btn-primary" type="button" value="Submit" id="loginGroupSelectSubmit" />' +
+                '</div>'
+        );
+        submit.find('#loginGroupSelectSubmit').on('click', function() {
+            var classObj;
+            var teamObj;
+            if (classes.length > 0) {
+                classObj = $('#loginClassSelect option:selected').data('value');
+            }
+            if (teams.length > 0) {
+                teamObj = $('#loginTeamSelect option:selected').data('value');
+            }
+            callback(classObj, teamObj);
+        });
+        $(lightBoxContent).append(submit);
+    },
+
     createLoginForm: function(loggingOut) {
         window.Lightbox.close();
         window.Lightbox.create("login", false);
 
         var lightBoxContent = document.getElementById('lightBoxContent');
         var lightBoxContentSecondary = document.getElementById('lightBoxContentSecondary');
+
+        var loginText = '';
+        if (window.PeBLConfig.loginText)
+            loginText = window.PeBLConfig.loginText;
+
         var loginHeader = $(
             '<div class="login__header">' +
                 '<div class="login__image">' +
                 '<img  src="' + window.PeBLConfig.loginImage + '"></img>' +
-                '<p>' + window.PeBLConfig.loginText + '</p>' +
+                '<p>' + loginText + '</p>' +
                 '</div>' +
                 '</div>'
         );
@@ -230,7 +309,7 @@ window.Lightbox = {
 
                         xhr.addEventListener('load', () => {
                             if (xhr.status < 300) {
-                                console.log(JSON.parse(xhr.response));
+                                consoleLog(JSON.parse(xhr.response));
                                 let payload = JSON.parse(xhr.response);
                                 let userProfile = {
                                     identity: payload.preferred_username,
@@ -241,11 +320,32 @@ window.Lightbox = {
                                     // avatar: imageToUse,
                                     registryEndpoint: {
                                         ul: 'https://peblproject.com/registry/api/downloadContent?guid='
-                                    }
+                                    },
+                                    memberships: payload.memberships,
+                                    role: payload.role,
+                                    groups: payload.groups
                                 };
 
-                                window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
-                                window.Lightbox.close();
+                                if (payload.groups && payload.groups.length > 0) {
+                                    window.Lightbox.createGroupSelectForm(payload.groups, function(classObj, teamObj) {
+                                        if (classObj) {
+                                            userProfile.currentClass = classObj;
+                                            userProfile.currentClassName = classObj.split('/').pop();
+                                        }
+                                        
+                                        if (teamObj) {
+                                            userProfile.currentTeam = teamObj;
+                                            userProfile.currentTeamName = teamObj.replace(/([^\/]*\/){2}/, '');
+                                        }
+                                        window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
+                                        window.Lightbox.close();
+                                    });
+                                } else {
+                                    window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
+                                    window.Lightbox.close();
+                                }
+
+                                
                             } else {
                                 if (window.PeBLConfig.useLinkedIn) {
                                     createLinkedInButton();
@@ -269,7 +369,7 @@ window.Lightbox = {
                         xhr.withCredentials = true;
                         xhr.send();
                     } else {
-                        console.log("!loggedIn");
+                        consoleLog("!loggedIn");
                     }
                 });
             } else {
@@ -336,7 +436,7 @@ window.Lightbox = {
             $(form).append(teamSelect);
             var login = $(
                 '<div class="login__input-wrapper">' +
-                    '<input class="login__button" type="button" value="Login" id="loginUserNameSubmit" />' +
+                    '<input class="btn btn-primary" type="button" value="Login" id="loginUserNameSubmit" />' +
                     '</div>'
             );
             $(form).append(login);
@@ -428,14 +528,14 @@ window.Lightbox = {
     apiGetAccessToken: function(application, authToken, success, failure) {
         var xhr = new XMLHttpRequest();
         xhr.addEventListener('load', function() {
-            console.log('success', xhr);
+            consoleLog('success', xhr);
             if (success) {
                 success(JSON.parse(xhr.response));
                 localStorage.removeItem('linkedInOauthState');
             }
         });
         xhr.addEventListener('error', function(e) {
-            console.log('error', xhr);
+            consoleLog('error', xhr);
             if (failure) {
                 failure(e);
                 localStorage.removeItem('linkedInOauthState');
@@ -449,13 +549,13 @@ window.Lightbox = {
     apiGetProfile: function(accessToken, success, failure) {
         var xhr = new XMLHttpRequest();
         xhr.addEventListener('load', function() {
-            console.log('success', xhr);
+            consoleLog('success', xhr);
             if (success) {
                 success(JSON.parse(xhr.response), accessToken);
             }
         });
         xhr.addEventListener('error', function(e) {
-            console.log('error', xhr);
+            consoleLog('error', xhr);
             if (failure) {
                 failure(e);
             }
@@ -468,13 +568,13 @@ window.Lightbox = {
     apiGetOtherProfile: function(accessToken, userId, success, failure) {
         var xhr = new XMLHttpRequest();
         xhr.addEventListener('load', function() {
-            console.log('success', xhr);
+            consoleLog('success', xhr);
             if (success) {
                 success(JSON.parse(xhr.response), accessToken);
             }
         });
         xhr.addEventListener('error', function(e) {
-            console.log('error', xhr);
+            consoleLog('error', xhr);
             if (failure) {
                 failure(e);
             }
@@ -551,11 +651,11 @@ window.Lightbox = {
                                                               window.Lightbox.apiGetProfile(authObj.access_token,
                                                                                             loginUser,
                                                                                             function(error) {
-                                                                                                console.log(error);
+                                                                                                consoleError(error);
                                                                                             });
                                                           },
                                                           function(error) {
-                                                              console.log(error);
+                                                              consoleError(error);
                                                           });
                     }
                 }
@@ -801,6 +901,9 @@ window.Lightbox = {
         } else if (lightBoxType === 'login') {
             lightBox.classList.add('lightBox');
             lightBox.classList.add('lightBoxLoginForm');
+        } else if (lightBoxType === 'groupSelect') {
+            lightBox.classList.add('lightBox');
+            lightBox.classList.add('lightBoxGroupSelect');
         }
 
         lightBoxContent = document.createElement('div');
