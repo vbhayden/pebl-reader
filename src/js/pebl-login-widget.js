@@ -183,7 +183,7 @@ window.Lightbox = {
 
         for (var group of groups) {
             if ((group.match(/\//g)||[]).length > 1) {
-                let className = group.split('/')[1];
+                let className = '/' + group.split('/')[1];
                 if (!classes[className])
                     classes[className] = [];
                 classes[className].push(group);
