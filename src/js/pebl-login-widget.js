@@ -187,7 +187,7 @@ window.Lightbox = {
                 if (!classes[className])
                     classes[className] = [];
                 classes[className].push(group);
-            } else {
+            } else if (!classes[group]) {
                 classes[group] = [];
             }
         }
