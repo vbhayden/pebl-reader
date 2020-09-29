@@ -179,14 +179,17 @@ window.Lightbox = {
         window.Lightbox.close();
         window.Lightbox.create("login", allowCancel);
 
-        var classes = [];
-        var teams = [];
+        var classes = {};
 
         for (var group of groups) {
-            if ((group.match(/\//g)||[]).length > 1)
-                teams.push(group);
-            else
-                classes.push(group);
+            if ((group.match(/\//g)||[]).length > 1) {
+                let className = '/' + group.split('/')[1];
+                if (!classes[className])
+                    classes[className] = [];
+                classes[className].push(group);
+            } else if (!classes[group]) {
+                classes[group] = [];
+            }
         }
 
         var lightBoxContent = document.getElementById('lightBoxContent');
@@ -203,11 +206,26 @@ window.Lightbox = {
         );
 
         var classSelectElement = classSelect.find('#loginClassSelect');
-        for (var cls of classes) {
+        for (var cls of Object.keys(classes)) {
             classSelectElement.append($('<option></option').data("value", cls).text(cls.split('/').pop()));
         }
 
-        if (classes.length > 0)
+        classSelectElement.on('change', function() {
+            var teamSelectElement = $(document.body).find('#loginTeamSelect');
+            let classValue = $(document.body).find('#loginClassSelect option:selected').data('value');
+            teamSelectElement.empty();
+            if (classes[classValue].length > 0) {
+                teamSelectElement.parent().parent().show();
+                for (var team of classes[classValue]) {
+                    teamSelectElement.append($('<option></option').data("value", team).text(team.replace(/([^\/]*\/){2}/, '')));
+                }
+            } else {
+                teamSelectElement.parent().parent().hide();
+            }
+            
+        })
+
+        if (Object.keys(classes).length > 0)
             $(lightBoxContent).append(classSelect);
 
         var teamSelect = $(
@@ -221,13 +239,14 @@ window.Lightbox = {
                 '</div>'
         );
 
-        var teamSelectElement = teamSelect.find('#loginTeamSelect');
-        for (var team of teams) {
-            teamSelectElement.append($('<option></option').data("value", team).text(team.replace(/([^\/]*\/){2}/, '')));
-        }
-
-        if (teams.length > 0)
+        if (Object.keys(classes).length > 0 && classes[Object.keys(classes)[0]].length > 0) {
+            var teamSelectElement = teamSelect.find('#loginTeamSelect');
+            for (var team of classes[Object.keys(classes)[0]]) {
+                teamSelectElement.append($('<option></option').data("value", team).text(team.replace(/([^\/]*\/){2}/, '')));
+            }
             $(lightBoxContent).append(teamSelect);
+        }
+        
 
 
         var submit = $(
@@ -236,15 +255,15 @@ window.Lightbox = {
                 '</div>'
         );
         submit.find('#loginGroupSelectSubmit').on('click', function() {
-            var classObj;
-            var teamObj;
-            if (classes.length > 0) {
-                classObj = $('#loginClassSelect option:selected').data('value');
+            var classValue;
+            var teamValue;
+            if (Object.keys(classes).length > 0) {
+                classValue = $('#loginClassSelect option:selected').data('value');
             }
-            if (teams.length > 0) {
-                teamObj = $('#loginTeamSelect option:selected').data('value');
+            if (classes[classValue].length > 0) {
+                teamValue = $('#loginTeamSelect option:selected').data('value');
             }
-            callback(classObj, teamObj);
+            callback(classValue, teamValue);
         });
         $(lightBoxContent).append(submit);
     },
