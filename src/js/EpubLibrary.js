@@ -821,6 +821,10 @@ define([
                    return (window.matchMedia('(display-mode: standalone)').matches) || (window.navigator.standalone) || document.referrer.includes('android-app://');
                }
 
+               var readerCss = document.getElementById('epubReaderCss');
+               if (readerCss)
+                 readerCss.remove();
+
                // Checks if should display install popup notification:
                if (isIos()) {
                    inIos = true;

@@ -644,6 +644,25 @@ define([
                return temp2;
            };
 
+           var initializeEpubReaderCssFile = function(packageDocument) {
+             var readerCss = document.getElementById('epubReaderCss');
+             if (readerCss)
+               readerCss.remove();
+
+             var metadata = packageDocument.getMetadata();
+             if (metadata.reader_css) {
+               readium.getCurrentPublicationFetcher().getFileContentsFromPackage(metadata.reader_css, function(cssContents) {
+                 readerCss = document.createElement('style');
+                 readerCss.id = 'epubReaderCss';
+                 readerCss.textContent = cssContents;
+
+                 document.getElementsByTagName('head')[0].appendChild(readerCss);
+               }, function(error) {
+                 console.error(error);
+               })
+             }
+           }
+
            // This function will retrieve a package document and load an EPUB
            var loadEbook = function(readerSettings, openPageRequest) {
                readium.openPackageDocument(
@@ -669,6 +688,8 @@ define([
                        currentPackageDocument.generateTocListDOM(function(dom) {
                            loadToc(dom)
                        });
+
+                       initializeEpubReaderCssFile(currentPackageDocument);
 
                        wasFixed = readium.reader.isCurrentViewFixedLayout();
                        var metadata = options.metadata;
