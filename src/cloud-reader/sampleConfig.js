@@ -14,10 +14,11 @@ limitations under the License.
 window.PeBLConfig = {}
 window.PeBLConfig.PeBLServicesURL = '__HTTP_SERVICES_ENDPOINT__';
 window.PeBLConfig.PeBLServicesWSURL = '__WS_SERVICES_ENDPOINT__';
-window.PeBLConfig.useOpenID = true;
-window.PeBLConfig.favicon = 'images/usmc-favicon-16x16.png';
-window.PeBLConfig.loginImage = 'images/usmc-android-chrome-192x192.png';
-window.PeBLConfig.appleTouchIcon = 'images/usmc-apple-touch-icon.png';
-window.PeBLConfig.userList = ['Learner', 'Learner1', 'Learner2', 'Learner3', 'Learner5', 'Learner7'];
+window.PeBLConfig.useOpenID = __USE_OPEN_ID__;
+window.PeBLConfig.useGoogleLogin = __USE_GOOGLE_LOGIN__;
+window.PeBLConfig.googleClientId = __GOOGLE_CLIENT_ID__;
+window.PeBLConfig.appleTouchIcon = '__READER_APPLE_TOUCH_ICON__';
+window.PeBLConfig.favicon = '__READER_FAVICON__';
+window.PeBLConfig.loginImage = '__READER_LOGIN_IMAGE__';
 window.PeBLConfig.version = "VERSION";
 window.DEBUGGING = false;
