@@ -16,5 +16,6 @@ sed -ie "s|__PEBL_LIBRARY_TITLE__|$PEBL_LIBRARY_TITLE|g" /usr/share/nginx/html/s
 sed -ie "s|__PEBL_READER_TITLE__|$PEBL_READER_TITLE|g" /usr/share/nginx/html/scripts/pack.js
 sed -ie "s|__PEBL_TITLE__|$PEBL_TITLE|g" /usr/share/nginx/html/scripts/pack.js
 sed -ie "s|__PEBL_WEBREADER_LOGO__|$PEBL_WEBREADER_LOGO|g" /usr/share/nginx/html/scripts/pack.js
+sed -ie "s|__READER_DISABLED_FEATURES__|$READER_DISABLED_FEATURES|g" /usr/share/nginx/html/scripts/pack.js
 
 nginx -g "daemon off;"
