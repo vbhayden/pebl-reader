@@ -644,6 +644,25 @@ define([
                return temp2;
            };
 
+           var initializeEpubReaderCssFile = function(packageDocument) {
+             var readerCss = document.getElementById('epubReaderCss');
+             if (readerCss)
+               readerCss.remove();
+
+             var metadata = packageDocument.getMetadata();
+             if (metadata.reader_css) {
+               readium.getCurrentPublicationFetcher().getFileContentsFromPackage(metadata.reader_css, function(cssContents) {
+                 readerCss = document.createElement('style');
+                 readerCss.id = 'epubReaderCss';
+                 readerCss.textContent = cssContents;
+
+                 document.getElementsByTagName('head')[0].appendChild(readerCss);
+               }, function(error) {
+                 console.error(error);
+               })
+             }
+           }
+
            // This function will retrieve a package document and load an EPUB
            var loadEbook = function(readerSettings, openPageRequest) {
                readium.openPackageDocument(
@@ -669,6 +688,8 @@ define([
                        currentPackageDocument.generateTocListDOM(function(dom) {
                            loadToc(dom)
                        });
+
+                       initializeEpubReaderCssFile(currentPackageDocument);
 
                        wasFixed = readium.reader.isCurrentViewFixedLayout();
                        var metadata = options.metadata;
@@ -1065,29 +1086,43 @@ define([
                } else {
                    if (!hide) {
                        $('#my-annotations').children().remove();
-                       $('#my-shared-annotations').children().remove();
-                       $('#general-shared-annotations').children().remove();
+                       if (!window.PeBLConfig.disabledFeatures.sharedAnnotations) {
+                         $('#my-shared-annotations').children().remove();
+                         $('#general-shared-annotations').children().remove();
+                       }
+                       
 
                        addAnnotationChapterSections('my-annotations');
-                       addAnnotationChapterSections('my-shared-annotations');
-                       addAnnotationChapterSections('general-shared-annotations');
+                       if (!window.PeBLConfig.disabledFeatures.sharedAnnotations) {
+                         addAnnotationChapterSections('my-shared-annotations');
+                         addAnnotationChapterSections('general-shared-annotations');
+                       }
+                       
 
                        $('#my-annotations').prepend('<p class="hideWhenSiblingPresent">When you add Annotations, they will appear here.</p>');
 
-                       $('#my-shared-annotations').prepend('<p class="hideWhenSiblingPresent">When you add Annotations and share them, they will appear here. You can share annotations by clicking on the highlighted text on the page and selecting the share option from the popup menu.</p>');
+                       if (!window.PeBLConfig.disabledFeatures.sharedAnnotations) {
+                         $('#my-shared-annotations').prepend('<p class="hideWhenSiblingPresent">When you add Annotations and share them, they will appear here. You can share annotations by clicking on the highlighted text on the page and selecting the share option from the popup menu.</p>');
 
-                       $('#general-shared-annotations').prepend('<p class="hideWhenSiblingPresent">When other users share their annotations, they will appear here.</p>');
+                         $('#general-shared-annotations').prepend('<p class="hideWhenSiblingPresent">When other users share their annotations, they will appear here.</p>');
 
-                       setHideSharedAnnotationsButton();
+                         setHideSharedAnnotationsButton();
+
+                         PeBL.subscribeEvent(PeBL.events.incomingSharedAnnotations,
+                                           false,
+                                           sharedAnnotationCallback);
+                       }
+
+                       
+
+                       
 
                        setDownloadAnnotationsButton();
 
                        PeBL.subscribeEvent(PeBL.events.incomingAnnotations,
                                            false,
                                            annotationCallback);
-                       PeBL.subscribeEvent(PeBL.events.incomingSharedAnnotations,
-                                           false,
-                                           sharedAnnotationCallback);
+                       
                    }
                    $appContainer.addClass('annotations-visible');
 
@@ -1356,7 +1391,7 @@ define([
                        }
 
 
-                       if (annotation.type === 2) {
+                       if (annotation.type === 2 && !window.PeBLConfig.disabledFeatures.sharedAnnotations) {
                            var shareButtonContainer = document.createElement('div');
                            var shareButton = document.createElement('span');
                            shareButton.textContent = 'Share';
@@ -1701,6 +1736,13 @@ define([
                    //TODO not picked-up by all screen readers, so for now this short description will suffice
                    $iframe.attr("title", "EPUB");
                    $iframe.attr("aria-label", "EPUB");
+
+                   $iframe[0].contentWindow.addEventListener('dragover', function(e) {
+                     e.preventDefault();
+                   });
+                   $iframe[0].contentWindow.addEventListener('drop', function(e) {
+                     e.preventDefault();
+                   });
 
                    lastIframe = $iframe[0];
                });
@@ -2254,7 +2296,14 @@ define([
                var bookmarkString = readium.reader.bookmarkCurrentPage();
                // Note: automatically JSON.stringify's the passed value!
                // ... and bookmarkCurrentPage() is already JSON.toString'ed, so that's twice!
-               Settings.put(ebookURL_filepath, bookmarkString, $.noop);
+               PeBL.user.getUser(function(userProfile) {
+                 if (userProfile) {
+                   Settings.put(userProfile.identity + '_' + ebookURL_filepath, bookmarkString, $.noop);
+                 } else {
+                   Settings.put(ebookURL_filepath, bookmarkString, $.noop);
+                 }
+               })
+               
            };
 
            var saveHistory = function() {
@@ -2784,7 +2833,7 @@ define([
                $('.modal-backdrop').remove();
                var $appContainer = $('#app-container');
                $appContainer.empty();
-               $appContainer.append(ReaderBody({ strings: Strings, dialogs: Dialogs, keyboard: Keyboard }));
+               $appContainer.append(ReaderBody({ strings: Strings, dialogs: Dialogs, keyboard: Keyboard, disabledFeatures: window.PeBLConfig.disabledFeatures }));
                $('nav').empty();
                $('nav').attr("aria-label", Strings.i18n_toolbar);
                $('nav').append(ReaderNavbar({ strings: Strings, dialogs: Dialogs, keyboard: Keyboard }));
@@ -2834,8 +2883,13 @@ define([
 
                consoleLog("MODULE CONFIG:");
                consoleLog(moduleConfig);
+             PeBL.user.getUser(function(userProfile) {
 
-               Settings.getMultiple(['reader', ebookURL_filepath], function(settings) {
+               Settings.getMultiple(['reader', ebookURL_filepath, userProfile ? userProfile.identity + '_' + ebookURL_filepath : ''], function(settings) {
+
+                 
+
+
 
                    // Note that unlike Settings.get(), Settings.getMultiple() returns raw string values (from the key/value store), not JSON.parse'd !
 
@@ -2874,7 +2928,17 @@ define([
 
                    _debugBookmarkData_goto = undefined;
                    var openPageRequest;
-                   if (settings[ebookURL_filepath]) {
+                   if (userProfile && settings[userProfile.identity + '_' + ebookURL_filepath]) {
+                       // JSON.parse() *first* because Settings.getMultiple() returns raw string values from the key/value store (unlike Settings.get())
+                       var bookmark = JSON.parse(settings[userProfile.identity + '_' + ebookURL_filepath]);
+                       // JSON.parse() a *second time* because the stored value is readium.reader.bookmarkCurrentPage(), which is JSON.toString'ed
+                       bookmark = JSON.parse(bookmark);
+                       if (bookmark && bookmark.idref) {
+                           //consoleLog("Bookmark restore: " + JSON.stringify(bookmark));
+                           openPageRequest = { idref: bookmark.idref, elementCfi: bookmark.contentCFI };
+                           consoleLog("Open request (bookmark): " + JSON.stringify(openPageRequest));
+                       }
+                   } else if (settings[ebookURL_filepath]) {
                        // JSON.parse() *first* because Settings.getMultiple() returns raw string values from the key/value store (unlike Settings.get())
                        var bookmark = JSON.parse(settings[ebookURL_filepath]);
                        // JSON.parse() a *second time* because the stored value is readium.reader.bookmarkCurrentPage(), which is JSON.toString'ed
@@ -3192,7 +3256,9 @@ define([
                    window.navigator.epubReadingSystem.readium = {};
 
                    loadEbook(readerSettings, openPageRequest);
+                 
                });
+              });
            }
 
            var unloadReaderUI = function() {

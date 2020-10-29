@@ -16,7 +16,12 @@ document.addEventListener("eventLogout", function() {
     $('#loginButt span').addClass("glyphicon-log-in");
     $('#loginButt').attr("aria-label", "Login");
     $('#loginButt').attr("title", "Login");
-    window.Lightbox.createLoginForm(true);
+    if (window.PeBLConfig.useGoogleLogin && onGoogleLogout) {
+        onGoogleLogout().then(function() {
+            window.Lightbox.createLoginForm(true);
+        });
+    } else 
+        window.Lightbox.createLoginForm(true);
 });
 
 document.addEventListener("eventRefreshLogin", () => {
@@ -31,9 +36,9 @@ document.addEventListener("eventLogin", function() {
     $('#loginButt').attr("aria-label", "Logout");
 });
 
-$(document).ready(function() {
-    window.Lightbox.linkedInLogin();
-});
+// $(document).ready(function() {
+//     window.Lightbox.linkedInLogin();
+// });
 
 PeBL.extension.hardcodeLogin = {
     hookLoginButton: function(elementName, loginFn, logoutFn) {
@@ -318,8 +323,58 @@ window.Lightbox = {
         }
 
         $(lightBoxContent).append(loginHeader);
+        if (window.PeBLConfig.useGoogleLogin) {
+            var link = document.createElement('meta');
+            link.setAttribute('name', 'google-signin-scope');
+            link.setAttribute('content', 'profile');
 
-        if (window.PeBLConfig.useOpenID) {
+            var link2 = document.createElement('meta');
+            link2.setAttribute('name', 'google-signin-client_id');
+            link2.setAttribute('content', window.PeBLConfig.googleClientId + '.apps.googleusercontent.com');
+
+            var script = document.createElement('script');
+            script.src = 'https://apis.google.com/js/platform.js';
+
+            var head = document.getElementsByTagName('head')[0];
+            head.appendChild(link);
+            head.appendChild(link2);
+            head.appendChild(script);
+
+            var div = document.createElement('div');
+            div.classList.add('g-signin2');
+            div.setAttribute('data-onsuccess', 'onGoogleSignIn');
+            div.setAttribute('data-theme', 'dark');
+
+            lightBoxContent.appendChild(div);
+
+            onGoogleSignIn = function(googleUser) {
+                var profile = googleUser.getBasicProfile();
+                let userProfile = {
+                    identity: profile.getId(),
+                    name: profile.getName(),
+                    preferredName: profile.getName(),
+                    firstName: profile.getGivenName(),
+                    lastName: profile.getFamilyName(),
+                    // avatar: imageToUse,
+                    registryEndpoint: {
+                        ul: 'https://peblproject.com/registry/api/downloadContent?guid='
+                    }
+                };
+                window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
+                window.Lightbox.close();
+            }
+
+            onGoogleLogout = function() {
+                return new Promise((resolve, reject) => {
+                    var auth2 = gapi.auth2.getAuthInstance();
+                    auth2.signOut().then(() => {
+                        return auth2.disconnect();
+                    }).then(() => {
+                        resolve();
+                    });
+                })
+            }
+        } else if (window.PeBLConfig.useOpenID) {
 
             if (!loggingOut) {
                 PeBL.user.isLoggedIn(function(loggedIn) {
@@ -897,7 +952,6 @@ window.Lightbox = {
             PeBL.emitEvent(PeBL.events.eventLoggedOut);
             if (loginFn)
                 loginFn();
-            removeChild;
         });
         buttonContainer.appendChild(cancel);
         buttonContainer.appendChild(confirm);

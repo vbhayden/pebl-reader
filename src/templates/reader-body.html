@@ -3,11 +3,13 @@
 	<h3><img src="images/pebl-icons-wip_highlight-list.svg" aria-hidden="true" height="18px"> My Private Annotations</h3>
   <button id="downloadAnnotationsButton">Download notes and annotations</button>
 	<div id="my-annotations"></div>
+  {{^disabledFeatures.sharedAnnotations}}
 	<h3><img src="images/pebl-icons-wip_highlight-list.svg" aria-hidden="true" height="18px"> My Shared Annotations</h3>
 	<div id="my-shared-annotations"></div>
 	<h3><img src="images/pebl-icons-wip_highlight-list.svg" aria-hidden="true" height="18px"> Shared with Me</h3>
   <button id="hideSharedAnnotationsButton">Hide shared annotations</button>
 	<div id="general-shared-annotations"></div>
+  {{/disabledFeatures.sharedAnnotations}}
 </div>
 <div id="bookmarks-body"class="sidebar-body" aria-label="{{strings.bookmarks}}" role="bookmarks"></div>
 <div id="search-body" class="sidebar-body" aria-label="{{strings.search}}" role="search"></div>
