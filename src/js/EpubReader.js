@@ -2883,10 +2883,11 @@ define([
 
                consoleLog("MODULE CONFIG:");
                consoleLog(moduleConfig);
+             PeBL.user.getUser(function(userProfile) {
 
-               Settings.getMultiple(['reader', ebookURL_filepath], function(settings) {
+               Settings.getMultiple(['reader', ebookURL_filepath, userProfile ? userProfile.identity + '_' + ebookURL_filepath : ''], function(settings) {
 
-                 PeBL.user.getUser(function(userProfile) {
+                 
 
 
 
@@ -3255,8 +3256,9 @@ define([
                    window.navigator.epubReadingSystem.readium = {};
 
                    loadEbook(readerSettings, openPageRequest);
-                 })
+                 
                });
+              });
            }
 
            var unloadReaderUI = function() {
