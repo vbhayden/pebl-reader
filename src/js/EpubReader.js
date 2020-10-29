@@ -1737,10 +1737,10 @@ define([
                    $iframe.attr("title", "EPUB");
                    $iframe.attr("aria-label", "EPUB");
 
-                   $iframe.contentWindow.addEventListener('dragover', function(e) {
+                   $iframe[0].contentWindow.addEventListener('dragover', function(e) {
                      e.preventDefault();
                    });
-                   $iframe.contentWindow.addEventListener('drop', function(e) {
+                   $iframe[0].contentWindow.addEventListener('drop', function(e) {
                      e.preventDefault();
                    });
 
