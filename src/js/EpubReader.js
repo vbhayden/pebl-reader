@@ -2296,7 +2296,14 @@ define([
                var bookmarkString = readium.reader.bookmarkCurrentPage();
                // Note: automatically JSON.stringify's the passed value!
                // ... and bookmarkCurrentPage() is already JSON.toString'ed, so that's twice!
-               Settings.put(ebookURL_filepath, bookmarkString, $.noop);
+               PeBL.user.getUser(function(userProfile) {
+                 if (userProfile) {
+                   Settings.put(userProfile.identity + '_' + ebookURL_filepath, bookmarkString, $.noop);
+                 } else {
+                   Settings.put(ebookURL_filepath, bookmarkString, $.noop);
+                 }
+               })
+               
            };
 
            var saveHistory = function() {
@@ -2879,6 +2886,10 @@ define([
 
                Settings.getMultiple(['reader', ebookURL_filepath], function(settings) {
 
+                 PeBL.user.getUser(function(userProfile) {
+
+
+
                    // Note that unlike Settings.get(), Settings.getMultiple() returns raw string values (from the key/value store), not JSON.parse'd !
 
                    // Ensures default settings are saved from the start (as the readium-js-viewer defaults can differ from the readium-shared-js).
@@ -2916,7 +2927,17 @@ define([
 
                    _debugBookmarkData_goto = undefined;
                    var openPageRequest;
-                   if (settings[ebookURL_filepath]) {
+                   if (userProfile && settings[userProfile.identity + '_' + ebookURL_filepath]) {
+                       // JSON.parse() *first* because Settings.getMultiple() returns raw string values from the key/value store (unlike Settings.get())
+                       var bookmark = JSON.parse(settings[userProfile.identity + '_' + ebookURL_filepath]);
+                       // JSON.parse() a *second time* because the stored value is readium.reader.bookmarkCurrentPage(), which is JSON.toString'ed
+                       bookmark = JSON.parse(bookmark);
+                       if (bookmark && bookmark.idref) {
+                           //consoleLog("Bookmark restore: " + JSON.stringify(bookmark));
+                           openPageRequest = { idref: bookmark.idref, elementCfi: bookmark.contentCFI };
+                           consoleLog("Open request (bookmark): " + JSON.stringify(openPageRequest));
+                       }
+                   } else if (settings[ebookURL_filepath]) {
                        // JSON.parse() *first* because Settings.getMultiple() returns raw string values from the key/value store (unlike Settings.get())
                        var bookmark = JSON.parse(settings[ebookURL_filepath]);
                        // JSON.parse() a *second time* because the stored value is readium.reader.bookmarkCurrentPage(), which is JSON.toString'ed
@@ -3234,6 +3255,7 @@ define([
                    window.navigator.epubReadingSystem.readium = {};
 
                    loadEbook(readerSettings, openPageRequest);
+                 })
                });
            }
 
