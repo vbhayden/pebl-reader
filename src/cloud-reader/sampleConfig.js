@@ -22,4 +22,5 @@ window.PeBLConfig.favicon = '__READER_FAVICON__';
 window.PeBLConfig.loginImage = '__READER_LOGIN_IMAGE__';
 window.PeBLConfig.version = "VERSION";
 window.PeBLConfig.disabledFeatures = __READER_DISABLED_FEATURES__;
+window.PeBLConfig.hideInstallInstructions = __READER_HIDE_INSTALL_INSTRUCTIONS__;
 window.DEBUGGING = false;

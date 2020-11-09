@@ -859,6 +859,7 @@ define([
 
                $appContainer.append(InstallReaderDialog({
                    strings: Strings,
+                   hideInstallInstructions: window.PeBLConfig.hideInstallInstructions,
                    param: window.PeBLConfig.installGuideParam
                }));
 
