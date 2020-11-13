@@ -295,6 +295,14 @@ buildQA:
 
   - cp "$QA_WEB_READER_CONFIG" src/cloud-reader/config.js
   - sed -i "s/VERSION/$LAST_TAG/" src/cloud-reader/config.js
+  
+  - echo "{" > src/i18n/_locales/en_US/skinning.json
+
+  - "echo '\"i18n_pebl_library\" : { \"message\" : \"PeBL Library\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_reader\" : { \"message\" : \"PeBL Reader\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_webreader_logo\" : { \"message\" : \"images/PEBL-Logo-Color-small.png\" }' >> src/i18n/_locales/en_US/skinning.json"
+
+  - echo "}" >> src/i18n/_locales/en_US/skinning.json
 
   - unzip artifacts.zip
   - mv dist/PeBLCore.js src/js/
