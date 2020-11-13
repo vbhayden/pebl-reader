@@ -255,19 +255,25 @@ buildProd:
     - git submodule sync --recursive
     - git submodule update --init --recursive readium-js
   script:
-  - LAST_TAG=$(git describe --tags | cut -d '-' -f1)
-  - sed -i "s/0\.31\.1/$LAST_TAG/" package.json
-  # Yaml doesn't like ':<space>' wrap command in quotes
-  # - "sed -i \"s/lrsCredential: \'.*\'/lrsCredential: \'$PROD_LRS_AUTH\'/g\" src/js/pebl-login-widget.js"
-  # - "sed -i \"s/production: false/production: true/g\" src/mixins/config.js"
-  - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
-  - echo "window.Configuration = {};" > src/cloud-reader/config.js
-  - echo "window.Configuration.lrsUrl = '$PROD_LRS_URL';" >> src/cloud-reader/config.js
-  - echo "window.Configuration.lrsCredential = '$PROD_LRS_CREDENTIAL';" >> src/cloud-reader/config.js
-  - echo "window.Configuration.useLinkedIn = false;" >> src/cloud-reader/config.js
-  - echo "window.Configuration.loginImage = 'images/PEBL-Logo-Color-small.png';" >> src/cloud-reader/config.js
-  - echo "window.Configuration.favicon = 'images/PEBL-icon-16.ico';" >> src/cloud-reader/config.js
-  - echo "window.Configuration.userList = ['Learner', 'Learner1', 'Learner2', 'Learner3', 'Learner5', 'Learner7'];" >> src/cloud-reader/config.js
+  - 'curl -L --output artifacts.zip --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://git.eduworks.us/api/v4/projects/94/jobs/artifacts/dev/download?job=buildDev"'
+  - LAST_TAG=$(git describe --tags)
+  # - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
+
+  - cp "$DEV_WEB_READER_CONFIG" src/cloud-reader/config.js
+  - sed -i "s/VERSION/$LAST_TAG/" src/cloud-reader/config.js
+
+  - cp "$DEV_MANIFEST" src/cloud-reader/manifest.json
+
+  - echo "{" > src/i18n/_locales/en_US/skinning.json
+
+  - "echo '\"i18n_pebl_library\" : { \"message\" : \"PeBL Library\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_reader\" : { \"message\" : \"PeBL Reader\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_webreader_logo\" : { \"message\" : \"images/PEBL-Logo-Color-small.png\" }' >> src/i18n/_locales/en_US/skinning.json"
+
+  - echo "}" >> src/i18n/_locales/en_US/skinning.json
+
+  - unzip artifacts.zip
+  - mv dist/PeBLCore.js src/js/
   - chmod +x pack.sh
   - npm run prepare:all
   - npm run dist
@@ -289,6 +295,14 @@ buildQA:
 
   - cp "$QA_WEB_READER_CONFIG" src/cloud-reader/config.js
   - sed -i "s/VERSION/$LAST_TAG/" src/cloud-reader/config.js
+  
+  - echo "{" > src/i18n/_locales/en_US/skinning.json
+
+  - "echo '\"i18n_pebl_library\" : { \"message\" : \"PeBL Library\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_reader\" : { \"message\" : \"PeBL Reader\" },' >> src/i18n/_locales/en_US/skinning.json"
+  - "echo '\"i18n_pebl_webreader_logo\" : { \"message\" : \"images/PEBL-Logo-Color-small.png\" }' >> src/i18n/_locales/en_US/skinning.json"
+
+  - echo "}" >> src/i18n/_locales/en_US/skinning.json
 
   - unzip artifacts.zip
   - mv dist/PeBLCore.js src/js/
