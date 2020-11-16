@@ -127,15 +127,15 @@ define([
                var winWidth = window.innerWidth;
 
                if (winWidth >= 992){
-                   imgWidth = winWidth * (medWidth/12) - 30;
+                   imgWidth = winWidth * (medWidth/12) - 60;
                    rowHeight = 1.33 * imgWidth + 60;
                }
                else if (winWidth >= 768){
-                   imgWidth = winWidth * (smWidth/12) - 30;
+                   imgWidth = winWidth * (smWidth/12) - 60;
                    rowHeight = 1.33 * imgWidth + 60;
                }
                else{
-                   imgWidth = winWidth * (xsWidth/12) - 30;
+                   imgWidth = winWidth * (xsWidth/12) - 60;
                    rowHeight = 1.33 * imgWidth + 20;
                }
                heightRule.style.height  = rowHeight + 'px';
