@@ -16,8 +16,8 @@ document.addEventListener("eventLogout", function() {
     $('#loginButt span').addClass("glyphicon-log-in");
     $('#loginButt').attr("aria-label", "Login");
     $('#loginButt').attr("title", "Login");
-    if (window.PeBLConfig.useGoogleLogin && onGoogleLogout) {
-        onGoogleLogout().then(function() {
+    if (window.PeBLConfig.useGoogleLogin && window.Lightbox.onGoogleLogout) {
+        window.Lightbox.onGoogleLogout().then(function() {
             window.Lightbox.createLoginForm(true);
         });
     } else 
@@ -364,7 +364,7 @@ window.Lightbox = {
                 window.Lightbox.close();
             }
 
-            onGoogleLogout = function() {
+            window.Lightbox.onGoogleLogout = function() {
                 return new Promise((resolve, reject) => {
                     var auth2 = gapi.auth2.getAuthInstance();
                     auth2.signOut().then(() => {
