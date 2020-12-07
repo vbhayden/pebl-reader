@@ -368,10 +368,9 @@ window.Lightbox = {
                 return new Promise((resolve, reject) => {
                     var auth2 = gapi.auth2.getAuthInstance();
                     auth2.signOut().then(() => {
-                        return auth2.disconnect();
-                    }).then(() => {
+                        auth2.disconnect();
                         resolve();
-                    });
+                    })
                 })
             }
         } else if (window.PeBLConfig.useOpenID) {
