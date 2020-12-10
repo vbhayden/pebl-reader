@@ -447,9 +447,12 @@ define([
                var sliderPageContainer = document.createElement('div');
                sliderPageContainer.classList.add('sliderPageContainer');
 
-               var sliderPageContainerText = document.createElement('span');
-               sliderPageContainerText.textContent = currentPage + '/' + pageCount;
-               sliderPageContainer.appendChild(sliderPageContainerText);
+               if (!window.PeBLConfig.disabledFeatures || !window.PeBLConfig.disabledFeatures.pageCount) {
+                var sliderPageContainerText = document.createElement('span');
+                sliderPageContainerText.textContent = currentPage + '/' + pageCount;
+                sliderPageContainer.appendChild(sliderPageContainerText);
+               }
+               
 
                var sliderInfoContainer = document.createElement('div');
                sliderInfoContainer.classList.add('sliderInfoContainer');
