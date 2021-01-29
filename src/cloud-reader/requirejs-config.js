@@ -22,9 +22,9 @@ self.location ? (
   ) : ''
 ;
 
-consoleLog(currentURL);
+console.log(currentURL);
 
-consoleLog(self.location.origin);
+console.log(self.location.origin);
 
 // MUST BE *SINGLE* CALL TO require.config() FOR ALMOND (SINGLE BUNDLE) TO WORK CORRECTLY!!!
 require.config({

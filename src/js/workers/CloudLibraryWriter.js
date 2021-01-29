@@ -42,7 +42,7 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
                     options.success(epubObj);
                 }, options.error, newIndex);
             }, function() {
-                consoleLog('error getting epub_content');
+                console.log('error getting epub_content');
             });
             //this.libraryData.push(epubObj);
             
@@ -73,9 +73,9 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
 	    }
 
 	    var commitEpubToLibrary = function(){
-                    consoleLog('package: ');
-                    consoleLog(JSON.stringify(packageObj, null, 4));
-                    consoleLog('packagePath: ' + packagePath);
+                    console.log('package: ');
+                    console.log(JSON.stringify(packageObj, null, 4));
+                    console.log('packagePath: ' + packagePath);
 
                 var epubObj = {
 		    id: packageObj.id,
@@ -95,9 +95,9 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
 	    
 	    StorageManager.saveFile("db://" + rootDirName, blob, function() {
             fileLoader.loadFile('OEBPS/' + packageObj.coverHref, function(image) {
-                StorageManager.saveFile("db://" + rootDirName + '/OEBPS/' + packageObj.coverHref, image, commitEpubToLibrary, function (x) {consoleLog(x); });
+                StorageManager.saveFile("db://" + rootDirName + '/OEBPS/' + packageObj.coverHref, image, commitEpubToLibrary, function (x) {console.log(x); });
             });
-        }, function (x) { consoleLog(x); });
+        }, function (x) { console.log(x); });
 
             //var contentTransformer = new ContentTransformer(encryptionData);
 

@@ -9,7 +9,7 @@ define(['../storage/IndexedDBStorageManager', '../ModuleConfig', './Messages', '
     }
     var doWork = function(job, callbacks){
         if (worker){
-            consoleLog('dangling worker');
+            console.log('dangling worker');
         }
 
         var workerUrl = moduleConfig.workerUrl;

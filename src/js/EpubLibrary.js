@@ -183,7 +183,7 @@ define([
                        // See --COMMENT-- below!
                        // if (!epub.isSubLibraryLink && !epub.packagePath) {
                        //     consoleError("no epub.packagePath (OPF within zipped EPUB archive?): " + epub.rootUrl);
-                       //     //consoleLog(epub);
+                       //     //console.log(epub);
                        // }
 
                        var background = epub.coverHref;
@@ -257,7 +257,7 @@ define([
                    window.AllSpineDocuments = [];
 
                    libraryManager.retrieveAvailableEpubs(function(epubs) {
-                       consoleLog(epubs);
+                       console.log(epubs);
 
                        var getStuff = function(index, arr) {
                            var epub = arr[index];
@@ -281,11 +281,11 @@ define([
                                            }
                                            window.AllSpineDocuments[index].spineDocuments[j] = searchDocumentObject;
                                        }, function(err) {
-                                           consoleLog(err);
+                                           console.log(err);
                                        });
                                    })(epub, index, spineItem, j, packageData);
                                }
-                               consoleLog(packageData);
+                               console.log(packageData);
 
                                if (index < arr.length - 1) {
                                    index++;
@@ -393,7 +393,7 @@ define([
                            }
                        }
                    }
-                   consoleLog(searchResults);
+                   console.log(searchResults);
                    for (var book of searchResults) {
                        var bookContainer = document.createElement('div');
 
@@ -420,7 +420,7 @@ define([
                                    textContainer.classList.add('searchResult');
                                    (function(textContainer, result) {
                                        textContainer.addEventListener('click', function() {
-                                           consoleLog(result);
+                                           console.log(result);
                                            window.localStorage.setItem('searchHighlight', JSON.stringify(result.cfi));
                                            window.location.href = window.location.origin + '/?epub=' + encodeURI(result.rootUrl) + '&goto=epubcfi(' + result.cfi.spineItemCfi + result.cfi.contentCFI + ')';
                                            // window.READIUM.reader.plugins.highlights.addHighlight(result.cfi.idref, result.cfi.contentCFI, PeBL.utils.getUuid(), "search-highlight");
@@ -649,7 +649,7 @@ define([
                                break;
                            default:
                                msg = Strings.err_unknown;
-                               consoleLog(msg);
+                               console.log(msg);
                                break;
                        }
                        Dialogs.updateModalProgressTitle(Strings.err_dlg_title + " (" + msg + ")" + fileInfo);
@@ -958,19 +958,19 @@ define([
                                        if (index[i].rootUrl === url) {
                                            index.splice(i, 1);
                                            StorageManager.saveBookshelf('db://epub_library.json', index, function() {
-                                               consoleLog('deleted epub_library.json entry');
+                                               console.log('deleted epub_library.json entry');
                                                libraryManager.retrieveAvailableEpubs(loadLibraryItems);
                                            }, function() {
-                                               consoleLog('failed to delete epub_library.json entry');
+                                               console.log('failed to delete epub_library.json entry');
                                            });
                                        }
                                    }
                                } else {
-                                   consoleLog('No associated epub_library.json found');
+                                   console.log('No associated epub_library.json found');
                                }
                            });
                        }, function() {
-                           consoleLog('delete failed');
+                           console.log('delete failed');
                        });
                    } else if (url.substr(0,8) === 'https://') {
                        let fn = () =>{
@@ -981,15 +981,15 @@ define([
                                        if (index[i].rootUrl === url) {
                                            index.splice(i, 1);
                                            StorageManager.saveBookshelf('db://epub_library.json', index, function() {
-                                               consoleLog('deleted epub_library.json entry');
+                                               console.log('deleted epub_library.json entry');
                                                libraryManager.retrieveAvailableEpubs(loadLibraryItems);
                                            }, function() {
-                                               consoleLog('failed to delete epub_library.json entry');
+                                               console.log('failed to delete epub_library.json entry');
                                            });
                                        }
                                    }
                                } else {
-                                   consoleLog('No associated epub_library.json found');
+                                   console.log('No associated epub_library.json found');
                                }
                            });
                        };
@@ -1026,7 +1026,7 @@ define([
                              $('#install-reader-dialog').modal('show');
                            }
                        }, function() {
-                           consoleLog('error thing');
+                           console.log('error thing');
                        });
                    });
                });
@@ -1487,7 +1487,7 @@ define([
                });
 
                window.addEventListener('message', function(event) {
-                   consoleLog(event);
+                   console.log(event);
                    var data = JSON.parse(event.data);
                    if (data.message === 'extensionDashboardSync') {
                        var handleSync = function() {
@@ -1505,7 +1505,7 @@ define([
                                window.location.href = data.redirectUrl;
                            }
 
-                           consoleLog('SUCCESS');
+                           console.log('SUCCESS');
                        }
 
                        window.PeBL.user.isLoggedIn(function(isLoggedIn) {

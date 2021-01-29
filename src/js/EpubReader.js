@@ -161,24 +161,24 @@ define([
                    ) : undefined;
 
                if (appUrl) {
-                   consoleLog("EPUB URL absolute: " + ebookURL);
-                   consoleLog("App URL: " + appUrl);
+                   console.log("EPUB URL absolute: " + ebookURL);
+                   console.log("App URL: " + appUrl);
 
                    ebookURL = ebookURL.replace(CORS_PROXY_HTTP_TOKEN, CORS_PROXY_HTTP_TOKEN_ESCAPED);
                    ebookURL = ebookURL.replace(CORS_PROXY_HTTPS_TOKEN, CORS_PROXY_HTTPS_TOKEN_ESCAPED);
 
-                   // consoleLog("EPUB URL absolute 1: " + ebookURL);
+                   // console.log("EPUB URL absolute 1: " + ebookURL);
 
                    ebookURL = new URI(ebookURL).relativeTo(appUrl).toString();
                    if (ebookURL.indexOf("//") == 0) { // URI.relativeTo() sometimes returns "//domain.com/path" without the protocol
                        ebookURL = (isHTTPS ? "https:" : "http:") + ebookURL;
                    }
 
-                   // consoleLog("EPUB URL absolute 2: " + ebookURL);
+                   // console.log("EPUB URL absolute 2: " + ebookURL);
 
                    ebookURL = ebookURL.replace(regex_CORS_PROXY_HTTPs_TOKEN_ESCAPED, "/$1://");
 
-                   consoleLog("EPUB URL relative to app: " + ebookURL);
+                   console.log("EPUB URL relative to app: " + ebookURL);
                }
 
                return ebookURL;
@@ -734,12 +734,12 @@ define([
 
                    setTimeout(function() {
                        if (spinner.stopRequested) {
-                           //consoleLog("STOP REQUEST: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
+                           //console.log("STOP REQUEST: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
                            spinner.willSpin = false;
                            spinner.stopRequested = false;
                            return;
                        }
-                       //consoleLog("SPIN: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
+                       //console.log("SPIN: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
                        spinner.isSpinning = true;
                        spinner.spin($('#reading-area')[0]);
 
@@ -749,11 +749,11 @@ define([
                } else {
 
                    if (spinner.isSpinning) {
-                       //consoleLog("!! SPIN: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
+                       //console.log("!! SPIN: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
                        spinner.stop();
                        spinner.isSpinning = false;
                    } else if (spinner.willSpin) {
-                       //consoleLog("!! SPIN REQ: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
+                       //console.log("!! SPIN REQ: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
                        spinner.stopRequested = true;
                    }
                }
@@ -1034,7 +1034,7 @@ define([
                                for (var stmt of stmts) {
                                  if (stmt.groupId === userProfile.currentTeam || stmt.groupId === userProfile.currentClass) {
                                    if (stmt.type === 3 && stmt.owner !== userProfile.identity) {
-                                       // consoleLog(stmt);
+                                       // console.log(stmt);
                                        var highlightType = 'shared-highlight';
 
                                        try {
@@ -1657,11 +1657,11 @@ define([
                        $items.each(function() {
                            $(this).attr("tabindex", "-1");
                            $(this).on("focus", function(event) {
-                               //consoleLog("toc item focus: " + event.target);
+                               //console.log("toc item focus: " + event.target);
                                // remove tabindex from previously focused
                                var $prevFocus = $('#readium-toc-body a[tabindex="60"]');
                                if ($prevFocus.length > 0 && $prevFocus[0] !== event.target) {
-                                   //consoleLog("previous focus: " + $prevFocus[0]);
+                                   //console.log("previous focus: " + $prevFocus[0]);
                                    $prevFocus.attr("tabindex", "-1");
                                }
                                // add to newly focused
@@ -1828,7 +1828,7 @@ define([
                    PeBL.utils.getAnnotations(function(stmts) {
                        for (var stmt of stmts) {
                            if (stmt.type === 2) {
-                               // consoleLog(stmt);
+                               // console.log(stmt);
                                try {
                                    readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, 'user-highlight');
                                } catch (e) {
@@ -1845,7 +1845,7 @@ define([
                                if (stmt.type === 3) {
                                    if (stmt.owner !== userProfile.identity && readium.reader.disableSharedHighlights)
                                        continue;
-                                   // consoleLog(stmt);
+                                   // console.log(stmt);
                                    var highlightType = 'shared-highlight';
                                    if (stmt.owner === userProfile.identity)
                                        highlightType = 'shared-my-highlight';
@@ -2051,7 +2051,7 @@ define([
                            searchResults[i].searchResults = nodeList;
                        }
                    }
-                   consoleLog(searchResults);
+                   console.log(searchResults);
                    if (searchResults.every(function(chapter) { return chapter.searchResults.length === 0 })) {
                        $('#search-body-list').append($('<h3>No results found</h3>'));
                    }
@@ -2373,7 +2373,7 @@ define([
            };
 
            $(document).on('blur', 'input, textarea', function() {
-               consoleLog('blur');
+               console.log('blur');
                clearIosKeyboard();
            });
 
@@ -2428,7 +2428,7 @@ define([
                                    readium.reader.plugins.highlights.removeHighlight(tempId);
                                }, 500);
 
-                               consoleLog("Selection shared bookmark:");
+                               console.log("Selection shared bookmark:");
                                debugBookmarkData(bookmarkDataSelection);
                                bookmark.contentCFI = bookmarkDataSelection.contentCFI;
                            }
@@ -2686,7 +2686,7 @@ define([
                window.addEventListener('message', function(event) {
 
 
-                   consoleLog(event);
+                   console.log(event);
                    var data = JSON.parse(event.data);
                    if (data.message === 'extensionDashboardSync') {
                        var handleSync = function() {
@@ -2700,7 +2700,7 @@ define([
                                window.Lightbox.close();
                            }
 
-                           consoleLog('SUCCESS');
+                           console.log('SUCCESS');
                        }
 
                        window.PeBL.user.isLoggedIn(function(isLoggedIn) {
@@ -2884,8 +2884,8 @@ define([
 
            var initReadium = function() {
 
-               consoleLog("MODULE CONFIG:");
-               consoleLog(moduleConfig);
+               console.log("MODULE CONFIG:");
+               console.log(moduleConfig);
              PeBL.user.getUser(function(userProfile) {
 
                Settings.getMultiple(['reader', ebookURL_filepath, userProfile ? userProfile.identity + '_' + ebookURL_filepath : ''], function(settings) {
@@ -2937,9 +2937,9 @@ define([
                        // JSON.parse() a *second time* because the stored value is readium.reader.bookmarkCurrentPage(), which is JSON.toString'ed
                        bookmark = JSON.parse(bookmark);
                        if (bookmark && bookmark.idref) {
-                           //consoleLog("Bookmark restore: " + JSON.stringify(bookmark));
+                           //console.log("Bookmark restore: " + JSON.stringify(bookmark));
                            openPageRequest = { idref: bookmark.idref, elementCfi: bookmark.contentCFI };
-                           consoleLog("Open request (bookmark): " + JSON.stringify(openPageRequest));
+                           console.log("Open request (bookmark): " + JSON.stringify(openPageRequest));
                        }
                    } else if (settings[ebookURL_filepath]) {
                        // JSON.parse() *first* because Settings.getMultiple() returns raw string values from the key/value store (unlike Settings.get())
@@ -2947,16 +2947,16 @@ define([
                        // JSON.parse() a *second time* because the stored value is readium.reader.bookmarkCurrentPage(), which is JSON.toString'ed
                        bookmark = JSON.parse(bookmark);
                        if (bookmark && bookmark.idref) {
-                           //consoleLog("Bookmark restore: " + JSON.stringify(bookmark));
+                           //console.log("Bookmark restore: " + JSON.stringify(bookmark));
                            openPageRequest = { idref: bookmark.idref, elementCfi: bookmark.contentCFI };
-                           consoleLog("Open request (bookmark): " + JSON.stringify(openPageRequest));
+                           console.log("Open request (bookmark): " + JSON.stringify(openPageRequest));
                        }
                    }
 
                    var urlParams = Helpers.getURLQueryParams();
                    var goto = urlParams['goto'];
                    if (goto) {
-                       consoleLog("Goto override? " + goto);
+                       console.log("Goto override? " + goto);
 
                        try {
                            var gotoObj;
@@ -2995,7 +2995,7 @@ define([
 
                            if (openPageRequest_) {
                                openPageRequest = openPageRequest_;
-                               consoleLog("Open request (goto): " + JSON.stringify(openPageRequest));
+                               console.log("Open request (goto): " + JSON.stringify(openPageRequest));
                            }
                        } catch (err) {
                            consoleError(err);
@@ -3009,7 +3009,7 @@ define([
                    ReadiumSDK.on(ReadiumSDK.Events.PLUGINS_LOADED, function() {
                        Globals.logEvent("PLUGINS_LOADED", "ON", "EpubReader.js");
 
-                       consoleLog('PLUGINS INITIALIZED!');
+                       console.log('PLUGINS INITIALIZED!');
 
                        if (!readium.reader.plugins.highlights) {
                            $('.icon-annotations').css("display", "none");
@@ -3020,14 +3020,14 @@ define([
                            });
 
                            readium.reader.plugins.highlights.on("annotationClicked", function(type, idref, cfi, id, event) {
-                               consoleLog("ANNOTATION CLICK: " + id);
+                               console.log("ANNOTATION CLICK: " + id);
                                //TODO: Maybe have a function to get a specific annotation rather than loop through them all?
 
                                if (type === 'user-highlight')
                                    PeBL.utils.getAnnotations(function(stmts) {
                                        for (var stmt of stmts) {
                                            if (stmt.id === id) {
-                                               consoleLog(stmt);
+                                               console.log(stmt);
                                                showAnnotationContextMenu(event, stmt);
                                                break;
                                            }
@@ -3037,7 +3037,7 @@ define([
                                    PeBL.utils.getSharedAnnotations(function(stmts) {
                                        for (var stmt of stmts) {
                                            if (stmt.id === id) {
-                                               consoleLog(stmt);
+                                               console.log(stmt);
                                                showAnnotationContextMenu(event, stmt);
                                                break;
                                            }
@@ -3119,10 +3119,10 @@ define([
                        }
 
                        if (text.length > 0) {
-                           consoleLog('Text is selected');
+                           console.log('Text is selected');
                            // Show the highlight button
                        } else {
-                           consoleLog('No text selected');
+                           console.log('No text selected');
                            // Hide the highlight button
                        }
                        var iframeWindow = $("#epub-reader-frame iframe")[0].contentWindow;
@@ -3140,10 +3140,10 @@ define([
                        }
 
                        if (text.length > 0) {
-                           consoleLog('Text is selected');
+                           console.log('Text is selected');
                            // Show the highlight button
                        } else {
-                           consoleLog('No text selected');
+                           console.log('No text selected');
                            // Hide the highlight button
                        }
                        var iframeWindow = $("#epub-reader-frame iframe")[0].contentWindow;

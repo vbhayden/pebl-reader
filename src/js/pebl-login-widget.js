@@ -382,7 +382,7 @@ window.Lightbox = {
 
                         xhr.addEventListener('load', () => {
                             if (xhr.status < 300) {
-                                consoleLog(JSON.parse(xhr.response));
+                                console.log(JSON.parse(xhr.response));
                                 let payload = JSON.parse(xhr.response);
                                 let userProfile = {
                                     identity: payload.preferred_username,
@@ -442,7 +442,7 @@ window.Lightbox = {
                         xhr.withCredentials = true;
                         xhr.send();
                     } else {
-                        consoleLog("!loggedIn");
+                        console.log("!loggedIn");
                     }
                 });
             } else {
@@ -601,14 +601,14 @@ window.Lightbox = {
     apiGetAccessToken: function(application, authToken, success, failure) {
         var xhr = new XMLHttpRequest();
         xhr.addEventListener('load', function() {
-            consoleLog('success', xhr);
+            console.log('success', xhr);
             if (success) {
                 success(JSON.parse(xhr.response));
                 localStorage.removeItem('linkedInOauthState');
             }
         });
         xhr.addEventListener('error', function(e) {
-            consoleLog('error', xhr);
+            console.log('error', xhr);
             if (failure) {
                 failure(e);
                 localStorage.removeItem('linkedInOauthState');
@@ -622,13 +622,13 @@ window.Lightbox = {
     apiGetProfile: function(accessToken, success, failure) {
         var xhr = new XMLHttpRequest();
         xhr.addEventListener('load', function() {
-            consoleLog('success', xhr);
+            console.log('success', xhr);
             if (success) {
                 success(JSON.parse(xhr.response), accessToken);
             }
         });
         xhr.addEventListener('error', function(e) {
-            consoleLog('error', xhr);
+            console.log('error', xhr);
             if (failure) {
                 failure(e);
             }
@@ -641,13 +641,13 @@ window.Lightbox = {
     apiGetOtherProfile: function(accessToken, userId, success, failure) {
         var xhr = new XMLHttpRequest();
         xhr.addEventListener('load', function() {
-            consoleLog('success', xhr);
+            console.log('success', xhr);
             if (success) {
                 success(JSON.parse(xhr.response), accessToken);
             }
         });
         xhr.addEventListener('error', function(e) {
-            consoleLog('error', xhr);
+            console.log('error', xhr);
             if (failure) {
                 failure(e);
             }

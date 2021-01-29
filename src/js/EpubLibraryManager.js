@@ -12,7 +12,7 @@ define(['./ModuleConfig', './PackageParser', './workers/WorkerProxy', 'StorageMa
             pathUri = new URI(path);
         } catch (err) {
             consoleError(err);
-            consoleLog(path);
+            console.log(path);
         }
 
         if (pathUri && pathUri.is("absolute")) return path; // "http://", "https://", "data:", etc.
@@ -70,7 +70,7 @@ define(['./ModuleConfig', './PackageParser', './workers/WorkerProxy', 'StorageMa
             };
 
             var dataSuccess = function(data) {
-                consoleLog("Ebook library success: " + indexUrl);
+                console.log("Ebook library success: " + indexUrl);
 
                 if (moduleConfig.epubLibraryPath) {
                     for (var i = 0; i < data.length; i++) {
@@ -106,7 +106,7 @@ define(['./ModuleConfig', './PackageParser', './workers/WorkerProxy', 'StorageMa
             if (indexUrl.substr(0, 5) == "db://") {
                 StorageManager.getFile(indexUrl.replace('epub_content/', ''),
                     checkExternal,
-                    consoleLog);
+                    console.log);
 
             } else
                 checkExternal();
@@ -208,7 +208,7 @@ define(['./ModuleConfig', './PackageParser', './workers/WorkerProxy', 'StorageMa
 
     window.cleanEntireLibrary = function() {
         StorageManager.deleteFile('/', function() {
-            consoleLog('done');
+            console.log('done');
         }, consoleError);
     }
     return new LibraryManager();
