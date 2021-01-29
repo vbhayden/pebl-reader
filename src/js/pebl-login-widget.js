@@ -724,11 +724,11 @@ window.Lightbox = {
                                                               window.Lightbox.apiGetProfile(authObj.access_token,
                                                                                             loginUser,
                                                                                             function(error) {
-                                                                                                consoleError(error);
+                                                                                                console.error(error);
                                                                                             });
                                                           },
                                                           function(error) {
-                                                              consoleError(error);
+                                                              console.error(error);
                                                           });
                     }
                 }

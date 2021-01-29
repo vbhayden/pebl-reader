@@ -54,7 +54,7 @@ define([
 
            var spinLibrary = function(on, target) {
                if (on) {
-                   //consoleError("do SPIN: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
+                   //console.error("do SPIN: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
                    if (spinner.willSpin || spinner.isSpinning) return;
 
                    spinner.willSpin = true;
@@ -182,7 +182,7 @@ define([
 
                        // See --COMMENT-- below!
                        // if (!epub.isSubLibraryLink && !epub.packagePath) {
-                       //     consoleError("no epub.packagePath (OPF within zipped EPUB archive?): " + epub.rootUrl);
+                       //     console.error("no epub.packagePath (OPF within zipped EPUB archive?): " + epub.rootUrl);
                        //     //console.log(epub);
                        // }
 

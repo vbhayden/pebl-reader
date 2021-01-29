@@ -37,7 +37,7 @@ URI){
         try {
             opdsURLAbsoluteUri = new URI(opdsURLAbsolute);
         } catch(err) {
-            consoleError(err);
+            console.error(err);
             console.log(opdsURLAbsolute);
         }
         
@@ -46,7 +46,7 @@ URI){
             try {
                 opdsURLAbsolute = opdsURLAbsoluteUri.absoluteTo(thisRootUrl).toString();
             } catch(err) {
-                consoleError(err);
+                console.error(err);
                 console.log(opdsURLAbsolute);
             }
         } else {
@@ -162,7 +162,7 @@ URI){
                 try {
                     coverHrefUri = new URI(coverHref);
                 } catch(err) {
-                    consoleError(err);
+                    console.error(err);
                     console.log(coverHref);
                 }
                 
@@ -177,7 +177,7 @@ URI){
                     try {
                         coverHref = coverHrefUri.absoluteTo(opdsURLAbsolute_).toString();
                     } catch(err) {
-                        consoleError(err);
+                        console.error(err);
                         console.log(coverHref);
                     }
                 }
@@ -194,7 +194,7 @@ URI){
                 try {
                     rootUrlUri = new URI(rootUrl);
                 } catch(err) {
-                    consoleError(err);
+                    console.error(err);
                     console.log(rootUrl);
                 }
                 
@@ -214,7 +214,7 @@ URI){
                     try {
                         rootUrl = rootUrlUri.absoluteTo(opdsURLAbsolute_).toString();
                     } catch(err) {
-                        consoleError(err);
+                        console.error(err);
                         console.log(rootUrl);
                         console.log(opdsURLAbsolute_);
                     }
@@ -271,7 +271,7 @@ URI){
                 try {
                     processOPDS(opdsURL, data, dataSuccess, dataFail, extraData);
                 } catch(err) {
-                    consoleError(err);
+                    console.error(err);
                     dataFail();
                 }
             }).fail(function(){

@@ -67,7 +67,7 @@ define(['../storage/IndexedDBStorageManager', '../ModuleConfig', './Messages', '
                     var $rootfile = $('rootfile', containerDom);
                     if (!$rootfile.length){
                         error(Messages.ERROR_EPUB);
-                        consoleError('Epub container.xml missing rootfile element');
+                        console.error('Epub container.xml missing rootfile element');
                     }
                     else{
                         worker.postMessage({msg: Messages.FIND_PACKAGE_RESPONSE, path: $rootfile.attr('full-path')});
@@ -78,7 +78,7 @@ define(['../storage/IndexedDBStorageManager', '../ModuleConfig', './Messages', '
                     var errors = $(packageDom).find('parsererror');
                     if (errors.length) {
                         error(Messages.ERROR_PACKAGE_PARSE, $(errors).find('div').text());
-                        consoleError('There was an xml parsing error when trying to parse the package dom');
+                        console.error('There was an xml parsing error when trying to parse the package dom');
                     }
                     else {
                         var packageObj = PackageParser.parsePackageDom(packageDom);
@@ -100,7 +100,7 @@ define(['../storage/IndexedDBStorageManager', '../ModuleConfig', './Messages', '
         };
         
         worker.onerror = function(){
-            consoleError(arguments)
+            console.error(arguments)
         }
     }
 

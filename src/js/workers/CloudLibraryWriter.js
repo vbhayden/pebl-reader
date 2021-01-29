@@ -175,7 +175,7 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
                     }
                     else {
                         error(Messages.ERROR_EPUB);
-                        consoleError('Epub archive or directory missing a required  file: ' + path);
+                        console.error('Epub archive or directory missing a required  file: ' + path);
                     }
                 }
             });
@@ -214,7 +214,7 @@ define(['StorageManager', '../storage/ZipFileLoader', '../storage/UnpackedDirLoa
                 // var $rootfile = $('rootfile', containerDom);
                 // if (!$rootfile.length){
                 //     this.options.error(Messages.ERROR_EPUB);
-                //     consoleError('Epub container.xml missing rootfile element');
+                //     console.error('Epub container.xml missing rootfile element');
                 // }
 
 

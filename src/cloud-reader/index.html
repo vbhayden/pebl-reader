@@ -72,7 +72,7 @@
                  console.log("Service worker registered", reg.scope);
                  hookSWWorkerApi(reg);
              }).catch(function (err) {
-                 consoleError("Bad service worker", err);
+                 console.error("Bad service worker", err);
              });
          }
 

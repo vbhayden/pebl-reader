@@ -91,7 +91,7 @@ define([
                if (spine && spine.href)
                    readerUtils.setTocHrefCompleted(spine.href);
                else
-                   consoleError('No spine item found with idref: ' + idref);
+                   console.error('No spine item found with idref: ' + idref);
            }
 
            readerUtils.hideNativeTOC = function() {
@@ -532,7 +532,7 @@ define([
                            readium.reader.openContentUrl(href, tocUrl, undefined);
                        } catch (err) {
 
-                           consoleError(err);
+                           console.error(err);
 
                        } finally {
                            //e.preventDefault();
@@ -676,7 +676,7 @@ define([
 
                        if (!packageDocument) {
 
-                           consoleError("ERROR OPENING EBOOK: " + ebookURL_filepath);
+                           console.error("ERROR OPENING EBOOK: " + ebookURL_filepath);
 
                            spin(false);
                            setBookTitle(ebookURL_filepath);
@@ -727,7 +727,7 @@ define([
 
            var spin = function(on) {
                if (on) {
-                   //consoleError("do SPIN: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
+                   //console.error("do SPIN: -- WILL: " + spinner.willSpin + " IS:" + spinner.isSpinning + " STOP REQ:" + spinner.stopRequested);
                    if (spinner.willSpin || spinner.isSpinning) return;
 
                    spinner.willSpin = true;
@@ -1040,7 +1040,7 @@ define([
                                        try {
                                            readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, highlightType);
                                        } catch (e) {
-                                           consoleError(e);
+                                           console.error(e);
                                        }
                                    }
                                  }
@@ -1771,7 +1771,7 @@ define([
                                                        try {
                                                            readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, "user-highlight");
                                                        } catch (e) {
-                                                           consoleError(e);
+                                                           console.error(e);
                                                        }
                                                    } else if (stmt.target) {
                                                        readium.reader.plugins.highlights.removeHighlight(stmt.target);
@@ -1794,7 +1794,7 @@ define([
                                                                    try {
                                                                        readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, userProfile.identity == stmt.owner ? 'shared-my-highlight' : 'shared-highlight');
                                                                    } catch (e) {
-                                                                       consoleError(e);
+                                                                       console.error(e);
                                                                    }
                                                                }
                                                            } else if (stmt.target) {
@@ -1832,7 +1832,7 @@ define([
                                try {
                                    readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, 'user-highlight');
                                } catch (e) {
-                                   consoleError(e);
+                                   console.error(e);
                                }
                            }
                        }
@@ -1853,7 +1853,7 @@ define([
                                    try {
                                        readium.reader.plugins.highlights.addHighlight(stmt.idRef, stmt.cfi, stmt.id, highlightType);
                                    } catch (e) {
-                                       consoleError(e);
+                                       console.error(e);
                                    }
                                }
                              }
@@ -1952,7 +1952,7 @@ define([
                        }
                    } catch (err) {
 
-                       consoleError(err);
+                       console.error(err);
 
                    } finally {
                        //e.preventDefault();
@@ -2473,12 +2473,12 @@ define([
                                                injectCoverImageURI(blobURI);
                                            } catch (err) {
                                                // ignore
-                                               consoleError(err);
+                                               console.error(err);
                                            }
                                        }
                                    }, function(err) {
                                        // ignore
-                                       consoleError(err);
+                                       console.error(err);
                                    });
                                } else {
                                    ebookCoverImageURL = fetcher.getEbookURL_FilePath() + relPath;
@@ -2486,7 +2486,7 @@ define([
                            }
                        } catch (err) {
                            // ignore
-                           consoleError(err);
+                           console.error(err);
                        }
 
                        var styleAttr = "";
@@ -2998,7 +2998,7 @@ define([
                                console.log("Open request (goto): " + JSON.stringify(openPageRequest));
                            }
                        } catch (err) {
-                           consoleError(err);
+                           console.error(err);
                        }
                    }
 
