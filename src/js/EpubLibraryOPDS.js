@@ -37,8 +37,8 @@ URI){
         try {
             opdsURLAbsoluteUri = new URI(opdsURLAbsolute);
         } catch(err) {
-            consoleError(err);
-            consoleLog(opdsURLAbsolute);
+            console.error(err);
+            console.log(opdsURLAbsolute);
         }
         
         if (opdsURLAbsoluteUri && !opdsURLAbsoluteUri.is("absolute")) { // "http://", "https://", "data:", etc.
@@ -46,8 +46,8 @@ URI){
             try {
                 opdsURLAbsolute = opdsURLAbsoluteUri.absoluteTo(thisRootUrl).toString();
             } catch(err) {
-                consoleError(err);
-                consoleLog(opdsURLAbsolute);
+                console.error(err);
+                console.log(opdsURLAbsolute);
             }
         } else {
         
@@ -57,7 +57,7 @@ URI){
             }
             if (ihttp > 0) {
                 xOriginProxy = opdsURLAbsolute.substr(0, ihttp);
-                consoleLog("-- Detected CORS proxy: " + xOriginProxy);
+                console.log("-- Detected CORS proxy: " + xOriginProxy);
             }
         }
         
@@ -162,8 +162,8 @@ URI){
                 try {
                     coverHrefUri = new URI(coverHref);
                 } catch(err) {
-                    consoleError(err);
-                    consoleLog(coverHref);
+                    console.error(err);
+                    console.log(coverHref);
                 }
                 
                 if (coverHrefUri && !coverHrefUri.is("absolute")) { // "http://", "https://", "data:", etc.
@@ -177,15 +177,15 @@ URI){
                     try {
                         coverHref = coverHrefUri.absoluteTo(opdsURLAbsolute_).toString();
                     } catch(err) {
-                        consoleError(err);
-                        consoleLog(coverHref);
+                        console.error(err);
+                        console.log(coverHref);
                     }
                 }
             }
             
             var rootUrl = rootUrl_EPUBAcquisition || rootUrl_EPUBAcquisitionIndirect || rootUrl_SubOPDS;
             if (rootUrl) {
-                consoleLog("OPDS entry URL: " + rootUrl);
+                console.log("OPDS entry URL: " + rootUrl);
                 
                 var isExternalLink = (typeof rootUrl_EPUBAcquisitionIndirect) != "undefined"; //(rootUrl == rootUrl_EPUBAcquisitionIndirect);
                 var isSubLibraryLink = (typeof rootUrl_SubOPDS) != "undefined"; //(rootUrl == rootUrl_SubOPDS);
@@ -194,8 +194,8 @@ URI){
                 try {
                     rootUrlUri = new URI(rootUrl);
                 } catch(err) {
-                    consoleError(err);
-                    consoleLog(rootUrl);
+                    console.error(err);
+                    console.log(rootUrl);
                 }
                 
                 if (rootUrlUri && !rootUrlUri.is("absolute")) { // "http://", "https://", "data:", etc.
@@ -203,7 +203,7 @@ URI){
                     var opdsURLAbsolute_ = opdsURLAbsolute;
                     if (xOriginProxy) {
                         if (isExternalLink) {
-                            consoleLog("Removing CORS proxy from URL: " + opdsURLAbsolute_);
+                            console.log("Removing CORS proxy from URL: " + opdsURLAbsolute_);
                             opdsURLAbsolute_ = opdsURLAbsolute_.replace(xOriginProxy + "/", "");
                         } else {
                             opdsURLAbsolute_ = opdsURLAbsolute_.replace(CORS_PROXY_HTTP_TOKEN, CORS_PROXY_HTTP_TOKEN_ESCAPED);
@@ -214,9 +214,9 @@ URI){
                     try {
                         rootUrl = rootUrlUri.absoluteTo(opdsURLAbsolute_).toString();
                     } catch(err) {
-                        consoleError(err);
-                        consoleLog(rootUrl);
-                        consoleLog(opdsURLAbsolute_);
+                        console.error(err);
+                        console.log(rootUrl);
+                        console.log(opdsURLAbsolute_);
                     }
                     
                     if (xOriginProxy) {
@@ -225,12 +225,12 @@ URI){
                         }
                     }
                     
-                    consoleLog("OPDS entry URL (absolute): " + rootUrl);
+                    console.log("OPDS entry URL (absolute): " + rootUrl);
                     
                 } else if (!isExternalLink) { 
                     if (xOriginProxy) {
                         rootUrl = xOriginProxy + "/" + rootUrl;
-                        consoleLog("Adding CORS proxy to URL: " + rootUrl);
+                        console.log("Adding CORS proxy to URL: " + rootUrl);
                     }
                 }
 
@@ -271,7 +271,7 @@ URI){
                 try {
                     processOPDS(opdsURL, data, dataSuccess, dataFail, extraData);
                 } catch(err) {
-                    consoleError(err);
+                    console.error(err);
                     dataFail();
                 }
             }).fail(function(){

@@ -338,7 +338,7 @@ define(['i18nStrings'], function(Strings) {
             // key.setScope(scope);
         },
         on: function(keys, scope, callback) {
-            // if (!keys) consoleError("!KEYS!");
+            // if (!keys) console.error("!KEYS!");
 
             // if (!keyBindings.hasOwnProperty(scope)) {
             //     keyBindings[scope] = [];
@@ -479,7 +479,7 @@ define(['i18nStrings'], function(Strings) {
         Keyboard.resetAccessKeys();
     }
     catch (e) {
-        consoleError(e);
+        console.error(e);
     }
 
     return Keyboard;

@@ -11,8 +11,8 @@ define(['./ModuleConfig', './PackageParser', './workers/WorkerProxy', 'StorageMa
         try {
             pathUri = new URI(path);
         } catch (err) {
-            consoleError(err);
-            consoleLog(path);
+            console.error(err);
+            console.log(path);
         }
 
         if (pathUri && pathUri.is("absolute")) return path; // "http://", "https://", "data:", etc.
@@ -63,14 +63,14 @@ define(['./ModuleConfig', './PackageParser', './workers/WorkerProxy', 'StorageMa
             var indexUrl = StorageManager.getPathUrl(moduleConfig.epubLibraryPath);
 
             var dataFail = function() {
-                consoleError("Ebook library fail: " + indexUrl);
+                console.error("Ebook library fail: " + indexUrl);
 
                 self.libraryData = [];
                 success([]);
             };
 
             var dataSuccess = function(data) {
-                consoleLog("Ebook library success: " + indexUrl);
+                console.log("Ebook library success: " + indexUrl);
 
                 if (moduleConfig.epubLibraryPath) {
                     for (var i = 0; i < data.length; i++) {
@@ -87,7 +87,7 @@ define(['./ModuleConfig', './PackageParser', './workers/WorkerProxy', 'StorageMa
                 if (indexUrl.substr(0, 5) == "db://")
                     indexUrl = "./" + indexUrl.substr(5);
                 if (/\.json$/.test(indexUrl)) {
-                    $.getJSON(indexUrl, function(data) {
+                    $.getJSON(indexUrl + '?t=' + new Date().getTime(), function(data) {
                         if (extraData != null)
                             for (var i = 0; i < extraData.length; i++)
                                 data.unshift(extraData[i]);
@@ -106,7 +106,7 @@ define(['./ModuleConfig', './PackageParser', './workers/WorkerProxy', 'StorageMa
             if (indexUrl.substr(0, 5) == "db://") {
                 StorageManager.getFile(indexUrl.replace('epub_content/', ''),
                     checkExternal,
-                    consoleLog);
+                    console.log);
 
             } else
                 checkExternal();
@@ -208,8 +208,8 @@ define(['./ModuleConfig', './PackageParser', './workers/WorkerProxy', 'StorageMa
 
     window.cleanEntireLibrary = function() {
         StorageManager.deleteFile('/', function() {
-            consoleLog('done');
-        }, consoleError);
+            console.log('done');
+        }, console.error);
     }
     return new LibraryManager();
 

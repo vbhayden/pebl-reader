@@ -244,7 +244,10 @@
 	"message" : "From the web:"
     },
     "i18n_from_local_file" : {
-	"message" : "From Local File:"
+	"message" : "Upload EPUB:"
+    },
+    "i18n_upload_cover": {
+    "message": "Upload Cover:"
     },
     "i18n_enter_a_url" : {
 	"message" : "Enter a URL to a .epub file"

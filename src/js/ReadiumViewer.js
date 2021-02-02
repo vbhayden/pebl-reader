@@ -21,7 +21,7 @@ define(['./EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 'URIjs', '
                         $(window).triggerHandler('readepub', eventPayload);
                     });
                 },
-                    function(x) { consoleLog(x); });
+                    function(x) { console.log(x); });
             } else {
                 var eventPayload = { embedded: embedded, epub: ebookURL, epubs: libraryURL };
                 $(window).triggerHandler('readepub', eventPayload);
@@ -55,8 +55,8 @@ define(['./EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 'URIjs', '
 
             var state = history.state;
 
-            consoleLog("BROWSER HISTORY POP STATE:");
-            consoleLog(state);
+            console.log("BROWSER HISTORY POP STATE:");
+            console.log(state);
 
             if (state && state.epub) {
                 readerView(state);
@@ -70,18 +70,18 @@ define(['./EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 'URIjs', '
         });
 
         pushState = function(data, title, url) {
-            consoleLog("BROWSER HISTORY PUSH STATE:");
-            //consoleLog(title);
-            consoleLog(url);
-            consoleLog(data);
+            console.log("BROWSER HISTORY PUSH STATE:");
+            //console.log(title);
+            console.log(url);
+            console.log(data);
             history.pushState(data, title, url);
         };
 
         replaceState = function(data, title, url) {
-            consoleLog("BROWSER HISTORY REPLACE STATE:");
-            //consoleLog(title);
-            consoleLog(url);
-            consoleLog(data);
+            console.log("BROWSER HISTORY REPLACE STATE:");
+            //console.log(title);
+            console.log(url);
+            console.log(data);
             history.replaceState(data, title, url);
         };
     }
@@ -235,10 +235,10 @@ define(['./EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 'URIjs', '
                 } else {
 
                     var file = files[0];
-                    consoleLog("File drag-n-drop:");
-                    consoleLog(file.name);
-                    consoleLog(file.type);
-                    consoleLog(file.size);
+                    console.log("File drag-n-drop:");
+                    console.log(file.name);
+                    console.log(file.type);
+                    console.log(file.size);
 
                     if (file.type == "application/epub+zip" || (/\.epub[3?]$/.test(file.name))) {
                         var urlParams = Helpers.getURLQueryParams();
@@ -254,7 +254,7 @@ define(['./EpubLibrary', './EpubReader', 'readium_shared_js/helpers', 'URIjs', '
                 // var reader = new FileReader();
                 // reader.onload = function(e) {
 
-                //     consoleLog(e.target.result);
+                //     console.log(e.target.result);
 
                 //     var ebookURL = e.target.result;
                 //     $(window).triggerHandler('readepub', ...);

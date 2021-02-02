@@ -32,7 +32,7 @@ define(['../ModuleConfig', 'readium_js/epub-fetch/encryption_handler'], function
                 }
                 catch(e)
                 {
-                    consoleError(e);
+                    console.error(e);
                     callback(data);
                 }
             }

@@ -69,10 +69,10 @@
         <script type="text/javascript">
          if (navigator.serviceWorker) {
              navigator.serviceWorker.register('peblSW.js').then((reg) => {
-                 consoleLog("Service worker registered", reg.scope);
+                 console.log("Service worker registered", reg.scope);
                  hookSWWorkerApi(reg);
              }).catch(function (err) {
-                 consoleError("Bad service worker", err);
+                 console.error("Bad service worker", err);
              });
          }
 
@@ -102,7 +102,7 @@
              ) : ''
          ;
 
-         consoleLog(HTTPServerRootFolder);
+         console.log(HTTPServerRootFolder);
 
          var getURLQueryParams = function() {
              var params = {};
@@ -124,7 +124,7 @@
          };
 
          var urlParams = getURLQueryParams();
-         consoleLog(urlParams);
+         console.log(urlParams);
 
          // MUST BE *SINGLE* CALL TO require.config() FOR ALMOND (SINGLE BUNDLE) TO WORK CORRECTLY!!!
          require.config({

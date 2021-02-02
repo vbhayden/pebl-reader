@@ -299,7 +299,8 @@ body:not(.list-view) .library-item {
 }
 
 #install-spinner-body > .spinner,
-#analytics-spinner-body > .spinner {
+#analytics-spinner-body > .spinner,
+#upload-epub-spinner-body > .spinner {
     height: 100px;
     margin-top: 100px;
     position: relative !important;
@@ -348,6 +349,19 @@ body:not(.list-view) .library-item {
     top: 38px;
     right: -1px;
     bottom: 0;
+}
+
+#addbutt,
+.delete-book-button {
+    display: none;
+}
+
+.show-upload #addbutt  {
+    display: block;
+}
+
+.show-delete .delete-book-button {
+    display: inline-block;
 }
 
 #app-container.show-adminSidebar #adminSidebar {
