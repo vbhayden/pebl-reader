@@ -14,6 +14,7 @@ define([
     'hgn!readium_js_viewer_html_templates/install-ios-reader-dialog.html',
     'hgn!readium_js_viewer_html_templates/spinner-dialog.html',
     'hgn!readium_js_viewer_html_templates/analytics-spinner-dialog.html',
+    'hgn!readium_js_viewer_html_templates/upload-epub-spinner-dialog.html',
     './Spinner',
     './ReaderSettingsDialog',
     './Dialogs',
@@ -39,6 +40,7 @@ define([
            InstallIosReaderDialog,
            SpinnerDialog,
            AnalyticsSpinnerDialog,
+           UploadEpubSpinnerDialog,
            spinner,
            SettingsDialog,
            Dialogs,
@@ -662,6 +664,27 @@ define([
                });
            };
 
+           var uploadEpub = function(evt) {
+                $('#upload-epub-spinner-dialog').modal('show');
+                spinLibrary(true, $('#upload-epub-spinner-body')[0]);
+                const fd = new FormData();
+                fd.append('epub', evt.target.files[0]);
+                fetch(window.PeBLConfig.PeBLServicesURL + '/upload-epub', {
+                    credentials: 'include',
+                    method: 'POST',
+                    body: fd
+                }).then(() => {
+                    console.log('done upload');
+                    $('#add-epub-dialog').modal('hide');
+                    window.location.reload();
+                }).catch((e) => {
+                    console.error(e);
+                    alert('There was an error uploading your epub.');
+                }).finally(() => {
+                    spinLibrary(false);
+                    $('#analytics-spinner-dialog').modal('hide');
+                })
+           }
 
            var handleFileSelect = function(evt){
                $('#add-epub-dialog').modal('hide');
@@ -876,6 +899,10 @@ define([
                    strings: Strings
                }));
 
+               $appContainer.append(UploadEpubSpinnerDialog({
+                   strings: Strings
+               }));
+
                $('#about-dialog').on('hidden.bs.modal', function () {
                    Keyboard.scope('library');
 
@@ -945,60 +972,70 @@ define([
 
                setAppSize();
                $(document.body).on('click', '.read', readClick);
-               $('#epub-upload').on('change', handleFileSelect);
+               $('#epub-upload').on('change', uploadEpub);
                $('#dir-upload').on('change', handleDirSelect);
 
                $(document.body).on('click', '.delete-book-button', function(evt) {
-                   var url = $(evt.currentTarget).attr('data-root');
-                   if (url.substr(0, 5) === 'db://') {
-                       StorageManager.deleteFile(url, function() {
-                           StorageManager.getFile('db://epub_library.json', function(index) {
-                               if (index) {
-                                   for (var i = 0; i < index.length; i++) {
-                                       if (index[i].rootUrl === url) {
-                                           index.splice(i, 1);
-                                           StorageManager.saveBookshelf('db://epub_library.json', index, function() {
-                                               console.log('deleted epub_library.json entry');
-                                               libraryManager.retrieveAvailableEpubs(loadLibraryItems);
-                                           }, function() {
-                                               console.log('failed to delete epub_library.json entry');
-                                           });
-                                       }
-                                   }
-                               } else {
-                                   console.log('No associated epub_library.json found');
-                               }
-                           });
-                       }, function() {
-                           console.log('delete failed');
-                       });
-                   } else if (url.substr(0,8) === 'https://') {
-                       let fn = () =>{
-                           unregisterSWListener("removedCache", fn);
-                           StorageManager.getFile('db://epub_library.json', function(index) {
-                               if (index) {
-                                   for (var i = 0; i < index.length; i++) {
-                                       if (index[i].rootUrl === url) {
-                                           index.splice(i, 1);
-                                           StorageManager.saveBookshelf('db://epub_library.json', index, function() {
-                                               console.log('deleted epub_library.json entry');
-                                               libraryManager.retrieveAvailableEpubs(loadLibraryItems);
-                                           }, function() {
-                                               console.log('failed to delete epub_library.json entry');
-                                           });
-                                       }
-                                   }
-                               } else {
-                                   console.log('No associated epub_library.json found');
-                               }
-                           });
-                       };
-                       registerSWListener("removedCache", fn);
-                       sendSWMsg("removeCache", {root: (url.endsWith("/")?url:url+"/")+"OEBPS/"});
-                   } else {
-                       libraryManager.retrieveAvailableEpubs(loadLibraryItems);
+                   let target = evt.currentTarget;
+                   if (window.confirm('Are you sure you want to delete this EPUB?')) {
+                        fetch(window.PeBLConfig.PeBLServicesURL + '/delete-epub?id=' + target.getAttribute('data-id'), {
+                            credentials: 'include',
+                            method: 'DELETE'
+                        }).then(() => {
+                            var url = $(target).attr('data-root');
+                            if (url.substr(0, 5) === 'db://') {
+                                StorageManager.deleteFile(url, function() {
+                                    StorageManager.getFile('db://epub_library.json', function(index) {
+                                        if (index) {
+                                            for (var i = 0; i < index.length; i++) {
+                                                if (index[i].rootUrl === url) {
+                                                    index.splice(i, 1);
+                                                    StorageManager.saveBookshelf('db://epub_library.json', index, function() {
+                                                        console.log('deleted epub_library.json entry');
+                                                        libraryManager.retrieveAvailableEpubs(loadLibraryItems);
+                                                    }, function() {
+                                                        console.log('failed to delete epub_library.json entry');
+                                                    });
+                                                }
+                                            }
+                                        } else {
+                                            console.log('No associated epub_library.json found');
+                                        }
+                                    });
+                                }, function() {
+                                    console.log('delete failed');
+                                });
+                            } else if (url.substr(0,8) === 'https://') {
+                                let fn = () =>{
+                                    unregisterSWListener("removedCache", fn);
+                                    StorageManager.getFile('db://epub_library.json', function(index) {
+                                        if (index) {
+                                            for (var i = 0; i < index.length; i++) {
+                                                if (index[i].rootUrl === url) {
+                                                    index.splice(i, 1);
+                                                    StorageManager.saveBookshelf('db://epub_library.json', index, function() {
+                                                        console.log('deleted epub_library.json entry');
+                                                        libraryManager.retrieveAvailableEpubs(loadLibraryItems);
+                                                    }, function() {
+                                                        console.log('failed to delete epub_library.json entry');
+                                                    });
+                                                }
+                                            }
+                                        } else {
+                                            console.log('No associated epub_library.json found');
+                                        }
+                                    });
+                                };
+                                registerSWListener("removedCache", fn);
+                                sendSWMsg("removeCache", {root: (url.endsWith("/")?url:url+"/")+"OEBPS/"});
+                            } else {
+                                libraryManager.retrieveAvailableEpubs(loadLibraryItems);
+                            }
+                        }).catch((e) => {
+                            console.error(e);
+                            alert('There was an error deleting this EPUB.');
+                        })
                    }
-
                });
 
                $(document.body).on('click', '.download-book-button', function(evt) {
@@ -1473,16 +1510,27 @@ define([
                    }
 
                    var analyticsPermission = false;
+                   var uploadPermission = false;
 
                    if (userProfile.currentTeam && userProfile.role === 'instructor')
                        analyticsPermission = true;
-                   if (userProfile.currentTeam && userProfile.role === 'admin')
+                   if (userProfile.currentTeam && userProfile.role === 'admin') {
                        analyticsPermission = true;
+                       uploadPermission = true;
+                   }
 
                    if (analyticsPermission) {
                        $('#app-container').addClass('show-adminSidebar');
                    } else {
                        $('#app-container').removeClass('show-adminSidebar');
+                   }
+
+                   if (uploadPermission) {
+                       $('#app-navbar').addClass('show-upload');
+                       $('#app-container').addClass('show-delete');
+                   } else {
+                       $('#app-navbar').removeClass('show-upload');
+                       $('#app-container').removeClass('show-delete');
                    }
                });
 

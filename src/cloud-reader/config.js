@@ -12,17 +12,15 @@ limitations under the License.
 */
 
 window.PeBLConfig = {}
-// window.PeBLConfig.PeBLServicesURL = 'https://dev.services.peblproject.org';
-// window.PeBLConfig.PeBLServicesWSURL = 'wss://dev.services.peblproject.org';
-// window.PeBLConfig.PeBLServicesURL = '__HTTP_SERVICES_ENDPOINT__';
-// window.PeBLConfig.PeBLServicesWSURL = '__WS_SERVICES_ENDPOINT__';
-window.PeBLConfig.PeBLServicesURL = 'https://localhost:8080';
-window.PeBLConfig.PeBLServicesWSURL = 'wss://localhost:8080';
-window.PeBLConfig.useOpenID = true;
-window.PeBLConfig.useLinkedIn = true;
-window.PeBLConfig.loginText = 'LinkedIn login is required to access the eFieldbooks. This is similar to using Google or Facebook to log in instead of setting up an account via email. If you do not have a LinkedIn account, you can register one for free here. The purpose of the LinkedIn login is to provide an encrypted ID to the eFieldbook so users can securely interact with that eFieldbook, take notes, and make contributions. The eXtension Foundation is not collecting your personal information. In order to receive update notices from eXtension, we invite you to opt-in the first time you enter an eFieldbook by providing your desired email address.';
-window.PeBLConfig.favicon = 'images/PEBL-icon-16.ico';
-window.PeBLConfig.loginImage = 'images/PEBL-Logo-Color-small.png';
-window.PeBLConfig.userList = ['Learner', 'Learner1', 'Learner2', 'Learner3', 'Learner5', 'Learner7'];
+window.PeBLConfig.PeBLServicesURL = '__HTTP_SERVICES_ENDPOINT__';
+window.PeBLConfig.PeBLServicesWSURL = '__WS_SERVICES_ENDPOINT__';
+window.PeBLConfig.useOpenID = __USE_OPEN_ID__;
+window.PeBLConfig.useGoogleLogin = __USE_GOOGLE_LOGIN__;
+window.PeBLConfig.googleClientId = '__GOOGLE_CLIENT_ID__';
+window.PeBLConfig.appleTouchIcon = '__READER_APPLE_TOUCH_ICON__';
+window.PeBLConfig.favicon = '__READER_FAVICON__';
+window.PeBLConfig.loginImage = '__READER_LOGIN_IMAGE__';
 window.PeBLConfig.version = "VERSION";
+window.PeBLConfig.disabledFeatures = __READER_DISABLED_FEATURES__;
+window.PeBLConfig.hideInstallInstructions = __READER_HIDE_INSTALL_INSTRUCTIONS__;
 window.DEBUGGING = false;

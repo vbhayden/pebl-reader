@@ -1,14 +1,26 @@
 version: '3'
 services:
   nginx:
-    image: git.eduworks.us:5050/pebl/webreader/pebl-reader:1.4.3
+    image: git.eduworks.us:5050/pebl/webreader/pebl-reader:1.6.16a
     sysctls:
       - net.core.somaxconn=4096
     restart: always
     environment:
       - READER_SERVER_NAME=localhost
-      - WS_SERVICES_ENDPOINT=wss://local2
-      - HTTP_SERVICES_ENDPOINT=https://local2
+      - WS_SERVICES_ENDPOINT=wss://localhost:8080
+      - HTTP_SERVICES_ENDPOINT=https://localhost:8080
+      - USE_OPEN_ID=true
+      - USE_GOOGLE_LOGIN=false
+      - GOOGLE_CLIENT_ID=
+      - READER_FAVICON=images/PEBL-icon-16.ico
+      - READER_LOGIN_IMAGE=images/PEBL-Logo-Color-small.png
+      - READER_APPLE_TOUCH_ICON=images/PEBL-icon-192.png
+      - "READER_DISABLED_FEATURES={}"
+      - PEBL_LIBRARY_TITLE=PeBL Library
+      - PEBL_READER_TITLE=PeBL Reader
+      - PEBL_TITLE=
+      - PEBL_WEBREADER_LOGO=images/PEBL-Logo-Color-small.png
+      - READER_HIDE_INSTALL_INSTRUCTIONS=true
     volumes:
       - ./epub_content/:/usr/share/nginx/html/epub_content
     #   - /etc/letsencrypt/live/<domain>/fullchain.pem:/ssl/fullchain.pem:ro

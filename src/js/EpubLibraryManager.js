@@ -87,7 +87,7 @@ define(['./ModuleConfig', './PackageParser', './workers/WorkerProxy', 'StorageMa
                 if (indexUrl.substr(0, 5) == "db://")
                     indexUrl = "./" + indexUrl.substr(5);
                 if (/\.json$/.test(indexUrl)) {
-                    $.getJSON(indexUrl, function(data) {
+                    $.getJSON(indexUrl + '?t=' + new Date().getTime(), function(data) {
                         if (extraData != null)
                             for (var i = 0; i < extraData.length; i++)
                                 data.unshift(extraData[i]);
