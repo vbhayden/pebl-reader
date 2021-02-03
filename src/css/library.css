@@ -298,6 +298,10 @@ body:not(.list-view) .library-item {
     margin-bottom: 30px;
 }
 
+body:not(.list-view) #app-container.show-delete .library-item {
+    margin-bottom: 70px;
+}
+
 #install-spinner-body > .spinner,
 #analytics-spinner-body > .spinner,
 #upload-epub-spinner-body > .spinner {
@@ -538,6 +542,10 @@ h2.adminSidebar_title {
         margin-bottom: 70px;
     }
 
+    body:not(.list-view) #app-container.show-delete .library-item {
+        margin-bottom: 110px;
+    }
+
     body.list-view #app-container .library-item .info-wrap{
         padding-bottom: 0px;
         padding-left: 0px;
@@ -548,6 +556,10 @@ h2.adminSidebar_title {
 @media (max-width: 480px) {
     body:not(.list-view) .library-item {
         margin-bottom: 90px;
+    }
+
+    body:not(.list-view) #app-container.show-delete .library-item {
+        margin-bottom: 130px;
     }
 
     body:not(.list-view) .download-book-button {
