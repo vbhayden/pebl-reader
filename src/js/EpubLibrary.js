@@ -673,9 +673,9 @@ define([
                     credentials: 'include',
                     method: 'POST',
                     body: fd
-                }).then((response) => {
+                }).then( async (response) => {
                     if (!response.ok)
-                        throw Error(response.statusText);
+                        throw Error(await response.text());
                     console.log('done upload');
                     window.location.reload();
                 }).catch((e) => {
@@ -683,7 +683,7 @@ define([
                     alert(e);
                 }).finally(() => {
                     spinLibrary(false);
-                    $('#analytics-spinner-dialog').modal('hide');
+                    $('#upload-epub-spinner-dialog').modal('hide');
                     $('#add-epub-dialog').modal('hide');
                 })
            }
@@ -986,7 +986,7 @@ define([
                         }).then((response) => {
                             if (!response.ok)
                                 throw Error(response.statusText);
-                                
+
                             var url = $(target).attr('data-root');
                             if (url.substr(0, 5) === 'db://') {
                                 StorageManager.deleteFile(url, function() {
