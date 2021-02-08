@@ -673,16 +673,18 @@ define([
                     credentials: 'include',
                     method: 'POST',
                     body: fd
-                }).then(() => {
+                }).then( async (response) => {
+                    if (!response.ok)
+                        throw Error(await response.text());
                     console.log('done upload');
-                    $('#add-epub-dialog').modal('hide');
                     window.location.reload();
                 }).catch((e) => {
                     console.error(e);
-                    alert('There was an error uploading your epub.');
+                    alert(e);
                 }).finally(() => {
                     spinLibrary(false);
-                    $('#analytics-spinner-dialog').modal('hide');
+                    $('#upload-epub-spinner-dialog').modal('hide');
+                    $('#add-epub-dialog').modal('hide');
                 })
            }
 
@@ -981,7 +983,10 @@ define([
                         fetch(window.PeBLConfig.PeBLServicesURL + '/delete-epub?id=' + target.getAttribute('data-id'), {
                             credentials: 'include',
                             method: 'DELETE'
-                        }).then(() => {
+                        }).then((response) => {
+                            if (!response.ok)
+                                throw Error(response.statusText);
+
                             var url = $(target).attr('data-root');
                             if (url.substr(0, 5) === 'db://') {
                                 StorageManager.deleteFile(url, function() {
