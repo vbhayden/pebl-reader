@@ -2564,6 +2564,7 @@ define([
 
                var loadlibrary = function() {
                    $("html").attr("data-theme", "library");
+                   $("html").attr("lang", "en");
 
                    var urlParams = Helpers.getURLQueryParams();
                    //var ebookURL = urlParams['epub'];
