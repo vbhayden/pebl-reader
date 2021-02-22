@@ -287,7 +287,7 @@ window.Lightbox = {
         var loginHeader = $(
             '<div class="login__header">' +
                 '<div class="login__image">' +
-                '<img  src="' + window.PeBLConfig.loginImage + '"></img>' +
+                '<img  src="' + window.PeBLConfig.loginImage + '" alt="PeBL Logo"></img>' +
                 '<p>' + loginText + '</p>' +
                 '</div>' +
                 '</div>'
