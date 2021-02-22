@@ -19,7 +19,7 @@
 	"message" : "Grid View"
     },
     "view_library": {
-	"message" : "Bookshelf"
+	"message" : "PeBL Bookshelf"
     },
     "highlight_selection" : {
 	"message" : "Highlight Selected Text"
