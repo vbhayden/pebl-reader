@@ -865,7 +865,7 @@ define([
                Analytics.trackView('/library');
                var $appContainer = $('#app-container');
                $appContainer.empty();
-
+               $appContainer.attr('role','main');
                $appContainer.append(AddEpubDialog({
                    canHandleUrl : libraryManager.canHandleUrl(),
                    canHandleDirectory : libraryManager.canHandleDirectory(),

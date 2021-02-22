@@ -2223,7 +2223,7 @@ define([
                }
 
                var $navBar = $(navBar);
-               // BROEKN! $navBar.is(':hover')
+               // BROKEN! $navBar.is(':hover')
                var isMouseOver = $navBar.find(':hover').length > 0;
                if (isMouseOver) {
                    hideLoop()
@@ -2837,6 +2837,7 @@ define([
                $('.modal-backdrop').remove();
                var $appContainer = $('#app-container');
                $appContainer.empty();
+               $appContainer.attr('role','main');
                $appContainer.append(ReaderBody({ strings: Strings, dialogs: Dialogs, keyboard: Keyboard, disabledFeatures: window.PeBLConfig.disabledFeatures }));
                $('nav').empty();
                $('nav').attr("aria-label", Strings.i18n_toolbar);

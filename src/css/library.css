@@ -6,6 +6,12 @@
     overflow-x: hidden;
 }
 
+#skip-main {
+    position: absolute;
+    left: -1000px;
+    top:-1000px;
+}
+
 #library-body,
 #analytics-body {
     width: 100%;
