@@ -202,56 +202,76 @@
     </button>
     -->
 
-    <button id="searchButt" tabindex="0" type="button" class="btn icon-search" title="{{strings.search}}" aria-label="{{strings.search}}">
-        <img src="images/pebl-icons-search.svg" aria-hidden="true" height="18px" alt="Search" />
+    <button id="searchButt" type="button" 
+        class="btn icon-search"
+        title="{{strings.search}}"
+        aria-label="{{strings.search}}"
+        tabindex="0" >
+        <img src="images/pebl-icons-search.svg" aria-hidden="true" height="18px" alt="{{strings.search}}" />
     </button>
     <div class="btn">|</div>
-    <button id="tocButt" tabindex="0" type="button" class="btn icon-toc" title="{{strings.toc}}" aria-label="{{strings.toc}} [{{keyboard.TocShowHideToggle}}]" accesskey="{{keyboard.accesskeys.TocShowHideToggle}}">
-        <img src="images/pebl-icons-wip_toc.svg" aria-hidden="true" height="18px" alt="Table of Contents" />
+    <button id="tocButt" type="button"
+        class="btn icon-toc"
+        title="{{strings.toc}}"
+        aria-label="{{strings.toc}}"
+        accesskey="T"
+        tabindex="0" >
+        <img src="images/pebl-icons-wip_toc.svg" aria-hidden="true" height="18px" alt="{{strings.toc}}" />
     </button>
-    <button tabindex="0" type="button" class="btn icon-annotations" title="{{strings.highlight_selection}}" aria-label="{{strings.highlight_selection}}">
-        <img src="images/pebl-icons-wip_new-highlight.svg" aria-hidden="true" height="18px" alt="Add Annotation" />
+    <button id="highlightButt" type="button"
+        class="btn icon-annotations"
+        title="{{strings.highlight_selection}}"
+        aria-label="{{strings.highlight_selection}}"
+        tabindex="0" >
+        <img src="images/pebl-icons-wip_new-highlight.svg" aria-hidden="true" height="18px" alt="{{strings.highlight_selection}}" />
     </button>
     <!-- <button tabindex="0" type="button" class="btn icon-shareUrl" title="{{strings.share_url}}" aria-label="{{strings.share_url}}"> -->
     <!--     <span class="glyphicon glyphicon-link" aria-hidden="true"></span> -->
     <!-- </button> -->
-    <button type="button" class="btn icon-show-annotations" title="{{strings.show_annotations}}" aria-label="{{strings.show_annotations}}">
-        <img src="images/pebl-icons-wip_highlight-list.svg" aria-hidden="true" height="18px"  alt="Annotations List"/>
+    <button id="showHighlightsButt" type="button"
+        class="btn icon-show-annotations"
+        title="{{strings.show_annotations}}"
+        aria-label="{{strings.show_annotations}}"
+        tabindex="0">
+        <img src="images/pebl-icons-wip_highlight-list.svg" aria-hidden="true" height="18px"  alt="{{strings.show_annotations}}"/>
     </button>
     <div class="btn">|</div>
-    <button type="button" class="btn"
-        id="bookmark-page"
-        title="Add Bookmark"
-        aria-label="higlight selected"
+    <button id="bookmark-page" type="button"
+        class="btn"
+        title="{{strings.bookmark}}"
+        aria-label="{{strings.bookmark}}"
         accesskey="B"
         tabindex="0">
-        <img src="images/pebl-icons-wip_new-bookmark.svg"aria-hidden="true" height="18px" alt="Add a Bookmark" />
+        <img src="images/pebl-icons-wip_new-bookmark.svg"aria-hidden="true" height="18px" alt="{{strings.bookmark}}" />
     </button>
-    <button type="button" class="btn"
-        id="bookmark-show"
-        title="Bookmarks List"
-        aria-label="{{strings.bookmark}}"
+    <button id="bookmark-show" type="button"
+        class="btn"
+        title="{{strings.bookmark_list}}"
+        aria-label="{{strings.bookmark_list}}"
         accesskey="O"
         tabindex="0">
-        <img src="images/pebl-icons-wip_bookmark-list.svg" aria-hidden="true" height="18px" alt="Bookmark List" />
+        <img src="images/pebl-icons-wip_bookmark-list.svg" aria-hidden="true" height="18px" alt="{{strings.bookmark_list}}" />
     </button>
     <div class="btn">|</div>
-    <button
-        id="settbutt1"
-        tabindex="0"
-        type="button"
+    <button id="settbutt1" type="button"
         class="btn icon-settings"
         data-toggle="modal"
         data-target="#settings-dialog"
         title="{{strings.settings}}"
-        aria-label="{{strings.settings}} [{{keyboard.ShowSettingsModal}}]" accesskey="S">
-        <img src="images/pebl-icons-wip_settings.svg" aria-hidden="true" height="18px" alt="Settings" />
+        aria-label="{{strings.settings}}"
+        accesskey="S"
+        tabindex="0">
+        <img src="images/pebl-icons-wip_settings.svg" aria-hidden="true" height="18px" alt="{{strings.settings}}" />
     </button>
     <div id="readerCurrentClassContainer" style="width: auto; display: none;" class="btn">
         <span id="readerCurrentClass"></span>
     </div>
-    <button id="loginButt" tabindex="0" type="button" class="btn icon-log-in" title="{{strings.i18n_log_in}}" aria-label="{{strings.i18n_log_in}}">
-            <img src="images/pebl-icons-wip_login.svg" aria-hidden="true" height="18px" alt="Login" />
+    <button id="loginButt" type="button"
+        class="btn icon-log-in"
+        tabindex="0"
+        title="{{strings.i18n_log_in}}"
+        aria-label="{{strings.i18n_log_in}}">
+        <img src="images/pebl-icons-wip_login.svg" aria-hidden="true" height="18px" alt="{{strings.i18n_log_in}}" />
     </button>
 
     <!-- <button tabindex="-1" type="button" class="btn icon-help" title="{{strings.help}} [{{keyboard.help}}]" aria-label="{{strings.help}} [{{keyboard.help}}]" accesskey="{{keyboard.accesskeys.help}}">

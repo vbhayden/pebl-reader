@@ -24,8 +24,11 @@
     "highlight_selection" : {
 	"message" : "Highlight Selected Text"
     },
+    "show_annotations" : {
+	"message" : "Highlight List"
+    },
     "bookmark" : {
-        "message" : "Bookmark"
+        "message" : "Add a Bookmark"
     },
     "bookmark_list" : {
         "message" : "Bookmark List"
@@ -44,9 +47,6 @@
     },
     "settings" : {
 	"message" : "Settings"
-    },
-    "show_annotations" : {
-	"message" : "Annotations List"
     },
     "bookmarks" : {
 	"message" : "Bookmark List"
