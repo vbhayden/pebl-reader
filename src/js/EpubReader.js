@@ -777,9 +777,9 @@ define([
                    $appContainer.removeClass('toc-visible');
 
                    // clear tabindex off of any previously focused ToC item
-                   var existsFocusable = $('#readium-toc-body a[tabindex="60"]');
+                   var existsFocusable = $('#readium-toc-body a[tabindex="0"]');
                    if (existsFocusable.length > 0) {
-                       existsFocusable[0].setAttribute("tabindex", "-1");
+                       existsFocusable[0].setAttribute("tabindex", "0");
                    }
                    /* end of clear focusable tab item */
                    setTimeout(function() { $('#tocButt')[0].focus(); }, 100);
@@ -1657,17 +1657,17 @@ define([
                        // remove default focus from anchor elements in TOC after added to #readium-toc-body
                        var $items = $('#readium-toc-body li >a');
                        $items.each(function() {
-                           $(this).attr("tabindex", "-1");
+                           $(this).attr("tabindex", "0");
                            $(this).on("focus", function(event) {
                                //console.log("toc item focus: " + event.target);
                                // remove tabindex from previously focused
-                               var $prevFocus = $('#readium-toc-body a[tabindex="60"]');
+                               var $prevFocus = $('#readium-toc-body a[tabindex="0"]');
                                if ($prevFocus.length > 0 && $prevFocus[0] !== event.target) {
                                    //console.log("previous focus: " + $prevFocus[0]);
-                                   $prevFocus.attr("tabindex", "-1");
+                                   $prevFocus.attr("tabindex", "0");
                                }
                                // add to newly focused
-                               event.target.setAttribute("tabindex", "60");
+                               event.target.setAttribute("tabindex", "0");
                            });
                            $(this).on("click", function(event) {
                                PeBL.emitEvent(PeBL.events.eventAccessed, {

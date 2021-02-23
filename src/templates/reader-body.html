@@ -1,5 +1,6 @@
-<div id="readium-toc-body" class="sidebar-body" aria-label="{{strings.toc}}" role="navigation"></div>
-<div id="annotations-body"class="sidebar-body" aria-label="{{strings.annotations}}" role="annotations">
+<div id="readium-toc-body" class="sidebar-body" aria-label="{{strings.toc}}" role="aside"></div>
+
+<div id="annotations-body"class="sidebar-body" aria-label="{{strings.annotations}}" role="aside">
 	<h3><img src="images/pebl-icons-wip_highlight-list.svg" aria-hidden="true" height="18px"> My Private Annotations</h3>
   <button id="downloadAnnotationsButton">Download notes and annotations</button>
 	<div id="my-annotations"></div>
@@ -11,22 +12,22 @@
 	<div id="general-shared-annotations"></div>
   {{/disabledFeatures.sharedAnnotations}}
 </div>
-<div id="bookmarks-body"class="sidebar-body" aria-label="{{strings.bookmarks}}" role="bookmarks"></div>
-<div id="search-body" class="sidebar-body" aria-label="{{strings.search}}" role="search"></div>
 
-<div id="reading-area" role="main">  
+<div id="bookmarks-body"class="sidebar-body" aria-label="{{strings.bookmarks}}" role="aside"></div>
+
+<div id="search-body" class="sidebar-body" aria-label="{{strings.search}}" role="aside"></div>
+
+<div id="reading-area" role="region" aria-label="Book Content">  
   <div id="epub-reader-container">
     <div id="epub-reader-frame">
     </div>
   </div>
   
-  <div id="readium-page-btns" role="region" aria-label="{{strings.i18n_page_navigation}}">
+  <div id="readium-page-btns" role="navigation">
     <!-- page left/right buttons inserted here when EPUB is loaded (page progression direction) -->
   </div>
 
-  <div id="readium-slider" title="Book Slider">
-
-  </div>
+  <div id="readium-slider" title="Book Slider"></div>
   
 </div>
 
