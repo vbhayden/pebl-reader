@@ -473,9 +473,11 @@ define([
 
                var slider = document.createElement('input');
                slider.type = 'range';
+               slider.role = 'slider';
+               slider.title = 'Book Slider';
                slider.min = '0';
                slider.max = chaptersWithoutFiller.length - 1;
-               slider.step = '0.001';
+               slider.step = '1';
                slider.value = currentPageIndex ? currentPageIndex : 0;
 
 
