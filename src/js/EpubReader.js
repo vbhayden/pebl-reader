@@ -1741,7 +1741,6 @@ define([
                    //TODO not picked-up by all screen readers, so for now this short description will suffice
                    $iframe.attr("title", "EPUB");
                    $iframe.attr("aria-label", "EPUB");
-
                    $iframe[0].contentWindow.addEventListener('dragover', function(e) {
                      e.preventDefault();
                    });
