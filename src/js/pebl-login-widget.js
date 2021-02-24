@@ -31,8 +31,6 @@ document.addEventListener("eventRefreshLogin", () => {
 document.addEventListener("eventLogin", function() {
     $('#loginButt span').addClass("glyphicon-log-out");
     $('#loginButt span').removeClass("glyphicon-log-in");
-
-    $('#loginButt').attr("title", "Logout");
     $('#loginButt').attr("aria-label", "Logout");
 });
 
@@ -49,7 +47,6 @@ PeBL.extension.hardcodeLogin = {
                 PeBL.emitEvent(PeBL.events.eventLoggedIn, userProfile);
                 $('#loginButt span').addClass("glyphicon-log-out");
                 $('#loginButt span').removeClass("glyphicon-log-in");
-                $('#loginButt').attr("title", "Logout");
                 $('#loginButt').attr("aria-label", "Logout");
             }
         });
