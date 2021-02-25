@@ -33,7 +33,7 @@
         
         {{/epub.isSubLibraryLink}}
         
-        aria-label="({{count.n}}) {{epub.title}}" title="({{count.n}}) {{epub.title}}"  tabindex="{{count.tabindex}}">
+        aria-label="({{count.n}}) {{epub.title}}" title="({{count.n}}) {{epub.title}}"  tabindex="0">
 
         {{#epub.coverHref}}
         <div aria-hidden="true" class="no-cover has-cover" style="background-image:url({{ coverHref }});"><p>&nbsp;</p></div>
@@ -70,7 +70,7 @@
                 {{^epub.packagePath}}
 
                     <div class="button">
-                        <button aria-label="{{strings.i1n_download_book}} ({{count.n}}) {{epub.title}}" title="{{strings.i18n_download_book}} ({{count.n}}) {{epub.title}}" tabindex="{{count.tabindex}}" data-root="{{epub.rootUrl}}" data-title="{{epub.title}}" class="btn download-book-button">{{strings.i18n_download_book}}</button>
+                        <button aria-label="{{strings.i1n_download_book}} ({{count.n}}) {{epub.title}}" title="{{strings.i18n_download_book}} ({{count.n}}) {{epub.title}}" tabindex="0" data-root="{{epub.rootUrl}}" data-title="{{epub.title}}" class="btn download-book-button">{{strings.i18n_download_book}}</button>
                     </div>
 
                 {{/epub.packagePath}}

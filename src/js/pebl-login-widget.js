@@ -31,8 +31,6 @@ document.addEventListener("eventRefreshLogin", () => {
 document.addEventListener("eventLogin", function() {
     $('#loginButt span').addClass("glyphicon-log-out");
     $('#loginButt span').removeClass("glyphicon-log-in");
-
-    $('#loginButt').attr("title", "Logout");
     $('#loginButt').attr("aria-label", "Logout");
 });
 
@@ -49,7 +47,6 @@ PeBL.extension.hardcodeLogin = {
                 PeBL.emitEvent(PeBL.events.eventLoggedIn, userProfile);
                 $('#loginButt span').addClass("glyphicon-log-out");
                 $('#loginButt span').removeClass("glyphicon-log-in");
-                $('#loginButt').attr("title", "Logout");
                 $('#loginButt').attr("aria-label", "Logout");
             }
         });
@@ -287,7 +284,7 @@ window.Lightbox = {
         var loginHeader = $(
             '<div class="login__header">' +
                 '<div class="login__image">' +
-                '<img  src="' + window.PeBLConfig.loginImage + '"></img>' +
+                '<img  src="' + window.PeBLConfig.loginImage + '" alt="PeBL Logo"></img>' +
                 '<p>' + loginText + '</p>' +
                 '</div>' +
                 '</div>'
