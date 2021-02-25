@@ -2029,10 +2029,10 @@ define([
                             for (var chapterMapping of readium.reader.chaptersMap) {
                                 if (chapterMapping.idref === chapter.title) {
                                     header.textContent = chapterMapping.chapterTitle;
+                                    container.appendChild(header);
                                     break;
                                 }
                             }
-                            container.appendChild(header);
     
                             var list = document.createElement('div');
                             container.appendChild(list);
@@ -2040,6 +2040,7 @@ define([
                             for (var result of chapter.searchResults) {
                                 var textContainer = document.createElement('div');
                                 textContainer.classList.add('searchResult');
+                                textContainer.setAttribute("role", "status");
                                 (function(textContainer, result) {
                                     textContainer.addEventListener('click', function() {
                                         PeBL.emitEvent(PeBL.events.eventAccessed, {
@@ -2063,8 +2064,9 @@ define([
                                 list.appendChild(textContainer);
                             }
                             $('#search-body-list').append(container);
-                            var searchResults = document.getElementById("search-body-list");
-                            searchResults.focus();
+                            //var searchResultBox = document.getElementById("search-body-list");
+                            //searchResultBox.setAttribute("role", "status");
+                            //searchResultBox.focus();
                         }
                     }
                    }
