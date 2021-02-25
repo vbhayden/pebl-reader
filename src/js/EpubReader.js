@@ -790,7 +790,7 @@ define([
                } else {
                    $appContainer.addClass('toc-visible');
 
-                   setTimeout(function() { $('#readium-toc-body button.close')[0].focus(); }, 100);
+                   setTimeout(function() { $('#readium-toc-body button.close')[0].focus(); }, 1000);
                    PeBL.emitEvent(PeBL.events.eventDisplayed, {
                        activityType: 'reader-toc',
                        type: 'TOC'
@@ -1135,7 +1135,7 @@ define([
                        activityType: 'reader-annotations',
                        type: 'Annotations'
                    });
-                   // setTimeout(function(){ $('#readium-toc-body button.close')[0].focus(); }, 100);
+                   setTimeout(function() { $('#annotations-body button.close')[0].focus(); }, 1000);
                }
 
                if (embedded) {
@@ -1178,6 +1178,7 @@ define([
                        activityType: 'reader-search',
                        type: 'Search'
                    });
+                   setTimeout(function() { $('#search-body button.close')[0].focus(); }, 1000);
                }
 
                if (embedded) {
@@ -1578,6 +1579,7 @@ define([
                        activityType: 'reader-bookmarks',
                        type: 'Bookmarks'
                    });
+                   setTimeout(function() { $('#bookmarks-body button.close')[0].focus(); }, 1000);
                }
 
                if (embedded) {
@@ -2061,6 +2063,8 @@ define([
                                 list.appendChild(textContainer);
                             }
                             $('#search-body-list').append(container);
+                            var searchResults = document.getElementById("search-body-list");
+                            searchResults.focus();
                         }
                     }
                    }
