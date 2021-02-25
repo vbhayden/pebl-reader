@@ -1,11 +1,9 @@
 [
     {
-	      "title":"The Kitchen Sink",
-	      "author":"Eduworks",
-	      "coverHref": "bookshelf/pebl-default-cover.jpg",
-	      "rootUrl":"bookshelf/The-Kitchen-Sink",
-          "id": "urn:uuid:The-Kitchen-Sink",
-          "md5": "7b86214d4b5e05bbf33d60769cb25bbc",
+        "title":"The Kitchen Sink",
+        "coverHref": "bookshelf/pebl-default-cover.jpg",
+        "rootUrl":"bookshelf/The-Kitchen-Sink",
+        "id": "urn:uuid:The-Kitchen-Sink",
         "version":1
     },
     {
