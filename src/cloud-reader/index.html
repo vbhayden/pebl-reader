@@ -38,7 +38,7 @@
 
     <body>
         <noscript>Javascript is required to view this site, please enable Javascript and reload the page.</noscript>
-        <a class="skip-main" href="#app-container" onclick="skipToMainContent();" >Skip to main content</a>
+        <a class="skip-main" href="#app-container" onclick="skipToMainContent(event);" >Skip to main content</a>
         <nav id="app-navbar" class="navbar" role="nav" aria-label="{{Strings.i18n_toolbar}}">
         </nav>
 
@@ -104,7 +104,10 @@
          ;
          //  console.log(HTTPServerRootFolder);
          
-         var skipToMainContent = function() {
+         var skipToMainContent = function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
             var libraryMain = document.getElementById('library-body');
             var bookMain = document.getElementById('reading-area');
             if (libraryMain != null) {
