@@ -11,7 +11,7 @@
     {
         "title":"eReader Test Book",
         "author":"Eduworks",
-        "coverHref":"bookshelf/PeBL_Test_Cover.png",
+        "coverHref":"bookshelf/PeBL_Test_Book-cover.png",
         "rootUrl":"bookshelf/PeBL_Test_Book.epub",
         "version":1
     }
