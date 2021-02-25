@@ -318,11 +318,12 @@ define([
                        searchBody.addClass('search-library-visible');
 
                        initializeLibrarySearch();
-
+                       
                        PeBL.emitEvent(PeBL.events.eventDisplayed, {
                            activityType: 'library-search',
                            type: 'Search'
                        });
+                       $('#searchInput').get.focus();
                    }
                }
 
