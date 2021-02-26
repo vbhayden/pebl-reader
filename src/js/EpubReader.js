@@ -1223,7 +1223,7 @@ define([
                        iframeWindow.selection.empty();
                    }
                } else {
-                   window.alert('No text has been selected yet, or selected text is ineligible for highlighting.');
+                   Dialogs.showErrorWithDetails('Alert', 'No text has been selected yet, or selected text is ineligible for highlighting.');
                    throw new Error("Nothing selected");
                }
            };
@@ -1370,12 +1370,13 @@ define([
                            deleteButton.classList.add('glyphicon', 'glyphicon-trash');
                            deleteButtonContainer.appendChild(deleteButton);
                            deleteButtonContainer.addEventListener('click', function() {
-                               var confirm = window.confirm("Are you sure you want to delete this annotation?");
-                               if (confirm === true) {
-                                   removeHighlight(annotation);
-                                   $('#annotationContextMenu').remove();
-                                   $('#clickOutOverlay').remove();
-                               }
+                               Dialogs.showModalPrompt('Confirm', 'Are you sure you want to delete this annotation?', 'Confirm', 'Cancel', () => {
+                                    removeHighlight(annotation);
+                                    $('#annotationContextMenu').remove();
+                                    $('#clickOutOverlay').remove();
+                               }, () => {
+                                   //
+                               })
                            });
                            buttonWrapper.appendChild(deleteButtonContainer);
                        }
@@ -1527,19 +1528,20 @@ define([
                                var bookmarkDeleteButton = document.createElement('i');
                                bookmarkDeleteButton.classList.add('glyphicon', 'glyphicon-remove');
                                bookmarkDeleteButton.addEventListener('click', function() {
-                                   var confirm = window.confirm("Are you sure you want to delete this bookmark?");
-                                   if (confirm === true) {
-                                       PeBL.emitEvent(PeBL.events.eventUnbookmarked, {
-                                           cfi: stmt.cfi,
-                                           idref: stmt.idRef,
-                                           name: stmt.title,
-                                           description: stmt.text,
-                                           activityType: 'reader-bookmark',
-                                           activityId: stmt.id
-                                       });
-                                       PeBL.emitEvent(PeBL.events.removedAnnotation, stmt.id);
-                                       $(bookmarkWrapper).remove();
-                                   }
+                                    Dialogs.showModalPrompt('Confirm', 'Are you sure you want to delete this bookmark?', 'Confirm', 'Cancel', () => {
+                                        PeBL.emitEvent(PeBL.events.eventUnbookmarked, {
+                                            cfi: stmt.cfi,
+                                            idref: stmt.idRef,
+                                            name: stmt.title,
+                                            description: stmt.text,
+                                            activityType: 'reader-bookmark',
+                                            activityId: stmt.id
+                                        });
+                                        PeBL.emitEvent(PeBL.events.removedAnnotation, stmt.id);
+                                        $(bookmarkWrapper).remove();
+                                    }, () => {
+                                        //
+                                    })
                                });
 
                                bookmarkWrapper.appendChild(bookmarkLink);
@@ -2771,7 +2773,7 @@ define([
                    } else {
                        evt.preventDefault();
                        evt.stopPropagation();
-                       window.alert('A name for your bookmark is required.');
+                       Dialogs.showErrorWithDetails('Alert', 'A name for your bookmark is required.');
                    }
                });
                $('#add-note-submit').on('click', function(evt) {

@@ -314,7 +314,7 @@ define([
                        });
                    } else {
                        if (!window.READIUM)
-                           return window.alert('Bookshelf search has not been initialized. Please open any book from the bookshelf to initialize the search.');
+                           return Dialogs.showErrorWithDetails('Alert', 'Bookshelf search has not been initialized. Please open any book from the bookshelf to initialize the search.');
                        searchBody.addClass('search-library-visible');
 
                        initializeLibrarySearch();
@@ -1458,14 +1458,16 @@ define([
                          deleteButton.textContent = 'Delete Message';
                          (function(parsedMessage) {
                            deleteButton.addEventListener('click', function() {
-                             if (window.confirm('Delete this message?')) {
-                               $('#' + parsedMessage.id).remove();
-                               PeBL.emitEvent(PeBL.events.removedMessage, {
-                                 message: parsedMessage,
-                                 activityType: 'discussion',
-                                 activityId: parsedMessage.thread
-                               });
-                             }
+                                Dialogs.showModalPrompt('Confirm', 'Delete this message?', 'Confirm', 'Cancel', () => {
+                                    $('#' + parsedMessage.id).remove();
+                                    PeBL.emitEvent(PeBL.events.removedMessage, {
+                                        message: parsedMessage,
+                                        activityType: 'discussion',
+                                        activityId: parsedMessage.thread
+                                    });
+                                }, () => {
+                                    //
+                                })
                            });
                          })(parsedMessage);
                          
