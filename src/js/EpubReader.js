@@ -1742,6 +1742,7 @@ define([
                    for (let item of currentSliderToc) {
                        if (item.idref === bookmark.idref) {
                            chapterTitle = item.title;
+                           document.title = item.title + ' | ' + document.getElementById('webreaderTitle').textContent + ' | ' + Strings.i18n_pebl_reader;
                            break;
                        }
                    }
