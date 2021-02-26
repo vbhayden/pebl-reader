@@ -518,8 +518,8 @@ define([
                    $(sliderInfoContainer).addClass('visible');
                }
 
-               var sliderSelectFunction = function() {
-                   var val = Math.round(this.value);
+               var sliderSelectFunction = function(value) {
+                   var val = Math.round(this.value || value);
                    var tocUrl = currentPackageDocument.getToc();
                    $(sliderInfoContainer).removeClass('visible');
                    if (typeof newChapters[val].pageNumber == 'undefined') {
@@ -567,7 +567,7 @@ define([
 
                slider.addEventListener('keypress', function(e) {
                    if (e.key === 'Enter')
-                       sliderSelectFunction();
+                       sliderSelectFunction(e.target.value);
                })
 
 
