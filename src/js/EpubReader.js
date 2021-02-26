@@ -565,6 +565,11 @@ define([
                //same as above, but for touch screens
                slider.addEventListener('touchend', sliderSelectFunction);
 
+               slider.addEventListener('keypress', function(e) {
+                   if (e.key === 'enter')
+                       sliderSelectFunction();
+               })
+
 
                sliderContainer.appendChild(slider);
 
