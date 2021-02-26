@@ -822,6 +822,8 @@ define([
                            if ($("#annotation-" + stmt.id).length == 0) {
                                var annotationContainer = document.createElement('div');
                                annotationContainer.id = "annotation-" + stmt.id;
+                               annotationContainer.setAttribute('tabindex', '0');
+                               annotationContainer.setAttribute('aria-label', stmt.title);
                                annotationContainer.classList.add('annotation');
                                var annotation = document.createElement('div');
                                var annotationTitle = document.createElement('span');
@@ -870,6 +872,9 @@ define([
                                    if ($("#sharedAnnotation-" + stmt.id).length == 0) {
                                        var annotationContainer = document.createElement('div');
                                        annotationContainer.id = "sharedAnnotation-" + stmt.id;
+                                       annotationContainer.setAttribute('tabindex', '0');
+                                       annotationContainer.setAttribute('aria-label', stmt.title);
+
                                        annotationContainer.classList.add('annotation');
 
                                        var annotation = document.createElement('div');
@@ -1505,6 +1510,7 @@ define([
                                var bookmarkWrapper = document.createElement('div');
                                bookmarkWrapper.id = "bookmark-" + stmt.id;
                                var bookmarkLink = document.createElement('span');
+                               bookmarkLink.setAttribute('tabindex', '0');
                                bookmarkLink.addEventListener('click', function(evt) {
                                    var bookmark = {
                                        contentCFI: evt.currentTarget.getAttribute('data-CFI'),
@@ -1526,6 +1532,8 @@ define([
                                bookmarkLink.setAttribute('data-IDRef', stmt.idRef);
 
                                var bookmarkDeleteButton = document.createElement('i');
+                               bookmarkDeleteButton.setAttribute('tabindex', '0');
+                               bookmarkDeleteButton.setAttribute('aria-label', 'Delete Bookmark');
                                bookmarkDeleteButton.classList.add('glyphicon', 'glyphicon-remove');
                                bookmarkDeleteButton.addEventListener('click', function() {
                                     Dialogs.showModalPrompt('Confirm', 'Are you sure you want to delete this bookmark?', 'Confirm', 'Cancel', () => {
