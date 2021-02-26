@@ -566,7 +566,7 @@ define([
                slider.addEventListener('touchend', sliderSelectFunction);
 
                slider.addEventListener('keypress', function(e) {
-                   if (e.key === 'enter')
+                   if (e.key === 'Enter')
                        sliderSelectFunction();
                })
 
