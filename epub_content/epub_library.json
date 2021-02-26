@@ -1,22 +1,15 @@
 [
     {
-	      "title":"Making Good Instructors Great",
-	      "author":"Eduworks",
-	      "coverHref": "bookshelf/MGIG-cover.png",
-	      "rootUrl":"bookshelf/epub3-mgig.epub",
-        "version":1
-    },
-    {
-        "title":"CyberSec",
-        "author":"Eduworks",
-        "coverHref":"bookshelf/COVER-IMAGE.png",
-        "rootUrl":"bookshelf/PeBL_CyberSec_v12b.epub",
+        "title":"The Kitchen Sink",
+        "coverHref": "bookshelf/pebl-default-cover.jpg",
+        "rootUrl":"bookshelf/The-Kitchen-Sink",
+        "id": "urn:uuid:The-Kitchen-Sink",
         "version":1
     },
     {
         "title":"eReader Test Book",
         "author":"Eduworks",
-        "coverHref":"bookshelf/PeBL_Test_Cover.png",
+        "coverHref":"bookshelf/PeBL_Test_Book-cover.png",
         "rootUrl":"bookshelf/PeBL_Test_Book.epub",
         "version":1
     }

@@ -38,11 +38,11 @@
 
     <body>
         <noscript>Javascript is required to view this site, please enable Javascript and reload the page.</noscript>
-        <a class="skip-main" href="#app-container">Skip to main content</a>
+        <a class="skip-main" href="#app-container" onclick="skipToMainContent(event);" >Skip to main content</a>
         <nav id="app-navbar" class="navbar" role="nav" aria-label="{{Strings.i18n_toolbar}}">
         </nav>
 
-        <main id="app-container" role="main">
+        <main id="app-container" role="main" aria-label="Main Area" tabindex="-1">
             <Label>Reader is being downloaded, please wait...</label>
             <Label>After the initial download, you should not have this delay again.</label>
         </main>
@@ -102,8 +102,22 @@
                  + path
              ) : ''
          ;
-
-         console.log(HTTPServerRootFolder);
+         //  console.log(HTTPServerRootFolder);
+         
+         var skipToMainContent = function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            var libraryMain = document.getElementById('library-body');
+            var bookMain = document.getElementById('reading-area');
+            if (libraryMain != null) {
+                //window.location.href = '#library-body';
+                libraryMain.focus();
+            } else {
+                //window.location.href = '#reading-area';
+                bookMain.focus();
+            }
+         }
 
          var getURLQueryParams = function() {
              var params = {};

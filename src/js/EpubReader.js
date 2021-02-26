@@ -518,8 +518,8 @@ define([
                    $(sliderInfoContainer).addClass('visible');
                }
 
-               var sliderSelectFunction = function() {
-                   var val = Math.round(this.value);
+               var sliderSelectFunction = function(value) {
+                   var val = Math.round(this.value || value);
                    var tocUrl = currentPackageDocument.getToc();
                    $(sliderInfoContainer).removeClass('visible');
                    if (typeof newChapters[val].pageNumber == 'undefined') {
@@ -564,6 +564,11 @@ define([
 
                //same as above, but for touch screens
                slider.addEventListener('touchend', sliderSelectFunction);
+
+               slider.addEventListener('keypress', function(e) {
+                   if (e.key === 'Enter')
+                       sliderSelectFunction(e.target.value);
+               })
 
 
                sliderContainer.appendChild(slider);
@@ -790,7 +795,7 @@ define([
                } else {
                    $appContainer.addClass('toc-visible');
 
-                   setTimeout(function() { $('#readium-toc-body button.close')[0].focus(); }, 100);
+                   setTimeout(function() { $('#readium-toc-body button.close')[0].focus(); }, 1000);
                    PeBL.emitEvent(PeBL.events.eventDisplayed, {
                        activityType: 'reader-toc',
                        type: 'TOC'
@@ -1135,7 +1140,7 @@ define([
                        activityType: 'reader-annotations',
                        type: 'Annotations'
                    });
-                   // setTimeout(function(){ $('#readium-toc-body button.close')[0].focus(); }, 100);
+                   setTimeout(function() { $('#annotations-body button.close')[0].focus(); }, 1000);
                }
 
                if (embedded) {
@@ -1178,6 +1183,7 @@ define([
                        activityType: 'reader-search',
                        type: 'Search'
                    });
+                   setTimeout(function() { $('#search-body button.close')[0].focus(); }, 1000);
                }
 
                if (embedded) {
@@ -1578,6 +1584,7 @@ define([
                        activityType: 'reader-bookmarks',
                        type: 'Bookmarks'
                    });
+                   setTimeout(function() { $('#bookmarks-body button.close')[0].focus(); }, 1000);
                }
 
                if (embedded) {
@@ -1740,7 +1747,6 @@ define([
 
                    //TODO not picked-up by all screen readers, so for now this short description will suffice
                    $iframe.attr("title", "EPUB");
-                   $iframe.attr("aria-label", "EPUB");
                    $iframe[0].contentWindow.addEventListener('dragover', function(e) {
                      e.preventDefault();
                    });
@@ -2027,10 +2033,10 @@ define([
                             for (var chapterMapping of readium.reader.chaptersMap) {
                                 if (chapterMapping.idref === chapter.title) {
                                     header.textContent = chapterMapping.chapterTitle;
+                                    container.appendChild(header);
                                     break;
                                 }
                             }
-                            container.appendChild(header);
     
                             var list = document.createElement('div');
                             container.appendChild(list);
@@ -2038,6 +2044,7 @@ define([
                             for (var result of chapter.searchResults) {
                                 var textContainer = document.createElement('div');
                                 textContainer.classList.add('searchResult');
+                                textContainer.setAttribute("role", "status");
                                 (function(textContainer, result) {
                                     textContainer.addEventListener('click', function() {
                                         PeBL.emitEvent(PeBL.events.eventAccessed, {
@@ -2061,6 +2068,9 @@ define([
                                 list.appendChild(textContainer);
                             }
                             $('#search-body-list').append(container);
+                            //var searchResultBox = document.getElementById("search-body-list");
+                            //searchResultBox.setAttribute("role", "status");
+                            //searchResultBox.focus();
                         }
                     }
                    }
@@ -2072,12 +2082,12 @@ define([
 
                //$('#annotations-body').prepend('<h2 aria-label="' + Strings.annotations + '" title="' + Strings.annotations + '">' + Strings.annotations + '</h2>');
                $('#bookmarks-body').prepend('<h2 aria-label="' + Strings.bookmarks + '" title="' + Strings.bookmarks + '"><img src="images/pebl-icons-wip_bookmark-list.svg" aria-hidden="true" height="18px"> ' + Strings.bookmarks + '</h2>');
-               $('#search-body').prepend('<h2 aria-label="' + Strings.search + '" title="' + Strings.search + '"><img src="images/pebl-icons-search.svg" aria-hidden="true" height="18px"> ' + Strings.search + '</h2>');
+               $('#search-body').prepend('<h2 title="' + Strings.search + '"><img src="images/pebl-icons-search.svg" aria-hidden="true" height="18px"> ' + Strings.search + '</h2>');
 
-               $('#readium-toc-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.toc + '" title="' + Strings.i18n_close + ' ' + Strings.toc + '"><span aria-hidden="true">&times;</span></button>');
-               $('#annotations-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.annotations + '" title="' + Strings.i18n_close + ' ' + Strings.annotations + '"><span aria-hidden="true">&times;</span></button>');
-               $('#bookmarks-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.bookmarks + '" title="' + Strings.i18n_close + ' ' + Strings.bookmarks + '"><span aria-hidden="true">&times;</span></button>');
-               $('#search-body').prepend('<button tabindex="50" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.search + '" title="' + Strings.i18n_close + ' ' + Strings.search + '"><span aria-hidden="true">&times;</span></button>');
+               $('#readium-toc-body').prepend('<button tabindex="0" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.toc + '" title="' + Strings.i18n_close + ' ' + Strings.toc + '"><span aria-hidden="true">&times;</span></button>');
+               $('#annotations-body').prepend('<button tabindex="0" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.annotations + '" title="' + Strings.i18n_close + ' ' + Strings.annotations + '"><span aria-hidden="true">&times;</span></button>');
+               $('#bookmarks-body').prepend('<button tabindex="0" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.bookmarks + '" title="' + Strings.i18n_close + ' ' + Strings.bookmarks + '"><span aria-hidden="true">&times;</span></button>');
+               $('#search-body').prepend('<button tabindex="0" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.search + '" title="' + Strings.i18n_close + ' ' + Strings.search + '"><span aria-hidden="true">&times;</span></button>');
 
                $('#readium-toc-body button.close').on('click', function() {
                    tocShowHideToggle();
