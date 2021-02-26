@@ -2249,7 +2249,7 @@ define([
 
                    case KEY_DOWN:
                        if (blurNode.tagName == "BUTTON") {
-                           var existsFocusable = $('#readium-toc-body a[tabindex="60"]');
+                           var existsFocusable = $('#readium-toc-body a[tabindex="0"]');
                            if (existsFocusable.length > 0) {
                                next = existsFocusable[0];
                            } else {
@@ -2270,7 +2270,7 @@ define([
                    case KEY_UP:
                        // find all the a elements, find previous focus (tabindex=60) then get previous
                        var $items = $('#readium-toc-body a');
-                       var index = $('a[tabindex="60"]').index('#readium-toc-body a');
+                       var index = $('a[tabindex="0"]').index('#readium-toc-body a');
                        if (index > -1 && index > 0) {
                            next = $items.get(index - 1);
                        }
