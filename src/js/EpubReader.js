@@ -1972,7 +1972,7 @@ define([
                $('#search-body').prepend('<div id="search-body-list"></div>');
 
                if (!window.PeBLConfig.disabledFeatures || !window.PeBLConfig.disabledFeatures.bookSearchInput) {
-                $('#search-body').prepend('<div><input id="searchInput" placeholder="Search this book" /></div>');
+                $('#search-body').prepend('<div><input id="searchInput" placeholder="Search this book" aria-label="Search" /></div>');
                 var searchBook = function(text) {
                     $('#search-body-list').children().remove();
                     var searchResults = [];
