@@ -5,15 +5,15 @@
 
                 <button id="closeAddBookmarkCross" type="button" class="close" data-dismiss="modal" tabindex="999" title="{{strings.i18n_close}} {{strings.i18n_add_bookmark}}" aria-label="{{strings.i18n_close}} {{strings.i18n_add_bookmark}}"><span aria-hidden="true">&times;</span></button>
 
-                <h4 class="modal-title" id="add-bookmark-label">New Bookmark</h4>
+                <h1 class="modal-title" id="add-bookmark-label" tabindex="0">New Bookmark</h1>
             </div>
             <div class="modal-body">
                 <div class="bookmarkInputContainer">
-                    <input type="text" placeholder="Bookmark name..." id="bookmarkInput" >
+                    <input type="text" placeholder="Bookmark name..." id="bookmarkInput" aria-label="bookmark name">
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="add-bookmark-submit" tabindex="1000" type="button" class="btn btn-primary" data-dismiss="modal">Add Bookmark</button>
+                <button id="add-bookmark-submit" tabindex="0" type="button" class="btn btn-primary" data-dismiss="modal">Add Bookmark</button>
             </div>
         </div>
         <!-- /.modal-content --> 

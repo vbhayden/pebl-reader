@@ -822,6 +822,8 @@ define([
                            if ($("#annotation-" + stmt.id).length == 0) {
                                var annotationContainer = document.createElement('div');
                                annotationContainer.id = "annotation-" + stmt.id;
+                               annotationContainer.setAttribute('tabindex', '0');
+                               annotationContainer.setAttribute('aria-label', stmt.title);
                                annotationContainer.classList.add('annotation');
                                var annotation = document.createElement('div');
                                var annotationTitle = document.createElement('span');
@@ -870,6 +872,9 @@ define([
                                    if ($("#sharedAnnotation-" + stmt.id).length == 0) {
                                        var annotationContainer = document.createElement('div');
                                        annotationContainer.id = "sharedAnnotation-" + stmt.id;
+                                       annotationContainer.setAttribute('tabindex', '0');
+                                       annotationContainer.setAttribute('aria-label', stmt.title);
+
                                        annotationContainer.classList.add('annotation');
 
                                        var annotation = document.createElement('div');
@@ -1223,7 +1228,7 @@ define([
                        iframeWindow.selection.empty();
                    }
                } else {
-                   window.alert('No text has been selected yet, or selected text is ineligible for highlighting.');
+                   Dialogs.showErrorWithDetails('Alert', 'No text has been selected yet, or selected text is ineligible for highlighting.');
                    throw new Error("Nothing selected");
                }
            };
@@ -1370,12 +1375,13 @@ define([
                            deleteButton.classList.add('glyphicon', 'glyphicon-trash');
                            deleteButtonContainer.appendChild(deleteButton);
                            deleteButtonContainer.addEventListener('click', function() {
-                               var confirm = window.confirm("Are you sure you want to delete this annotation?");
-                               if (confirm === true) {
-                                   removeHighlight(annotation);
-                                   $('#annotationContextMenu').remove();
-                                   $('#clickOutOverlay').remove();
-                               }
+                               Dialogs.showModalPrompt('Confirm', 'Are you sure you want to delete this annotation?', 'Confirm', 'Cancel', () => {
+                                    removeHighlight(annotation);
+                                    $('#annotationContextMenu').remove();
+                                    $('#clickOutOverlay').remove();
+                               }, () => {
+                                   //
+                               })
                            });
                            buttonWrapper.appendChild(deleteButtonContainer);
                        }
@@ -1504,6 +1510,7 @@ define([
                                var bookmarkWrapper = document.createElement('div');
                                bookmarkWrapper.id = "bookmark-" + stmt.id;
                                var bookmarkLink = document.createElement('span');
+                               bookmarkLink.setAttribute('tabindex', '0');
                                bookmarkLink.addEventListener('click', function(evt) {
                                    var bookmark = {
                                        contentCFI: evt.currentTarget.getAttribute('data-CFI'),
@@ -1525,21 +1532,24 @@ define([
                                bookmarkLink.setAttribute('data-IDRef', stmt.idRef);
 
                                var bookmarkDeleteButton = document.createElement('i');
+                               bookmarkDeleteButton.setAttribute('tabindex', '0');
+                               bookmarkDeleteButton.setAttribute('aria-label', 'Delete Bookmark');
                                bookmarkDeleteButton.classList.add('glyphicon', 'glyphicon-remove');
                                bookmarkDeleteButton.addEventListener('click', function() {
-                                   var confirm = window.confirm("Are you sure you want to delete this bookmark?");
-                                   if (confirm === true) {
-                                       PeBL.emitEvent(PeBL.events.eventUnbookmarked, {
-                                           cfi: stmt.cfi,
-                                           idref: stmt.idRef,
-                                           name: stmt.title,
-                                           description: stmt.text,
-                                           activityType: 'reader-bookmark',
-                                           activityId: stmt.id
-                                       });
-                                       PeBL.emitEvent(PeBL.events.removedAnnotation, stmt.id);
-                                       $(bookmarkWrapper).remove();
-                                   }
+                                    Dialogs.showModalPrompt('Confirm', 'Are you sure you want to delete this bookmark?', 'Confirm', 'Cancel', () => {
+                                        PeBL.emitEvent(PeBL.events.eventUnbookmarked, {
+                                            cfi: stmt.cfi,
+                                            idref: stmt.idRef,
+                                            name: stmt.title,
+                                            description: stmt.text,
+                                            activityType: 'reader-bookmark',
+                                            activityId: stmt.id
+                                        });
+                                        PeBL.emitEvent(PeBL.events.removedAnnotation, stmt.id);
+                                        $(bookmarkWrapper).remove();
+                                    }, () => {
+                                        //
+                                    })
                                });
 
                                bookmarkWrapper.appendChild(bookmarkLink);
@@ -1732,6 +1742,11 @@ define([
                    for (let item of currentSliderToc) {
                        if (item.idref === bookmark.idref) {
                            chapterTitle = item.title;
+                           try {
+                               document.title = item.title + ' | ' + document.getElementById('webreaderTitle').textContent + ' | ' + Strings.i18n_pebl_reader;
+                           } catch (e) {
+                               //
+                           }
                            break;
                        }
                    }
@@ -1969,10 +1984,10 @@ define([
                });
                $('#annotations-body').prepend('<div id="annotations-body-list"></div>');
                $('#bookmarks-body').prepend('<div id="bookmarks-body-list"></div>');
-               $('#search-body').prepend('<div id="search-body-list"></div>');
+               $('#search-body').prepend('<div id="search-body-list aria-live="polite" role="log"></div>');
 
                if (!window.PeBLConfig.disabledFeatures || !window.PeBLConfig.disabledFeatures.bookSearchInput) {
-                $('#search-body').prepend('<div><input id="searchInput" placeholder="Search this book" /></div>');
+                $('#search-body').prepend('<div><input id="searchInput" placeholder="Search this book" aria-label="Search" /></div>');
                 var searchBook = function(text) {
                     $('#search-body-list').children().remove();
                     var searchResults = [];
@@ -2045,6 +2060,7 @@ define([
                                 var textContainer = document.createElement('div');
                                 textContainer.classList.add('searchResult');
                                 textContainer.setAttribute("role", "status");
+                                textContainer.setAttribute('tabindex', '0');
                                 (function(textContainer, result) {
                                     textContainer.addEventListener('click', function() {
                                         PeBL.emitEvent(PeBL.events.eventAccessed, {
@@ -2085,7 +2101,7 @@ define([
                $('#search-body').prepend('<h2 title="' + Strings.search + '"><img src="images/pebl-icons-search.svg" aria-hidden="true" height="18px"> ' + Strings.search + '</h2>');
 
                $('#readium-toc-body').prepend('<button tabindex="0" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.toc + '" title="' + Strings.i18n_close + ' ' + Strings.toc + '"><span aria-hidden="true">&times;</span></button>');
-               $('#annotations-body').prepend('<button tabindex="0" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.annotations + '" title="' + Strings.i18n_close + ' ' + Strings.annotations + '"><span aria-hidden="true">&times;</span></button>');
+               $('#annotations-body').prepend('<button tabindex="0" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.show_annotations + '" title="' + Strings.i18n_close + ' ' + Strings.show_annotations + '"><span aria-hidden="true">&times;</span></button>');
                $('#bookmarks-body').prepend('<button tabindex="0" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.bookmarks + '" title="' + Strings.i18n_close + ' ' + Strings.bookmarks + '"><span aria-hidden="true">&times;</span></button>');
                $('#search-body').prepend('<button tabindex="0" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.search + '" title="' + Strings.i18n_close + ' ' + Strings.search + '"><span aria-hidden="true">&times;</span></button>');
 
@@ -2239,7 +2255,7 @@ define([
 
                    case KEY_DOWN:
                        if (blurNode.tagName == "BUTTON") {
-                           var existsFocusable = $('#readium-toc-body a[tabindex="60"]');
+                           var existsFocusable = $('#readium-toc-body a[tabindex="0"]');
                            if (existsFocusable.length > 0) {
                                next = existsFocusable[0];
                            } else {
@@ -2260,7 +2276,7 @@ define([
                    case KEY_UP:
                        // find all the a elements, find previous focus (tabindex=60) then get previous
                        var $items = $('#readium-toc-body a');
-                       var index = $('a[tabindex="60"]').index('#readium-toc-body a');
+                       var index = $('a[tabindex="0"]').index('#readium-toc-body a');
                        if (index > -1 && index > 0) {
                            next = $items.get(index - 1);
                        }
@@ -2771,7 +2787,7 @@ define([
                    } else {
                        evt.preventDefault();
                        evt.stopPropagation();
-                       window.alert('A name for your bookmark is required.');
+                       Dialogs.showErrorWithDetails('Alert', 'A name for your bookmark is required.');
                    }
                });
                $('#add-note-submit').on('click', function(evt) {
