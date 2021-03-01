@@ -277,7 +277,10 @@ window.Lightbox = {
 
         lightBoxContent.appendChild(fieldset);
 
-        lightBoxContent.focus();
+        if (Object.keys(classes).length > 0)
+            document.getElementById('loginClassSelect').focus();
+        else
+            document.getElementById('loginTeamSelect').focus();
     },
 
     createLoginForm: function(loggingOut) {
