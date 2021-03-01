@@ -199,6 +199,8 @@ window.Lightbox = {
         var fieldset = document.createElement('fieldset');
         var legend = document.createElement('legend');
         legend.textContent = 'Group Selection';
+
+        fieldset.appendChild(legend);
         
         var classSelect = $(
             '<div class="login__input-wrapper">' +
@@ -274,6 +276,8 @@ window.Lightbox = {
         $(fieldset).append(submit);
 
         lightBoxContent.appendChild(fieldset);
+
+        lightBoxContent.focus();
     },
 
     createLoginForm: function(loggingOut) {
