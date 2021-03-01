@@ -238,6 +238,10 @@ label {
     font-size: 2rem;
 }
 
+.lightBoxContent fieldset {
+    margin-top: 20px;
+}
+
 @media screen and (orientation:portrait) and (max-height: 768px), (max-width: 768px) {
     
     .login__label {
