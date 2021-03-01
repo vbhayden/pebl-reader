@@ -970,7 +970,7 @@ window.Lightbox = {
         lightBox = document.createElement('div');
         lightBox.id = 'lightBox';
         lightBox.setAttribute('role', 'alertdialog');
-        lightbox.setAttribute('aria-label', 'Login Dialog');
+        lightBox.setAttribute('aria-label', 'Login Dialog');
         if (lightBoxType === 'discussion') {
             lightBox.classList.add('lightBox');
         } else if (lightBoxType === 'image') {
