@@ -194,9 +194,9 @@ define([
                            StorageManager.getFile(background, function(data) {
                                // debugger
                                if (data)
-                                   var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: URL.createObjectURL(data), strings: Strings, noCoverBackground: noCoverBackground});
+                                   var elem = LibraryItem({count:{n: count+1, tabindex:0}, epub: epub, coverHref: URL.createObjectURL(data), strings: Strings, noCoverBackground: noCoverBackground});
                                else
-                                   var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: background, strings: Strings, noCoverBackground: noCoverBackground});
+                                   var elem = LibraryItem({count:{n: count+1, tabindex:0}, epub: epub, coverHref: background, strings: Strings, noCoverBackground: noCoverBackground});
                                if ((epub.rootUrl.substr(0, 5) == "db://") || epub.isLocal) {
                                  $('.library-items.cloud-library').append(elem);
                                  window.libraryItems.push(epub);
@@ -210,7 +210,7 @@ define([
                                
                                processEpub(epubs, ++count);
                            }, function() {
-                               var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, strings: Strings, noCoverBackground: noCoverBackground});
+                               var elem = LibraryItem({count:{n: count+1, tabindex:0}, epub: epub, strings: Strings, noCoverBackground: noCoverBackground});
                                if ((epub.rootUrl.substr(0, 5) == "db://") || epub.isLocal) {
                                  $('.library-items.cloud-library').append(elem);
                                  window.libraryItems.push(epub);
@@ -225,7 +225,7 @@ define([
                                processEpub(epubs, ++count);
                            });
                        } else {
-                           var elem = LibraryItem({count:{n: count+1, tabindex:count*2+99}, epub: epub, coverHref: background, strings: Strings, noCoverBackground: noCoverBackground});
+                           var elem = LibraryItem({count:{n: count+1, tabindex:0}, epub: epub, coverHref: background, strings: Strings, noCoverBackground: noCoverBackground});
                            if ((epub.rootUrl.substr(0, 5) == "db://") || epub.isLocal) {
                              $('.library-items.cloud-library').append(elem);
                              window.libraryItems.push(epub);
