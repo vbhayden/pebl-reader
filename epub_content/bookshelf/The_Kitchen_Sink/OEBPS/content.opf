@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+              <package version="3.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="bookid" prefix="ibooks: http://vocabulary.itunes.apple.com/rdf/ibooks/vocabulary-extensions-1.0/">
+                <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+                  <meta name="generator" content="PeBL Author" />
+                  <meta name="cover" content="COVER-IMAGE.png" />
+                  <dc:title>The Kitchen Sink</dc:title>
+                  <dc:date>2021-02-23T20:29:44.227Z</dc:date>
+                  <dc:language>en-US</dc:language>
+                  <meta property="dcterms:modified">2021-02-23T20:29:44.227Z</meta>
+                  <dc:identifier id="bookid">urn:uuid:d709e550-2a15-490e-bcdb-8fb0d5f6eee3</dc:identifier>
+                </metadata>
+                <manifest>
+                  <item id="cover" href="cover.xhtml" media-type="application/xhtml+xml" />
+                <item id="70f784ea-a11e-4f23-a9ae-1f98e2e03fd6" href="70f784ea-a11e-4f23-a9ae-1f98e2e03fd6.xhtml" media-type="application/xhtml+xml" properties="scripted" />
+<item id="fc5819af-b8ca-483b-ad69-5ada8e447db8" href="fc5819af-b8ca-483b-ad69-5ada8e447db8.xhtml" media-type="application/xhtml+xml" properties="scripted" />
+<item id="db9eb719-6ed0-46c1-a304-45a0a3e44722" href="db9eb719-6ed0-46c1-a304-45a0a3e44722.xhtml" media-type="application/xhtml+xml" properties="scripted" />
+<item id="8bf5ae6f-aa01-4d7b-8b7b-8bc7c0538df7" href="8bf5ae6f-aa01-4d7b-8b7b-8bc7c0538df7.xhtml" media-type="application/xhtml+xml" properties="scripted" />
+<item id="ddb7c4d0-b8d3-40fa-b08f-448c12c4fd9c" href="ddb7c4d0-b8d3-40fa-b08f-448c12c4fd9c.xhtml" media-type="application/xhtml+xml" properties="scripted" />
+<item id="0526429c-56f0-4af0-bb1f-3d990b737a86" href="0526429c-56f0-4af0-bb1f-3d990b737a86.xhtml" media-type="application/xhtml+xml" properties="scripted" />
+<item id="533c2dc4-027e-4cc9-836f-7aa8fa9648b6" href="533c2dc4-027e-4cc9-836f-7aa8fa9648b6.xhtml" media-type="application/xhtml+xml" properties="scripted" />
+properties="cover-image" properties="cover-image" <item id="toc" href="toc.xhtml" media-type="application/xhtml+xml" properties="nav" />
+                </manifest>
+                <spine toc="ncx">
+                  <itemref idref="cover" /><itemref idref="70f784ea-a11e-4f23-a9ae-1f98e2e03fd6" />
+<itemref idref="fc5819af-b8ca-483b-ad69-5ada8e447db8" />
+<itemref idref="db9eb719-6ed0-46c1-a304-45a0a3e44722" />
+<itemref idref="8bf5ae6f-aa01-4d7b-8b7b-8bc7c0538df7" />
+<itemref idref="ddb7c4d0-b8d3-40fa-b08f-448c12c4fd9c" />
+<itemref idref="0526429c-56f0-4af0-bb1f-3d990b737a86" />
+<itemref idref="533c2dc4-027e-4cc9-836f-7aa8fa9648b6" />
+</spine>
+                <guide>
+                  <reference type="cover" href="cover.xhtml" title="Cover" />
+                </guide>
+              </package>

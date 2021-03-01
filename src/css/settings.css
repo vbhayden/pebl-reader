@@ -188,9 +188,21 @@
 #scroll-doc-radio,
 #scroll-continuous-radio
 {
-    margin-right:0.2em;
+  margin-right:0.2em;
 }
 
+#settings-dialog legend {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 20px;
+  padding-top: 20px;
+  font-size: 21px;
+  line-height: inherit;
+  color: #333;
+  border: 0;
+  border-bottom: 1px solid #e5e5e5;
+}
 
 @media (max-width: 768px) { 
 
