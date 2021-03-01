@@ -195,11 +195,15 @@ window.Lightbox = {
         }
 
         var lightBoxContent = document.getElementById('lightBoxContent');
+
+        var fieldset = document.createElement('fieldset');
+        var legend = document.createElement('legend');
+        legend.textContent = 'Group Selection';
         
         var classSelect = $(
             '<div class="login__input-wrapper">' +
                 '<div class="login__label">' +
-                '<label>School / Unit:</label>' +
+                '<label for="loginClassSelect">School / Unit:</label>' +
                 '</div>' +
                 '<div class="login__input">' +
                 '<select id="loginClassSelect"></select>' +
@@ -228,12 +232,12 @@ window.Lightbox = {
         })
 
         if (Object.keys(classes).length > 0)
-            $(lightBoxContent).append(classSelect);
+            $(fieldset).append(classSelect);
 
         var teamSelect = $(
             '<div class="login__input-wrapper">' +
                 '<div class="login__label">'+
-                '<label>Class:</label>'+
+                '<label for="loginTeamSelect">Class:</label>'+
                 '</div>' +
                 '<div class="login__input">'+
                 '<select id="loginTeamSelect"></select>' +
@@ -246,7 +250,7 @@ window.Lightbox = {
             for (var team of classes[Object.keys(classes)[0]]) {
                 teamSelectElement.append($('<option></option').data("value", team).text(team.replace(/([^\/]*\/){2}/, '')));
             }
-            $(lightBoxContent).append(teamSelect);
+            $(fieldset).append(teamSelect);
         }
         
 
@@ -267,7 +271,9 @@ window.Lightbox = {
             }
             callback(classValue, teamValue);
         });
-        $(lightBoxContent).append(submit);
+        $(fieldset).append(submit);
+
+        lightBoxContent.appendChild(fieldset);
     },
 
     createLoginForm: function(loggingOut) {
@@ -963,6 +969,8 @@ window.Lightbox = {
 
         lightBox = document.createElement('div');
         lightBox.id = 'lightBox';
+        lightBox.setAttribute('role', 'alertdialog');
+        lightbox.setAttribute('aria-label', 'Login Dialog');
         if (lightBoxType === 'discussion') {
             lightBox.classList.add('lightBox');
         } else if (lightBoxType === 'image') {
