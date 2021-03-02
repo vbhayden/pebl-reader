@@ -1984,7 +1984,7 @@ define([
                });
                $('#annotations-body').prepend('<div id="annotations-body-list"></div>');
                $('#bookmarks-body').prepend('<div id="bookmarks-body-list"></div>');
-               $('#search-body').prepend('<div id="search-body-list aria-live="polite" role="log"></div>');
+               $('#search-body').prepend('<div id="search-body-list" aria-live="polite" role="log"></div>');
 
                if (!window.PeBLConfig.disabledFeatures || !window.PeBLConfig.disabledFeatures.bookSearchInput) {
                 $('#search-body').prepend('<div><input id="searchInput" placeholder="Search this book" aria-label="Search" /></div>');
