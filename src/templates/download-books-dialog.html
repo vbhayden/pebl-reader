@@ -3,15 +3,15 @@
         <div class="modal-content">
             <div class="modal-header">
 
-                <button id="closeDownloadBooksCross" type="button" class="close" data-dismiss="modal" tabindex="999" title="{{strings.i18n_close}} {{strings.i18n_download_books}}" aria-label="{{strings.i18n_close}} {{strings.i18n_download_books}}"><span aria-hidden="true">&times;</span></button>
+                <button id="closeDownloadBooksCross" type="button" class="close" data-dismiss="modal" tabindex="0" title="{{strings.i18n_close}} {{strings.i18n_download_books}}" aria-label="{{strings.i18n_close}} {{strings.i18n_download_books}}"><span aria-hidden="true">&times;</span></button>
 
-                <h4 class="modal-title" id="download-books-label">Download eReader</h4>
+                <h2 class="modal-title" id="download-books-label">{{strings.i18n_download_books}}</h2>
             </div>
             <div class="modal-body">
                 <p>In order to use the eReader without an internet connection, the eBooks in your bookshelf need to be downloaded. This process can take a few minutes.</p>
             </div>
             <div class="modal-footer">
-                <button id="download-books-submit" tabindex="1000" type="button" class="btn btn-primary" data-dismiss="modal">Download</button>
+                <button id="download-books-submit" tabindex="0" type="button" class="btn btn-primary" data-dismiss="modal">Download</button>
 
                 <button tabindex="1000" type="button" class="btn btn-primary" data-dismiss="modal">{{strings.i18n_cancel}}</button>
             </div>
