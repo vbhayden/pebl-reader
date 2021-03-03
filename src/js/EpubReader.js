@@ -190,7 +190,7 @@ define([
                if ($titleEl.length) {
                    $titleEl.text(title);
                } else {
-                   $('<h2 class="book-title-header"></h2>').insertAfter('.navbar').text(title);
+                   $('<h1 class="book-title-header"></h1>').insertAfter('.navbar').text(title);
                }
 
                $('#webreaderTitle').text(title);
