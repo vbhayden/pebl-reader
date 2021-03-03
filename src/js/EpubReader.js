@@ -186,12 +186,12 @@ define([
 
            function setBookTitle(title) {
 
-               var $titleEl = $('.book-title-header');
-               if ($titleEl.length) {
-                   $titleEl.text(title);
-               } else {
-                   $('<h1 class="book-title-header"></h1>').insertAfter('.navbar').text(title);
-               }
+            //    var $titleEl = $('.book-title-header');
+            //    if ($titleEl.length) {
+            //        $titleEl.text(title);
+            //    } else {
+            //        $('<h1 class="book-title-header"></h1>').insertAfter('#reading-area').text(title);
+            //    }
 
                $('#webreaderTitle').text(title);
            };
