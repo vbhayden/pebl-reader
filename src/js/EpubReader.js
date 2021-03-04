@@ -186,12 +186,12 @@ define([
 
            function setBookTitle(title) {
 
-               var $titleEl = $('.book-title-header');
-               if ($titleEl.length) {
-                   $titleEl.text(title);
-               } else {
-                   $('<h2 class="book-title-header"></h2>').insertAfter('.navbar').text(title);
-               }
+            //    var $titleEl = $('.book-title-header');
+            //    if ($titleEl.length) {
+            //        $titleEl.text(title);
+            //    } else {
+            //        $('<h1 class="book-title-header"></h1>').insertAfter('#reading-area').text(title);
+            //    }
 
                $('#webreaderTitle').text(title);
            };
@@ -477,8 +477,10 @@ define([
                slider.title = 'Book Slider';
                slider.min = '0';
                slider.max = chaptersWithoutFiller.length - 1;
+               $('#readium-slider').attr('aria-valuemax', slider.max);
                slider.step = '1';
                slider.value = currentPageIndex ? currentPageIndex : 0;
+               $('#readium-slider').attr('aria-valuenow', slider.value);
 
 
                // Clear selection to prevent blue border bug that prevent slider from working
@@ -573,7 +575,7 @@ define([
 
                sliderContainer.appendChild(slider);
 
-               //Add the chapter title and page nyumber under the slider
+               //Add the chapter title and page number under the slider
                //$('#readium-page-count').text(newChapters[chapterStart].title + ': Page ' + currentPage);
                $('#readium-slider').prepend($(sliderPageContainer));
                $('#readium-slider').prepend($(sliderContainer));
@@ -1984,7 +1986,7 @@ define([
                });
                $('#annotations-body').prepend('<div id="annotations-body-list"></div>');
                $('#bookmarks-body').prepend('<div id="bookmarks-body-list"></div>');
-               $('#search-body').prepend('<div id="search-body-list aria-live="polite" role="log"></div>');
+               $('#search-body').prepend('<div id="search-body-list" aria-live="polite" role="log"></div>');
 
                if (!window.PeBLConfig.disabledFeatures || !window.PeBLConfig.disabledFeatures.bookSearchInput) {
                 $('#search-body').prepend('<div><input id="searchInput" placeholder="Search this book" aria-label="Search" /></div>');
@@ -2097,7 +2099,7 @@ define([
                }
 
                //$('#annotations-body').prepend('<h2 aria-label="' + Strings.annotations + '" title="' + Strings.annotations + '">' + Strings.annotations + '</h2>');
-               $('#bookmarks-body').prepend('<h2 aria-label="' + Strings.bookmarks + '" title="' + Strings.bookmarks + '"><img src="images/pebl-icons-wip_bookmark-list.svg" aria-hidden="true" height="18px"> ' + Strings.bookmarks + '</h2>');
+               $('#bookmarks-body').prepend('<h2 title="' + Strings.bookmarks + '"><img src="images/pebl-icons-wip_bookmark-list.svg" aria-hidden="true" height="18px"> ' + Strings.bookmarks + '</h2>');
                $('#search-body').prepend('<h2 title="' + Strings.search + '"><img src="images/pebl-icons-search.svg" aria-hidden="true" height="18px"> ' + Strings.search + '</h2>');
 
                $('#readium-toc-body').prepend('<button tabindex="0" type="button" class="close" data-dismiss="modal" aria-label="' + Strings.i18n_close + ' ' + Strings.toc + '" title="' + Strings.i18n_close + ' ' + Strings.toc + '"><span aria-hidden="true">&times;</span></button>');

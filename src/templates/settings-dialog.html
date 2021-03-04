@@ -3,7 +3,7 @@
         <div class="modal-content">
 
            <div class="modal-header">
-             <h1 class="modal-title" id="settings-label">{{strings.settings}}</h1>
+             <h2 class="modal-title" id="settings-label">{{strings.settings}}</h2>
              <button type="button" class="close" id="closeSettingsCross" data-dismiss="modal" aria-label="{{strings.i18n_close}} {{strings.settings}}" tabindex="0"><span aria-hidden="true">&times;</span></button>
            </div>
 
@@ -49,7 +49,7 @@
                         </div>
                     </fieldset>
 
-                    <h2 style="display: none;" id="setting-header-font-selection" class="setting-header">{{strings.i18n_font_selection}}</h2>
+                    <h3 style="display: none;" id="setting-header-font-selection" class="setting-header">{{strings.i18n_font_selection}}</h3>
                     <div style="display: none;" class="row">
                         <div class="col-xs-8 col-xs-offset-2">
                             <select style="width: 100%; padding: 0.5em;" aria-labelledby="setting-header-font-selection" id="font-selection-input"  title="{{strings.i18n_font_selection}}" aria-label="{{strings.i18n_font_selection}}">
@@ -59,7 +59,7 @@
                     </div>
 
 
-                    <h2 style="display: none;" id="setting-header-color-legend" class="setting-header">{{strings.i18n_text_and_background_color}}</h2>
+                    <h3 style="display: none;" id="setting-header-color-legend" class="setting-header">{{strings.i18n_text_and_background_color}}</h3>
                     <div style="display: none;" role="group" aria-labelledby="setting-header-color-legend" id="theme-radio-group" class="row">
 
                         <button role="button" data-theme="author-theme"  title="{{strings.i18n_author_theme}}" aria-label="{{strings.i18n_author_theme}}" class="col-xs-8 col-xs-offset-2 theme-option author-theme clickable">{{strings.i18n_author_theme}}</button>
@@ -79,7 +79,7 @@
                 <div id="tab-layout" class="tab-pane" role="tabpanel">
 
                     <!-- disabled: replaced with setting-header-column-max-width-legend (see below) -->
-                    <h2 style="display:none;" id="setting-header-margins-legend" class="setting-header">{{strings.i18n_margins}}</h2>
+                    <h3 style="display:none;" id="setting-header-margins-legend" class="setting-header">{{strings.i18n_margins}}</h3>
                     <div style="display:none;" class="row">
                         <div class="col-xs-2 icon-scale-down">
                             <img style="height: 32px;" src="{{{imagePathPrefix}}}images/margin1_off.png" alt="" aria-hidden="true">
