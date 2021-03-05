@@ -440,7 +440,9 @@
     "i18n_playback_scroll_disable" : {
 	"message" : "Disable scroll during playback"
     },
-
+    "i18n_add_note": {
+    "message": "Add Note"
+    },
 
     "i18n_log_in" : {
 	"message" : "Login"
