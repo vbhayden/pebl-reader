@@ -1063,6 +1063,15 @@ div.annotation.pinned > div:not(:first-child) {
     opacity: 0.5;
 }
 
+.bookSliderLabel {
+    margin-left: 10px;
+    opacity: .5;
+    /* float: left; */
+    display: inline;
+    font-size: 10pt;
+}
+
+
 input[type="range"]::-webkit-slider-runnable-track {
     /*  background: linear-gradient(to right, rgba(59,144,232,0) 20%, rgba(59,144,232,1) 20%, rgba(44,133,231,1) 50%, rgba(44,133,230,0) 50%)
   background: rgba(73,155,234,0);

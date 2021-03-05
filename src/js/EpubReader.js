@@ -475,6 +475,7 @@ define([
                slider.type = 'range';
                slider.role = 'slider';
                slider.title = 'Book Slider';
+               slider.id = 'book-slider';
                slider.min = '0';
                slider.max = chaptersWithoutFiller.length - 1;
                $('#readium-slider').attr('aria-valuemax', slider.max);
@@ -574,6 +575,11 @@ define([
 
 
                sliderContainer.appendChild(slider);
+               var sliderLabel = document.createElement('label');
+               sliderLabel.for = 'book-slider';
+               sliderLabel.classList.add('bookSliderLabel');
+               sliderLabel.textContent = 'Book Slider';
+               sliderContainer.appendChild(sliderLabel);
 
                //Add the chapter title and page number under the slider
                //$('#readium-page-count').text(newChapters[chapterStart].title + ': Page ' + currentPage);
