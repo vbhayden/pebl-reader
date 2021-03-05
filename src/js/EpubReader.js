@@ -317,6 +317,7 @@ define([
                $('.sliderContainer').remove();
                $('.sliderInfoContainer').remove();
                $('.sliderPageContainer').remove();
+               $('.bookSliderLabel').remove();
 
                var currentIdref = readium.reader.getFirstVisibleCfi().idref;
 
@@ -576,15 +577,15 @@ define([
 
                sliderContainer.appendChild(slider);
                var sliderLabel = document.createElement('label');
-               sliderLabel.for = 'book-slider';
+               sliderLabel.setAttribute('for', 'book-slider');
                sliderLabel.classList.add('bookSliderLabel');
-               sliderLabel.textContent = 'Book Slider';
-               sliderContainer.appendChild(sliderLabel);
+               sliderLabel.textContent = 'Navigation Slider';
 
                //Add the chapter title and page number under the slider
                //$('#readium-page-count').text(newChapters[chapterStart].title + ': Page ' + currentPage);
                $('#readium-slider').prepend($(sliderPageContainer));
                $('#readium-slider').prepend($(sliderContainer));
+               $('#readium-slider').prepend($(sliderLabel));
                $('#readium-slider').append($(sliderInfoContainer));
            };
 
