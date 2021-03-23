@@ -482,7 +482,7 @@ window.Lightbox = {
                         $("#loginAsGuest").click(function() {
                             let userProfile = {
                                 identity: 'guest',
-                                name: 'gues',
+                                name: 'guest',
                                 preferredName: 'guest',
                                 firstName: 'guest',
                                 lastName: 'user',
