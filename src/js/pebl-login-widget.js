@@ -384,81 +384,122 @@ window.Lightbox = {
                 })
             }
         } else if (window.PeBLConfig.useOpenID) {
+            var doLogin = function() {
+                if (!loggingOut) {
+                    PeBL.user.isLoggedIn(function(loggedIn) {
+                        if (!loggedIn) {
+                            let xhr = new XMLHttpRequest();
 
-            if (!loggingOut) {
-                PeBL.user.isLoggedIn(function(loggedIn) {
-                    if (!loggedIn) {
-                        let xhr = new XMLHttpRequest();
+                            xhr.addEventListener('load', () => {
+                                if (xhr.status < 300) {
+                                    console.log(JSON.parse(xhr.response));
+                                    let payload = JSON.parse(xhr.response);
+                                    let userProfile = {
+                                        identity: payload.preferred_username,
+                                        name: payload.name,
+                                        preferredName: payload.name,
+                                        firstName: payload.given_name,
+                                        lastName: payload.family_name,
+                                        // avatar: imageToUse,
+                                        registryEndpoint: {
+                                            ul: 'https://peblproject.com/registry/api/downloadContent?guid='
+                                        },
+                                        memberships: payload.memberships,
+                                        role: payload.role,
+                                        groups: payload.groups
+                                    };
 
-                        xhr.addEventListener('load', () => {
-                            if (xhr.status < 300) {
-                                console.log(JSON.parse(xhr.response));
-                                let payload = JSON.parse(xhr.response);
-                                let userProfile = {
-                                    identity: payload.preferred_username,
-                                    name: payload.name,
-                                    preferredName: payload.name,
-                                    firstName: payload.given_name,
-                                    lastName: payload.family_name,
-                                    // avatar: imageToUse,
-                                    registryEndpoint: {
-                                        ul: 'https://peblproject.com/registry/api/downloadContent?guid='
-                                    },
-                                    memberships: payload.memberships,
-                                    role: payload.role,
-                                    groups: payload.groups
-                                };
-
-                                if (payload.groups && payload.groups.length > 0) {
-                                    window.Lightbox.createGroupSelectForm(payload.groups, function(classObj, teamObj) {
-                                        if (classObj) {
-                                            userProfile.currentClass = classObj;
-                                            userProfile.currentClassName = classObj.split('/').pop();
-                                        }
-                                        
-                                        if (teamObj) {
-                                            userProfile.currentTeam = teamObj;
-                                            userProfile.currentTeamName = teamObj.replace(/([^\/]*\/){2}/, '');
-                                        }
+                                    if (payload.groups && payload.groups.length > 0) {
+                                        window.Lightbox.createGroupSelectForm(payload.groups, function(classObj, teamObj) {
+                                            if (classObj) {
+                                                userProfile.currentClass = classObj;
+                                                userProfile.currentClassName = classObj.split('/').pop();
+                                            }
+                                            
+                                            if (teamObj) {
+                                                userProfile.currentTeam = teamObj;
+                                                userProfile.currentTeamName = teamObj.replace(/([^\/]*\/){2}/, '');
+                                            }
+                                            window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
+                                            window.Lightbox.close();
+                                        });
+                                    } else {
                                         window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
                                         window.Lightbox.close();
-                                    });
-                                } else {
-                                    window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
-                                    window.Lightbox.close();
-                                }
+                                    }
 
-                                
-                            } else {
+                                    
+                                } else {
+                                    if (window.PeBLConfig.useLinkedIn) {
+                                        createLinkedInButton();
+                                    } else {
+                                        window.location = window.PeBLConfig.PeBLServicesURL + "/login?redirectUrl=" + encodeURIComponent(window.location.href);
+                                    }
+                                }
+                            });
+
+                            xhr.addEventListener('error', (e) => {
+                                console.log('failed to retrieve user profile', e);
                                 if (window.PeBLConfig.useLinkedIn) {
                                     createLinkedInButton();
                                 } else {
                                     window.location = window.PeBLConfig.PeBLServicesURL + "/login?redirectUrl=" + encodeURIComponent(window.location.href);
                                 }
-                            }
-                        });
+                            });
 
-                        xhr.addEventListener('error', (e) => {
-                            console.log('failed to retrieve user profile', e);
-                            if (window.PeBLConfig.useLinkedIn) {
-                                createLinkedInButton();
-                            } else {
-                                window.location = window.PeBLConfig.PeBLServicesURL + "/login?redirectUrl=" + encodeURIComponent(window.location.href);
-                            }
-                        });
-
-                        xhr.open('GET',
-                                 window.PeBLConfig.PeBLServicesURL + "/user/profile");
-                        xhr.withCredentials = true;
-                        xhr.send();
-                    } else {
-                        console.log("!loggedIn");
-                    }
-                });
-            } else {
-                window.location = window.PeBLConfig.PeBLServicesURL + "/logout?redirectUrl=" + encodeURIComponent(window.location.href);
+                            xhr.open('GET',
+                                    window.PeBLConfig.PeBLServicesURL + "/user/profile");
+                            xhr.withCredentials = true;
+                            xhr.send();
+                        } else {
+                            console.log("!loggedIn");
+                        }
+                    });
+                } else {
+                    window.location = window.PeBLConfig.PeBLServicesURL + "/logout?redirectUrl=" + encodeURIComponent(window.location.href);
+                }
             }
 
+            if (window.PeBLConfig.guestLogin) {
+                var form = $(
+                    '<div class="login__form-section">' +
+                        '<div>' +
+                            '<h2>Welcome to PeBL</h2>' +
+                        '</div>' +
+                    '</div>'
+                );
+                var login = $(
+                    '<div class="login__input-wrapper">' +
+                        '<input class="btn btn-primary" type="button" value="Proceed as Guest" id="loginAsGuest" />' +
+                        '<input class="btn btn-secondary type="button" value="Log in" id="loginUserNameSubmit" />' +
+                    '</div>'
+                );
+                $(form).append(login);
+                $(lightBoxContent).append(form);
+
+                $("#loginAsGuest").click(function() {
+                    let userProfile = {
+                        identity: 'guest',
+                        name: 'gues',
+                        preferredName: 'guest',
+                        firstName: 'guest',
+                        lastName: 'user',
+                        // avatar: imageToUse,
+                        registryEndpoint: {
+                            ul: 'https://peblproject.com/registry/api/downloadContent?guid='
+                        }
+                    }
+        
+                    window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
+                    window.Lightbox.close();
+                });
+
+                $("#loginUserNameSubmit").click(function() {
+                    doLogin();
+                })
+            } else {
+                doLogin();
+            }
         } else {
             var form = $(
                 '<div class="login__form-section">' +
