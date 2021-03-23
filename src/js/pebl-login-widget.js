@@ -461,41 +461,45 @@ window.Lightbox = {
             }
 
             if (window.PeBLConfig.guestLogin) {
-                var form = $(
-                    '<div class="login__form-section">' +
-                        '<div>' +
-                            '<h2>Welcome to PeBL</h2>' +
-                        '</div>' +
-                    '</div>'
-                );
-                var login = $(
-                    '<div class="login__input-wrapper">' +
-                        '<input class="btn btn-primary" type="button" value="Proceed as Guest" id="loginAsGuest" />' +
-                        '<input class="btn btn-secondary type="button" value="Log in" id="loginUserNameSubmit" />' +
-                    '</div>'
-                );
-                $(form).append(login);
-                $(lightBoxContent).append(form);
+                PeBL.user.isLoggedIn(function(loggedIn) {
+                    if (!loggedIn) {
+                        var form = $(
+                            '<div class="login__form-section">' +
+                                '<div>' +
+                                    '<h2>Welcome to PeBL</h2>' +
+                                '</div>' +
+                            '</div>'
+                        );
+                        var login = $(
+                            '<div class="login__input-wrapper">' +
+                                '<input style="width: 100%;" class="btn btn-primary" type="button" value="Proceed as Guest" id="loginAsGuest" />' +
+                                '<input style="width: 100%;" class="btn" type="button" value="Log in" id="loginWithAccount" />' +
+                            '</div>'
+                        );
+                        $(form).append(login);
+                        $(lightBoxContent).append(form);
 
-                $("#loginAsGuest").click(function() {
-                    let userProfile = {
-                        identity: 'guest',
-                        name: 'gues',
-                        preferredName: 'guest',
-                        firstName: 'guest',
-                        lastName: 'user',
-                        // avatar: imageToUse,
-                        registryEndpoint: {
-                            ul: 'https://peblproject.com/registry/api/downloadContent?guid='
-                        }
+                        $("#loginAsGuest").click(function() {
+                            let userProfile = {
+                                identity: 'guest',
+                                name: 'gues',
+                                preferredName: 'guest',
+                                firstName: 'guest',
+                                lastName: 'user',
+                                // avatar: imageToUse,
+                                registryEndpoint: {
+                                    ul: 'https://peblproject.com/registry/api/downloadContent?guid='
+                                }
+                            }
+                
+                            window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
+                            window.Lightbox.close();
+                        });
+
+                        $("#loginWithAccount").click(function() {
+                            doLogin();
+                        })
                     }
-        
-                    window.PeBL.emitEvent(window.PeBL.events.eventLoggedIn, userProfile);
-                    window.Lightbox.close();
-                });
-
-                $("#loginUserNameSubmit").click(function() {
-                    doLogin();
                 })
             } else {
                 doLogin();
