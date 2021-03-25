@@ -1,4 +1,4 @@
-define(['jquery', './EpubReader', 'readium_shared_js/helpers'], function($, EpubReader, Helpers){
+define(['./EpubReader', 'readium_shared_js/helpers'], function(EpubReader, Helpers){
 
     $(function(){
 

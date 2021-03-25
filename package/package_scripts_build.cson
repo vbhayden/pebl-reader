@@ -29,6 +29,19 @@
     '
 
 #=====================
+    pack: '
+
+        ./pack.sh
+    '
+
+#=====================
+    minify: '
+
+        node terser.js
+    '
+
+
+#=====================
     'prebuild': '
 
         npm run clean
@@ -103,29 +116,6 @@
              --rjs_bundle=single
     '
 
-#=====================
-    'build:scripts:single:LITE': '
-
-        npm run rjs
-             --rjs_bundle=single
-             --rjs_configCustomTarget=_LITE
-    '
-
-#=====================
-    'build:scripts:single:CHROMEAPP': '
-
-        npm run rjs
-             --rjs_bundle=single
-             --rjs_configCustomTarget=_CHROMEAPP
-    '
-
-#=====================
-    'build:scripts:single:CHROMEAPPWORKER': '
-
-        npm run rjs
-             --rjs_bundle=single
-             --rjs_configOverrideTarget=_CHROMEAPP-WORKER
-    '
 #=====================
     'build:scripts:single:CLOUDAPPWORKER': '
 

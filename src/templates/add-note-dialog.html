@@ -3,17 +3,18 @@
         <div class="modal-content">
             <div class="modal-header">
 
-                <button id="clodeAddNoteCross" type="button" class="close" data-dismiss="modal" tabindex="999" title="{{strings.i18n_close}} {{strings.i18n_add_note}}" aria-label="{{strings.i18n_close}} {{strings.i18n_add_note}}"><span aria-hidden="true">&times;</span></button>
+                <button id="clodeAddNoteCross" type="button" class="close" data-dismiss="modal" tabindex="0" title="{{strings.i18n_close}} {{strings.i18n_add_note}}" aria-label="{{strings.i18n_close}} {{strings.i18n_add_note}}"><span aria-hidden="true">&times;</span></button>
 
-                <h4 class="modal-title" id="add-note-label">New Highlight Note</h4>
+                <h2 class="modal-title" id="add-note-label">{{strings.i18n_add_note}}</h2>
             </div>
             <div class="modal-body">
                 <div class="annotationInputContainer">
-                    <textarea type="text" placeholder="Add a note for this highlight" id="annotationInput"></textarea>
+                    <label for="annotationInput">{{strings.i18n_add_note}}</label>
+                    <textarea type="text" placeholder="Add a note for this highlight" id="annotationInput" tabindex="0"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="add-note-submit" tabindex="1000" type="button" class="btn btn-primary" data-dismiss="modal">Add Note</button>
+                <button id="add-note-submit" tabindex="0" type="button" class="btn btn-primary" data-dismiss="modal">Add Note</button>
             </div>
         </div>
         <!-- /.modal-content --> 

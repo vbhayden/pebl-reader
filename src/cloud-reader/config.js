@@ -11,12 +11,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-window.Configuration = {}
-window.Configuration.OAuthURL = 'https://project.oauth.eduworks.com/';
-window.Configuration.OAuthToken = '86ujpjdo6nv82l';
-window.Configuration.lrsUrl = 'https://lrs.peblproject.com/';
-window.Configuration.lrsCredential = 'MTFkZWU2MDg1NTMyZGM4YzE4ZTQyMDFiMGY2YmE4NjE0NTBhMmI3NzoyMGFkNzM3NWE5YjcwYWY1OWJiYzM3ZWZhNjJlYTNlOGNlM2MyMGUw';
-window.Configuration.useLinkedIn = false;
-window.Configuration.favicon = 'images/PEBL-icon-16.ico';
-window.Configuration.loginImage = 'images/PEBL-Logo-Color-small.png';
-window.Configuration.userList = ['Learner', 'Learner1', 'Learner2', 'Learner3', 'Learner5', 'Learner7'];
+window.PeBLConfig = {}
+window.PeBLConfig.PeBLServicesURL = '__HTTP_SERVICES_ENDPOINT__';
+window.PeBLConfig.PeBLServicesWSURL = '__WS_SERVICES_ENDPOINT__';
+window.PeBLConfig.useOpenID = __USE_OPEN_ID__;
+window.PeBLConfig.useGoogleLogin = __USE_GOOGLE_LOGIN__;
+window.PeBLConfig.googleClientId = '__GOOGLE_CLIENT_ID__';
+window.PeBLConfig.appleTouchIcon = '__READER_APPLE_TOUCH_ICON__';
+window.PeBLConfig.favicon = '__READER_FAVICON__';
+window.PeBLConfig.loginImage = '__READER_LOGIN_IMAGE__';
+window.PeBLConfig.version = "VERSION";
+window.PeBLConfig.disabledFeatures = __READER_DISABLED_FEATURES__;
+window.PeBLConfig.hideInstallInstructions = __READER_HIDE_INSTALL_INSTRUCTIONS__;
+window.DEBUGGING = false;

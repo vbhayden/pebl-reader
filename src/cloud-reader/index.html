@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html manifest="offlinePebl.appcache">
+<html lang="en">
     <head>
         <meta name="google-site-verification" content="viy9G5ltZp2BNyGobWevcRefx2Xi-BxIBUNRD6maJX4" />
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0">
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=2.0">
 
         <link rel="manifest" href="manifest.json" />
-        
+
         <link id="readerFavicon" href="" rel="shortcut icon"/>
-        <link href="images/PEBL-icon-144.png" rel="apple-touch-icon"/>
+        <link id="appleTouchIcon" href="images/PEBL-icon-144.png" rel="apple-touch-icon"/>
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta name="apple-mobile-web-app-title" content="PeBL eReader">
+        <meta name="theme-color" content="#fff">
 
-        <meta name="msapplication-TileImage" content="images/PEBL-icon-144.png">
+        <meta id="msapplicationTileImage" name="msapplication-TileImage" content="images/PEBL-icon-144.png">
         <meta name="msapplication-TileColor" content="#000000">
-        
-        
+
         <style>
          .library-item{
              height: 100px;
@@ -30,49 +30,60 @@
          }
         </style>
 
-        <link rel="stylesheet" type="text/css" href="css/readium-all.css">
-        <link rel="stylesheet" type="text/css" href="css/pebl-login-widget.css">
+        <link rel="stylesheet" type="text/css" href="css/annotations.css" async>
+        <link rel="stylesheet" type="text/css" href="css/all.min.css" async>
+        <link rel="stylesheet" type="text/css" href="css/readium-all.css" async>
+        <link rel="stylesheet" type="text/css" href="css/pebl-login-widget.css" async>
+    </head>
 
-        <script type="text/javascript" src="scripts/jquery-3.3.1.min.js"></script>
-        <script type="text/javascript" src="scripts/config.js"></script>
-        <script type="text/javascript" src="scripts/PeBLCore.js"> </script>
-        <script type="text/javascript" src="scripts/pebl-login-widget.js"> </script>    
-        <script type="text/javascript" src="scripts/readium-js-viewer_all.js"> </script>
-        <script type="text/javascript" src="font-faces/fonts.js"> </script>
+    <body>
+        <noscript>Javascript is required to view this site, please enable Javascript and reload the page.</noscript>
+        <a class="skip-main" href="#app-container" onclick="skipToMainContent(event);" >Skip to main content</a>
+        <nav id="app-navbar" class="navbar" role="navigation" aria-label="{{Strings.i18n_toolbar}}">
+        </nav>
+
+        <main id="app-container" role="main" tabindex="0" aria-labelledby="webreaderTitle"  >
+            <Label>Reader is being downloaded, please wait...</label>
+            <Label>After the initial download, you should not have this delay again.</label>
+        </main>
 
         <script type="text/javascript">
-         document.getElementById('readerFavicon').setAttribute('href', window.Configuration.favicon);
+            if (window.navigator.userAgent.indexOf('MSIE ') > 0 || window.navigator.userAgent.indexOf('Trident/') > 0) {
+                var container = document.getElementById('app-container');
+                container.innerHTML = '';
 
+                var msg1 = document.createElement('h1');
+                msg1.textContent = 'Internet Explorer is not supported.';
+                msg1.setAttribute('style', 'text-align: center;');
+
+                var msg2 = document.createElement('h1');
+                msg2.textContent = 'Consider using Microsoft Edge or Google Chrome.';
+                msg2.setAttribute('style', 'text-align: center;');
+
+                container.appendChild(msg1);
+                container.appendChild(msg2);
+            }
+        </script>
+
+        <script type="text/javascript" src="scripts/pack.js"></script>
+
+        <script type="text/javascript">
          if (navigator.serviceWorker) {
-             navigator.serviceWorker.register('peblSW.js').then(function (reg) {
+             navigator.serviceWorker.register('peblSW.js').then((reg) => {
                  console.log("Service worker registered", reg.scope);
-
-                 reg.onupdatefound = function () {
-                     console.log("Updating worker");
-                 }
-
-                 reg.update();
+                 hookSWWorkerApi(reg);
              }).catch(function (err) {
-                 console.log("Bad service worker", err);
+                 console.error("Bad service worker", err);
              });
-             
          }
 
-         var cache = window.applicationCache;
-         if (cache) {
-             cache.addEventListener('updateready', function (e) {         
-                 if (cache.status == cache.UPDATEREADY) {
-                     cache.swapCache();
-                     if (confirm("New Site Version Available, Reload?")) {
-                         window.location.reload();
-                     }
-                 }
-             });
-             if (cache.status == 1 || cache.status > 3)
-                cache.update();
-         }
-         
-         var path = (window.location && window.location.pathname) ? window.location.pathname : ''; 
+         document.getElementById('readerFavicon').setAttribute('href', window.PeBLConfig.favicon);
+         if (window.PeBLConfig.appleTouchIcon)
+            document.getElementById('appleTouchIcon').setAttribute('href', window.PeBLConfig.appleTouchIcon);
+        if (window.PeBLConfig.msapplicationTileImage)
+            document.getElementById('msapplicationTileImage').setAttribute('content', window.PeBLConfig.msapplicationTileImage);
+
+         var path = (window.location && window.location.pathname) ? window.location.pathname : '';
 
          // extracts path to index.html (or more generally: /PATH/TO/*.[x]html)
          path = path.replace(/(.*)\/.*\.[x]?html$/, "$1");
@@ -81,7 +92,7 @@
          path = path.charAt(path.length-1) == '/'
               ? path.substr(0, path.length-1)
               : path;
-         
+
          var HTTPServerRootFolder =
              window.location ? (
                  window.location.protocol
@@ -91,8 +102,22 @@
                  + path
              ) : ''
          ;
-
-         console.log(HTTPServerRootFolder);
+         //  console.log(HTTPServerRootFolder);
+         
+         var skipToMainContent = function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            var libraryMain = document.getElementById('library-body');
+            var bookMain = document.getElementById('reading-area');
+            if (libraryMain != null) {
+                //window.location.href = '#library-body';
+                libraryMain.focus();
+            } else {
+                //window.location.href = '#reading-area';
+                bookMain.focus();
+            }
+         }
 
          var getURLQueryParams = function() {
              var params = {};
@@ -116,11 +141,6 @@
          var urlParams = getURLQueryParams();
          console.log(urlParams);
 
-         var fontsArray = [];
-         if (typeof getFontFaces != "undefined") { // defined externally
-             fontsArray = getFontFaces(HTTPServerRootFolder + "/font-faces/");
-         }
-
          // MUST BE *SINGLE* CALL TO require.config() FOR ALMOND (SINGLE BUNDLE) TO WORK CORRECTLY!!!
          require.config({
              /* http://requirejs.org/docs/api.html#config-waitSeconds */
@@ -131,8 +151,8 @@
                  'readium_js_viewer/ModuleConfig' : {
 
                      'mathJaxUrl': HTTPServerRootFolder + '/scripts/mathjax/MathJax.js',
-                     
-                     'fonts': fontsArray,
+
+                     'fonts': [],
 
                      'annotationCSSUrl': HTTPServerRootFolder + '/css/annotations.css',
 
@@ -147,27 +167,13 @@
                      'canHandleUrl' : false,
                      'canHandleDirectory' : false,
 
-
                      'workerUrl': 'scripts/readium-js-viewer_CLOUDAPP-WORKER.js',
                      'epubReadingSystemUrl': undefined
                  }
              }
          });
 
-         // PEBL.registerReadyCallback(function () {
-         //       loadReadiumReader();
-         // });
-         // loadReadiumReader();
         </script>
-
-    </head>
-
-    <!-- This is all application-specific HTML -->
-    <body>
-        <nav id="app-navbar" class="navbar" role="banner" aria-label="{{Strings.i18n_toolbar}}">
-        </nav>
-        <div id="app-container">
-        </div>
     </body>
 
 </html>

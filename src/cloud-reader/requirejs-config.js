@@ -24,14 +24,7 @@ self.location ? (
 
 console.log(currentURL);
 
-// self.location.origin  == self.location.protocol + '//' + self.location.host
-
 console.log(self.location.origin);
-
-var fontsArray = [];
-if (typeof getFontFaces != "undefined") { // defined externally
-    fontsArray = getFontFaces(self.location.origin + "/font-faces/");
-}
 
 // MUST BE *SINGLE* CALL TO require.config() FOR ALMOND (SINGLE BUNDLE) TO WORK CORRECTLY!!!
 require.config({
@@ -44,7 +37,7 @@ require.config({
 
             'mathJaxUrl': self.location.origin + '/scripts/mathjax/MathJax.js',
             
-            'fonts': fontsArray,
+            'fonts': [],
 
             'annotationCSSUrl': self.location.origin + '/css/annotations.css',
 

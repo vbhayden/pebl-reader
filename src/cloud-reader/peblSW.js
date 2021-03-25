@@ -1,75 +1,38 @@
 /*
-Copyright 2020 Eduworks Corporation
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-    http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+  Copyright 2020 Eduworks Corporation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 */
 
-var CACHE_NAME = "peblV2";
+var timestamp = "||timestamp||";
+var CACHE_PREFIX = "PeBLV";
+var CACHE_NAME = CACHE_PREFIX + timestamp;
 
 var FILES_TO_CACHE = [
-    "./",
-    "./?",
 
-    
-    "./css/readium-all.css",
     "./css/pebl-login-widget.css",
     "./css/annotations.css",
 
-    
-    "./scripts/jquery-3.3.1.min.js",
-    "./scripts/PeBLCore.js",
-    "./scripts/readium-js-viewer_all.js",
-    "./scripts/pebl-login-widget.js",
-    "./scripts/readium-js-viewer_CLOUDAPP-WORKER.js",
-    "./scripts/mathjax/MathJax.js",
+    // "./scripts/mathjax/MathJax.js",
     "./scripts/zip/deflate.js",
     "./scripts/zip/inflate.js",
     "./scripts/zip/z-worker.js",
-    "./scripts/config.js",
 
-    
-    "./font-faces/fonts.js",
-    "./fonts/glyphicons-halflings-regular.eot",
-    "./fonts/glyphicons-halflings-regular.svg",
-    "./fonts/glyphicons-halflings-regular.ttf",
-    "./fonts/glyphicons-halflings-regular.woff",
     "./fonts/glyphicons-halflings-regular.woff2",
-    "./font-faces/Noto-Serif/Noto-Serif.css",
-    "./font-faces/Noto-Serif/Noto-Serif-700.woff",
-    "./font-faces/Noto-Serif/Noto-Serif-700italic.woff",
-    "./font-faces/Noto-Serif/Noto-Serif-italic.woff",
-    "./font-faces/Noto-Serif/Noto-Serif-regular.woff",
-    "./font-faces/OpenDyslexic/OpenDyslexic.css",
-    "./font-faces/OpenDyslexic/OpenDyslexic-Bold.woff",
-    "./font-faces/OpenDyslexic/OpenDyslexic-BoldItalic.woff",
-    "./font-faces/OpenDyslexic/OpenDyslexic-Italic.woff",
-    "./font-faces/OpenDyslexic/OpenDyslexic-Regular.woff",
-    "./font-faces/Open-Sans/Open-Sans.css",
-    "./font-faces/Open-Sans/Open-Sans-700.woff",
-    "./font-faces/Open-Sans/Open-Sans-700italic.woff",
-    "./font-faces/Open-Sans/Open-Sans-italic.woff",
-    "./font-faces/Open-Sans/Open-Sans-regular.woff",
+    "./webfonts/fa-regular-400.woff2",
 
-    
     "./manifest.json",
-    
-    
+
+    "./images/pebl-icons-search.svg",
     "./images/PEBL-icon-16.ico",
-    "./images/covers/cover1.jpg",
-    "./images/covers/cover2.jpg",
-    "./images/covers/cover3.jpg",
-    "./images/covers/cover4.jpg",
-    "./images/covers/cover5.jpg",
-    "./images/covers/cover6.jpg",
-    "./images/covers/cover7.jpg",
-    "./images/covers/cover8.jpg",
+
     "./images/epub_favicon.ico",
     "./images/epub-touch-icon.png",
     "./images/glyphicons_115_text_smaller.png",
@@ -81,13 +44,17 @@ var FILES_TO_CACHE = [
     "./images/margin4_off.png",
     "./images/pagination.svg",
     "./images/pagination1.svg",
-    "./images/partner_logos.png",
     "./images/PEBL-icon-48.png",
     "./images/PEBL-icon-144.png",
     "./images/PEBL-icon-192.png",
     "./images/webreader_logo_eduworks.png",
-    "./images/about_readium_logo.png",
-    "./images/eXtension-icon_small.png",
+    "./images/usmc-android-chrome-192x192.png",
+    "./images/usmc-android-chrome-512x512.png",
+    "./images/usmc-apple-touch-icon.png",
+    "./images/usmc-favicon.ico",
+    "./images/usmc-favicon-16x16.png",
+    "./images/usmc-favicon-32x32.png",
+    // "./images/eXtension-icon_small.png",
     "./images/PEBL-Logo-Color-small.png",
     "./images/pebl-icons-light_bookmark-list.svg",
     "./images/pebl-icons-light_download.svg",
@@ -112,42 +79,189 @@ var FILES_TO_CACHE = [
     "./images/pebl-icons-wip_new-bookmark.svg",
     "./images/pebl-icons-wip_new-highlight.svg",
     "./images/pebl-icons-wip_settings.svg",
-    "./images/pebl-icons-wip_toc.svg"
+    "./images/pebl-icons-wip_toc.svg",
+
+    "./images/covers/cover1.jpg",
+    "./images/covers/cover2.jpg",
+    "./images/covers/cover3.jpg",
+    "./images/covers/cover4.jpg",
+    "./images/covers/cover5.jpg",
+    "./images/covers/cover6.jpg",
+    "./images/covers/cover7.jpg",
+    "./images/covers/cover8.jpg",
+
+    "./css/all.min.css",
+    "./webfonts/fa-brands-400.woff2",
+    "./webfonts/fa-solid-900.woff2",
+
+    "./css/readium-all.css",
+
+    "./scripts/pack.js"
 ];
 
+let batchFetchFiles = async (batchSize, incomingFiles, cacheName, client) => {
+    let files = incomingFiles.slice(0);
+    let openCache;
+    let retries = {};
+    if (typeof cacheName === "string") {
+        openCache = await caches.open(cacheName);
+    } else {
+        openCache = cacheName;
+    }
+    let p = async (f) => {
+        if (client)
+            sendMsg(client,
+                "addToCacheProgress",
+                {
+                    total: incomingFiles.length,
+                    remaining: files.length
+                });
+        let file = f || files.pop();
+        if (file)
+            await openCache.add(file).catch((e)=>{
+                if (!retries[file]) {
+                    retries[file] = 0
+                }
+                retries[file] = retries[file] + 1;
+                if(retries[file] < 7) {
+                    return p(file);
+                } else {
+                    console.log("Failed to retrieve", file, e);
+                }
+            });
+        if (files.length > 0)
+            return p();
+    }
+    let pending = [];
+    for (let i = 0; i < batchSize; i++)
+        pending.push(p());
+    for (let i = 0; i < batchSize; i++)
+        await pending[i];
+}
+
 self.addEventListener('install',
-                      function (event) {
-                          event.waitUntil(
-                              caches.open(CACHE_NAME).then(function (openCache) {
-                                  return openCache.addAll(FILES_TO_CACHE);
-                              })
-                          );
-                      });
+    (event) => {
+        event.waitUntil(batchFetchFiles(4,
+            FILES_TO_CACHE,
+            CACHE_NAME));
+    });
+
+let sendMsg = (client, eventName, payload) => {
+    if (eventName) {
+        payload.eventName = eventName;
+    }
+    client.postMessage(payload);
+}
+
+let updateWorker = () => {
+    skipWaiting();
+}
+
+let addToCache = async (client, payload) => {
+    if (!payload.root.endsWith("/")) {
+        payload.root = payload.root + "/";
+    }
+    // let defaultCache = await caches.open(CACHE_NAME);
+    let openCache = await caches.open(payload.root);
+    let cachedRequests = await openCache.keys();
+    // let cachedDefaultRequests = await defaultCache.keys();
+    let keyLookup = {};
+    for (let request of cachedRequests) {
+        keyLookup[request.url] = true;
+    }
+    // debugger;
+    let toCache = [];
+    for (let item of payload.items) {
+        if (!keyLookup[item]) {
+            toCache.push(item);
+        }
+    }
+    if (toCache.length > 0) {
+        await batchFetchFiles(4, toCache, openCache, client);
+    }
+    sendMsg(client, "addedToCache", {});
+};
+
+let removeCache = async (client, payload) => {
+    if (!payload.root.endsWith("/")) {
+        payload.root = payload.root + "/";
+    }
+    await caches.delete(payload.root);
+    sendMsg(client, "removedCache", {});
+};
+
+let removeFromCache = async (client, payload) => {
+    if (!payload.root.endsWith("/")) {
+        payload.root = payload.root + "/";
+    }
+    let openCache = await caches.open(payload.root);
+    await openCache.delete(payload.target);
+    sendMsg(client, "removedFromCache", {});
+};
+
+let dispatchFns = {
+    addToCache: addToCache,
+    removeCache: removeCache,
+    removeFromCache: removeFromCache,
+    updateWorker: updateWorker
+}
+
+let dispatch = (source, eventName, payload) => {
+    let dispatchFn = dispatchFns[eventName];
+    if (dispatchFn) {
+        dispatchFn(source, payload);
+    }
+};
+
+self.addEventListener('message', (event) => {
+    dispatch(event.source, event.data.eventName, event.data);
+});
 
 self.addEventListener('activate',
-                      function (e) {
-                          
-                      });
+    (async () => {
+        let keys = await caches.keys();
+        for (let key of keys) {
+            if (key !== CACHE_NAME) {
+                await caches.delete(key);
+            }
+        }
+    }));
 
-self.addEventListener('fetch', event => {
+self.addEventListener('fetch', (event) => {
     if (event.request.method != 'GET') return;
 
     var request = event.request;
-    
+
     var url = new URL(request.url);
-    
+
+    let root;
+    let indexOEBPS = url.href.indexOf("/OEBPS/");
+    if (indexOEBPS != -1) {
+        root = url.href.substring(0, indexOEBPS + "/OEBPS/".length);
+    }
+
     if (url.origin == location.origin) {
-        event.respondWith(
-            fetch(event.request).then(function (response) {
-                return caches.open(CACHE_NAME).then(function (openCache) {                    
-                    if (response.status != 206) {
-                        openCache.put(request, response.clone());
+        event.respondWith((async () => {
+            let openCache = await caches.open(root || CACHE_NAME);
+            let cachedResponse = await openCache.match(event.request);
+            if (cachedResponse) {
+                return cachedResponse;
+            } else {
+                let url = new URL(event.request.url);
+                if (url.search !== "") {
+                    cachedResponse = await openCache.match(url.origin + url.pathname);
+                    if (cachedResponse) {
+                        return cachedResponse;
                     }
-                    return response;
-                });             
-            }).catch(function () {
-                return caches.match(request);
-            }));
-    } else
-        event.respondWith(fetch(event.request));
+                }
+            }
+
+            let externalResponse = await fetch(event.request);
+            if (externalResponse && externalResponse.status < 206) {
+                openCache.put(request, externalResponse.clone());
+            }
+
+            return externalResponse;
+        })());
+    }
 });

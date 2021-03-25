@@ -100,17 +100,12 @@ files: [
 #main: "build-output/_multiple-bundles/readium-js-viewer.js"
 
 #####################################################################
-dependencies:
+#dependencies:
 
     #"parallelshell": 'latest'
-    "concurrently": '^3.6.0'
-
-    "npm-run-all": '^4.1.3'
-
-    "opener": '^1.4.3'
 
     #"http-server": 'latest'
-    "http-server": 'github:danielweck/http-server#master'
+    #    "http-server": 'github:danielweck/http-server#master'
     # SEE: https://github.com/indexzero/http-server/issues/154
 
 
@@ -125,8 +120,14 @@ devDependencies:
 # see readium-shared-js:
 # "requirejs", "almond", "jquery"
 
+    "concurrently": '^3.6.0'
+
+    "npm-run-all": '^4.1.3'
+
+    # "opener": '^1.4.3'
+
     #"keymaster": 'latest'
-    "keymaster": 'github:danielweck/keymaster#master'
+    #"keymaster": 'github:danielweck/keymaster#master'
 
     #"jath": 'latest'
     "jath": 'github:danielweck/jath#master'
@@ -138,10 +139,6 @@ devDependencies:
     "bootstrap": '3.x'
 
     "bootstrap-accessibility-plugin": 'github:paypal/bootstrap-accessibility-plugin#master'
-
-    "hammerjs": '^2.0.8'
-
-    "jquery-hammerjs": '^2.0.0'
 
     "screenfull": '^3.3.2'
 
@@ -168,24 +165,24 @@ devDependencies:
     # "clean-css": 'latest'
     "clean-css-cli": '^4.1.10'
     
-    "uglify-js": '^3.4.1'
+    "terser": '^4.8.0'
 
     #"nodeunit": 'latest'
-    "mocha": '^5.2.0'
+#    "mocha": '^5.2.0'
 
     "wd": '^1.9.0'
 
-    "phantomjs-prebuilt": '^2.1.16'
+#    "phantomjs-prebuilt": '^2.1.16'
 
     #"grunt": 'latest'
-    "grunt-selenium-webdriver": 'github:levexis/grunt-selenium-webdriver#master'
+#    "grunt-selenium-webdriver": 'github:levexis/grunt-selenium-webdriver#master'
     #"selenium-webdriver": 'latest'
 
-    "crx": '^3.2.1'
+#    "crx": '^3.2.1'
 
     # https://github.com/domenic/chai-as-promised/issues/184
-    "chai": '3.x'
-    "chai-as-promised": '^7.1.1'
+    # "chai": '3.x'
+    # "chai-as-promised": '^7.1.1'
 
     # TODO now @octokit/rest
     "github": '12.x'
