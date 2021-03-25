@@ -259,7 +259,7 @@ buildProd:
   - LAST_TAG=$(git describe --tags)
   # - sed -i "s/TIMESTAMPMERIGHTHERE/$(date)/" src/cloud-reader/offlinePebl.appcache
 
-  - cp "$DEV_WEB_READER_CONFIG" src/cloud-reader/config.js
+  - cp "$PROD_WEB_READER_CONFIG" src/cloud-reader/config.js
   - sed -i "s/VERSION/$LAST_TAG/" src/cloud-reader/config.js
 
   - cp "$DEV_MANIFEST" src/cloud-reader/manifest.json
