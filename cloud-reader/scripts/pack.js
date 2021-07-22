@@ -1440,7 +1440,15985 @@ window.DEBUGGING = false;
 !function(t,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e(function(){try{return require("moment")}catch(t){}}()):"function"==typeof define&&define.amd?define(["require"],(function(t){return e(function(){try{return t("moment")}catch(t){}}())})):(t=t||self).Chart=e(t.moment)}(this,(function(t){"use strict";t=t&&t.hasOwnProperty("default")?t.default:t;var e={aliceblue:[240,248,255],antiquewhite:[250,235,215],aqua:[0,255,255],aquamarine:[127,255,212],azure:[240,255,255],beige:[245,245,220],bisque:[255,228,196],black:[0,0,0],blanchedalmond:[255,235,205],blue:[0,0,255],blueviolet:[138,43,226],brown:[165,42,42],burlywood:[222,184,135],cadetblue:[95,158,160],chartreuse:[127,255,0],chocolate:[210,105,30],coral:[255,127,80],cornflowerblue:[100,149,237],cornsilk:[255,248,220],crimson:[220,20,60],cyan:[0,255,255],darkblue:[0,0,139],darkcyan:[0,139,139],darkgoldenrod:[184,134,11],darkgray:[169,169,169],darkgreen:[0,100,0],darkgrey:[169,169,169],darkkhaki:[189,183,107],darkmagenta:[139,0,139],darkolivegreen:[85,107,47],darkorange:[255,140,0],darkorchid:[153,50,204],darkred:[139,0,0],darksalmon:[233,150,122],darkseagreen:[143,188,143],darkslateblue:[72,61,139],darkslategray:[47,79,79],darkslategrey:[47,79,79],darkturquoise:[0,206,209],darkviolet:[148,0,211],deeppink:[255,20,147],deepskyblue:[0,191,255],dimgray:[105,105,105],dimgrey:[105,105,105],dodgerblue:[30,144,255],firebrick:[178,34,34],floralwhite:[255,250,240],forestgreen:[34,139,34],fuchsia:[255,0,255],gainsboro:[220,220,220],ghostwhite:[248,248,255],gold:[255,215,0],goldenrod:[218,165,32],gray:[128,128,128],green:[0,128,0],greenyellow:[173,255,47],grey:[128,128,128],honeydew:[240,255,240],hotpink:[255,105,180],indianred:[205,92,92],indigo:[75,0,130],ivory:[255,255,240],khaki:[240,230,140],lavender:[230,230,250],lavenderblush:[255,240,245],lawngreen:[124,252,0],lemonchiffon:[255,250,205],lightblue:[173,216,230],lightcoral:[240,128,128],lightcyan:[224,255,255],lightgoldenrodyellow:[250,250,210],lightgray:[211,211,211],lightgreen:[144,238,144],lightgrey:[211,211,211],lightpink:[255,182,193],lightsalmon:[255,160,122],lightseagreen:[32,178,170],lightskyblue:[135,206,250],lightslategray:[119,136,153],lightslategrey:[119,136,153],lightsteelblue:[176,196,222],lightyellow:[255,255,224],lime:[0,255,0],limegreen:[50,205,50],linen:[250,240,230],magenta:[255,0,255],maroon:[128,0,0],mediumaquamarine:[102,205,170],mediumblue:[0,0,205],mediumorchid:[186,85,211],mediumpurple:[147,112,219],mediumseagreen:[60,179,113],mediumslateblue:[123,104,238],mediumspringgreen:[0,250,154],mediumturquoise:[72,209,204],mediumvioletred:[199,21,133],midnightblue:[25,25,112],mintcream:[245,255,250],mistyrose:[255,228,225],moccasin:[255,228,181],navajowhite:[255,222,173],navy:[0,0,128],oldlace:[253,245,230],olive:[128,128,0],olivedrab:[107,142,35],orange:[255,165,0],orangered:[255,69,0],orchid:[218,112,214],palegoldenrod:[238,232,170],palegreen:[152,251,152],paleturquoise:[175,238,238],palevioletred:[219,112,147],papayawhip:[255,239,213],peachpuff:[255,218,185],peru:[205,133,63],pink:[255,192,203],plum:[221,160,221],powderblue:[176,224,230],purple:[128,0,128],rebeccapurple:[102,51,153],red:[255,0,0],rosybrown:[188,143,143],royalblue:[65,105,225],saddlebrown:[139,69,19],salmon:[250,128,114],sandybrown:[244,164,96],seagreen:[46,139,87],seashell:[255,245,238],sienna:[160,82,45],silver:[192,192,192],skyblue:[135,206,235],slateblue:[106,90,205],slategray:[112,128,144],slategrey:[112,128,144],snow:[255,250,250],springgreen:[0,255,127],steelblue:[70,130,180],tan:[210,180,140],teal:[0,128,128],thistle:[216,191,216],tomato:[255,99,71],turquoise:[64,224,208],violet:[238,130,238],wheat:[245,222,179],white:[255,255,255],whitesmoke:[245,245,245],yellow:[255,255,0],yellowgreen:[154,205,50]},n=function(t,e){return t(e={exports:{}},e.exports),e.exports}((function(t){var n={};for(var i in e)e.hasOwnProperty(i)&&(n[e[i]]=i);var a=t.exports={rgb:{channels:3,labels:"rgb"},hsl:{channels:3,labels:"hsl"},hsv:{channels:3,labels:"hsv"},hwb:{channels:3,labels:"hwb"},cmyk:{channels:4,labels:"cmyk"},xyz:{channels:3,labels:"xyz"},lab:{channels:3,labels:"lab"},lch:{channels:3,labels:"lch"},hex:{channels:1,labels:["hex"]},keyword:{channels:1,labels:["keyword"]},ansi16:{channels:1,labels:["ansi16"]},ansi256:{channels:1,labels:["ansi256"]},hcg:{channels:3,labels:["h","c","g"]},apple:{channels:3,labels:["r16","g16","b16"]},gray:{channels:1,labels:["gray"]}};for(var r in a)if(a.hasOwnProperty(r)){if(!("channels"in a[r]))throw new Error("missing channels property: "+r);if(!("labels"in a[r]))throw new Error("missing channel labels property: "+r);if(a[r].labels.length!==a[r].channels)throw new Error("channel and label counts mismatch: "+r);var o=a[r].channels,s=a[r].labels;delete a[r].channels,delete a[r].labels,Object.defineProperty(a[r],"channels",{value:o}),Object.defineProperty(a[r],"labels",{value:s})}a.rgb.hsl=function(t){var e,n,i=t[0]/255,a=t[1]/255,r=t[2]/255,o=Math.min(i,a,r),s=Math.max(i,a,r),l=s-o;return s===o?e=0:i===s?e=(a-r)/l:a===s?e=2+(r-i)/l:r===s&&(e=4+(i-a)/l),(e=Math.min(60*e,360))<0&&(e+=360),n=(o+s)/2,[e,100*(s===o?0:n<=.5?l/(s+o):l/(2-s-o)),100*n]},a.rgb.hsv=function(t){var e,n,i,a,r,o=t[0]/255,s=t[1]/255,l=t[2]/255,u=Math.max(o,s,l),d=u-Math.min(o,s,l),h=function(t){return(u-t)/6/d+.5};return 0===d?a=r=0:(r=d/u,e=h(o),n=h(s),i=h(l),o===u?a=i-n:s===u?a=1/3+e-i:l===u&&(a=2/3+n-e),a<0?a+=1:a>1&&(a-=1)),[360*a,100*r,100*u]},a.rgb.hwb=function(t){var e=t[0],n=t[1],i=t[2];return[a.rgb.hsl(t)[0],100*(1/255*Math.min(e,Math.min(n,i))),100*(i=1-1/255*Math.max(e,Math.max(n,i)))]},a.rgb.cmyk=function(t){var e,n=t[0]/255,i=t[1]/255,a=t[2]/255;return[100*((1-n-(e=Math.min(1-n,1-i,1-a)))/(1-e)||0),100*((1-i-e)/(1-e)||0),100*((1-a-e)/(1-e)||0),100*e]},a.rgb.keyword=function(t){var i=n[t];if(i)return i;var a,r,o,s=1/0;for(var l in e)if(e.hasOwnProperty(l)){var u=e[l],d=(r=t,o=u,Math.pow(r[0]-o[0],2)+Math.pow(r[1]-o[1],2)+Math.pow(r[2]-o[2],2));d<s&&(s=d,a=l)}return a},a.keyword.rgb=function(t){return e[t]},a.rgb.xyz=function(t){var e=t[0]/255,n=t[1]/255,i=t[2]/255;return[100*(.4124*(e=e>.04045?Math.pow((e+.055)/1.055,2.4):e/12.92)+.3576*(n=n>.04045?Math.pow((n+.055)/1.055,2.4):n/12.92)+.1805*(i=i>.04045?Math.pow((i+.055)/1.055,2.4):i/12.92)),100*(.2126*e+.7152*n+.0722*i),100*(.0193*e+.1192*n+.9505*i)]},a.rgb.lab=function(t){var e=a.rgb.xyz(t),n=e[0],i=e[1],r=e[2];return i/=100,r/=108.883,n=(n/=95.047)>.008856?Math.pow(n,1/3):7.787*n+16/116,[116*(i=i>.008856?Math.pow(i,1/3):7.787*i+16/116)-16,500*(n-i),200*(i-(r=r>.008856?Math.pow(r,1/3):7.787*r+16/116))]},a.hsl.rgb=function(t){var e,n,i,a,r,o=t[0]/360,s=t[1]/100,l=t[2]/100;if(0===s)return[r=255*l,r,r];e=2*l-(n=l<.5?l*(1+s):l+s-l*s),a=[0,0,0];for(var u=0;u<3;u++)(i=o+1/3*-(u-1))<0&&i++,i>1&&i--,r=6*i<1?e+6*(n-e)*i:2*i<1?n:3*i<2?e+(n-e)*(2/3-i)*6:e,a[u]=255*r;return a},a.hsl.hsv=function(t){var e=t[0],n=t[1]/100,i=t[2]/100,a=n,r=Math.max(i,.01);return n*=(i*=2)<=1?i:2-i,a*=r<=1?r:2-r,[e,100*(0===i?2*a/(r+a):2*n/(i+n)),100*((i+n)/2)]},a.hsv.rgb=function(t){var e=t[0]/60,n=t[1]/100,i=t[2]/100,a=Math.floor(e)%6,r=e-Math.floor(e),o=255*i*(1-n),s=255*i*(1-n*r),l=255*i*(1-n*(1-r));switch(i*=255,a){case 0:return[i,l,o];case 1:return[s,i,o];case 2:return[o,i,l];case 3:return[o,s,i];case 4:return[l,o,i];case 5:return[i,o,s]}},a.hsv.hsl=function(t){var e,n,i,a=t[0],r=t[1]/100,o=t[2]/100,s=Math.max(o,.01);return i=(2-r)*o,n=r*s,[a,100*(n=(n/=(e=(2-r)*s)<=1?e:2-e)||0),100*(i/=2)]},a.hwb.rgb=function(t){var e,n,i,a,r,o,s,l=t[0]/360,u=t[1]/100,d=t[2]/100,h=u+d;switch(h>1&&(u/=h,d/=h),i=6*l-(e=Math.floor(6*l)),0!=(1&e)&&(i=1-i),a=u+i*((n=1-d)-u),e){default:case 6:case 0:r=n,o=a,s=u;break;case 1:r=a,o=n,s=u;break;case 2:r=u,o=n,s=a;break;case 3:r=u,o=a,s=n;break;case 4:r=a,o=u,s=n;break;case 5:r=n,o=u,s=a}return[255*r,255*o,255*s]},a.cmyk.rgb=function(t){var e=t[0]/100,n=t[1]/100,i=t[2]/100,a=t[3]/100;return[255*(1-Math.min(1,e*(1-a)+a)),255*(1-Math.min(1,n*(1-a)+a)),255*(1-Math.min(1,i*(1-a)+a))]},a.xyz.rgb=function(t){var e,n,i,a=t[0]/100,r=t[1]/100,o=t[2]/100;return n=-.9689*a+1.8758*r+.0415*o,i=.0557*a+-.204*r+1.057*o,e=(e=3.2406*a+-1.5372*r+-.4986*o)>.0031308?1.055*Math.pow(e,1/2.4)-.055:12.92*e,n=n>.0031308?1.055*Math.pow(n,1/2.4)-.055:12.92*n,i=i>.0031308?1.055*Math.pow(i,1/2.4)-.055:12.92*i,[255*(e=Math.min(Math.max(0,e),1)),255*(n=Math.min(Math.max(0,n),1)),255*(i=Math.min(Math.max(0,i),1))]},a.xyz.lab=function(t){var e=t[0],n=t[1],i=t[2];return n/=100,i/=108.883,e=(e/=95.047)>.008856?Math.pow(e,1/3):7.787*e+16/116,[116*(n=n>.008856?Math.pow(n,1/3):7.787*n+16/116)-16,500*(e-n),200*(n-(i=i>.008856?Math.pow(i,1/3):7.787*i+16/116))]},a.lab.xyz=function(t){var e,n,i,a=t[0];e=t[1]/500+(n=(a+16)/116),i=n-t[2]/200;var r=Math.pow(n,3),o=Math.pow(e,3),s=Math.pow(i,3);return n=r>.008856?r:(n-16/116)/7.787,e=o>.008856?o:(e-16/116)/7.787,i=s>.008856?s:(i-16/116)/7.787,[e*=95.047,n*=100,i*=108.883]},a.lab.lch=function(t){var e,n=t[0],i=t[1],a=t[2];return(e=360*Math.atan2(a,i)/2/Math.PI)<0&&(e+=360),[n,Math.sqrt(i*i+a*a),e]},a.lch.lab=function(t){var e,n=t[0],i=t[1];return e=t[2]/360*2*Math.PI,[n,i*Math.cos(e),i*Math.sin(e)]},a.rgb.ansi16=function(t){var e=t[0],n=t[1],i=t[2],r=1 in arguments?arguments[1]:a.rgb.hsv(t)[2];if(0===(r=Math.round(r/50)))return 30;var o=30+(Math.round(i/255)<<2|Math.round(n/255)<<1|Math.round(e/255));return 2===r&&(o+=60),o},a.hsv.ansi16=function(t){return a.rgb.ansi16(a.hsv.rgb(t),t[2])},a.rgb.ansi256=function(t){var e=t[0],n=t[1],i=t[2];return e===n&&n===i?e<8?16:e>248?231:Math.round((e-8)/247*24)+232:16+36*Math.round(e/255*5)+6*Math.round(n/255*5)+Math.round(i/255*5)},a.ansi16.rgb=function(t){var e=t%10;if(0===e||7===e)return t>50&&(e+=3.5),[e=e/10.5*255,e,e];var n=.5*(1+~~(t>50));return[(1&e)*n*255,(e>>1&1)*n*255,(e>>2&1)*n*255]},a.ansi256.rgb=function(t){if(t>=232){var e=10*(t-232)+8;return[e,e,e]}var n;return t-=16,[Math.floor(t/36)/5*255,Math.floor((n=t%36)/6)/5*255,n%6/5*255]},a.rgb.hex=function(t){var e=(((255&Math.round(t[0]))<<16)+((255&Math.round(t[1]))<<8)+(255&Math.round(t[2]))).toString(16).toUpperCase();return"000000".substring(e.length)+e},a.hex.rgb=function(t){var e=t.toString(16).match(/[a-f0-9]{6}|[a-f0-9]{3}/i);if(!e)return[0,0,0];var n=e[0];3===e[0].length&&(n=n.split("").map((function(t){return t+t})).join(""));var i=parseInt(n,16);return[i>>16&255,i>>8&255,255&i]},a.rgb.hcg=function(t){var e,n=t[0]/255,i=t[1]/255,a=t[2]/255,r=Math.max(Math.max(n,i),a),o=Math.min(Math.min(n,i),a),s=r-o;return e=s<=0?0:r===n?(i-a)/s%6:r===i?2+(a-n)/s:4+(n-i)/s+4,e/=6,[360*(e%=1),100*s,100*(s<1?o/(1-s):0)]},a.hsl.hcg=function(t){var e=t[1]/100,n=t[2]/100,i=1,a=0;return(i=n<.5?2*e*n:2*e*(1-n))<1&&(a=(n-.5*i)/(1-i)),[t[0],100*i,100*a]},a.hsv.hcg=function(t){var e=t[1]/100,n=t[2]/100,i=e*n,a=0;return i<1&&(a=(n-i)/(1-i)),[t[0],100*i,100*a]},a.hcg.rgb=function(t){var e=t[0]/360,n=t[1]/100,i=t[2]/100;if(0===n)return[255*i,255*i,255*i];var a,r=[0,0,0],o=e%1*6,s=o%1,l=1-s;switch(Math.floor(o)){case 0:r[0]=1,r[1]=s,r[2]=0;break;case 1:r[0]=l,r[1]=1,r[2]=0;break;case 2:r[0]=0,r[1]=1,r[2]=s;break;case 3:r[0]=0,r[1]=l,r[2]=1;break;case 4:r[0]=s,r[1]=0,r[2]=1;break;default:r[0]=1,r[1]=0,r[2]=l}return a=(1-n)*i,[255*(n*r[0]+a),255*(n*r[1]+a),255*(n*r[2]+a)]},a.hcg.hsv=function(t){var e=t[1]/100,n=e+t[2]/100*(1-e),i=0;return n>0&&(i=e/n),[t[0],100*i,100*n]},a.hcg.hsl=function(t){var e=t[1]/100,n=t[2]/100*(1-e)+.5*e,i=0;return n>0&&n<.5?i=e/(2*n):n>=.5&&n<1&&(i=e/(2*(1-n))),[t[0],100*i,100*n]},a.hcg.hwb=function(t){var e=t[1]/100,n=e+t[2]/100*(1-e);return[t[0],100*(n-e),100*(1-n)]},a.hwb.hcg=function(t){var e=t[1]/100,n=1-t[2]/100,i=n-e,a=0;return i<1&&(a=(n-i)/(1-i)),[t[0],100*i,100*a]},a.apple.rgb=function(t){return[t[0]/65535*255,t[1]/65535*255,t[2]/65535*255]},a.rgb.apple=function(t){return[t[0]/255*65535,t[1]/255*65535,t[2]/255*65535]},a.gray.rgb=function(t){return[t[0]/100*255,t[0]/100*255,t[0]/100*255]},a.gray.hsl=a.gray.hsv=function(t){return[0,0,t[0]]},a.gray.hwb=function(t){return[0,100,t[0]]},a.gray.cmyk=function(t){return[0,0,0,t[0]]},a.gray.lab=function(t){return[t[0],0,0]},a.gray.hex=function(t){var e=255&Math.round(t[0]/100*255),n=((e<<16)+(e<<8)+e).toString(16).toUpperCase();return"000000".substring(n.length)+n},a.rgb.gray=function(t){return[(t[0]+t[1]+t[2])/3/255*100]}}));n.rgb,n.hsl,n.hsv,n.hwb,n.cmyk,n.xyz,n.lab,n.lch,n.hex,n.keyword,n.ansi16,n.ansi256,n.hcg,n.apple,n.gray;function i(t){var e=function(){for(var t={},e=Object.keys(n),i=e.length,a=0;a<i;a++)t[e[a]]={distance:-1,parent:null};return t}(),i=[t];for(e[t].distance=0;i.length;)for(var a=i.pop(),r=Object.keys(n[a]),o=r.length,s=0;s<o;s++){var l=r[s],u=e[l];-1===u.distance&&(u.distance=e[a].distance+1,u.parent=a,i.unshift(l))}return e}function a(t,e){return function(n){return e(t(n))}}function r(t,e){for(var i=[e[t].parent,t],r=n[e[t].parent][t],o=e[t].parent;e[o].parent;)i.unshift(e[o].parent),r=a(n[e[o].parent][o],r),o=e[o].parent;return r.conversion=i,r}var o={};Object.keys(n).forEach((function(t){o[t]={},Object.defineProperty(o[t],"channels",{value:n[t].channels}),Object.defineProperty(o[t],"labels",{value:n[t].labels});var e=function(t){for(var e=i(t),n={},a=Object.keys(e),o=a.length,s=0;s<o;s++){var l=a[s];null!==e[l].parent&&(n[l]=r(l,e))}return n}(t);Object.keys(e).forEach((function(n){var i=e[n];o[t][n]=function(t){var e=function(e){if(null==e)return e;arguments.length>1&&(e=Array.prototype.slice.call(arguments));var n=t(e);if("object"==typeof n)for(var i=n.length,a=0;a<i;a++)n[a]=Math.round(n[a]);return n};return"conversion"in t&&(e.conversion=t.conversion),e}(i),o[t][n].raw=function(t){var e=function(e){return null==e?e:(arguments.length>1&&(e=Array.prototype.slice.call(arguments)),t(e))};return"conversion"in t&&(e.conversion=t.conversion),e}(i)}))}));var s=o,l={aliceblue:[240,248,255],antiquewhite:[250,235,215],aqua:[0,255,255],aquamarine:[127,255,212],azure:[240,255,255],beige:[245,245,220],bisque:[255,228,196],black:[0,0,0],blanchedalmond:[255,235,205],blue:[0,0,255],blueviolet:[138,43,226],brown:[165,42,42],burlywood:[222,184,135],cadetblue:[95,158,160],chartreuse:[127,255,0],chocolate:[210,105,30],coral:[255,127,80],cornflowerblue:[100,149,237],cornsilk:[255,248,220],crimson:[220,20,60],cyan:[0,255,255],darkblue:[0,0,139],darkcyan:[0,139,139],darkgoldenrod:[184,134,11],darkgray:[169,169,169],darkgreen:[0,100,0],darkgrey:[169,169,169],darkkhaki:[189,183,107],darkmagenta:[139,0,139],darkolivegreen:[85,107,47],darkorange:[255,140,0],darkorchid:[153,50,204],darkred:[139,0,0],darksalmon:[233,150,122],darkseagreen:[143,188,143],darkslateblue:[72,61,139],darkslategray:[47,79,79],darkslategrey:[47,79,79],darkturquoise:[0,206,209],darkviolet:[148,0,211],deeppink:[255,20,147],deepskyblue:[0,191,255],dimgray:[105,105,105],dimgrey:[105,105,105],dodgerblue:[30,144,255],firebrick:[178,34,34],floralwhite:[255,250,240],forestgreen:[34,139,34],fuchsia:[255,0,255],gainsboro:[220,220,220],ghostwhite:[248,248,255],gold:[255,215,0],goldenrod:[218,165,32],gray:[128,128,128],green:[0,128,0],greenyellow:[173,255,47],grey:[128,128,128],honeydew:[240,255,240],hotpink:[255,105,180],indianred:[205,92,92],indigo:[75,0,130],ivory:[255,255,240],khaki:[240,230,140],lavender:[230,230,250],lavenderblush:[255,240,245],lawngreen:[124,252,0],lemonchiffon:[255,250,205],lightblue:[173,216,230],lightcoral:[240,128,128],lightcyan:[224,255,255],lightgoldenrodyellow:[250,250,210],lightgray:[211,211,211],lightgreen:[144,238,144],lightgrey:[211,211,211],lightpink:[255,182,193],lightsalmon:[255,160,122],lightseagreen:[32,178,170],lightskyblue:[135,206,250],lightslategray:[119,136,153],lightslategrey:[119,136,153],lightsteelblue:[176,196,222],lightyellow:[255,255,224],lime:[0,255,0],limegreen:[50,205,50],linen:[250,240,230],magenta:[255,0,255],maroon:[128,0,0],mediumaquamarine:[102,205,170],mediumblue:[0,0,205],mediumorchid:[186,85,211],mediumpurple:[147,112,219],mediumseagreen:[60,179,113],mediumslateblue:[123,104,238],mediumspringgreen:[0,250,154],mediumturquoise:[72,209,204],mediumvioletred:[199,21,133],midnightblue:[25,25,112],mintcream:[245,255,250],mistyrose:[255,228,225],moccasin:[255,228,181],navajowhite:[255,222,173],navy:[0,0,128],oldlace:[253,245,230],olive:[128,128,0],olivedrab:[107,142,35],orange:[255,165,0],orangered:[255,69,0],orchid:[218,112,214],palegoldenrod:[238,232,170],palegreen:[152,251,152],paleturquoise:[175,238,238],palevioletred:[219,112,147],papayawhip:[255,239,213],peachpuff:[255,218,185],peru:[205,133,63],pink:[255,192,203],plum:[221,160,221],powderblue:[176,224,230],purple:[128,0,128],rebeccapurple:[102,51,153],red:[255,0,0],rosybrown:[188,143,143],royalblue:[65,105,225],saddlebrown:[139,69,19],salmon:[250,128,114],sandybrown:[244,164,96],seagreen:[46,139,87],seashell:[255,245,238],sienna:[160,82,45],silver:[192,192,192],skyblue:[135,206,235],slateblue:[106,90,205],slategray:[112,128,144],slategrey:[112,128,144],snow:[255,250,250],springgreen:[0,255,127],steelblue:[70,130,180],tan:[210,180,140],teal:[0,128,128],thistle:[216,191,216],tomato:[255,99,71],turquoise:[64,224,208],violet:[238,130,238],wheat:[245,222,179],white:[255,255,255],whitesmoke:[245,245,245],yellow:[255,255,0],yellowgreen:[154,205,50]},u={getRgba:d,getHsla:h,getRgb:function(t){var e=d(t);return e&&e.slice(0,3)},getHsl:function(t){var e=h(t);return e&&e.slice(0,3)},getHwb:c,getAlpha:function(t){var e=d(t);if(e)return e[3];if(e=h(t))return e[3];if(e=c(t))return e[3]},hexString:function(t,e){e=void 0!==e&&3===t.length?e:t[3];return"#"+v(t[0])+v(t[1])+v(t[2])+(e>=0&&e<1?v(Math.round(255*e)):"")},rgbString:function(t,e){if(e<1||t[3]&&t[3]<1)return f(t,e);return"rgb("+t[0]+", "+t[1]+", "+t[2]+")"},rgbaString:f,percentString:function(t,e){if(e<1||t[3]&&t[3]<1)return g(t,e);var n=Math.round(t[0]/255*100),i=Math.round(t[1]/255*100),a=Math.round(t[2]/255*100);return"rgb("+n+"%, "+i+"%, "+a+"%)"},percentaString:g,hslString:function(t,e){if(e<1||t[3]&&t[3]<1)return p(t,e);return"hsl("+t[0]+", "+t[1]+"%, "+t[2]+"%)"},hslaString:p,hwbString:function(t,e){void 0===e&&(e=void 0!==t[3]?t[3]:1);return"hwb("+t[0]+", "+t[1]+"%, "+t[2]+"%"+(void 0!==e&&1!==e?", "+e:"")+")"},keyword:function(t){return b[t.slice(0,3)]}};function d(t){if(t){var e=[0,0,0],n=1,i=t.match(/^#([a-fA-F0-9]{3,4})$/i),a="";if(i){a=(i=i[1])[3];for(var r=0;r<e.length;r++)e[r]=parseInt(i[r]+i[r],16);a&&(n=Math.round(parseInt(a+a,16)/255*100)/100)}else if(i=t.match(/^#([a-fA-F0-9]{6}([a-fA-F0-9]{2})?)$/i)){a=i[2],i=i[1];for(r=0;r<e.length;r++)e[r]=parseInt(i.slice(2*r,2*r+2),16);a&&(n=Math.round(parseInt(a,16)/255*100)/100)}else if(i=t.match(/^rgba?\(\s*([+-]?\d+)\s*,\s*([+-]?\d+)\s*,\s*([+-]?\d+)\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)$/i)){for(r=0;r<e.length;r++)e[r]=parseInt(i[r+1]);n=parseFloat(i[4])}else if(i=t.match(/^rgba?\(\s*([+-]?[\d\.]+)\%\s*,\s*([+-]?[\d\.]+)\%\s*,\s*([+-]?[\d\.]+)\%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)$/i)){for(r=0;r<e.length;r++)e[r]=Math.round(2.55*parseFloat(i[r+1]));n=parseFloat(i[4])}else if(i=t.match(/(\w+)/)){if("transparent"==i[1])return[0,0,0,0];if(!(e=l[i[1]]))return}for(r=0;r<e.length;r++)e[r]=m(e[r],0,255);return n=n||0==n?m(n,0,1):1,e[3]=n,e}}function h(t){if(t){var e=t.match(/^hsla?\(\s*([+-]?\d+)(?:deg)?\s*,\s*([+-]?[\d\.]+)%\s*,\s*([+-]?[\d\.]+)%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)/);if(e){var n=parseFloat(e[4]);return[m(parseInt(e[1]),0,360),m(parseFloat(e[2]),0,100),m(parseFloat(e[3]),0,100),m(isNaN(n)?1:n,0,1)]}}}function c(t){if(t){var e=t.match(/^hwb\(\s*([+-]?\d+)(?:deg)?\s*,\s*([+-]?[\d\.]+)%\s*,\s*([+-]?[\d\.]+)%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)/);if(e){var n=parseFloat(e[4]);return[m(parseInt(e[1]),0,360),m(parseFloat(e[2]),0,100),m(parseFloat(e[3]),0,100),m(isNaN(n)?1:n,0,1)]}}}function f(t,e){return void 0===e&&(e=void 0!==t[3]?t[3]:1),"rgba("+t[0]+", "+t[1]+", "+t[2]+", "+e+")"}function g(t,e){return"rgba("+Math.round(t[0]/255*100)+"%, "+Math.round(t[1]/255*100)+"%, "+Math.round(t[2]/255*100)+"%, "+(e||t[3]||1)+")"}function p(t,e){return void 0===e&&(e=void 0!==t[3]?t[3]:1),"hsla("+t[0]+", "+t[1]+"%, "+t[2]+"%, "+e+")"}function m(t,e,n){return Math.min(Math.max(e,t),n)}function v(t){var e=t.toString(16).toUpperCase();return e.length<2?"0"+e:e}var b={};for(var x in l)b[l[x]]=x;var y=function(t){return t instanceof y?t:this instanceof y?(this.valid=!1,this.values={rgb:[0,0,0],hsl:[0,0,0],hsv:[0,0,0],hwb:[0,0,0],cmyk:[0,0,0,0],alpha:1},void("string"==typeof t?(e=u.getRgba(t))?this.setValues("rgb",e):(e=u.getHsla(t))?this.setValues("hsl",e):(e=u.getHwb(t))&&this.setValues("hwb",e):"object"==typeof t&&(void 0!==(e=t).r||void 0!==e.red?this.setValues("rgb",e):void 0!==e.l||void 0!==e.lightness?this.setValues("hsl",e):void 0!==e.v||void 0!==e.value?this.setValues("hsv",e):void 0!==e.w||void 0!==e.whiteness?this.setValues("hwb",e):void 0===e.c&&void 0===e.cyan||this.setValues("cmyk",e)))):new y(t);var e};y.prototype={isValid:function(){return this.valid},rgb:function(){return this.setSpace("rgb",arguments)},hsl:function(){return this.setSpace("hsl",arguments)},hsv:function(){return this.setSpace("hsv",arguments)},hwb:function(){return this.setSpace("hwb",arguments)},cmyk:function(){return this.setSpace("cmyk",arguments)},rgbArray:function(){return this.values.rgb},hslArray:function(){return this.values.hsl},hsvArray:function(){return this.values.hsv},hwbArray:function(){var t=this.values;return 1!==t.alpha?t.hwb.concat([t.alpha]):t.hwb},cmykArray:function(){return this.values.cmyk},rgbaArray:function(){var t=this.values;return t.rgb.concat([t.alpha])},hslaArray:function(){var t=this.values;return t.hsl.concat([t.alpha])},alpha:function(t){return void 0===t?this.values.alpha:(this.setValues("alpha",t),this)},red:function(t){return this.setChannel("rgb",0,t)},green:function(t){return this.setChannel("rgb",1,t)},blue:function(t){return this.setChannel("rgb",2,t)},hue:function(t){return t&&(t=(t%=360)<0?360+t:t),this.setChannel("hsl",0,t)},saturation:function(t){return this.setChannel("hsl",1,t)},lightness:function(t){return this.setChannel("hsl",2,t)},saturationv:function(t){return this.setChannel("hsv",1,t)},whiteness:function(t){return this.setChannel("hwb",1,t)},blackness:function(t){return this.setChannel("hwb",2,t)},value:function(t){return this.setChannel("hsv",2,t)},cyan:function(t){return this.setChannel("cmyk",0,t)},magenta:function(t){return this.setChannel("cmyk",1,t)},yellow:function(t){return this.setChannel("cmyk",2,t)},black:function(t){return this.setChannel("cmyk",3,t)},hexString:function(){return u.hexString(this.values.rgb)},rgbString:function(){return u.rgbString(this.values.rgb,this.values.alpha)},rgbaString:function(){return u.rgbaString(this.values.rgb,this.values.alpha)},percentString:function(){return u.percentString(this.values.rgb,this.values.alpha)},hslString:function(){return u.hslString(this.values.hsl,this.values.alpha)},hslaString:function(){return u.hslaString(this.values.hsl,this.values.alpha)},hwbString:function(){return u.hwbString(this.values.hwb,this.values.alpha)},keyword:function(){return u.keyword(this.values.rgb,this.values.alpha)},rgbNumber:function(){var t=this.values.rgb;return t[0]<<16|t[1]<<8|t[2]},luminosity:function(){for(var t=this.values.rgb,e=[],n=0;n<t.length;n++){var i=t[n]/255;e[n]=i<=.03928?i/12.92:Math.pow((i+.055)/1.055,2.4)}return.2126*e[0]+.7152*e[1]+.0722*e[2]},contrast:function(t){var e=this.luminosity(),n=t.luminosity();return e>n?(e+.05)/(n+.05):(n+.05)/(e+.05)},level:function(t){var e=this.contrast(t);return e>=7.1?"AAA":e>=4.5?"AA":""},dark:function(){var t=this.values.rgb;return(299*t[0]+587*t[1]+114*t[2])/1e3<128},light:function(){return!this.dark()},negate:function(){for(var t=[],e=0;e<3;e++)t[e]=255-this.values.rgb[e];return this.setValues("rgb",t),this},lighten:function(t){var e=this.values.hsl;return e[2]+=e[2]*t,this.setValues("hsl",e),this},darken:function(t){var e=this.values.hsl;return e[2]-=e[2]*t,this.setValues("hsl",e),this},saturate:function(t){var e=this.values.hsl;return e[1]+=e[1]*t,this.setValues("hsl",e),this},desaturate:function(t){var e=this.values.hsl;return e[1]-=e[1]*t,this.setValues("hsl",e),this},whiten:function(t){var e=this.values.hwb;return e[1]+=e[1]*t,this.setValues("hwb",e),this},blacken:function(t){var e=this.values.hwb;return e[2]+=e[2]*t,this.setValues("hwb",e),this},greyscale:function(){var t=this.values.rgb,e=.3*t[0]+.59*t[1]+.11*t[2];return this.setValues("rgb",[e,e,e]),this},clearer:function(t){var e=this.values.alpha;return this.setValues("alpha",e-e*t),this},opaquer:function(t){var e=this.values.alpha;return this.setValues("alpha",e+e*t),this},rotate:function(t){var e=this.values.hsl,n=(e[0]+t)%360;return e[0]=n<0?360+n:n,this.setValues("hsl",e),this},mix:function(t,e){var n=t,i=void 0===e?.5:e,a=2*i-1,r=this.alpha()-n.alpha(),o=((a*r==-1?a:(a+r)/(1+a*r))+1)/2,s=1-o;return this.rgb(o*this.red()+s*n.red(),o*this.green()+s*n.green(),o*this.blue()+s*n.blue()).alpha(this.alpha()*i+n.alpha()*(1-i))},toJSON:function(){return this.rgb()},clone:function(){var t,e,n=new y,i=this.values,a=n.values;for(var r in i)i.hasOwnProperty(r)&&(t=i[r],"[object Array]"===(e={}.toString.call(t))?a[r]=t.slice(0):"[object Number]"===e?a[r]=t:console.error("unexpected color value:",t));return n}},y.prototype.spaces={rgb:["red","green","blue"],hsl:["hue","saturation","lightness"],hsv:["hue","saturation","value"],hwb:["hue","whiteness","blackness"],cmyk:["cyan","magenta","yellow","black"]},y.prototype.maxes={rgb:[255,255,255],hsl:[360,100,100],hsv:[360,100,100],hwb:[360,100,100],cmyk:[100,100,100,100]},y.prototype.getValues=function(t){for(var e=this.values,n={},i=0;i<t.length;i++)n[t.charAt(i)]=e[t][i];return 1!==e.alpha&&(n.a=e.alpha),n},y.prototype.setValues=function(t,e){var n,i,a=this.values,r=this.spaces,o=this.maxes,l=1;if(this.valid=!0,"alpha"===t)l=e;else if(e.length)a[t]=e.slice(0,t.length),l=e[t.length];else if(void 0!==e[t.charAt(0)]){for(n=0;n<t.length;n++)a[t][n]=e[t.charAt(n)];l=e.a}else if(void 0!==e[r[t][0]]){var u=r[t];for(n=0;n<t.length;n++)a[t][n]=e[u[n]];l=e.alpha}if(a.alpha=Math.max(0,Math.min(1,void 0===l?a.alpha:l)),"alpha"===t)return!1;for(n=0;n<t.length;n++)i=Math.max(0,Math.min(o[t][n],a[t][n])),a[t][n]=Math.round(i);for(var d in r)d!==t&&(a[d]=s[t][d](a[t]));return!0},y.prototype.setSpace=function(t,e){var n=e[0];return void 0===n?this.getValues(t):("number"==typeof n&&(n=Array.prototype.slice.call(e)),this.setValues(t,n),this)},y.prototype.setChannel=function(t,e,n){var i=this.values[t];return void 0===n?i[e]:n===i[e]?this:(i[e]=n,this.setValues(t,i),this)},"undefined"!=typeof window&&(window.Color=y);var _,k=y,w={noop:function(){},uid:(_=0,function(){return _++}),isNullOrUndef:function(t){return null==t},isArray:function(t){if(Array.isArray&&Array.isArray(t))return!0;var e=Object.prototype.toString.call(t);return"[object"===e.substr(0,7)&&"Array]"===e.substr(-6)},isObject:function(t){return null!==t&&"[object Object]"===Object.prototype.toString.call(t)},isFinite:function(t){return("number"==typeof t||t instanceof Number)&&isFinite(t)},valueOrDefault:function(t,e){return void 0===t?e:t},valueAtIndexOrDefault:function(t,e,n){return w.valueOrDefault(w.isArray(t)?t[e]:t,n)},callback:function(t,e,n){if(t&&"function"==typeof t.call)return t.apply(n,e)},each:function(t,e,n,i){var a,r,o;if(w.isArray(t))if(r=t.length,i)for(a=r-1;a>=0;a--)e.call(n,t[a],a);else for(a=0;a<r;a++)e.call(n,t[a],a);else if(w.isObject(t))for(r=(o=Object.keys(t)).length,a=0;a<r;a++)e.call(n,t[o[a]],o[a])},arrayEquals:function(t,e){var n,i,a,r;if(!t||!e||t.length!==e.length)return!1;for(n=0,i=t.length;n<i;++n)if(a=t[n],r=e[n],a instanceof Array&&r instanceof Array){if(!w.arrayEquals(a,r))return!1}else if(a!==r)return!1;return!0},clone:function(t){if(w.isArray(t))return t.map(w.clone);if(w.isObject(t)){for(var e={},n=Object.keys(t),i=n.length,a=0;a<i;++a)e[n[a]]=w.clone(t[n[a]]);return e}return t},_merger:function(t,e,n,i){var a=e[t],r=n[t];w.isObject(a)&&w.isObject(r)?w.merge(a,r,i):e[t]=w.clone(r)},_mergerIf:function(t,e,n){var i=e[t],a=n[t];w.isObject(i)&&w.isObject(a)?w.mergeIf(i,a):e.hasOwnProperty(t)||(e[t]=w.clone(a))},merge:function(t,e,n){var i,a,r,o,s,l=w.isArray(e)?e:[e],u=l.length;if(!w.isObject(t))return t;for(i=(n=n||{}).merger||w._merger,a=0;a<u;++a)if(e=l[a],w.isObject(e))for(s=0,o=(r=Object.keys(e)).length;s<o;++s)i(r[s],t,e,n);return t},mergeIf:function(t,e){return w.merge(t,e,{merger:w._mergerIf})},extend:Object.assign||function(t){return w.merge(t,[].slice.call(arguments,1),{merger:function(t,e,n){e[t]=n[t]}})},inherits:function(t){var e=this,n=t&&t.hasOwnProperty("constructor")?t.constructor:function(){return e.apply(this,arguments)},i=function(){this.constructor=n};return i.prototype=e.prototype,n.prototype=new i,n.extend=w.inherits,t&&w.extend(n.prototype,t),n.__super__=e.prototype,n},_deprecated:function(t,e,n,i){void 0!==e&&console.warn(t+': "'+n+'" is deprecated. Please use "'+i+'" instead')}},M=w;w.callCallback=w.callback,w.indexOf=function(t,e,n){return Array.prototype.indexOf.call(t,e,n)},w.getValueOrDefault=w.valueOrDefault,w.getValueAtIndexOrDefault=w.valueAtIndexOrDefault;var S={linear:function(t){return t},easeInQuad:function(t){return t*t},easeOutQuad:function(t){return-t*(t-2)},easeInOutQuad:function(t){return(t/=.5)<1?.5*t*t:-.5*(--t*(t-2)-1)},easeInCubic:function(t){return t*t*t},easeOutCubic:function(t){return(t-=1)*t*t+1},easeInOutCubic:function(t){return(t/=.5)<1?.5*t*t*t:.5*((t-=2)*t*t+2)},easeInQuart:function(t){return t*t*t*t},easeOutQuart:function(t){return-((t-=1)*t*t*t-1)},easeInOutQuart:function(t){return(t/=.5)<1?.5*t*t*t*t:-.5*((t-=2)*t*t*t-2)},easeInQuint:function(t){return t*t*t*t*t},easeOutQuint:function(t){return(t-=1)*t*t*t*t+1},easeInOutQuint:function(t){return(t/=.5)<1?.5*t*t*t*t*t:.5*((t-=2)*t*t*t*t+2)},easeInSine:function(t){return 1-Math.cos(t*(Math.PI/2))},easeOutSine:function(t){return Math.sin(t*(Math.PI/2))},easeInOutSine:function(t){return-.5*(Math.cos(Math.PI*t)-1)},easeInExpo:function(t){return 0===t?0:Math.pow(2,10*(t-1))},easeOutExpo:function(t){return 1===t?1:1-Math.pow(2,-10*t)},easeInOutExpo:function(t){return 0===t?0:1===t?1:(t/=.5)<1?.5*Math.pow(2,10*(t-1)):.5*(2-Math.pow(2,-10*--t))},easeInCirc:function(t){return t>=1?t:-(Math.sqrt(1-t*t)-1)},easeOutCirc:function(t){return Math.sqrt(1-(t-=1)*t)},easeInOutCirc:function(t){return(t/=.5)<1?-.5*(Math.sqrt(1-t*t)-1):.5*(Math.sqrt(1-(t-=2)*t)+1)},easeInElastic:function(t){var e=1.70158,n=0,i=1;return 0===t?0:1===t?1:(n||(n=.3),i<1?(i=1,e=n/4):e=n/(2*Math.PI)*Math.asin(1/i),-i*Math.pow(2,10*(t-=1))*Math.sin((t-e)*(2*Math.PI)/n))},easeOutElastic:function(t){var e=1.70158,n=0,i=1;return 0===t?0:1===t?1:(n||(n=.3),i<1?(i=1,e=n/4):e=n/(2*Math.PI)*Math.asin(1/i),i*Math.pow(2,-10*t)*Math.sin((t-e)*(2*Math.PI)/n)+1)},easeInOutElastic:function(t){var e=1.70158,n=0,i=1;return 0===t?0:2==(t/=.5)?1:(n||(n=.45),i<1?(i=1,e=n/4):e=n/(2*Math.PI)*Math.asin(1/i),t<1?i*Math.pow(2,10*(t-=1))*Math.sin((t-e)*(2*Math.PI)/n)*-.5:i*Math.pow(2,-10*(t-=1))*Math.sin((t-e)*(2*Math.PI)/n)*.5+1)},easeInBack:function(t){var e=1.70158;return t*t*((e+1)*t-e)},easeOutBack:function(t){var e=1.70158;return(t-=1)*t*((e+1)*t+e)+1},easeInOutBack:function(t){var e=1.70158;return(t/=.5)<1?t*t*((1+(e*=1.525))*t-e)*.5:.5*((t-=2)*t*((1+(e*=1.525))*t+e)+2)},easeInBounce:function(t){return 1-S.easeOutBounce(1-t)},easeOutBounce:function(t){return t<1/2.75?7.5625*t*t:t<2/2.75?7.5625*(t-=1.5/2.75)*t+.75:t<2.5/2.75?7.5625*(t-=2.25/2.75)*t+.9375:7.5625*(t-=2.625/2.75)*t+.984375},easeInOutBounce:function(t){return t<.5?.5*S.easeInBounce(2*t):.5*S.easeOutBounce(2*t-1)+.5}},C={effects:S};M.easingEffects=S;var P=Math.PI,A=P/180,D=2*P,T=P/2,I=P/4,F=2*P/3,L={clear:function(t){t.ctx.clearRect(0,0,t.width,t.height)},roundedRect:function(t,e,n,i,a,r){if(r){var o=Math.min(r,a/2,i/2),s=e+o,l=n+o,u=e+i-o,d=n+a-o;t.moveTo(e,l),s<u&&l<d?(t.arc(s,l,o,-P,-T),t.arc(u,l,o,-T,0),t.arc(u,d,o,0,T),t.arc(s,d,o,T,P)):s<u?(t.moveTo(s,n),t.arc(u,l,o,-T,T),t.arc(s,l,o,T,P+T)):l<d?(t.arc(s,l,o,-P,0),t.arc(s,d,o,0,P)):t.arc(s,l,o,-P,P),t.closePath(),t.moveTo(e,n)}else t.rect(e,n,i,a)},drawPoint:function(t,e,n,i,a,r){var o,s,l,u,d,h=(r||0)*A;if(e&&"object"==typeof e&&("[object HTMLImageElement]"===(o=e.toString())||"[object HTMLCanvasElement]"===o))return t.save(),t.translate(i,a),t.rotate(h),t.drawImage(e,-e.width/2,-e.height/2,e.width,e.height),void t.restore();if(!(isNaN(n)||n<=0)){switch(t.beginPath(),e){default:t.arc(i,a,n,0,D),t.closePath();break;case"triangle":t.moveTo(i+Math.sin(h)*n,a-Math.cos(h)*n),h+=F,t.lineTo(i+Math.sin(h)*n,a-Math.cos(h)*n),h+=F,t.lineTo(i+Math.sin(h)*n,a-Math.cos(h)*n),t.closePath();break;case"rectRounded":u=n-(d=.516*n),s=Math.cos(h+I)*u,l=Math.sin(h+I)*u,t.arc(i-s,a-l,d,h-P,h-T),t.arc(i+l,a-s,d,h-T,h),t.arc(i+s,a+l,d,h,h+T),t.arc(i-l,a+s,d,h+T,h+P),t.closePath();break;case"rect":if(!r){u=Math.SQRT1_2*n,t.rect(i-u,a-u,2*u,2*u);break}h+=I;case"rectRot":s=Math.cos(h)*n,l=Math.sin(h)*n,t.moveTo(i-s,a-l),t.lineTo(i+l,a-s),t.lineTo(i+s,a+l),t.lineTo(i-l,a+s),t.closePath();break;case"crossRot":h+=I;case"cross":s=Math.cos(h)*n,l=Math.sin(h)*n,t.moveTo(i-s,a-l),t.lineTo(i+s,a+l),t.moveTo(i+l,a-s),t.lineTo(i-l,a+s);break;case"star":s=Math.cos(h)*n,l=Math.sin(h)*n,t.moveTo(i-s,a-l),t.lineTo(i+s,a+l),t.moveTo(i+l,a-s),t.lineTo(i-l,a+s),h+=I,s=Math.cos(h)*n,l=Math.sin(h)*n,t.moveTo(i-s,a-l),t.lineTo(i+s,a+l),t.moveTo(i+l,a-s),t.lineTo(i-l,a+s);break;case"line":s=Math.cos(h)*n,l=Math.sin(h)*n,t.moveTo(i-s,a-l),t.lineTo(i+s,a+l);break;case"dash":t.moveTo(i,a),t.lineTo(i+Math.cos(h)*n,a+Math.sin(h)*n)}t.fill(),t.stroke()}},_isPointInArea:function(t,e){return t.x>e.left-1e-6&&t.x<e.right+1e-6&&t.y>e.top-1e-6&&t.y<e.bottom+1e-6},clipArea:function(t,e){t.save(),t.beginPath(),t.rect(e.left,e.top,e.right-e.left,e.bottom-e.top),t.clip()},unclipArea:function(t){t.restore()},lineTo:function(t,e,n,i){var a=n.steppedLine;if(a){if("middle"===a){var r=(e.x+n.x)/2;t.lineTo(r,i?n.y:e.y),t.lineTo(r,i?e.y:n.y)}else"after"===a&&!i||"after"!==a&&i?t.lineTo(e.x,n.y):t.lineTo(n.x,e.y);t.lineTo(n.x,n.y)}else n.tension?t.bezierCurveTo(i?e.controlPointPreviousX:e.controlPointNextX,i?e.controlPointPreviousY:e.controlPointNextY,i?n.controlPointNextX:n.controlPointPreviousX,i?n.controlPointNextY:n.controlPointPreviousY,n.x,n.y):t.lineTo(n.x,n.y)}},O=L;M.clear=L.clear,M.drawRoundedRectangle=function(t){t.beginPath(),L.roundedRect.apply(L,arguments)};var R={_set:function(t,e){return M.merge(this[t]||(this[t]={}),e)}};R._set("global",{defaultColor:"rgba(0,0,0,0.1)",defaultFontColor:"#666",defaultFontFamily:"'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",defaultFontSize:12,defaultFontStyle:"normal",defaultLineHeight:1.2,showLines:!0});var z=R,N=M.valueOrDefault;var B={toLineHeight:function(t,e){var n=(""+t).match(/^(normal|(\d+(?:\.\d+)?)(px|em|%)?)$/);if(!n||"normal"===n[1])return 1.2*e;switch(t=+n[2],n[3]){case"px":return t;case"%":t/=100}return e*t},toPadding:function(t){var e,n,i,a;return M.isObject(t)?(e=+t.top||0,n=+t.right||0,i=+t.bottom||0,a=+t.left||0):e=n=i=a=+t||0,{top:e,right:n,bottom:i,left:a,height:e+i,width:a+n}},_parseFont:function(t){var e=z.global,n=N(t.fontSize,e.defaultFontSize),i={family:N(t.fontFamily,e.defaultFontFamily),lineHeight:M.options.toLineHeight(N(t.lineHeight,e.defaultLineHeight),n),size:n,style:N(t.fontStyle,e.defaultFontStyle),weight:null,string:""};return i.string=function(t){return!t||M.isNullOrUndef(t.size)||M.isNullOrUndef(t.family)?null:(t.style?t.style+" ":"")+(t.weight?t.weight+" ":"")+t.size+"px "+t.family}(i),i},resolve:function(t,e,n,i){var a,r,o,s=!0;for(a=0,r=t.length;a<r;++a)if(void 0!==(o=t[a])&&(void 0!==e&&"function"==typeof o&&(o=o(e),s=!1),void 0!==n&&M.isArray(o)&&(o=o[n],s=!1),void 0!==o))return i&&!s&&(i.cacheable=!1),o}},E={_factorize:function(t){var e,n=[],i=Math.sqrt(t);for(e=1;e<i;e++)t%e==0&&(n.push(e),n.push(t/e));return i===(0|i)&&n.push(i),n.sort((function(t,e){return t-e})).pop(),n},log10:Math.log10||function(t){var e=Math.log(t)*Math.LOG10E,n=Math.round(e);return t===Math.pow(10,n)?n:e}},W=E;M.log10=E.log10;var V=M,H=C,j=O,q=B,U=W,Y={getRtlAdapter:function(t,e,n){return t?function(t,e){return{x:function(n){return t+t+e-n},setWidth:function(t){e=t},textAlign:function(t){return"center"===t?t:"right"===t?"left":"right"},xPlus:function(t,e){return t-e},leftForLtr:function(t,e){return t-e}}}(e,n):{x:function(t){return t},setWidth:function(t){},textAlign:function(t){return t},xPlus:function(t,e){return t+e},leftForLtr:function(t,e){return t}}},overrideTextDirection:function(t,e){var n,i;"ltr"!==e&&"rtl"!==e||(i=[(n=t.canvas.style).getPropertyValue("direction"),n.getPropertyPriority("direction")],n.setProperty("direction",e,"important"),t.prevTextDirection=i)},restoreTextDirection:function(t){var e=t.prevTextDirection;void 0!==e&&(delete t.prevTextDirection,t.canvas.style.setProperty("direction",e[0],e[1]))}};V.easing=H,V.canvas=j,V.options=q,V.math=U,V.rtl=Y;var G=function(t){V.extend(this,t),this.initialize.apply(this,arguments)};V.extend(G.prototype,{_type:void 0,initialize:function(){this.hidden=!1},pivot:function(){var t=this;return t._view||(t._view=V.extend({},t._model)),t._start={},t},transition:function(t){var e=this,n=e._model,i=e._start,a=e._view;return n&&1!==t?(a||(a=e._view={}),i||(i=e._start={}),function(t,e,n,i){var a,r,o,s,l,u,d,h,c,f=Object.keys(n);for(a=0,r=f.length;a<r;++a)if(u=n[o=f[a]],e.hasOwnProperty(o)||(e[o]=u),(s=e[o])!==u&&"_"!==o[0]){if(t.hasOwnProperty(o)||(t[o]=s),(d=typeof u)===typeof(l=t[o]))if("string"===d){if((h=k(l)).valid&&(c=k(u)).valid){e[o]=c.mix(h,i).rgbString();continue}}else if(V.isFinite(l)&&V.isFinite(u)){e[o]=l+(u-l)*i;continue}e[o]=u}}(i,a,n,t),e):(e._view=V.extend({},n),e._start=null,e)},tooltipPosition:function(){return{x:this._model.x,y:this._model.y}},hasValue:function(){return V.isNumber(this._model.x)&&V.isNumber(this._model.y)}}),G.extend=V.inherits;var X=G,K=X.extend({chart:null,currentStep:0,numSteps:60,easing:"",render:null,onAnimationProgress:null,onAnimationComplete:null}),Z=K;Object.defineProperty(K.prototype,"animationObject",{get:function(){return this}}),Object.defineProperty(K.prototype,"chartInstance",{get:function(){return this.chart},set:function(t){this.chart=t}}),z._set("global",{animation:{duration:1e3,easing:"easeOutQuart",onProgress:V.noop,onComplete:V.noop}});var $={animations:[],request:null,addAnimation:function(t,e,n,i){var a,r,o=this.animations;for(e.chart=t,e.startTime=Date.now(),e.duration=n,i||(t.animating=!0),a=0,r=o.length;a<r;++a)if(o[a].chart===t)return void(o[a]=e);o.push(e),1===o.length&&this.requestAnimationFrame()},cancelAnimation:function(t){var e=V.findIndex(this.animations,(function(e){return e.chart===t}));-1!==e&&(this.animations.splice(e,1),t.animating=!1)},requestAnimationFrame:function(){var t=this;null===t.request&&(t.request=V.requestAnimFrame.call(window,(function(){t.request=null,t.startDigest()})))},startDigest:function(){this.advance(),this.animations.length>0&&this.requestAnimationFrame()},advance:function(){for(var t,e,n,i,a=this.animations,r=0;r<a.length;)e=(t=a[r]).chart,n=t.numSteps,i=Math.floor((Date.now()-t.startTime)/t.duration*n)+1,t.currentStep=Math.min(i,n),V.callback(t.render,[e,t],e),V.callback(t.onAnimationProgress,[t],e),t.currentStep>=n?(V.callback(t.onAnimationComplete,[t],e),e.animating=!1,a.splice(r,1)):++r}},J=V.options.resolve,Q=["push","pop","shift","splice","unshift"];function tt(t,e){var n=t._chartjs;if(n){var i=n.listeners,a=i.indexOf(e);-1!==a&&i.splice(a,1),i.length>0||(Q.forEach((function(e){delete t[e]})),delete t._chartjs)}}var et=function(t,e){this.initialize(t,e)};V.extend(et.prototype,{datasetElementType:null,dataElementType:null,_datasetElementOptions:["backgroundColor","borderCapStyle","borderColor","borderDash","borderDashOffset","borderJoinStyle","borderWidth"],_dataElementOptions:["backgroundColor","borderColor","borderWidth","pointStyle"],initialize:function(t,e){var n=this;n.chart=t,n.index=e,n.linkScales(),n.addElements(),n._type=n.getMeta().type},updateIndex:function(t){this.index=t},linkScales:function(){var t=this.getMeta(),e=this.chart,n=e.scales,i=this.getDataset(),a=e.options.scales;null!==t.xAxisID&&t.xAxisID in n&&!i.xAxisID||(t.xAxisID=i.xAxisID||a.xAxes[0].id),null!==t.yAxisID&&t.yAxisID in n&&!i.yAxisID||(t.yAxisID=i.yAxisID||a.yAxes[0].id)},getDataset:function(){return this.chart.data.datasets[this.index]},getMeta:function(){return this.chart.getDatasetMeta(this.index)},getScaleForId:function(t){return this.chart.scales[t]},_getValueScaleId:function(){return this.getMeta().yAxisID},_getIndexScaleId:function(){return this.getMeta().xAxisID},_getValueScale:function(){return this.getScaleForId(this._getValueScaleId())},_getIndexScale:function(){return this.getScaleForId(this._getIndexScaleId())},reset:function(){this._update(!0)},destroy:function(){this._data&&tt(this._data,this)},createMetaDataset:function(){var t=this.datasetElementType;return t&&new t({_chart:this.chart,_datasetIndex:this.index})},createMetaData:function(t){var e=this.dataElementType;return e&&new e({_chart:this.chart,_datasetIndex:this.index,_index:t})},addElements:function(){var t,e,n=this.getMeta(),i=this.getDataset().data||[],a=n.data;for(t=0,e=i.length;t<e;++t)a[t]=a[t]||this.createMetaData(t);n.dataset=n.dataset||this.createMetaDataset()},addElementAndReset:function(t){var e=this.createMetaData(t);this.getMeta().data.splice(t,0,e),this.updateElement(e,t,!0)},buildOrUpdateElements:function(){var t,e,n=this,i=n.getDataset(),a=i.data||(i.data=[]);n._data!==a&&(n._data&&tt(n._data,n),a&&Object.isExtensible(a)&&(e=n,(t=a)._chartjs?t._chartjs.listeners.push(e):(Object.defineProperty(t,"_chartjs",{configurable:!0,enumerable:!1,value:{listeners:[e]}}),Q.forEach((function(e){var n="onData"+e.charAt(0).toUpperCase()+e.slice(1),i=t[e];Object.defineProperty(t,e,{configurable:!0,enumerable:!1,value:function(){var e=Array.prototype.slice.call(arguments),a=i.apply(this,e);return V.each(t._chartjs.listeners,(function(t){"function"==typeof t[n]&&t[n].apply(t,e)})),a}})})))),n._data=a),n.resyncElements()},_configure:function(){this._config=V.merge({},[this.chart.options.datasets[this._type],this.getDataset()],{merger:function(t,e,n){"_meta"!==t&&"data"!==t&&V._merger(t,e,n)}})},_update:function(t){this._configure(),this._cachedDataOpts=null,this.update(t)},update:V.noop,transition:function(t){for(var e=this.getMeta(),n=e.data||[],i=n.length,a=0;a<i;++a)n[a].transition(t);e.dataset&&e.dataset.transition(t)},draw:function(){var t=this.getMeta(),e=t.data||[],n=e.length,i=0;for(t.dataset&&t.dataset.draw();i<n;++i)e[i].draw()},getStyle:function(t){var e,n=this.getMeta(),i=n.dataset;return this._configure(),i&&void 0===t?e=this._resolveDatasetElementOptions(i||{}):(t=t||0,e=this._resolveDataElementOptions(n.data[t]||{},t)),!1!==e.fill&&null!==e.fill||(e.backgroundColor=e.borderColor),e},_resolveDatasetElementOptions:function(t,e){var n,i,a,r,o=this,s=o.chart,l=o._config,u=t.custom||{},d=s.options.elements[o.datasetElementType.prototype._type]||{},h=o._datasetElementOptions,c={},f={chart:s,dataset:o.getDataset(),datasetIndex:o.index,hover:e};for(n=0,i=h.length;n<i;++n)a=h[n],r=e?"hover"+a.charAt(0).toUpperCase()+a.slice(1):a,c[a]=J([u[r],l[r],d[r]],f);return c},_resolveDataElementOptions:function(t,e){var n=this,i=t&&t.custom,a=n._cachedDataOpts;if(a&&!i)return a;var r,o,s,l,u=n.chart,d=n._config,h=u.options.elements[n.dataElementType.prototype._type]||{},c=n._dataElementOptions,f={},g={chart:u,dataIndex:e,dataset:n.getDataset(),datasetIndex:n.index},p={cacheable:!i};if(i=i||{},V.isArray(c))for(o=0,s=c.length;o<s;++o)f[l=c[o]]=J([i[l],d[l],h[l]],g,e,p);else for(o=0,s=(r=Object.keys(c)).length;o<s;++o)f[l=r[o]]=J([i[l],d[c[l]],d[l],h[l]],g,e,p);return p.cacheable&&(n._cachedDataOpts=Object.freeze(f)),f},removeHoverStyle:function(t){V.merge(t._model,t.$previousStyle||{}),delete t.$previousStyle},setHoverStyle:function(t){var e=this.chart.data.datasets[t._datasetIndex],n=t._index,i=t.custom||{},a=t._model,r=V.getHoverColor;t.$previousStyle={backgroundColor:a.backgroundColor,borderColor:a.borderColor,borderWidth:a.borderWidth},a.backgroundColor=J([i.hoverBackgroundColor,e.hoverBackgroundColor,r(a.backgroundColor)],void 0,n),a.borderColor=J([i.hoverBorderColor,e.hoverBorderColor,r(a.borderColor)],void 0,n),a.borderWidth=J([i.hoverBorderWidth,e.hoverBorderWidth,a.borderWidth],void 0,n)},_removeDatasetHoverStyle:function(){var t=this.getMeta().dataset;t&&this.removeHoverStyle(t)},_setDatasetHoverStyle:function(){var t,e,n,i,a,r,o=this.getMeta().dataset,s={};if(o){for(r=o._model,a=this._resolveDatasetElementOptions(o,!0),t=0,e=(i=Object.keys(a)).length;t<e;++t)s[n=i[t]]=r[n],r[n]=a[n];o.$previousStyle=s}},resyncElements:function(){var t=this.getMeta(),e=this.getDataset().data,n=t.data.length,i=e.length;i<n?t.data.splice(i,n-i):i>n&&this.insertElements(n,i-n)},insertElements:function(t,e){for(var n=0;n<e;++n)this.addElementAndReset(t+n)},onDataPush:function(){var t=arguments.length;this.insertElements(this.getDataset().data.length-t,t)},onDataPop:function(){this.getMeta().data.pop()},onDataShift:function(){this.getMeta().data.shift()},onDataSplice:function(t,e){this.getMeta().data.splice(t,e),this.insertElements(t,arguments.length-2)},onDataUnshift:function(){this.insertElements(0,arguments.length)}}),et.extend=V.inherits;var nt=et,it=2*Math.PI;function at(t,e){var n=e.startAngle,i=e.endAngle,a=e.pixelMargin,r=a/e.outerRadius,o=e.x,s=e.y;t.beginPath(),t.arc(o,s,e.outerRadius,n-r,i+r),e.innerRadius>a?(r=a/e.innerRadius,t.arc(o,s,e.innerRadius-a,i+r,n-r,!0)):t.arc(o,s,a,i+Math.PI/2,n-Math.PI/2),t.closePath(),t.clip()}function rt(t,e,n){var i="inner"===e.borderAlign;i?(t.lineWidth=2*e.borderWidth,t.lineJoin="round"):(t.lineWidth=e.borderWidth,t.lineJoin="bevel"),n.fullCircles&&function(t,e,n,i){var a,r=n.endAngle;for(i&&(n.endAngle=n.startAngle+it,at(t,n),n.endAngle=r,n.endAngle===n.startAngle&&n.fullCircles&&(n.endAngle+=it,n.fullCircles--)),t.beginPath(),t.arc(n.x,n.y,n.innerRadius,n.startAngle+it,n.startAngle,!0),a=0;a<n.fullCircles;++a)t.stroke();for(t.beginPath(),t.arc(n.x,n.y,e.outerRadius,n.startAngle,n.startAngle+it),a=0;a<n.fullCircles;++a)t.stroke()}(t,e,n,i),i&&at(t,n),t.beginPath(),t.arc(n.x,n.y,e.outerRadius,n.startAngle,n.endAngle),t.arc(n.x,n.y,n.innerRadius,n.endAngle,n.startAngle,!0),t.closePath(),t.stroke()}z._set("global",{elements:{arc:{backgroundColor:z.global.defaultColor,borderColor:"#fff",borderWidth:2,borderAlign:"center"}}});var ot=X.extend({_type:"arc",inLabelRange:function(t){var e=this._view;return!!e&&Math.pow(t-e.x,2)<Math.pow(e.radius+e.hoverRadius,2)},inRange:function(t,e){var n=this._view;if(n){for(var i=V.getAngleFromPoint(n,{x:t,y:e}),a=i.angle,r=i.distance,o=n.startAngle,s=n.endAngle;s<o;)s+=it;for(;a>s;)a-=it;for(;a<o;)a+=it;var l=a>=o&&a<=s,u=r>=n.innerRadius&&r<=n.outerRadius;return l&&u}return!1},getCenterPoint:function(){var t=this._view,e=(t.startAngle+t.endAngle)/2,n=(t.innerRadius+t.outerRadius)/2;return{x:t.x+Math.cos(e)*n,y:t.y+Math.sin(e)*n}},getArea:function(){var t=this._view;return Math.PI*((t.endAngle-t.startAngle)/(2*Math.PI))*(Math.pow(t.outerRadius,2)-Math.pow(t.innerRadius,2))},tooltipPosition:function(){var t=this._view,e=t.startAngle+(t.endAngle-t.startAngle)/2,n=(t.outerRadius-t.innerRadius)/2+t.innerRadius;return{x:t.x+Math.cos(e)*n,y:t.y+Math.sin(e)*n}},draw:function(){var t,e=this._chart.ctx,n=this._view,i="inner"===n.borderAlign?.33:0,a={x:n.x,y:n.y,innerRadius:n.innerRadius,outerRadius:Math.max(n.outerRadius-i,0),pixelMargin:i,startAngle:n.startAngle,endAngle:n.endAngle,fullCircles:Math.floor(n.circumference/it)};if(e.save(),e.fillStyle=n.backgroundColor,e.strokeStyle=n.borderColor,a.fullCircles){for(a.endAngle=a.startAngle+it,e.beginPath(),e.arc(a.x,a.y,a.outerRadius,a.startAngle,a.endAngle),e.arc(a.x,a.y,a.innerRadius,a.endAngle,a.startAngle,!0),e.closePath(),t=0;t<a.fullCircles;++t)e.fill();a.endAngle=a.startAngle+n.circumference%it}e.beginPath(),e.arc(a.x,a.y,a.outerRadius,a.startAngle,a.endAngle),e.arc(a.x,a.y,a.innerRadius,a.endAngle,a.startAngle,!0),e.closePath(),e.fill(),n.borderWidth&&rt(e,n,a),e.restore()}}),st=V.valueOrDefault,lt=z.global.defaultColor;z._set("global",{elements:{line:{tension:.4,backgroundColor:lt,borderWidth:3,borderColor:lt,borderCapStyle:"butt",borderDash:[],borderDashOffset:0,borderJoinStyle:"miter",capBezierPoints:!0,fill:!0}}});var ut=X.extend({_type:"line",draw:function(){var t,e,n,i=this,a=i._view,r=i._chart.ctx,o=a.spanGaps,s=i._children.slice(),l=z.global,u=l.elements.line,d=-1,h=i._loop;if(s.length){if(i._loop){for(t=0;t<s.length;++t)if(e=V.previousItem(s,t),!s[t]._view.skip&&e._view.skip){s=s.slice(t).concat(s.slice(0,t)),h=o;break}h&&s.push(s[0])}for(r.save(),r.lineCap=a.borderCapStyle||u.borderCapStyle,r.setLineDash&&r.setLineDash(a.borderDash||u.borderDash),r.lineDashOffset=st(a.borderDashOffset,u.borderDashOffset),r.lineJoin=a.borderJoinStyle||u.borderJoinStyle,r.lineWidth=st(a.borderWidth,u.borderWidth),r.strokeStyle=a.borderColor||l.defaultColor,r.beginPath(),(n=s[0]._view).skip||(r.moveTo(n.x,n.y),d=0),t=1;t<s.length;++t)n=s[t]._view,e=-1===d?V.previousItem(s,t):s[d],n.skip||(d!==t-1&&!o||-1===d?r.moveTo(n.x,n.y):V.canvas.lineTo(r,e._view,n),d=t);h&&r.closePath(),r.stroke(),r.restore()}}}),dt=V.valueOrDefault,ht=z.global.defaultColor;function ct(t){var e=this._view;return!!e&&Math.abs(t-e.x)<e.radius+e.hitRadius}z._set("global",{elements:{point:{radius:3,pointStyle:"circle",backgroundColor:ht,borderColor:ht,borderWidth:1,hitRadius:1,hoverRadius:4,hoverBorderWidth:1}}});var ft=X.extend({_type:"point",inRange:function(t,e){var n=this._view;return!!n&&Math.pow(t-n.x,2)+Math.pow(e-n.y,2)<Math.pow(n.hitRadius+n.radius,2)},inLabelRange:ct,inXRange:ct,inYRange:function(t){var e=this._view;return!!e&&Math.abs(t-e.y)<e.radius+e.hitRadius},getCenterPoint:function(){var t=this._view;return{x:t.x,y:t.y}},getArea:function(){return Math.PI*Math.pow(this._view.radius,2)},tooltipPosition:function(){var t=this._view;return{x:t.x,y:t.y,padding:t.radius+t.borderWidth}},draw:function(t){var e=this._view,n=this._chart.ctx,i=e.pointStyle,a=e.rotation,r=e.radius,o=e.x,s=e.y,l=z.global,u=l.defaultColor;e.skip||(void 0===t||V.canvas._isPointInArea(e,t))&&(n.strokeStyle=e.borderColor||u,n.lineWidth=dt(e.borderWidth,l.elements.point.borderWidth),n.fillStyle=e.backgroundColor||u,V.canvas.drawPoint(n,i,r,o,s,a))}}),gt=z.global.defaultColor;function pt(t){return t&&void 0!==t.width}function mt(t){var e,n,i,a,r;return pt(t)?(r=t.width/2,e=t.x-r,n=t.x+r,i=Math.min(t.y,t.base),a=Math.max(t.y,t.base)):(r=t.height/2,e=Math.min(t.x,t.base),n=Math.max(t.x,t.base),i=t.y-r,a=t.y+r),{left:e,top:i,right:n,bottom:a}}function vt(t,e,n){return t===e?n:t===n?e:t}function bt(t,e,n){var i,a,r,o,s=t.borderWidth,l=function(t){var e=t.borderSkipped,n={};return e?(t.horizontal?t.base>t.x&&(e=vt(e,"left","right")):t.base<t.y&&(e=vt(e,"bottom","top")),n[e]=!0,n):n}(t);return V.isObject(s)?(i=+s.top||0,a=+s.right||0,r=+s.bottom||0,o=+s.left||0):i=a=r=o=+s||0,{t:l.top||i<0?0:i>n?n:i,r:l.right||a<0?0:a>e?e:a,b:l.bottom||r<0?0:r>n?n:r,l:l.left||o<0?0:o>e?e:o}}function xt(t,e,n){var i=null===e,a=null===n,r=!(!t||i&&a)&&mt(t);return r&&(i||e>=r.left&&e<=r.right)&&(a||n>=r.top&&n<=r.bottom)}z._set("global",{elements:{rectangle:{backgroundColor:gt,borderColor:gt,borderSkipped:"bottom",borderWidth:0}}});var yt=X.extend({_type:"rectangle",draw:function(){var t=this._chart.ctx,e=this._view,n=function(t){var e=mt(t),n=e.right-e.left,i=e.bottom-e.top,a=bt(t,n/2,i/2);return{outer:{x:e.left,y:e.top,w:n,h:i},inner:{x:e.left+a.l,y:e.top+a.t,w:n-a.l-a.r,h:i-a.t-a.b}}}(e),i=n.outer,a=n.inner;t.fillStyle=e.backgroundColor,t.fillRect(i.x,i.y,i.w,i.h),i.w===a.w&&i.h===a.h||(t.save(),t.beginPath(),t.rect(i.x,i.y,i.w,i.h),t.clip(),t.fillStyle=e.borderColor,t.rect(a.x,a.y,a.w,a.h),t.fill("evenodd"),t.restore())},height:function(){var t=this._view;return t.base-t.y},inRange:function(t,e){return xt(this._view,t,e)},inLabelRange:function(t,e){var n=this._view;return pt(n)?xt(n,t,null):xt(n,null,e)},inXRange:function(t){return xt(this._view,t,null)},inYRange:function(t){return xt(this._view,null,t)},getCenterPoint:function(){var t,e,n=this._view;return pt(n)?(t=n.x,e=(n.y+n.base)/2):(t=(n.x+n.base)/2,e=n.y),{x:t,y:e}},getArea:function(){var t=this._view;return pt(t)?t.width*Math.abs(t.y-t.base):t.height*Math.abs(t.x-t.base)},tooltipPosition:function(){var t=this._view;return{x:t.x,y:t.y}}}),_t={},kt=ot,wt=ut,Mt=ft,St=yt;_t.Arc=kt,_t.Line=wt,_t.Point=Mt,_t.Rectangle=St;var Ct=V._deprecated,Pt=V.valueOrDefault;function At(t,e,n){var i,a,r=n.barThickness,o=e.stackCount,s=e.pixels[t],l=V.isNullOrUndef(r)?function(t,e){var n,i,a,r,o=t._length;for(a=1,r=e.length;a<r;++a)o=Math.min(o,Math.abs(e[a]-e[a-1]));for(a=0,r=t.getTicks().length;a<r;++a)i=t.getPixelForTick(a),o=a>0?Math.min(o,Math.abs(i-n)):o,n=i;return o}(e.scale,e.pixels):-1;return V.isNullOrUndef(r)?(i=l*n.categoryPercentage,a=n.barPercentage):(i=r*o,a=1),{chunk:i/o,ratio:a,start:s-i/2}}z._set("bar",{hover:{mode:"label"},scales:{xAxes:[{type:"category",offset:!0,gridLines:{offsetGridLines:!0}}],yAxes:[{type:"linear"}]}}),z._set("global",{datasets:{bar:{categoryPercentage:.8,barPercentage:.9}}});var Dt=nt.extend({dataElementType:_t.Rectangle,_dataElementOptions:["backgroundColor","borderColor","borderSkipped","borderWidth","barPercentage","barThickness","categoryPercentage","maxBarThickness","minBarLength"],initialize:function(){var t,e,n=this;nt.prototype.initialize.apply(n,arguments),(t=n.getMeta()).stack=n.getDataset().stack,t.bar=!0,e=n._getIndexScale().options,Ct("bar chart",e.barPercentage,"scales.[x/y]Axes.barPercentage","dataset.barPercentage"),Ct("bar chart",e.barThickness,"scales.[x/y]Axes.barThickness","dataset.barThickness"),Ct("bar chart",e.categoryPercentage,"scales.[x/y]Axes.categoryPercentage","dataset.categoryPercentage"),Ct("bar chart",n._getValueScale().options.minBarLength,"scales.[x/y]Axes.minBarLength","dataset.minBarLength"),Ct("bar chart",e.maxBarThickness,"scales.[x/y]Axes.maxBarThickness","dataset.maxBarThickness")},update:function(t){var e,n,i=this.getMeta().data;for(this._ruler=this.getRuler(),e=0,n=i.length;e<n;++e)this.updateElement(i[e],e,t)},updateElement:function(t,e,n){var i=this,a=i.getMeta(),r=i.getDataset(),o=i._resolveDataElementOptions(t,e);t._xScale=i.getScaleForId(a.xAxisID),t._yScale=i.getScaleForId(a.yAxisID),t._datasetIndex=i.index,t._index=e,t._model={backgroundColor:o.backgroundColor,borderColor:o.borderColor,borderSkipped:o.borderSkipped,borderWidth:o.borderWidth,datasetLabel:r.label,label:i.chart.data.labels[e]},V.isArray(r.data[e])&&(t._model.borderSkipped=null),i._updateElementGeometry(t,e,n,o),t.pivot()},_updateElementGeometry:function(t,e,n,i){var a=this,r=t._model,o=a._getValueScale(),s=o.getBasePixel(),l=o.isHorizontal(),u=a._ruler||a.getRuler(),d=a.calculateBarValuePixels(a.index,e,i),h=a.calculateBarIndexPixels(a.index,e,u,i);r.horizontal=l,r.base=n?s:d.base,r.x=l?n?s:d.head:h.center,r.y=l?h.center:n?s:d.head,r.height=l?h.size:void 0,r.width=l?void 0:h.size},_getStacks:function(t){var e,n,i=this._getIndexScale(),a=i._getMatchingVisibleMetas(this._type),r=i.options.stacked,o=a.length,s=[];for(e=0;e<o&&(n=a[e],(!1===r||-1===s.indexOf(n.stack)||void 0===r&&void 0===n.stack)&&s.push(n.stack),n.index!==t);++e);return s},getStackCount:function(){return this._getStacks().length},getStackIndex:function(t,e){var n=this._getStacks(t),i=void 0!==e?n.indexOf(e):-1;return-1===i?n.length-1:i},getRuler:function(){var t,e,n=this._getIndexScale(),i=[];for(t=0,e=this.getMeta().data.length;t<e;++t)i.push(n.getPixelForValue(null,t,this.index));return{pixels:i,start:n._startPixel,end:n._endPixel,stackCount:this.getStackCount(),scale:n}},calculateBarValuePixels:function(t,e,n){var i,a,r,o,s,l,u,d=this.chart,h=this._getValueScale(),c=h.isHorizontal(),f=d.data.datasets,g=h._getMatchingVisibleMetas(this._type),p=h._parseValue(f[t].data[e]),m=n.minBarLength,v=h.options.stacked,b=this.getMeta().stack,x=void 0===p.start?0:p.max>=0&&p.min>=0?p.min:p.max,y=void 0===p.start?p.end:p.max>=0&&p.min>=0?p.max-p.min:p.min-p.max,_=g.length;if(v||void 0===v&&void 0!==b)for(i=0;i<_&&(a=g[i]).index!==t;++i)a.stack===b&&(r=void 0===(u=h._parseValue(f[a.index].data[e])).start?u.end:u.min>=0&&u.max>=0?u.max:u.min,(p.min<0&&r<0||p.max>=0&&r>0)&&(x+=r));return o=h.getPixelForValue(x),l=(s=h.getPixelForValue(x+y))-o,void 0!==m&&Math.abs(l)<m&&(l=m,s=y>=0&&!c||y<0&&c?o-m:o+m),{size:l,base:o,head:s,center:s+l/2}},calculateBarIndexPixels:function(t,e,n,i){var a="flex"===i.barThickness?function(t,e,n){var i,a=e.pixels,r=a[t],o=t>0?a[t-1]:null,s=t<a.length-1?a[t+1]:null,l=n.categoryPercentage;return null===o&&(o=r-(null===s?e.end-e.start:s-r)),null===s&&(s=r+r-o),i=r-(r-Math.min(o,s))/2*l,{chunk:Math.abs(s-o)/2*l/e.stackCount,ratio:n.barPercentage,start:i}}(e,n,i):At(e,n,i),r=this.getStackIndex(t,this.getMeta().stack),o=a.start+a.chunk*r+a.chunk/2,s=Math.min(Pt(i.maxBarThickness,1/0),a.chunk*a.ratio);return{base:o-s/2,head:o+s/2,center:o,size:s}},draw:function(){var t=this.chart,e=this._getValueScale(),n=this.getMeta().data,i=this.getDataset(),a=n.length,r=0;for(V.canvas.clipArea(t.ctx,t.chartArea);r<a;++r){var o=e._parseValue(i.data[r]);isNaN(o.min)||isNaN(o.max)||n[r].draw()}V.canvas.unclipArea(t.ctx)},_resolveDataElementOptions:function(){var t=this,e=V.extend({},nt.prototype._resolveDataElementOptions.apply(t,arguments)),n=t._getIndexScale().options,i=t._getValueScale().options;return e.barPercentage=Pt(n.barPercentage,e.barPercentage),e.barThickness=Pt(n.barThickness,e.barThickness),e.categoryPercentage=Pt(n.categoryPercentage,e.categoryPercentage),e.maxBarThickness=Pt(n.maxBarThickness,e.maxBarThickness),e.minBarLength=Pt(i.minBarLength,e.minBarLength),e}}),Tt=V.valueOrDefault,It=V.options.resolve;z._set("bubble",{hover:{mode:"single"},scales:{xAxes:[{type:"linear",position:"bottom",id:"x-axis-0"}],yAxes:[{type:"linear",position:"left",id:"y-axis-0"}]},tooltips:{callbacks:{title:function(){return""},label:function(t,e){var n=e.datasets[t.datasetIndex].label||"",i=e.datasets[t.datasetIndex].data[t.index];return n+": ("+t.xLabel+", "+t.yLabel+", "+i.r+")"}}}});var Ft=nt.extend({dataElementType:_t.Point,_dataElementOptions:["backgroundColor","borderColor","borderWidth","hoverBackgroundColor","hoverBorderColor","hoverBorderWidth","hoverRadius","hitRadius","pointStyle","rotation"],update:function(t){var e=this,n=e.getMeta().data;V.each(n,(function(n,i){e.updateElement(n,i,t)}))},updateElement:function(t,e,n){var i=this,a=i.getMeta(),r=t.custom||{},o=i.getScaleForId(a.xAxisID),s=i.getScaleForId(a.yAxisID),l=i._resolveDataElementOptions(t,e),u=i.getDataset().data[e],d=i.index,h=n?o.getPixelForDecimal(.5):o.getPixelForValue("object"==typeof u?u:NaN,e,d),c=n?s.getBasePixel():s.getPixelForValue(u,e,d);t._xScale=o,t._yScale=s,t._options=l,t._datasetIndex=d,t._index=e,t._model={backgroundColor:l.backgroundColor,borderColor:l.borderColor,borderWidth:l.borderWidth,hitRadius:l.hitRadius,pointStyle:l.pointStyle,rotation:l.rotation,radius:n?0:l.radius,skip:r.skip||isNaN(h)||isNaN(c),x:h,y:c},t.pivot()},setHoverStyle:function(t){var e=t._model,n=t._options,i=V.getHoverColor;t.$previousStyle={backgroundColor:e.backgroundColor,borderColor:e.borderColor,borderWidth:e.borderWidth,radius:e.radius},e.backgroundColor=Tt(n.hoverBackgroundColor,i(n.backgroundColor)),e.borderColor=Tt(n.hoverBorderColor,i(n.borderColor)),e.borderWidth=Tt(n.hoverBorderWidth,n.borderWidth),e.radius=n.radius+n.hoverRadius},_resolveDataElementOptions:function(t,e){var n=this,i=n.chart,a=n.getDataset(),r=t.custom||{},o=a.data[e]||{},s=nt.prototype._resolveDataElementOptions.apply(n,arguments),l={chart:i,dataIndex:e,dataset:a,datasetIndex:n.index};return n._cachedDataOpts===s&&(s=V.extend({},s)),s.radius=It([r.radius,o.r,n._config.radius,i.options.elements.point.radius],l,e),s}}),Lt=V.valueOrDefault,Ot=Math.PI,Rt=2*Ot,zt=Ot/2;z._set("doughnut",{animation:{animateRotate:!0,animateScale:!1},hover:{mode:"single"},legendCallback:function(t){var e,n,i,a=document.createElement("ul"),r=t.data,o=r.datasets,s=r.labels;if(a.setAttribute("class",t.id+"-legend"),o.length)for(e=0,n=o[0].data.length;e<n;++e)(i=a.appendChild(document.createElement("li"))).appendChild(document.createElement("span")).style.backgroundColor=o[0].backgroundColor[e],s[e]&&i.appendChild(document.createTextNode(s[e]));return a.outerHTML},legend:{labels:{generateLabels:function(t){var e=t.data;return e.labels.length&&e.datasets.length?e.labels.map((function(n,i){var a=t.getDatasetMeta(0),r=a.controller.getStyle(i);return{text:n,fillStyle:r.backgroundColor,strokeStyle:r.borderColor,lineWidth:r.borderWidth,hidden:isNaN(e.datasets[0].data[i])||a.data[i].hidden,index:i}})):[]}},onClick:function(t,e){var n,i,a,r=e.index,o=this.chart;for(n=0,i=(o.data.datasets||[]).length;n<i;++n)(a=o.getDatasetMeta(n)).data[r]&&(a.data[r].hidden=!a.data[r].hidden);o.update()}},cutoutPercentage:50,rotation:-zt,circumference:Rt,tooltips:{callbacks:{title:function(){return""},label:function(t,e){var n=e.labels[t.index],i=": "+e.datasets[t.datasetIndex].data[t.index];return V.isArray(n)?(n=n.slice())[0]+=i:n+=i,n}}}});var Nt=nt.extend({dataElementType:_t.Arc,linkScales:V.noop,_dataElementOptions:["backgroundColor","borderColor","borderWidth","borderAlign","hoverBackgroundColor","hoverBorderColor","hoverBorderWidth"],getRingIndex:function(t){for(var e=0,n=0;n<t;++n)this.chart.isDatasetVisible(n)&&++e;return e},update:function(t){var e,n,i,a,r=this,o=r.chart,s=o.chartArea,l=o.options,u=1,d=1,h=0,c=0,f=r.getMeta(),g=f.data,p=l.cutoutPercentage/100||0,m=l.circumference,v=r._getRingWeight(r.index);if(m<Rt){var b=l.rotation%Rt,x=(b+=b>=Ot?-Rt:b<-Ot?Rt:0)+m,y=Math.cos(b),_=Math.sin(b),k=Math.cos(x),w=Math.sin(x),M=b<=0&&x>=0||x>=Rt,S=b<=zt&&x>=zt||x>=Rt+zt,C=b<=-zt&&x>=-zt||x>=Ot+zt,P=b===-Ot||x>=Ot?-1:Math.min(y,y*p,k,k*p),A=C?-1:Math.min(_,_*p,w,w*p),D=M?1:Math.max(y,y*p,k,k*p),T=S?1:Math.max(_,_*p,w,w*p);u=(D-P)/2,d=(T-A)/2,h=-(D+P)/2,c=-(T+A)/2}for(i=0,a=g.length;i<a;++i)g[i]._options=r._resolveDataElementOptions(g[i],i);for(o.borderWidth=r.getMaxBorderWidth(),e=(s.right-s.left-o.borderWidth)/u,n=(s.bottom-s.top-o.borderWidth)/d,o.outerRadius=Math.max(Math.min(e,n)/2,0),o.innerRadius=Math.max(o.outerRadius*p,0),o.radiusLength=(o.outerRadius-o.innerRadius)/(r._getVisibleDatasetWeightTotal()||1),o.offsetX=h*o.outerRadius,o.offsetY=c*o.outerRadius,f.total=r.calculateTotal(),r.outerRadius=o.outerRadius-o.radiusLength*r._getRingWeightOffset(r.index),r.innerRadius=Math.max(r.outerRadius-o.radiusLength*v,0),i=0,a=g.length;i<a;++i)r.updateElement(g[i],i,t)},updateElement:function(t,e,n){var i=this,a=i.chart,r=a.chartArea,o=a.options,s=o.animation,l=(r.left+r.right)/2,u=(r.top+r.bottom)/2,d=o.rotation,h=o.rotation,c=i.getDataset(),f=n&&s.animateRotate?0:t.hidden?0:i.calculateCircumference(c.data[e])*(o.circumference/Rt),g=n&&s.animateScale?0:i.innerRadius,p=n&&s.animateScale?0:i.outerRadius,m=t._options||{};V.extend(t,{_datasetIndex:i.index,_index:e,_model:{backgroundColor:m.backgroundColor,borderColor:m.borderColor,borderWidth:m.borderWidth,borderAlign:m.borderAlign,x:l+a.offsetX,y:u+a.offsetY,startAngle:d,endAngle:h,circumference:f,outerRadius:p,innerRadius:g,label:V.valueAtIndexOrDefault(c.label,e,a.data.labels[e])}});var v=t._model;n&&s.animateRotate||(v.startAngle=0===e?o.rotation:i.getMeta().data[e-1]._model.endAngle,v.endAngle=v.startAngle+v.circumference),t.pivot()},calculateTotal:function(){var t,e=this.getDataset(),n=this.getMeta(),i=0;return V.each(n.data,(function(n,a){t=e.data[a],isNaN(t)||n.hidden||(i+=Math.abs(t))})),i},calculateCircumference:function(t){var e=this.getMeta().total;return e>0&&!isNaN(t)?Rt*(Math.abs(t)/e):0},getMaxBorderWidth:function(t){var e,n,i,a,r,o,s,l,u=0,d=this.chart;if(!t)for(e=0,n=d.data.datasets.length;e<n;++e)if(d.isDatasetVisible(e)){t=(i=d.getDatasetMeta(e)).data,e!==this.index&&(r=i.controller);break}if(!t)return 0;for(e=0,n=t.length;e<n;++e)a=t[e],r?(r._configure(),o=r._resolveDataElementOptions(a,e)):o=a._options,"inner"!==o.borderAlign&&(s=o.borderWidth,u=(l=o.hoverBorderWidth)>(u=s>u?s:u)?l:u);return u},setHoverStyle:function(t){var e=t._model,n=t._options,i=V.getHoverColor;t.$previousStyle={backgroundColor:e.backgroundColor,borderColor:e.borderColor,borderWidth:e.borderWidth},e.backgroundColor=Lt(n.hoverBackgroundColor,i(n.backgroundColor)),e.borderColor=Lt(n.hoverBorderColor,i(n.borderColor)),e.borderWidth=Lt(n.hoverBorderWidth,n.borderWidth)},_getRingWeightOffset:function(t){for(var e=0,n=0;n<t;++n)this.chart.isDatasetVisible(n)&&(e+=this._getRingWeight(n));return e},_getRingWeight:function(t){return Math.max(Lt(this.chart.data.datasets[t].weight,1),0)},_getVisibleDatasetWeightTotal:function(){return this._getRingWeightOffset(this.chart.data.datasets.length)}});z._set("horizontalBar",{hover:{mode:"index",axis:"y"},scales:{xAxes:[{type:"linear",position:"bottom"}],yAxes:[{type:"category",position:"left",offset:!0,gridLines:{offsetGridLines:!0}}]},elements:{rectangle:{borderSkipped:"left"}},tooltips:{mode:"index",axis:"y"}}),z._set("global",{datasets:{horizontalBar:{categoryPercentage:.8,barPercentage:.9}}});var Bt=Dt.extend({_getValueScaleId:function(){return this.getMeta().xAxisID},_getIndexScaleId:function(){return this.getMeta().yAxisID}}),Et=V.valueOrDefault,Wt=V.options.resolve,Vt=V.canvas._isPointInArea;function Ht(t,e){var n=t&&t.options.ticks||{},i=n.reverse,a=void 0===n.min?e:0,r=void 0===n.max?e:0;return{start:i?r:a,end:i?a:r}}function jt(t,e,n){var i=n/2,a=Ht(t,i),r=Ht(e,i);return{top:r.end,right:a.end,bottom:r.start,left:a.start}}function qt(t){var e,n,i,a;return V.isObject(t)?(e=t.top,n=t.right,i=t.bottom,a=t.left):e=n=i=a=t,{top:e,right:n,bottom:i,left:a}}z._set("line",{showLines:!0,spanGaps:!1,hover:{mode:"label"},scales:{xAxes:[{type:"category",id:"x-axis-0"}],yAxes:[{type:"linear",id:"y-axis-0"}]}});var Ut=nt.extend({datasetElementType:_t.Line,dataElementType:_t.Point,_datasetElementOptions:["backgroundColor","borderCapStyle","borderColor","borderDash","borderDashOffset","borderJoinStyle","borderWidth","cubicInterpolationMode","fill"],_dataElementOptions:{backgroundColor:"pointBackgroundColor",borderColor:"pointBorderColor",borderWidth:"pointBorderWidth",hitRadius:"pointHitRadius",hoverBackgroundColor:"pointHoverBackgroundColor",hoverBorderColor:"pointHoverBorderColor",hoverBorderWidth:"pointHoverBorderWidth",hoverRadius:"pointHoverRadius",pointStyle:"pointStyle",radius:"pointRadius",rotation:"pointRotation"},update:function(t){var e,n,i=this,a=i.getMeta(),r=a.dataset,o=a.data||[],s=i.chart.options,l=i._config,u=i._showLine=Et(l.showLine,s.showLines);for(i._xScale=i.getScaleForId(a.xAxisID),i._yScale=i.getScaleForId(a.yAxisID),u&&(void 0!==l.tension&&void 0===l.lineTension&&(l.lineTension=l.tension),r._scale=i._yScale,r._datasetIndex=i.index,r._children=o,r._model=i._resolveDatasetElementOptions(r),r.pivot()),e=0,n=o.length;e<n;++e)i.updateElement(o[e],e,t);for(u&&0!==r._model.tension&&i.updateBezierControlPoints(),e=0,n=o.length;e<n;++e)o[e].pivot()},updateElement:function(t,e,n){var i,a,r=this,o=r.getMeta(),s=t.custom||{},l=r.getDataset(),u=r.index,d=l.data[e],h=r._xScale,c=r._yScale,f=o.dataset._model,g=r._resolveDataElementOptions(t,e);i=h.getPixelForValue("object"==typeof d?d:NaN,e,u),a=n?c.getBasePixel():r.calculatePointY(d,e,u),t._xScale=h,t._yScale=c,t._options=g,t._datasetIndex=u,t._index=e,t._model={x:i,y:a,skip:s.skip||isNaN(i)||isNaN(a),radius:g.radius,pointStyle:g.pointStyle,rotation:g.rotation,backgroundColor:g.backgroundColor,borderColor:g.borderColor,borderWidth:g.borderWidth,tension:Et(s.tension,f?f.tension:0),steppedLine:!!f&&f.steppedLine,hitRadius:g.hitRadius}},_resolveDatasetElementOptions:function(t){var e=this,n=e._config,i=t.custom||{},a=e.chart.options,r=a.elements.line,o=nt.prototype._resolveDatasetElementOptions.apply(e,arguments);return o.spanGaps=Et(n.spanGaps,a.spanGaps),o.tension=Et(n.lineTension,r.tension),o.steppedLine=Wt([i.steppedLine,n.steppedLine,r.stepped]),o.clip=qt(Et(n.clip,jt(e._xScale,e._yScale,o.borderWidth))),o},calculatePointY:function(t,e,n){var i,a,r,o,s,l,u,d=this.chart,h=this._yScale,c=0,f=0;if(h.options.stacked){for(s=+h.getRightValue(t),u=(l=d._getSortedVisibleDatasetMetas()).length,i=0;i<u&&(r=l[i]).index!==n;++i)a=d.data.datasets[r.index],"line"===r.type&&r.yAxisID===h.id&&((o=+h.getRightValue(a.data[e]))<0?f+=o||0:c+=o||0);return s<0?h.getPixelForValue(f+s):h.getPixelForValue(c+s)}return h.getPixelForValue(t)},updateBezierControlPoints:function(){var t,e,n,i,a=this.chart,r=this.getMeta(),o=r.dataset._model,s=a.chartArea,l=r.data||[];function u(t,e,n){return Math.max(Math.min(t,n),e)}if(o.spanGaps&&(l=l.filter((function(t){return!t._model.skip}))),"monotone"===o.cubicInterpolationMode)V.splineCurveMonotone(l);else for(t=0,e=l.length;t<e;++t)n=l[t]._model,i=V.splineCurve(V.previousItem(l,t)._model,n,V.nextItem(l,t)._model,o.tension),n.controlPointPreviousX=i.previous.x,n.controlPointPreviousY=i.previous.y,n.controlPointNextX=i.next.x,n.controlPointNextY=i.next.y;if(a.options.elements.line.capBezierPoints)for(t=0,e=l.length;t<e;++t)n=l[t]._model,Vt(n,s)&&(t>0&&Vt(l[t-1]._model,s)&&(n.controlPointPreviousX=u(n.controlPointPreviousX,s.left,s.right),n.controlPointPreviousY=u(n.controlPointPreviousY,s.top,s.bottom)),t<l.length-1&&Vt(l[t+1]._model,s)&&(n.controlPointNextX=u(n.controlPointNextX,s.left,s.right),n.controlPointNextY=u(n.controlPointNextY,s.top,s.bottom)))},draw:function(){var t,e=this.chart,n=this.getMeta(),i=n.data||[],a=e.chartArea,r=e.canvas,o=0,s=i.length;for(this._showLine&&(t=n.dataset._model.clip,V.canvas.clipArea(e.ctx,{left:!1===t.left?0:a.left-t.left,right:!1===t.right?r.width:a.right+t.right,top:!1===t.top?0:a.top-t.top,bottom:!1===t.bottom?r.height:a.bottom+t.bottom}),n.dataset.draw(),V.canvas.unclipArea(e.ctx));o<s;++o)i[o].draw(a)},setHoverStyle:function(t){var e=t._model,n=t._options,i=V.getHoverColor;t.$previousStyle={backgroundColor:e.backgroundColor,borderColor:e.borderColor,borderWidth:e.borderWidth,radius:e.radius},e.backgroundColor=Et(n.hoverBackgroundColor,i(n.backgroundColor)),e.borderColor=Et(n.hoverBorderColor,i(n.borderColor)),e.borderWidth=Et(n.hoverBorderWidth,n.borderWidth),e.radius=Et(n.hoverRadius,n.radius)}}),Yt=V.options.resolve;z._set("polarArea",{scale:{type:"radialLinear",angleLines:{display:!1},gridLines:{circular:!0},pointLabels:{display:!1},ticks:{beginAtZero:!0}},animation:{animateRotate:!0,animateScale:!0},startAngle:-.5*Math.PI,legendCallback:function(t){var e,n,i,a=document.createElement("ul"),r=t.data,o=r.datasets,s=r.labels;if(a.setAttribute("class",t.id+"-legend"),o.length)for(e=0,n=o[0].data.length;e<n;++e)(i=a.appendChild(document.createElement("li"))).appendChild(document.createElement("span")).style.backgroundColor=o[0].backgroundColor[e],s[e]&&i.appendChild(document.createTextNode(s[e]));return a.outerHTML},legend:{labels:{generateLabels:function(t){var e=t.data;return e.labels.length&&e.datasets.length?e.labels.map((function(n,i){var a=t.getDatasetMeta(0),r=a.controller.getStyle(i);return{text:n,fillStyle:r.backgroundColor,strokeStyle:r.borderColor,lineWidth:r.borderWidth,hidden:isNaN(e.datasets[0].data[i])||a.data[i].hidden,index:i}})):[]}},onClick:function(t,e){var n,i,a,r=e.index,o=this.chart;for(n=0,i=(o.data.datasets||[]).length;n<i;++n)(a=o.getDatasetMeta(n)).data[r].hidden=!a.data[r].hidden;o.update()}},tooltips:{callbacks:{title:function(){return""},label:function(t,e){return e.labels[t.index]+": "+t.yLabel}}}});var Gt=nt.extend({dataElementType:_t.Arc,linkScales:V.noop,_dataElementOptions:["backgroundColor","borderColor","borderWidth","borderAlign","hoverBackgroundColor","hoverBorderColor","hoverBorderWidth"],_getIndexScaleId:function(){return this.chart.scale.id},_getValueScaleId:function(){return this.chart.scale.id},update:function(t){var e,n,i,a=this,r=a.getDataset(),o=a.getMeta(),s=a.chart.options.startAngle||0,l=a._starts=[],u=a._angles=[],d=o.data;for(a._updateRadius(),o.count=a.countVisibleElements(),e=0,n=r.data.length;e<n;e++)l[e]=s,i=a._computeAngle(e),u[e]=i,s+=i;for(e=0,n=d.length;e<n;++e)d[e]._options=a._resolveDataElementOptions(d[e],e),a.updateElement(d[e],e,t)},_updateRadius:function(){var t=this,e=t.chart,n=e.chartArea,i=e.options,a=Math.min(n.right-n.left,n.bottom-n.top);e.outerRadius=Math.max(a/2,0),e.innerRadius=Math.max(i.cutoutPercentage?e.outerRadius/100*i.cutoutPercentage:1,0),e.radiusLength=(e.outerRadius-e.innerRadius)/e.getVisibleDatasetCount(),t.outerRadius=e.outerRadius-e.radiusLength*t.index,t.innerRadius=t.outerRadius-e.radiusLength},updateElement:function(t,e,n){var i=this,a=i.chart,r=i.getDataset(),o=a.options,s=o.animation,l=a.scale,u=a.data.labels,d=l.xCenter,h=l.yCenter,c=o.startAngle,f=t.hidden?0:l.getDistanceFromCenterForValue(r.data[e]),g=i._starts[e],p=g+(t.hidden?0:i._angles[e]),m=s.animateScale?0:l.getDistanceFromCenterForValue(r.data[e]),v=t._options||{};V.extend(t,{_datasetIndex:i.index,_index:e,_scale:l,_model:{backgroundColor:v.backgroundColor,borderColor:v.borderColor,borderWidth:v.borderWidth,borderAlign:v.borderAlign,x:d,y:h,innerRadius:0,outerRadius:n?m:f,startAngle:n&&s.animateRotate?c:g,endAngle:n&&s.animateRotate?c:p,label:V.valueAtIndexOrDefault(u,e,u[e])}}),t.pivot()},countVisibleElements:function(){var t=this.getDataset(),e=this.getMeta(),n=0;return V.each(e.data,(function(e,i){isNaN(t.data[i])||e.hidden||n++})),n},setHoverStyle:function(t){var e=t._model,n=t._options,i=V.getHoverColor,a=V.valueOrDefault;t.$previousStyle={backgroundColor:e.backgroundColor,borderColor:e.borderColor,borderWidth:e.borderWidth},e.backgroundColor=a(n.hoverBackgroundColor,i(n.backgroundColor)),e.borderColor=a(n.hoverBorderColor,i(n.borderColor)),e.borderWidth=a(n.hoverBorderWidth,n.borderWidth)},_computeAngle:function(t){var e=this,n=this.getMeta().count,i=e.getDataset(),a=e.getMeta();if(isNaN(i.data[t])||a.data[t].hidden)return 0;var r={chart:e.chart,dataIndex:t,dataset:i,datasetIndex:e.index};return Yt([e.chart.options.elements.arc.angle,2*Math.PI/n],r,t)}});z._set("pie",V.clone(z.doughnut)),z._set("pie",{cutoutPercentage:0});var Xt=Nt,Kt=V.valueOrDefault;z._set("radar",{spanGaps:!1,scale:{type:"radialLinear"},elements:{line:{fill:"start",tension:0}}});var Zt=nt.extend({datasetElementType:_t.Line,dataElementType:_t.Point,linkScales:V.noop,_datasetElementOptions:["backgroundColor","borderWidth","borderColor","borderCapStyle","borderDash","borderDashOffset","borderJoinStyle","fill"],_dataElementOptions:{backgroundColor:"pointBackgroundColor",borderColor:"pointBorderColor",borderWidth:"pointBorderWidth",hitRadius:"pointHitRadius",hoverBackgroundColor:"pointHoverBackgroundColor",hoverBorderColor:"pointHoverBorderColor",hoverBorderWidth:"pointHoverBorderWidth",hoverRadius:"pointHoverRadius",pointStyle:"pointStyle",radius:"pointRadius",rotation:"pointRotation"},_getIndexScaleId:function(){return this.chart.scale.id},_getValueScaleId:function(){return this.chart.scale.id},update:function(t){var e,n,i=this,a=i.getMeta(),r=a.dataset,o=a.data||[],s=i.chart.scale,l=i._config;for(void 0!==l.tension&&void 0===l.lineTension&&(l.lineTension=l.tension),r._scale=s,r._datasetIndex=i.index,r._children=o,r._loop=!0,r._model=i._resolveDatasetElementOptions(r),r.pivot(),e=0,n=o.length;e<n;++e)i.updateElement(o[e],e,t);for(i.updateBezierControlPoints(),e=0,n=o.length;e<n;++e)o[e].pivot()},updateElement:function(t,e,n){var i=this,a=t.custom||{},r=i.getDataset(),o=i.chart.scale,s=o.getPointPositionForValue(e,r.data[e]),l=i._resolveDataElementOptions(t,e),u=i.getMeta().dataset._model,d=n?o.xCenter:s.x,h=n?o.yCenter:s.y;t._scale=o,t._options=l,t._datasetIndex=i.index,t._index=e,t._model={x:d,y:h,skip:a.skip||isNaN(d)||isNaN(h),radius:l.radius,pointStyle:l.pointStyle,rotation:l.rotation,backgroundColor:l.backgroundColor,borderColor:l.borderColor,borderWidth:l.borderWidth,tension:Kt(a.tension,u?u.tension:0),hitRadius:l.hitRadius}},_resolveDatasetElementOptions:function(){var t=this,e=t._config,n=t.chart.options,i=nt.prototype._resolveDatasetElementOptions.apply(t,arguments);return i.spanGaps=Kt(e.spanGaps,n.spanGaps),i.tension=Kt(e.lineTension,n.elements.line.tension),i},updateBezierControlPoints:function(){var t,e,n,i,a=this.getMeta(),r=this.chart.chartArea,o=a.data||[];function s(t,e,n){return Math.max(Math.min(t,n),e)}for(a.dataset._model.spanGaps&&(o=o.filter((function(t){return!t._model.skip}))),t=0,e=o.length;t<e;++t)n=o[t]._model,i=V.splineCurve(V.previousItem(o,t,!0)._model,n,V.nextItem(o,t,!0)._model,n.tension),n.controlPointPreviousX=s(i.previous.x,r.left,r.right),n.controlPointPreviousY=s(i.previous.y,r.top,r.bottom),n.controlPointNextX=s(i.next.x,r.left,r.right),n.controlPointNextY=s(i.next.y,r.top,r.bottom)},setHoverStyle:function(t){var e=t._model,n=t._options,i=V.getHoverColor;t.$previousStyle={backgroundColor:e.backgroundColor,borderColor:e.borderColor,borderWidth:e.borderWidth,radius:e.radius},e.backgroundColor=Kt(n.hoverBackgroundColor,i(n.backgroundColor)),e.borderColor=Kt(n.hoverBorderColor,i(n.borderColor)),e.borderWidth=Kt(n.hoverBorderWidth,n.borderWidth),e.radius=Kt(n.hoverRadius,n.radius)}});z._set("scatter",{hover:{mode:"single"},scales:{xAxes:[{id:"x-axis-1",type:"linear",position:"bottom"}],yAxes:[{id:"y-axis-1",type:"linear",position:"left"}]},tooltips:{callbacks:{title:function(){return""},label:function(t){return"("+t.xLabel+", "+t.yLabel+")"}}}}),z._set("global",{datasets:{scatter:{showLine:!1}}});var $t={bar:Dt,bubble:Ft,doughnut:Nt,horizontalBar:Bt,line:Ut,polarArea:Gt,pie:Xt,radar:Zt,scatter:Ut};function Jt(t,e){return t.native?{x:t.x,y:t.y}:V.getRelativePosition(t,e)}function Qt(t,e){var n,i,a,r,o,s,l=t._getSortedVisibleDatasetMetas();for(i=0,r=l.length;i<r;++i)for(a=0,o=(n=l[i].data).length;a<o;++a)(s=n[a])._view.skip||e(s)}function te(t,e){var n=[];return Qt(t,(function(t){t.inRange(e.x,e.y)&&n.push(t)})),n}function ee(t,e,n,i){var a=Number.POSITIVE_INFINITY,r=[];return Qt(t,(function(t){if(!n||t.inRange(e.x,e.y)){var o=t.getCenterPoint(),s=i(e,o);s<a?(r=[t],a=s):s===a&&r.push(t)}})),r}function ne(t){var e=-1!==t.indexOf("x"),n=-1!==t.indexOf("y");return function(t,i){var a=e?Math.abs(t.x-i.x):0,r=n?Math.abs(t.y-i.y):0;return Math.sqrt(Math.pow(a,2)+Math.pow(r,2))}}function ie(t,e,n){var i=Jt(e,t);n.axis=n.axis||"x";var a=ne(n.axis),r=n.intersect?te(t,i):ee(t,i,!1,a),o=[];return r.length?(t._getSortedVisibleDatasetMetas().forEach((function(t){var e=t.data[r[0]._index];e&&!e._view.skip&&o.push(e)})),o):[]}var ae={modes:{single:function(t,e){var n=Jt(e,t),i=[];return Qt(t,(function(t){if(t.inRange(n.x,n.y))return i.push(t),i})),i.slice(0,1)},label:ie,index:ie,dataset:function(t,e,n){var i=Jt(e,t);n.axis=n.axis||"xy";var a=ne(n.axis),r=n.intersect?te(t,i):ee(t,i,!1,a);return r.length>0&&(r=t.getDatasetMeta(r[0]._datasetIndex).data),r},"x-axis":function(t,e){return ie(t,e,{intersect:!1})},point:function(t,e){return te(t,Jt(e,t))},nearest:function(t,e,n){var i=Jt(e,t);n.axis=n.axis||"xy";var a=ne(n.axis);return ee(t,i,n.intersect,a)},x:function(t,e,n){var i=Jt(e,t),a=[],r=!1;return Qt(t,(function(t){t.inXRange(i.x)&&a.push(t),t.inRange(i.x,i.y)&&(r=!0)})),n.intersect&&!r&&(a=[]),a},y:function(t,e,n){var i=Jt(e,t),a=[],r=!1;return Qt(t,(function(t){t.inYRange(i.y)&&a.push(t),t.inRange(i.x,i.y)&&(r=!0)})),n.intersect&&!r&&(a=[]),a}}},re=V.extend;function oe(t,e){return V.where(t,(function(t){return t.pos===e}))}function se(t,e){return t.sort((function(t,n){var i=e?n:t,a=e?t:n;return i.weight===a.weight?i.index-a.index:i.weight-a.weight}))}function le(t,e,n,i){return Math.max(t[n],e[n])+Math.max(t[i],e[i])}function ue(t,e,n){var i,a,r=n.box,o=t.maxPadding;if(n.size&&(t[n.pos]-=n.size),n.size=n.horizontal?r.height:r.width,t[n.pos]+=n.size,r.getPadding){var s=r.getPadding();o.top=Math.max(o.top,s.top),o.left=Math.max(o.left,s.left),o.bottom=Math.max(o.bottom,s.bottom),o.right=Math.max(o.right,s.right)}if(i=e.outerWidth-le(o,t,"left","right"),a=e.outerHeight-le(o,t,"top","bottom"),i!==t.w||a!==t.h)return t.w=i,t.h=a,n.horizontal?i!==t.w:a!==t.h}function de(t,e){var n=e.maxPadding;function i(t){var i={left:0,top:0,right:0,bottom:0};return t.forEach((function(t){i[t]=Math.max(e[t],n[t])})),i}return i(t?["left","right"]:["top","bottom"])}function he(t,e,n){var i,a,r,o,s,l,u=[];for(i=0,a=t.length;i<a;++i)(o=(r=t[i]).box).update(r.width||e.w,r.height||e.h,de(r.horizontal,e)),ue(e,n,r)&&(l=!0,u.length&&(s=!0)),o.fullWidth||u.push(r);return s&&he(u,e,n)||l}function ce(t,e,n){var i,a,r,o,s=n.padding,l=e.x,u=e.y;for(i=0,a=t.length;i<a;++i)o=(r=t[i]).box,r.horizontal?(o.left=o.fullWidth?s.left:e.left,o.right=o.fullWidth?n.outerWidth-s.right:e.left+e.w,o.top=u,o.bottom=u+o.height,o.width=o.right-o.left,u=o.bottom):(o.left=l,o.right=l+o.width,o.top=e.top,o.bottom=e.top+e.h,o.height=o.bottom-o.top,l=o.right);e.x=l,e.y=u}z._set("global",{layout:{padding:{top:0,right:0,bottom:0,left:0}}});var fe,ge={defaults:{},addBox:function(t,e){t.boxes||(t.boxes=[]),e.fullWidth=e.fullWidth||!1,e.position=e.position||"top",e.weight=e.weight||0,e._layers=e._layers||function(){return[{z:0,draw:function(){e.draw.apply(e,arguments)}}]},t.boxes.push(e)},removeBox:function(t,e){var n=t.boxes?t.boxes.indexOf(e):-1;-1!==n&&t.boxes.splice(n,1)},configure:function(t,e,n){for(var i,a=["fullWidth","position","weight"],r=a.length,o=0;o<r;++o)i=a[o],n.hasOwnProperty(i)&&(e[i]=n[i])},update:function(t,e,n){if(t){var i=t.options.layout||{},a=V.options.toPadding(i.padding),r=e-a.width,o=n-a.height,s=function(t){var e=function(t){var e,n,i,a=[];for(e=0,n=(t||[]).length;e<n;++e)i=t[e],a.push({index:e,box:i,pos:i.position,horizontal:i.isHorizontal(),weight:i.weight});return a}(t),n=se(oe(e,"left"),!0),i=se(oe(e,"right")),a=se(oe(e,"top"),!0),r=se(oe(e,"bottom"));return{leftAndTop:n.concat(a),rightAndBottom:i.concat(r),chartArea:oe(e,"chartArea"),vertical:n.concat(i),horizontal:a.concat(r)}}(t.boxes),l=s.vertical,u=s.horizontal,d=Object.freeze({outerWidth:e,outerHeight:n,padding:a,availableWidth:r,vBoxMaxWidth:r/2/l.length,hBoxMaxHeight:o/2}),h=re({maxPadding:re({},a),w:r,h:o,x:a.left,y:a.top},a);!function(t,e){var n,i,a;for(n=0,i=t.length;n<i;++n)(a=t[n]).width=a.horizontal?a.box.fullWidth&&e.availableWidth:e.vBoxMaxWidth,a.height=a.horizontal&&e.hBoxMaxHeight}(l.concat(u),d),he(l,h,d),he(u,h,d)&&he(l,h,d),function(t){var e=t.maxPadding;function n(n){var i=Math.max(e[n]-t[n],0);return t[n]+=i,i}t.y+=n("top"),t.x+=n("left"),n("right"),n("bottom")}(h),ce(s.leftAndTop,h,d),h.x+=h.w,h.y+=h.h,ce(s.rightAndBottom,h,d),t.chartArea={left:h.left,top:h.top,right:h.left+h.w,bottom:h.top+h.h},V.each(s.chartArea,(function(e){var n=e.box;re(n,t.chartArea),n.update(h.w,h.h)}))}}},pe=(fe=Object.freeze({__proto__:null,default:"@keyframes chartjs-render-animation{from{opacity:.99}to{opacity:1}}.chartjs-render-monitor{animation:chartjs-render-animation 1ms}.chartjs-size-monitor,.chartjs-size-monitor-expand,.chartjs-size-monitor-shrink{position:absolute;direction:ltr;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1}.chartjs-size-monitor-expand>div{position:absolute;width:1000000px;height:1000000px;left:0;top:0}.chartjs-size-monitor-shrink>div{position:absolute;width:200%;height:200%;left:0;top:0}"}))&&fe.default||fe,me="$chartjs",ve="chartjs-size-monitor",be="chartjs-render-monitor",xe="chartjs-render-animation",ye=["animationstart","webkitAnimationStart"],_e={touchstart:"mousedown",touchmove:"mousemove",touchend:"mouseup",pointerenter:"mouseenter",pointerdown:"mousedown",pointermove:"mousemove",pointerup:"mouseup",pointerleave:"mouseout",pointerout:"mouseout"};function ke(t,e){var n=V.getStyle(t,e),i=n&&n.match(/^(\d+)(\.\d+)?px$/);return i?Number(i[1]):void 0}var we=!!function(){var t=!1;try{var e=Object.defineProperty({},"passive",{get:function(){t=!0}});window.addEventListener("e",null,e)}catch(t){}return t}()&&{passive:!0};function Me(t,e,n){t.addEventListener(e,n,we)}function Se(t,e,n){t.removeEventListener(e,n,we)}function Ce(t,e,n,i,a){return{type:t,chart:e,native:a||null,x:void 0!==n?n:null,y:void 0!==i?i:null}}function Pe(t){var e=document.createElement("div");return e.className=t||"",e}function Ae(t,e,n){var i,a,r,o,s=t[me]||(t[me]={}),l=s.resizer=function(t){var e=Pe(ve),n=Pe(ve+"-expand"),i=Pe(ve+"-shrink");n.appendChild(Pe()),i.appendChild(Pe()),e.appendChild(n),e.appendChild(i),e._reset=function(){n.scrollLeft=1e6,n.scrollTop=1e6,i.scrollLeft=1e6,i.scrollTop=1e6};var a=function(){e._reset(),t()};return Me(n,"scroll",a.bind(n,"expand")),Me(i,"scroll",a.bind(i,"shrink")),e}((i=function(){if(s.resizer){var i=n.options.maintainAspectRatio&&t.parentNode,a=i?i.clientWidth:0;e(Ce("resize",n)),i&&i.clientWidth<a&&n.canvas&&e(Ce("resize",n))}},r=!1,o=[],function(){o=Array.prototype.slice.call(arguments),a=a||this,r||(r=!0,V.requestAnimFrame.call(window,(function(){r=!1,i.apply(a,o)})))}));!function(t,e){var n=t[me]||(t[me]={}),i=n.renderProxy=function(t){t.animationName===xe&&e()};V.each(ye,(function(e){Me(t,e,i)})),n.reflow=!!t.offsetParent,t.classList.add(be)}(t,(function(){if(s.resizer){var e=t.parentNode;e&&e!==l.parentNode&&e.insertBefore(l,e.firstChild),l._reset()}}))}function De(t){var e=t[me]||{},n=e.resizer;delete e.resizer,function(t){var e=t[me]||{},n=e.renderProxy;n&&(V.each(ye,(function(e){Se(t,e,n)})),delete e.renderProxy),t.classList.remove(be)}(t),n&&n.parentNode&&n.parentNode.removeChild(n)}var Te={disableCSSInjection:!1,_enabled:"undefined"!=typeof window&&"undefined"!=typeof document,_ensureLoaded:function(t){if(!this.disableCSSInjection){var e=t.getRootNode?t.getRootNode():document;!function(t,e){var n=t[me]||(t[me]={});if(!n.containsStyles){n.containsStyles=!0,e="/* Chart.js */\n"+e;var i=document.createElement("style");i.setAttribute("type","text/css"),i.appendChild(document.createTextNode(e)),t.appendChild(i)}}(e.host?e:document.head,pe)}},acquireContext:function(t,e){"string"==typeof t?t=document.getElementById(t):t.length&&(t=t[0]),t&&t.canvas&&(t=t.canvas);var n=t&&t.getContext&&t.getContext("2d");return n&&n.canvas===t?(this._ensureLoaded(t),function(t,e){var n=t.style,i=t.getAttribute("height"),a=t.getAttribute("width");if(t[me]={initial:{height:i,width:a,style:{display:n.display,height:n.height,width:n.width}}},n.display=n.display||"block",null===a||""===a){var r=ke(t,"width");void 0!==r&&(t.width=r)}if(null===i||""===i)if(""===t.style.height)t.height=t.width/(e.options.aspectRatio||2);else{var o=ke(t,"height");void 0!==r&&(t.height=o)}}(t,e),n):null},releaseContext:function(t){var e=t.canvas;if(e[me]){var n=e[me].initial;["height","width"].forEach((function(t){var i=n[t];V.isNullOrUndef(i)?e.removeAttribute(t):e.setAttribute(t,i)})),V.each(n.style||{},(function(t,n){e.style[n]=t})),e.width=e.width,delete e[me]}},addEventListener:function(t,e,n){var i=t.canvas;if("resize"!==e){var a=n[me]||(n[me]={});Me(i,e,(a.proxies||(a.proxies={}))[t.id+"_"+e]=function(e){n(function(t,e){var n=_e[t.type]||t.type,i=V.getRelativePosition(t,e);return Ce(n,e,i.x,i.y,t)}(e,t))})}else Ae(i,n,t)},removeEventListener:function(t,e,n){var i=t.canvas;if("resize"!==e){var a=((n[me]||{}).proxies||{})[t.id+"_"+e];a&&Se(i,e,a)}else De(i)}};V.addEvent=Me,V.removeEvent=Se;var Ie=Te._enabled?Te:{acquireContext:function(t){return t&&t.canvas&&(t=t.canvas),t&&t.getContext("2d")||null}},Fe=V.extend({initialize:function(){},acquireContext:function(){},releaseContext:function(){},addEventListener:function(){},removeEventListener:function(){}},Ie);z._set("global",{plugins:{}});var Le={_plugins:[],_cacheId:0,register:function(t){var e=this._plugins;[].concat(t).forEach((function(t){-1===e.indexOf(t)&&e.push(t)})),this._cacheId++},unregister:function(t){var e=this._plugins;[].concat(t).forEach((function(t){var n=e.indexOf(t);-1!==n&&e.splice(n,1)})),this._cacheId++},clear:function(){this._plugins=[],this._cacheId++},count:function(){return this._plugins.length},getAll:function(){return this._plugins},notify:function(t,e,n){var i,a,r,o,s,l=this.descriptors(t),u=l.length;for(i=0;i<u;++i)if("function"==typeof(s=(r=(a=l[i]).plugin)[e])&&((o=[t].concat(n||[])).push(a.options),!1===s.apply(r,o)))return!1;return!0},descriptors:function(t){var e=t.$plugins||(t.$plugins={});if(e.id===this._cacheId)return e.descriptors;var n=[],i=[],a=t&&t.config||{},r=a.options&&a.options.plugins||{};return this._plugins.concat(a.plugins||[]).forEach((function(t){if(-1===n.indexOf(t)){var e=t.id,a=r[e];!1!==a&&(!0===a&&(a=V.clone(z.global.plugins[e])),n.push(t),i.push({plugin:t,options:a||{}}))}})),e.descriptors=i,e.id=this._cacheId,i},_invalidate:function(t){delete t.$plugins}},Oe={constructors:{},defaults:{},registerScaleType:function(t,e,n){this.constructors[t]=e,this.defaults[t]=V.clone(n)},getScaleConstructor:function(t){return this.constructors.hasOwnProperty(t)?this.constructors[t]:void 0},getScaleDefaults:function(t){return this.defaults.hasOwnProperty(t)?V.merge({},[z.scale,this.defaults[t]]):{}},updateScaleDefaults:function(t,e){this.defaults.hasOwnProperty(t)&&(this.defaults[t]=V.extend(this.defaults[t],e))},addScalesToLayout:function(t){V.each(t.scales,(function(e){e.fullWidth=e.options.fullWidth,e.position=e.options.position,e.weight=e.options.weight,ge.addBox(t,e)}))}},Re=V.valueOrDefault,ze=V.rtl.getRtlAdapter;z._set("global",{tooltips:{enabled:!0,custom:null,mode:"nearest",position:"average",intersect:!0,backgroundColor:"rgba(0,0,0,0.8)",titleFontStyle:"bold",titleSpacing:2,titleMarginBottom:6,titleFontColor:"#fff",titleAlign:"left",bodySpacing:2,bodyFontColor:"#fff",bodyAlign:"left",footerFontStyle:"bold",footerSpacing:2,footerMarginTop:6,footerFontColor:"#fff",footerAlign:"left",yPadding:6,xPadding:6,caretPadding:2,caretSize:5,cornerRadius:6,multiKeyBackground:"#fff",displayColors:!0,borderColor:"rgba(0,0,0,0)",borderWidth:0,callbacks:{beforeTitle:V.noop,title:function(t,e){var n="",i=e.labels,a=i?i.length:0;if(t.length>0){var r=t[0];r.label?n=r.label:r.xLabel?n=r.xLabel:a>0&&r.index<a&&(n=i[r.index])}return n},afterTitle:V.noop,beforeBody:V.noop,beforeLabel:V.noop,label:function(t,e){var n=e.datasets[t.datasetIndex].label||"";return n&&(n+=": "),V.isNullOrUndef(t.value)?n+=t.yLabel:n+=t.value,n},labelColor:function(t,e){var n=e.getDatasetMeta(t.datasetIndex).data[t.index]._view;return{borderColor:n.borderColor,backgroundColor:n.backgroundColor}},labelTextColor:function(){return this._options.bodyFontColor},afterLabel:V.noop,afterBody:V.noop,beforeFooter:V.noop,footer:V.noop,afterFooter:V.noop}}});var Ne={average:function(t){if(!t.length)return!1;var e,n,i=0,a=0,r=0;for(e=0,n=t.length;e<n;++e){var o=t[e];if(o&&o.hasValue()){var s=o.tooltipPosition();i+=s.x,a+=s.y,++r}}return{x:i/r,y:a/r}},nearest:function(t,e){var n,i,a,r=e.x,o=e.y,s=Number.POSITIVE_INFINITY;for(n=0,i=t.length;n<i;++n){var l=t[n];if(l&&l.hasValue()){var u=l.getCenterPoint(),d=V.distanceBetweenPoints(e,u);d<s&&(s=d,a=l)}}if(a){var h=a.tooltipPosition();r=h.x,o=h.y}return{x:r,y:o}}};function Be(t,e){return e&&(V.isArray(e)?Array.prototype.push.apply(t,e):t.push(e)),t}function Ee(t){return("string"==typeof t||t instanceof String)&&t.indexOf("\n")>-1?t.split("\n"):t}function We(t){var e=z.global;return{xPadding:t.xPadding,yPadding:t.yPadding,xAlign:t.xAlign,yAlign:t.yAlign,rtl:t.rtl,textDirection:t.textDirection,bodyFontColor:t.bodyFontColor,_bodyFontFamily:Re(t.bodyFontFamily,e.defaultFontFamily),_bodyFontStyle:Re(t.bodyFontStyle,e.defaultFontStyle),_bodyAlign:t.bodyAlign,bodyFontSize:Re(t.bodyFontSize,e.defaultFontSize),bodySpacing:t.bodySpacing,titleFontColor:t.titleFontColor,_titleFontFamily:Re(t.titleFontFamily,e.defaultFontFamily),_titleFontStyle:Re(t.titleFontStyle,e.defaultFontStyle),titleFontSize:Re(t.titleFontSize,e.defaultFontSize),_titleAlign:t.titleAlign,titleSpacing:t.titleSpacing,titleMarginBottom:t.titleMarginBottom,footerFontColor:t.footerFontColor,_footerFontFamily:Re(t.footerFontFamily,e.defaultFontFamily),_footerFontStyle:Re(t.footerFontStyle,e.defaultFontStyle),footerFontSize:Re(t.footerFontSize,e.defaultFontSize),_footerAlign:t.footerAlign,footerSpacing:t.footerSpacing,footerMarginTop:t.footerMarginTop,caretSize:t.caretSize,cornerRadius:t.cornerRadius,backgroundColor:t.backgroundColor,opacity:0,legendColorBackground:t.multiKeyBackground,displayColors:t.displayColors,borderColor:t.borderColor,borderWidth:t.borderWidth}}function Ve(t,e){return"center"===e?t.x+t.width/2:"right"===e?t.x+t.width-t.xPadding:t.x+t.xPadding}function He(t){return Be([],Ee(t))}var je=X.extend({initialize:function(){this._model=We(this._options),this._lastActive=[]},getTitle:function(){var t=this,e=t._options,n=e.callbacks,i=n.beforeTitle.apply(t,arguments),a=n.title.apply(t,arguments),r=n.afterTitle.apply(t,arguments),o=[];return o=Be(o,Ee(i)),o=Be(o,Ee(a)),o=Be(o,Ee(r))},getBeforeBody:function(){return He(this._options.callbacks.beforeBody.apply(this,arguments))},getBody:function(t,e){var n=this,i=n._options.callbacks,a=[];return V.each(t,(function(t){var r={before:[],lines:[],after:[]};Be(r.before,Ee(i.beforeLabel.call(n,t,e))),Be(r.lines,i.label.call(n,t,e)),Be(r.after,Ee(i.afterLabel.call(n,t,e))),a.push(r)})),a},getAfterBody:function(){return He(this._options.callbacks.afterBody.apply(this,arguments))},getFooter:function(){var t=this,e=t._options.callbacks,n=e.beforeFooter.apply(t,arguments),i=e.footer.apply(t,arguments),a=e.afterFooter.apply(t,arguments),r=[];return r=Be(r,Ee(n)),r=Be(r,Ee(i)),r=Be(r,Ee(a))},update:function(t){var e,n,i,a,r,o,s,l,u,d,h=this,c=h._options,f=h._model,g=h._model=We(c),p=h._active,m=h._data,v={xAlign:f.xAlign,yAlign:f.yAlign},b={x:f.x,y:f.y},x={width:f.width,height:f.height},y={x:f.caretX,y:f.caretY};if(p.length){g.opacity=1;var _=[],k=[];y=Ne[c.position].call(h,p,h._eventPosition);var w=[];for(e=0,n=p.length;e<n;++e)w.push((i=p[e],a=void 0,r=void 0,o=void 0,s=void 0,l=void 0,u=void 0,d=void 0,a=i._xScale,r=i._yScale||i._scale,o=i._index,s=i._datasetIndex,l=i._chart.getDatasetMeta(s).controller,u=l._getIndexScale(),d=l._getValueScale(),{xLabel:a?a.getLabelForIndex(o,s):"",yLabel:r?r.getLabelForIndex(o,s):"",label:u?""+u.getLabelForIndex(o,s):"",value:d?""+d.getLabelForIndex(o,s):"",index:o,datasetIndex:s,x:i._model.x,y:i._model.y}));c.filter&&(w=w.filter((function(t){return c.filter(t,m)}))),c.itemSort&&(w=w.sort((function(t,e){return c.itemSort(t,e,m)}))),V.each(w,(function(t){_.push(c.callbacks.labelColor.call(h,t,h._chart)),k.push(c.callbacks.labelTextColor.call(h,t,h._chart))})),g.title=h.getTitle(w,m),g.beforeBody=h.getBeforeBody(w,m),g.body=h.getBody(w,m),g.afterBody=h.getAfterBody(w,m),g.footer=h.getFooter(w,m),g.x=y.x,g.y=y.y,g.caretPadding=c.caretPadding,g.labelColors=_,g.labelTextColors=k,g.dataPoints=w,x=function(t,e){var n=t._chart.ctx,i=2*e.yPadding,a=0,r=e.body,o=r.reduce((function(t,e){return t+e.before.length+e.lines.length+e.after.length}),0);o+=e.beforeBody.length+e.afterBody.length;var s=e.title.length,l=e.footer.length,u=e.titleFontSize,d=e.bodyFontSize,h=e.footerFontSize;i+=s*u,i+=s?(s-1)*e.titleSpacing:0,i+=s?e.titleMarginBottom:0,i+=o*d,i+=o?(o-1)*e.bodySpacing:0,i+=l?e.footerMarginTop:0,i+=l*h,i+=l?(l-1)*e.footerSpacing:0;var c=0,f=function(t){a=Math.max(a,n.measureText(t).width+c)};return n.font=V.fontString(u,e._titleFontStyle,e._titleFontFamily),V.each(e.title,f),n.font=V.fontString(d,e._bodyFontStyle,e._bodyFontFamily),V.each(e.beforeBody.concat(e.afterBody),f),c=e.displayColors?d+2:0,V.each(r,(function(t){V.each(t.before,f),V.each(t.lines,f),V.each(t.after,f)})),c=0,n.font=V.fontString(h,e._footerFontStyle,e._footerFontFamily),V.each(e.footer,f),{width:a+=2*e.xPadding,height:i}}(this,g),b=function(t,e,n,i){var a=t.x,r=t.y,o=t.caretSize,s=t.caretPadding,l=t.cornerRadius,u=n.xAlign,d=n.yAlign,h=o+s,c=l+s;return"right"===u?a-=e.width:"center"===u&&((a-=e.width/2)+e.width>i.width&&(a=i.width-e.width),a<0&&(a=0)),"top"===d?r+=h:r-="bottom"===d?e.height+h:e.height/2,"center"===d?"left"===u?a+=h:"right"===u&&(a-=h):"left"===u?a-=c:"right"===u&&(a+=c),{x:a,y:r}}(g,x,v=function(t,e){var n,i,a,r,o,s=t._model,l=t._chart,u=t._chart.chartArea,d="center",h="center";s.y<e.height?h="top":s.y>l.height-e.height&&(h="bottom");var c=(u.left+u.right)/2,f=(u.top+u.bottom)/2;"center"===h?(n=function(t){return t<=c},i=function(t){return t>c}):(n=function(t){return t<=e.width/2},i=function(t){return t>=l.width-e.width/2}),a=function(t){return t+e.width+s.caretSize+s.caretPadding>l.width},r=function(t){return t-e.width-s.caretSize-s.caretPadding<0},o=function(t){return t<=f?"top":"bottom"},n(s.x)?(d="left",a(s.x)&&(d="center",h=o(s.y))):i(s.x)&&(d="right",r(s.x)&&(d="center",h=o(s.y)));var g=t._options;return{xAlign:g.xAlign?g.xAlign:d,yAlign:g.yAlign?g.yAlign:h}}(this,x),h._chart)}else g.opacity=0;return g.xAlign=v.xAlign,g.yAlign=v.yAlign,g.x=b.x,g.y=b.y,g.width=x.width,g.height=x.height,g.caretX=y.x,g.caretY=y.y,h._model=g,t&&c.custom&&c.custom.call(h,g),h},drawCaret:function(t,e){var n=this._chart.ctx,i=this._view,a=this.getCaretPosition(t,e,i);n.lineTo(a.x1,a.y1),n.lineTo(a.x2,a.y2),n.lineTo(a.x3,a.y3)},getCaretPosition:function(t,e,n){var i,a,r,o,s,l,u=n.caretSize,d=n.cornerRadius,h=n.xAlign,c=n.yAlign,f=t.x,g=t.y,p=e.width,m=e.height;if("center"===c)s=g+m/2,"left"===h?(a=(i=f)-u,r=i,o=s+u,l=s-u):(a=(i=f+p)+u,r=i,o=s-u,l=s+u);else if("left"===h?(i=(a=f+d+u)-u,r=a+u):"right"===h?(i=(a=f+p-d-u)-u,r=a+u):(i=(a=n.caretX)-u,r=a+u),"top"===c)s=(o=g)-u,l=o;else{s=(o=g+m)+u,l=o;var v=r;r=i,i=v}return{x1:i,x2:a,x3:r,y1:o,y2:s,y3:l}},drawTitle:function(t,e,n){var i,a,r,o=e.title,s=o.length;if(s){var l=ze(e.rtl,e.x,e.width);for(t.x=Ve(e,e._titleAlign),n.textAlign=l.textAlign(e._titleAlign),n.textBaseline="middle",i=e.titleFontSize,a=e.titleSpacing,n.fillStyle=e.titleFontColor,n.font=V.fontString(i,e._titleFontStyle,e._titleFontFamily),r=0;r<s;++r)n.fillText(o[r],l.x(t.x),t.y+i/2),t.y+=i+a,r+1===s&&(t.y+=e.titleMarginBottom-a)}},drawBody:function(t,e,n){var i,a,r,o,s,l,u,d,h=e.bodyFontSize,c=e.bodySpacing,f=e._bodyAlign,g=e.body,p=e.displayColors,m=0,v=p?Ve(e,"left"):0,b=ze(e.rtl,e.x,e.width),x=function(e){n.fillText(e,b.x(t.x+m),t.y+h/2),t.y+=h+c},y=b.textAlign(f);for(n.textAlign=f,n.textBaseline="middle",n.font=V.fontString(h,e._bodyFontStyle,e._bodyFontFamily),t.x=Ve(e,y),n.fillStyle=e.bodyFontColor,V.each(e.beforeBody,x),m=p&&"right"!==y?"center"===f?h/2+1:h+2:0,s=0,u=g.length;s<u;++s){for(i=g[s],a=e.labelTextColors[s],r=e.labelColors[s],n.fillStyle=a,V.each(i.before,x),l=0,d=(o=i.lines).length;l<d;++l){if(p){var _=b.x(v);n.fillStyle=e.legendColorBackground,n.fillRect(b.leftForLtr(_,h),t.y,h,h),n.lineWidth=1,n.strokeStyle=r.borderColor,n.strokeRect(b.leftForLtr(_,h),t.y,h,h),n.fillStyle=r.backgroundColor,n.fillRect(b.leftForLtr(b.xPlus(_,1),h-2),t.y+1,h-2,h-2),n.fillStyle=a}x(o[l])}V.each(i.after,x)}m=0,V.each(e.afterBody,x),t.y-=c},drawFooter:function(t,e,n){var i,a,r=e.footer,o=r.length;if(o){var s=ze(e.rtl,e.x,e.width);for(t.x=Ve(e,e._footerAlign),t.y+=e.footerMarginTop,n.textAlign=s.textAlign(e._footerAlign),n.textBaseline="middle",i=e.footerFontSize,n.fillStyle=e.footerFontColor,n.font=V.fontString(i,e._footerFontStyle,e._footerFontFamily),a=0;a<o;++a)n.fillText(r[a],s.x(t.x),t.y+i/2),t.y+=i+e.footerSpacing}},drawBackground:function(t,e,n,i){n.fillStyle=e.backgroundColor,n.strokeStyle=e.borderColor,n.lineWidth=e.borderWidth;var a=e.xAlign,r=e.yAlign,o=t.x,s=t.y,l=i.width,u=i.height,d=e.cornerRadius;n.beginPath(),n.moveTo(o+d,s),"top"===r&&this.drawCaret(t,i),n.lineTo(o+l-d,s),n.quadraticCurveTo(o+l,s,o+l,s+d),"center"===r&&"right"===a&&this.drawCaret(t,i),n.lineTo(o+l,s+u-d),n.quadraticCurveTo(o+l,s+u,o+l-d,s+u),"bottom"===r&&this.drawCaret(t,i),n.lineTo(o+d,s+u),n.quadraticCurveTo(o,s+u,o,s+u-d),"center"===r&&"left"===a&&this.drawCaret(t,i),n.lineTo(o,s+d),n.quadraticCurveTo(o,s,o+d,s),n.closePath(),n.fill(),e.borderWidth>0&&n.stroke()},draw:function(){var t=this._chart.ctx,e=this._view;if(0!==e.opacity){var n={width:e.width,height:e.height},i={x:e.x,y:e.y},a=Math.abs(e.opacity<.001)?0:e.opacity,r=e.title.length||e.beforeBody.length||e.body.length||e.afterBody.length||e.footer.length;this._options.enabled&&r&&(t.save(),t.globalAlpha=a,this.drawBackground(i,e,t,n),i.y+=e.yPadding,V.rtl.overrideTextDirection(t,e.textDirection),this.drawTitle(i,e,t),this.drawBody(i,e,t),this.drawFooter(i,e,t),V.rtl.restoreTextDirection(t,e.textDirection),t.restore())}},handleEvent:function(t){var e,n=this,i=n._options;return n._lastActive=n._lastActive||[],"mouseout"===t.type?n._active=[]:(n._active=n._chart.getElementsAtEventForMode(t,i.mode,i),i.reverse&&n._active.reverse()),(e=!V.arrayEquals(n._active,n._lastActive))&&(n._lastActive=n._active,(i.enabled||i.custom)&&(n._eventPosition={x:t.x,y:t.y},n.update(!0),n.pivot())),e}}),qe=Ne,Ue=je;Ue.positioners=qe;var Ye=V.valueOrDefault;function Ge(){return V.merge({},[].slice.call(arguments),{merger:function(t,e,n,i){if("xAxes"===t||"yAxes"===t){var a,r,o,s=n[t].length;for(e[t]||(e[t]=[]),a=0;a<s;++a)o=n[t][a],r=Ye(o.type,"xAxes"===t?"category":"linear"),a>=e[t].length&&e[t].push({}),!e[t][a].type||o.type&&o.type!==e[t][a].type?V.merge(e[t][a],[Oe.getScaleDefaults(r),o]):V.merge(e[t][a],o)}else V._merger(t,e,n,i)}})}function Xe(){return V.merge({},[].slice.call(arguments),{merger:function(t,e,n,i){var a=e[t]||{},r=n[t];"scales"===t?e[t]=Ge(a,r):"scale"===t?e[t]=V.merge(a,[Oe.getScaleDefaults(r.type),r]):V._merger(t,e,n,i)}})}function Ke(t){var e=t.options;V.each(t.scales,(function(e){ge.removeBox(t,e)})),e=Xe(z.global,z[t.config.type],e),t.options=t.config.options=e,t.ensureScalesHaveIDs(),t.buildOrUpdateScales(),t.tooltip._options=e.tooltips,t.tooltip.initialize()}function Ze(t,e,n){var i,a=function(t){return t.id===i};do{i=e+n++}while(V.findIndex(t,a)>=0);return i}function $e(t){return"top"===t||"bottom"===t}function Je(t,e){return function(n,i){return n[t]===i[t]?n[e]-i[e]:n[t]-i[t]}}z._set("global",{elements:{},events:["mousemove","mouseout","click","touchstart","touchmove"],hover:{onHover:null,mode:"nearest",intersect:!0,animationDuration:400},onClick:null,maintainAspectRatio:!0,responsive:!0,responsiveAnimationDuration:0});var Qe=function(t,e){return this.construct(t,e),this};V.extend(Qe.prototype,{construct:function(t,e){var n=this;e=function(t){var e=(t=t||{}).data=t.data||{};return e.datasets=e.datasets||[],e.labels=e.labels||[],t.options=Xe(z.global,z[t.type],t.options||{}),t}(e);var i=Fe.acquireContext(t,e),a=i&&i.canvas,r=a&&a.height,o=a&&a.width;n.id=V.uid(),n.ctx=i,n.canvas=a,n.config=e,n.width=o,n.height=r,n.aspectRatio=r?o/r:null,n.options=e.options,n._bufferedRender=!1,n._layers=[],n.chart=n,n.controller=n,Qe.instances[n.id]=n,Object.defineProperty(n,"data",{get:function(){return n.config.data},set:function(t){n.config.data=t}}),i&&a?(n.initialize(),n.update()):console.error("Failed to create chart: can't acquire context from the given item")},initialize:function(){var t=this;return Le.notify(t,"beforeInit"),V.retinaScale(t,t.options.devicePixelRatio),t.bindEvents(),t.options.responsive&&t.resize(!0),t.initToolTip(),Le.notify(t,"afterInit"),t},clear:function(){return V.canvas.clear(this),this},stop:function(){return $.cancelAnimation(this),this},resize:function(t){var e=this,n=e.options,i=e.canvas,a=n.maintainAspectRatio&&e.aspectRatio||null,r=Math.max(0,Math.floor(V.getMaximumWidth(i))),o=Math.max(0,Math.floor(a?r/a:V.getMaximumHeight(i)));if((e.width!==r||e.height!==o)&&(i.width=e.width=r,i.height=e.height=o,i.style.width=r+"px",i.style.height=o+"px",V.retinaScale(e,n.devicePixelRatio),!t)){var s={width:r,height:o};Le.notify(e,"resize",[s]),n.onResize&&n.onResize(e,s),e.stop(),e.update({duration:n.responsiveAnimationDuration})}},ensureScalesHaveIDs:function(){var t=this.options,e=t.scales||{},n=t.scale;V.each(e.xAxes,(function(t,n){t.id||(t.id=Ze(e.xAxes,"x-axis-",n))})),V.each(e.yAxes,(function(t,n){t.id||(t.id=Ze(e.yAxes,"y-axis-",n))})),n&&(n.id=n.id||"scale")},buildOrUpdateScales:function(){var t=this,e=t.options,n=t.scales||{},i=[],a=Object.keys(n).reduce((function(t,e){return t[e]=!1,t}),{});e.scales&&(i=i.concat((e.scales.xAxes||[]).map((function(t){return{options:t,dtype:"category",dposition:"bottom"}})),(e.scales.yAxes||[]).map((function(t){return{options:t,dtype:"linear",dposition:"left"}})))),e.scale&&i.push({options:e.scale,dtype:"radialLinear",isDefault:!0,dposition:"chartArea"}),V.each(i,(function(e){var i=e.options,r=i.id,o=Ye(i.type,e.dtype);$e(i.position)!==$e(e.dposition)&&(i.position=e.dposition),a[r]=!0;var s=null;if(r in n&&n[r].type===o)(s=n[r]).options=i,s.ctx=t.ctx,s.chart=t;else{var l=Oe.getScaleConstructor(o);if(!l)return;s=new l({id:r,type:o,options:i,ctx:t.ctx,chart:t}),n[s.id]=s}s.mergeTicksOptions(),e.isDefault&&(t.scale=s)})),V.each(a,(function(t,e){t||delete n[e]})),t.scales=n,Oe.addScalesToLayout(this)},buildOrUpdateControllers:function(){var t,e,n=this,i=[],a=n.data.datasets;for(t=0,e=a.length;t<e;t++){var r=a[t],o=n.getDatasetMeta(t),s=r.type||n.config.type;if(o.type&&o.type!==s&&(n.destroyDatasetMeta(t),o=n.getDatasetMeta(t)),o.type=s,o.order=r.order||0,o.index=t,o.controller)o.controller.updateIndex(t),o.controller.linkScales();else{var l=$t[o.type];if(void 0===l)throw new Error('"'+o.type+'" is not a chart type.');o.controller=new l(n,t),i.push(o.controller)}}return i},resetElements:function(){var t=this;V.each(t.data.datasets,(function(e,n){t.getDatasetMeta(n).controller.reset()}),t)},reset:function(){this.resetElements(),this.tooltip.initialize()},update:function(t){var e,n,i=this;if(t&&"object"==typeof t||(t={duration:t,lazy:arguments[1]}),Ke(i),Le._invalidate(i),!1!==Le.notify(i,"beforeUpdate")){i.tooltip._data=i.data;var a=i.buildOrUpdateControllers();for(e=0,n=i.data.datasets.length;e<n;e++)i.getDatasetMeta(e).controller.buildOrUpdateElements();i.updateLayout(),i.options.animation&&i.options.animation.duration&&V.each(a,(function(t){t.reset()})),i.updateDatasets(),i.tooltip.initialize(),i.lastActive=[],Le.notify(i,"afterUpdate"),i._layers.sort(Je("z","_idx")),i._bufferedRender?i._bufferedRequest={duration:t.duration,easing:t.easing,lazy:t.lazy}:i.render(t)}},updateLayout:function(){var t=this;!1!==Le.notify(t,"beforeLayout")&&(ge.update(this,this.width,this.height),t._layers=[],V.each(t.boxes,(function(e){e._configure&&e._configure(),t._layers.push.apply(t._layers,e._layers())}),t),t._layers.forEach((function(t,e){t._idx=e})),Le.notify(t,"afterScaleUpdate"),Le.notify(t,"afterLayout"))},updateDatasets:function(){if(!1!==Le.notify(this,"beforeDatasetsUpdate")){for(var t=0,e=this.data.datasets.length;t<e;++t)this.updateDataset(t);Le.notify(this,"afterDatasetsUpdate")}},updateDataset:function(t){var e=this.getDatasetMeta(t),n={meta:e,index:t};!1!==Le.notify(this,"beforeDatasetUpdate",[n])&&(e.controller._update(),Le.notify(this,"afterDatasetUpdate",[n]))},render:function(t){var e=this;t&&"object"==typeof t||(t={duration:t,lazy:arguments[1]});var n=e.options.animation,i=Ye(t.duration,n&&n.duration),a=t.lazy;if(!1!==Le.notify(e,"beforeRender")){var r=function(t){Le.notify(e,"afterRender"),V.callback(n&&n.onComplete,[t],e)};if(n&&i){var o=new Z({numSteps:i/16.66,easing:t.easing||n.easing,render:function(t,e){var n=V.easing.effects[e.easing],i=e.currentStep,a=i/e.numSteps;t.draw(n(a),a,i)},onAnimationProgress:n.onProgress,onAnimationComplete:r});$.addAnimation(e,o,i,a)}else e.draw(),r(new Z({numSteps:0,chart:e}));return e}},draw:function(t){var e,n,i=this;if(i.clear(),V.isNullOrUndef(t)&&(t=1),i.transition(t),!(i.width<=0||i.height<=0)&&!1!==Le.notify(i,"beforeDraw",[t])){for(n=i._layers,e=0;e<n.length&&n[e].z<=0;++e)n[e].draw(i.chartArea);for(i.drawDatasets(t);e<n.length;++e)n[e].draw(i.chartArea);i._drawTooltip(t),Le.notify(i,"afterDraw",[t])}},transition:function(t){for(var e=0,n=(this.data.datasets||[]).length;e<n;++e)this.isDatasetVisible(e)&&this.getDatasetMeta(e).controller.transition(t);this.tooltip.transition(t)},_getSortedDatasetMetas:function(t){var e,n,i=[];for(e=0,n=(this.data.datasets||[]).length;e<n;++e)t&&!this.isDatasetVisible(e)||i.push(this.getDatasetMeta(e));return i.sort(Je("order","index")),i},_getSortedVisibleDatasetMetas:function(){return this._getSortedDatasetMetas(!0)},drawDatasets:function(t){var e,n;if(!1!==Le.notify(this,"beforeDatasetsDraw",[t])){for(n=(e=this._getSortedVisibleDatasetMetas()).length-1;n>=0;--n)this.drawDataset(e[n],t);Le.notify(this,"afterDatasetsDraw",[t])}},drawDataset:function(t,e){var n={meta:t,index:t.index,easingValue:e};!1!==Le.notify(this,"beforeDatasetDraw",[n])&&(t.controller.draw(e),Le.notify(this,"afterDatasetDraw",[n]))},_drawTooltip:function(t){var e=this.tooltip,n={tooltip:e,easingValue:t};!1!==Le.notify(this,"beforeTooltipDraw",[n])&&(e.draw(),Le.notify(this,"afterTooltipDraw",[n]))},getElementAtEvent:function(t){return ae.modes.single(this,t)},getElementsAtEvent:function(t){return ae.modes.label(this,t,{intersect:!0})},getElementsAtXAxis:function(t){return ae.modes["x-axis"](this,t,{intersect:!0})},getElementsAtEventForMode:function(t,e,n){var i=ae.modes[e];return"function"==typeof i?i(this,t,n):[]},getDatasetAtEvent:function(t){return ae.modes.dataset(this,t,{intersect:!0})},getDatasetMeta:function(t){var e=this.data.datasets[t];e._meta||(e._meta={});var n=e._meta[this.id];return n||(n=e._meta[this.id]={type:null,data:[],dataset:null,controller:null,hidden:null,xAxisID:null,yAxisID:null,order:e.order||0,index:t}),n},getVisibleDatasetCount:function(){for(var t=0,e=0,n=this.data.datasets.length;e<n;++e)this.isDatasetVisible(e)&&t++;return t},isDatasetVisible:function(t){var e=this.getDatasetMeta(t);return"boolean"==typeof e.hidden?!e.hidden:!this.data.datasets[t].hidden},generateLegend:function(){return this.options.legendCallback(this)},destroyDatasetMeta:function(t){var e=this.id,n=this.data.datasets[t],i=n._meta&&n._meta[e];i&&(i.controller.destroy(),delete n._meta[e])},destroy:function(){var t,e,n=this,i=n.canvas;for(n.stop(),t=0,e=n.data.datasets.length;t<e;++t)n.destroyDatasetMeta(t);i&&(n.unbindEvents(),V.canvas.clear(n),Fe.releaseContext(n.ctx),n.canvas=null,n.ctx=null),Le.notify(n,"destroy"),delete Qe.instances[n.id]},toBase64Image:function(){return this.canvas.toDataURL.apply(this.canvas,arguments)},initToolTip:function(){var t=this;t.tooltip=new Ue({_chart:t,_chartInstance:t,_data:t.data,_options:t.options.tooltips},t)},bindEvents:function(){var t=this,e=t._listeners={},n=function(){t.eventHandler.apply(t,arguments)};V.each(t.options.events,(function(i){Fe.addEventListener(t,i,n),e[i]=n})),t.options.responsive&&(n=function(){t.resize()},Fe.addEventListener(t,"resize",n),e.resize=n)},unbindEvents:function(){var t=this,e=t._listeners;e&&(delete t._listeners,V.each(e,(function(e,n){Fe.removeEventListener(t,n,e)})))},updateHoverStyle:function(t,e,n){var i,a,r,o=n?"set":"remove";for(a=0,r=t.length;a<r;++a)(i=t[a])&&this.getDatasetMeta(i._datasetIndex).controller[o+"HoverStyle"](i);"dataset"===e&&this.getDatasetMeta(t[0]._datasetIndex).controller["_"+o+"DatasetHoverStyle"]()},eventHandler:function(t){var e=this,n=e.tooltip;if(!1!==Le.notify(e,"beforeEvent",[t])){e._bufferedRender=!0,e._bufferedRequest=null;var i=e.handleEvent(t);n&&(i=n._start?n.handleEvent(t):i|n.handleEvent(t)),Le.notify(e,"afterEvent",[t]);var a=e._bufferedRequest;return a?e.render(a):i&&!e.animating&&(e.stop(),e.render({duration:e.options.hover.animationDuration,lazy:!0})),e._bufferedRender=!1,e._bufferedRequest=null,e}},handleEvent:function(t){var e,n=this,i=n.options||{},a=i.hover;return n.lastActive=n.lastActive||[],"mouseout"===t.type?n.active=[]:n.active=n.getElementsAtEventForMode(t,a.mode,a),V.callback(i.onHover||i.hover.onHover,[t.native,n.active],n),"mouseup"!==t.type&&"click"!==t.type||i.onClick&&i.onClick.call(n,t.native,n.active),n.lastActive.length&&n.updateHoverStyle(n.lastActive,a.mode,!1),n.active.length&&a.mode&&n.updateHoverStyle(n.active,a.mode,!0),e=!V.arrayEquals(n.active,n.lastActive),n.lastActive=n.active,e}}),Qe.instances={};var tn=Qe;Qe.Controller=Qe,Qe.types={},V.configMerge=Xe,V.scaleMerge=Ge;function en(){throw new Error("This method is not implemented: either no adapter can be found or an incomplete integration was provided.")}function nn(t){this.options=t||{}}V.extend(nn.prototype,{formats:en,parse:en,format:en,add:en,diff:en,startOf:en,endOf:en,_create:function(t){return t}}),nn.override=function(t){V.extend(nn.prototype,t)};var an={_date:nn},rn={formatters:{values:function(t){return V.isArray(t)?t:""+t},linear:function(t,e,n){var i=n.length>3?n[2]-n[1]:n[1]-n[0];Math.abs(i)>1&&t!==Math.floor(t)&&(i=t-Math.floor(t));var a=V.log10(Math.abs(i)),r="";if(0!==t)if(Math.max(Math.abs(n[0]),Math.abs(n[n.length-1]))<1e-4){var o=V.log10(Math.abs(t)),s=Math.floor(o)-Math.floor(a);s=Math.max(Math.min(s,20),0),r=t.toExponential(s)}else{var l=-1*Math.floor(a);l=Math.max(Math.min(l,20),0),r=t.toFixed(l)}else r="0";return r},logarithmic:function(t,e,n){var i=t/Math.pow(10,Math.floor(V.log10(t)));return 0===t?"0":1===i||2===i||5===i||0===e||e===n.length-1?t.toExponential():""}}},on=V.isArray,sn=V.isNullOrUndef,ln=V.valueOrDefault,un=V.valueAtIndexOrDefault;function dn(t,e,n){var i,a=t.getTicks().length,r=Math.min(e,a-1),o=t.getPixelForTick(r),s=t._startPixel,l=t._endPixel;if(!(n&&(i=1===a?Math.max(o-s,l-o):0===e?(t.getPixelForTick(1)-o)/2:(o-t.getPixelForTick(r-1))/2,(o+=r<e?i:-i)<s-1e-6||o>l+1e-6)))return o}function hn(t,e,n,i){var a,r,o,s,l,u,d,h,c,f,g,p,m,v=n.length,b=[],x=[],y=[];for(a=0;a<v;++a){if(s=n[a].label,l=n[a].major?e.major:e.minor,t.font=u=l.string,d=i[u]=i[u]||{data:{},gc:[]},h=l.lineHeight,c=f=0,sn(s)||on(s)){if(on(s))for(r=0,o=s.length;r<o;++r)g=s[r],sn(g)||on(g)||(c=V.measureText(t,d.data,d.gc,c,g),f+=h)}else c=V.measureText(t,d.data,d.gc,c,s),f=h;b.push(c),x.push(f),y.push(h/2)}function _(t){return{width:b[t]||0,height:x[t]||0,offset:y[t]||0}}return function(t,e){V.each(t,(function(t){var n,i=t.gc,a=i.length/2;if(a>e){for(n=0;n<a;++n)delete t.data[i[n]];i.splice(0,a)}}))}(i,v),p=b.indexOf(Math.max.apply(null,b)),m=x.indexOf(Math.max.apply(null,x)),{first:_(0),last:_(v-1),widest:_(p),highest:_(m)}}function cn(t){return t.drawTicks?t.tickMarkLength:0}function fn(t){var e,n;return t.display?(e=V.options._parseFont(t),n=V.options.toPadding(t.padding),e.lineHeight+n.height):0}function gn(t,e){return V.extend(V.options._parseFont({fontFamily:ln(e.fontFamily,t.fontFamily),fontSize:ln(e.fontSize,t.fontSize),fontStyle:ln(e.fontStyle,t.fontStyle),lineHeight:ln(e.lineHeight,t.lineHeight)}),{color:V.options.resolve([e.fontColor,t.fontColor,z.global.defaultFontColor])})}function pn(t){var e=gn(t,t.minor);return{minor:e,major:t.major.enabled?gn(t,t.major):e}}function mn(t){var e,n,i,a=[];for(n=0,i=t.length;n<i;++n)void 0!==(e=t[n])._index&&a.push(e);return a}function vn(t,e,n,i){var a,r,o,s,l=ln(n,0),u=Math.min(ln(i,t.length),t.length),d=0;for(e=Math.ceil(e),i&&(e=(a=i-n)/Math.floor(a/e)),s=l;s<0;)d++,s=Math.round(l+d*e);for(r=Math.max(l,0);r<u;r++)o=t[r],r===s?(o._index=r,d++,s=Math.round(l+d*e)):delete o.label}z._set("scale",{display:!0,position:"left",offset:!1,gridLines:{display:!0,color:"rgba(0,0,0,0.1)",lineWidth:1,drawBorder:!0,drawOnChartArea:!0,drawTicks:!0,tickMarkLength:10,zeroLineWidth:1,zeroLineColor:"rgba(0,0,0,0.25)",zeroLineBorderDash:[],zeroLineBorderDashOffset:0,offsetGridLines:!1,borderDash:[],borderDashOffset:0},scaleLabel:{display:!1,labelString:"",padding:{top:4,bottom:4}},ticks:{beginAtZero:!1,minRotation:0,maxRotation:50,mirror:!1,padding:0,reverse:!1,display:!0,autoSkip:!0,autoSkipPadding:0,labelOffset:0,callback:rn.formatters.values,minor:{},major:{}}});var bn=X.extend({zeroLineIndex:0,getPadding:function(){return{left:this.paddingLeft||0,top:this.paddingTop||0,right:this.paddingRight||0,bottom:this.paddingBottom||0}},getTicks:function(){return this._ticks},_getLabels:function(){var t=this.chart.data;return this.options.labels||(this.isHorizontal()?t.xLabels:t.yLabels)||t.labels||[]},mergeTicksOptions:function(){},beforeUpdate:function(){V.callback(this.options.beforeUpdate,[this])},update:function(t,e,n){var i,a,r,o,s,l=this,u=l.options.ticks,d=u.sampleSize;if(l.beforeUpdate(),l.maxWidth=t,l.maxHeight=e,l.margins=V.extend({left:0,right:0,top:0,bottom:0},n),l._ticks=null,l.ticks=null,l._labelSizes=null,l._maxLabelLines=0,l.longestLabelWidth=0,l.longestTextCache=l.longestTextCache||{},l._gridLineItems=null,l._labelItems=null,l.beforeSetDimensions(),l.setDimensions(),l.afterSetDimensions(),l.beforeDataLimits(),l.determineDataLimits(),l.afterDataLimits(),l.beforeBuildTicks(),o=l.buildTicks()||[],(!(o=l.afterBuildTicks(o)||o)||!o.length)&&l.ticks)for(o=[],i=0,a=l.ticks.length;i<a;++i)o.push({value:l.ticks[i],major:!1});return l._ticks=o,s=d<o.length,r=l._convertTicksToLabels(s?function(t,e){for(var n=[],i=t.length/e,a=0,r=t.length;a<r;a+=i)n.push(t[Math.floor(a)]);return n}(o,d):o),l._configure(),l.beforeCalculateTickRotation(),l.calculateTickRotation(),l.afterCalculateTickRotation(),l.beforeFit(),l.fit(),l.afterFit(),l._ticksToDraw=u.display&&(u.autoSkip||"auto"===u.source)?l._autoSkip(o):o,s&&(r=l._convertTicksToLabels(l._ticksToDraw)),l.ticks=r,l.afterUpdate(),l.minSize},_configure:function(){var t,e,n=this,i=n.options.ticks.reverse;n.isHorizontal()?(t=n.left,e=n.right):(t=n.top,e=n.bottom,i=!i),n._startPixel=t,n._endPixel=e,n._reversePixels=i,n._length=e-t},afterUpdate:function(){V.callback(this.options.afterUpdate,[this])},beforeSetDimensions:function(){V.callback(this.options.beforeSetDimensions,[this])},setDimensions:function(){var t=this;t.isHorizontal()?(t.width=t.maxWidth,t.left=0,t.right=t.width):(t.height=t.maxHeight,t.top=0,t.bottom=t.height),t.paddingLeft=0,t.paddingTop=0,t.paddingRight=0,t.paddingBottom=0},afterSetDimensions:function(){V.callback(this.options.afterSetDimensions,[this])},beforeDataLimits:function(){V.callback(this.options.beforeDataLimits,[this])},determineDataLimits:V.noop,afterDataLimits:function(){V.callback(this.options.afterDataLimits,[this])},beforeBuildTicks:function(){V.callback(this.options.beforeBuildTicks,[this])},buildTicks:V.noop,afterBuildTicks:function(t){var e=this;return on(t)&&t.length?V.callback(e.options.afterBuildTicks,[e,t]):(e.ticks=V.callback(e.options.afterBuildTicks,[e,e.ticks])||e.ticks,t)},beforeTickToLabelConversion:function(){V.callback(this.options.beforeTickToLabelConversion,[this])},convertTicksToLabels:function(){var t=this.options.ticks;this.ticks=this.ticks.map(t.userCallback||t.callback,this)},afterTickToLabelConversion:function(){V.callback(this.options.afterTickToLabelConversion,[this])},beforeCalculateTickRotation:function(){V.callback(this.options.beforeCalculateTickRotation,[this])},calculateTickRotation:function(){var t,e,n,i,a,r,o,s=this,l=s.options,u=l.ticks,d=s.getTicks().length,h=u.minRotation||0,c=u.maxRotation,f=h;!s._isVisible()||!u.display||h>=c||d<=1||!s.isHorizontal()?s.labelRotation=h:(e=(t=s._getLabelSizes()).widest.width,n=t.highest.height-t.highest.offset,i=Math.min(s.maxWidth,s.chart.width-e),e+6>(a=l.offset?s.maxWidth/d:i/(d-1))&&(a=i/(d-(l.offset?.5:1)),r=s.maxHeight-cn(l.gridLines)-u.padding-fn(l.scaleLabel),o=Math.sqrt(e*e+n*n),f=V.toDegrees(Math.min(Math.asin(Math.min((t.highest.height+6)/a,1)),Math.asin(Math.min(r/o,1))-Math.asin(n/o))),f=Math.max(h,Math.min(c,f))),s.labelRotation=f)},afterCalculateTickRotation:function(){V.callback(this.options.afterCalculateTickRotation,[this])},beforeFit:function(){V.callback(this.options.beforeFit,[this])},fit:function(){var t=this,e=t.minSize={width:0,height:0},n=t.chart,i=t.options,a=i.ticks,r=i.scaleLabel,o=i.gridLines,s=t._isVisible(),l="bottom"===i.position,u=t.isHorizontal();if(u?e.width=t.maxWidth:s&&(e.width=cn(o)+fn(r)),u?s&&(e.height=cn(o)+fn(r)):e.height=t.maxHeight,a.display&&s){var d=pn(a),h=t._getLabelSizes(),c=h.first,f=h.last,g=h.widest,p=h.highest,m=.4*d.minor.lineHeight,v=a.padding;if(u){var b=0!==t.labelRotation,x=V.toRadians(t.labelRotation),y=Math.cos(x),_=Math.sin(x),k=_*g.width+y*(p.height-(b?p.offset:0))+(b?0:m);e.height=Math.min(t.maxHeight,e.height+k+v);var w,M,S=t.getPixelForTick(0)-t.left,C=t.right-t.getPixelForTick(t.getTicks().length-1);b?(w=l?y*c.width+_*c.offset:_*(c.height-c.offset),M=l?_*(f.height-f.offset):y*f.width+_*f.offset):(w=c.width/2,M=f.width/2),t.paddingLeft=Math.max((w-S)*t.width/(t.width-S),0)+3,t.paddingRight=Math.max((M-C)*t.width/(t.width-C),0)+3}else{var P=a.mirror?0:g.width+v+m;e.width=Math.min(t.maxWidth,e.width+P),t.paddingTop=c.height/2,t.paddingBottom=f.height/2}}t.handleMargins(),u?(t.width=t._length=n.width-t.margins.left-t.margins.right,t.height=e.height):(t.width=e.width,t.height=t._length=n.height-t.margins.top-t.margins.bottom)},handleMargins:function(){var t=this;t.margins&&(t.margins.left=Math.max(t.paddingLeft,t.margins.left),t.margins.top=Math.max(t.paddingTop,t.margins.top),t.margins.right=Math.max(t.paddingRight,t.margins.right),t.margins.bottom=Math.max(t.paddingBottom,t.margins.bottom))},afterFit:function(){V.callback(this.options.afterFit,[this])},isHorizontal:function(){var t=this.options.position;return"top"===t||"bottom"===t},isFullWidth:function(){return this.options.fullWidth},getRightValue:function(t){if(sn(t))return NaN;if(("number"==typeof t||t instanceof Number)&&!isFinite(t))return NaN;if(t)if(this.isHorizontal()){if(void 0!==t.x)return this.getRightValue(t.x)}else if(void 0!==t.y)return this.getRightValue(t.y);return t},_convertTicksToLabels:function(t){var e,n,i,a=this;for(a.ticks=t.map((function(t){return t.value})),a.beforeTickToLabelConversion(),e=a.convertTicksToLabels(t)||a.ticks,a.afterTickToLabelConversion(),n=0,i=t.length;n<i;++n)t[n].label=e[n];return e},_getLabelSizes:function(){var t=this,e=t._labelSizes;return e||(t._labelSizes=e=hn(t.ctx,pn(t.options.ticks),t.getTicks(),t.longestTextCache),t.longestLabelWidth=e.widest.width),e},_parseValue:function(t){var e,n,i,a;return on(t)?(e=+this.getRightValue(t[0]),n=+this.getRightValue(t[1]),i=Math.min(e,n),a=Math.max(e,n)):(e=void 0,n=t=+this.getRightValue(t),i=t,a=t),{min:i,max:a,start:e,end:n}},_getScaleLabel:function(t){var e=this._parseValue(t);return void 0!==e.start?"["+e.start+", "+e.end+"]":+this.getRightValue(t)},getLabelForIndex:V.noop,getPixelForValue:V.noop,getValueForPixel:V.noop,getPixelForTick:function(t){var e=this.options.offset,n=this._ticks.length,i=1/Math.max(n-(e?0:1),1);return t<0||t>n-1?null:this.getPixelForDecimal(t*i+(e?i/2:0))},getPixelForDecimal:function(t){return this._reversePixels&&(t=1-t),this._startPixel+t*this._length},getDecimalForPixel:function(t){var e=(t-this._startPixel)/this._length;return this._reversePixels?1-e:e},getBasePixel:function(){return this.getPixelForValue(this.getBaseValue())},getBaseValue:function(){var t=this.min,e=this.max;return this.beginAtZero?0:t<0&&e<0?e:t>0&&e>0?t:0},_autoSkip:function(t){var e,n,i,a,r=this.options.ticks,o=this._length,s=r.maxTicksLimit||o/this._tickSize()+1,l=r.major.enabled?function(t){var e,n,i=[];for(e=0,n=t.length;e<n;e++)t[e].major&&i.push(e);return i}(t):[],u=l.length,d=l[0],h=l[u-1];if(u>s)return function(t,e,n){var i,a,r=0,o=e[0];for(n=Math.ceil(n),i=0;i<t.length;i++)a=t[i],i===o?(a._index=i,o=e[++r*n]):delete a.label}(t,l,u/s),mn(t);if(i=function(t,e,n,i){var a,r,o,s,l=function(t){var e,n,i=t.length;if(i<2)return!1;for(n=t[0],e=1;e<i;++e)if(t[e]-t[e-1]!==n)return!1;return n}(t),u=(e.length-1)/i;if(!l)return Math.max(u,1);for(o=0,s=(a=V.math._factorize(l)).length-1;o<s;o++)if((r=a[o])>u)return r;return Math.max(u,1)}(l,t,0,s),u>0){for(e=0,n=u-1;e<n;e++)vn(t,i,l[e],l[e+1]);return a=u>1?(h-d)/(u-1):null,vn(t,i,V.isNullOrUndef(a)?0:d-a,d),vn(t,i,h,V.isNullOrUndef(a)?t.length:h+a),mn(t)}return vn(t,i),mn(t)},_tickSize:function(){var t=this.options.ticks,e=V.toRadians(this.labelRotation),n=Math.abs(Math.cos(e)),i=Math.abs(Math.sin(e)),a=this._getLabelSizes(),r=t.autoSkipPadding||0,o=a?a.widest.width+r:0,s=a?a.highest.height+r:0;return this.isHorizontal()?s*n>o*i?o/n:s/i:s*i<o*n?s/n:o/i},_isVisible:function(){var t,e,n,i=this.chart,a=this.options.display;if("auto"!==a)return!!a;for(t=0,e=i.data.datasets.length;t<e;++t)if(i.isDatasetVisible(t)&&((n=i.getDatasetMeta(t)).xAxisID===this.id||n.yAxisID===this.id))return!0;return!1},_computeGridLineItems:function(t){var e,n,i,a,r,o,s,l,u,d,h,c,f,g,p,m,v,b=this,x=b.chart,y=b.options,_=y.gridLines,k=y.position,w=_.offsetGridLines,M=b.isHorizontal(),S=b._ticksToDraw,C=S.length+(w?1:0),P=cn(_),A=[],D=_.drawBorder?un(_.lineWidth,0,0):0,T=D/2,I=V._alignPixel,F=function(t){return I(x,t,D)};for("top"===k?(e=F(b.bottom),s=b.bottom-P,u=e-T,h=F(t.top)+T,f=t.bottom):"bottom"===k?(e=F(b.top),h=t.top,f=F(t.bottom)-T,s=e+T,u=b.top+P):"left"===k?(e=F(b.right),o=b.right-P,l=e-T,d=F(t.left)+T,c=t.right):(e=F(b.left),d=t.left,c=F(t.right)-T,o=e+T,l=b.left+P),n=0;n<C;++n)i=S[n]||{},sn(i.label)&&n<S.length||(n===b.zeroLineIndex&&y.offset===w?(g=_.zeroLineWidth,p=_.zeroLineColor,m=_.zeroLineBorderDash||[],v=_.zeroLineBorderDashOffset||0):(g=un(_.lineWidth,n,1),p=un(_.color,n,"rgba(0,0,0,0.1)"),m=_.borderDash||[],v=_.borderDashOffset||0),void 0!==(a=dn(b,i._index||n,w))&&(r=I(x,a,g),M?o=l=d=c=r:s=u=h=f=r,A.push({tx1:o,ty1:s,tx2:l,ty2:u,x1:d,y1:h,x2:c,y2:f,width:g,color:p,borderDash:m,borderDashOffset:v})));return A.ticksLength=C,A.borderValue=e,A},_computeLabelItems:function(){var t,e,n,i,a,r,o,s,l,u,d,h,c=this,f=c.options,g=f.ticks,p=f.position,m=g.mirror,v=c.isHorizontal(),b=c._ticksToDraw,x=pn(g),y=g.padding,_=cn(f.gridLines),k=-V.toRadians(c.labelRotation),w=[];for("top"===p?(r=c.bottom-_-y,o=k?"left":"center"):"bottom"===p?(r=c.top+_+y,o=k?"right":"center"):"left"===p?(a=c.right-(m?0:_)-y,o=m?"left":"right"):(a=c.left+(m?0:_)+y,o=m?"right":"left"),t=0,e=b.length;t<e;++t)i=(n=b[t]).label,sn(i)||(s=c.getPixelForTick(n._index||t)+g.labelOffset,u=(l=n.major?x.major:x.minor).lineHeight,d=on(i)?i.length:1,v?(a=s,h="top"===p?((k?1:.5)-d)*u:(k?0:.5)*u):(r=s,h=(1-d)*u/2),w.push({x:a,y:r,rotation:k,label:i,font:l,textOffset:h,textAlign:o}));return w},_drawGrid:function(t){var e=this,n=e.options.gridLines;if(n.display){var i,a,r,o,s,l=e.ctx,u=e.chart,d=V._alignPixel,h=n.drawBorder?un(n.lineWidth,0,0):0,c=e._gridLineItems||(e._gridLineItems=e._computeGridLineItems(t));for(r=0,o=c.length;r<o;++r)i=(s=c[r]).width,a=s.color,i&&a&&(l.save(),l.lineWidth=i,l.strokeStyle=a,l.setLineDash&&(l.setLineDash(s.borderDash),l.lineDashOffset=s.borderDashOffset),l.beginPath(),n.drawTicks&&(l.moveTo(s.tx1,s.ty1),l.lineTo(s.tx2,s.ty2)),n.drawOnChartArea&&(l.moveTo(s.x1,s.y1),l.lineTo(s.x2,s.y2)),l.stroke(),l.restore());if(h){var f,g,p,m,v=h,b=un(n.lineWidth,c.ticksLength-1,1),x=c.borderValue;e.isHorizontal()?(f=d(u,e.left,v)-v/2,g=d(u,e.right,b)+b/2,p=m=x):(p=d(u,e.top,v)-v/2,m=d(u,e.bottom,b)+b/2,f=g=x),l.lineWidth=h,l.strokeStyle=un(n.color,0),l.beginPath(),l.moveTo(f,p),l.lineTo(g,m),l.stroke()}}},_drawLabels:function(){var t=this;if(t.options.ticks.display){var e,n,i,a,r,o,s,l,u=t.ctx,d=t._labelItems||(t._labelItems=t._computeLabelItems());for(e=0,i=d.length;e<i;++e){if(o=(r=d[e]).font,u.save(),u.translate(r.x,r.y),u.rotate(r.rotation),u.font=o.string,u.fillStyle=o.color,u.textBaseline="middle",u.textAlign=r.textAlign,s=r.label,l=r.textOffset,on(s))for(n=0,a=s.length;n<a;++n)u.fillText(""+s[n],0,l),l+=o.lineHeight;else u.fillText(s,0,l);u.restore()}}},_drawTitle:function(){var t=this,e=t.ctx,n=t.options,i=n.scaleLabel;if(i.display){var a,r,o=ln(i.fontColor,z.global.defaultFontColor),s=V.options._parseFont(i),l=V.options.toPadding(i.padding),u=s.lineHeight/2,d=n.position,h=0;if(t.isHorizontal())a=t.left+t.width/2,r="bottom"===d?t.bottom-u-l.bottom:t.top+u+l.top;else{var c="left"===d;a=c?t.left+u+l.top:t.right-u-l.top,r=t.top+t.height/2,h=c?-.5*Math.PI:.5*Math.PI}e.save(),e.translate(a,r),e.rotate(h),e.textAlign="center",e.textBaseline="middle",e.fillStyle=o,e.font=s.string,e.fillText(i.labelString,0,0),e.restore()}},draw:function(t){this._isVisible()&&(this._drawGrid(t),this._drawTitle(),this._drawLabels())},_layers:function(){var t=this,e=t.options,n=e.ticks&&e.ticks.z||0,i=e.gridLines&&e.gridLines.z||0;return t._isVisible()&&n!==i&&t.draw===t._draw?[{z:i,draw:function(){t._drawGrid.apply(t,arguments),t._drawTitle.apply(t,arguments)}},{z:n,draw:function(){t._drawLabels.apply(t,arguments)}}]:[{z:n,draw:function(){t.draw.apply(t,arguments)}}]},_getMatchingVisibleMetas:function(t){var e=this,n=e.isHorizontal();return e.chart._getSortedVisibleDatasetMetas().filter((function(i){return(!t||i.type===t)&&(n?i.xAxisID===e.id:i.yAxisID===e.id)}))}});bn.prototype._draw=bn.prototype.draw;var xn=bn,yn=V.isNullOrUndef,_n=xn.extend({determineDataLimits:function(){var t,e=this,n=e._getLabels(),i=e.options.ticks,a=i.min,r=i.max,o=0,s=n.length-1;void 0!==a&&(t=n.indexOf(a))>=0&&(o=t),void 0!==r&&(t=n.indexOf(r))>=0&&(s=t),e.minIndex=o,e.maxIndex=s,e.min=n[o],e.max=n[s]},buildTicks:function(){var t=this._getLabels(),e=this.minIndex,n=this.maxIndex;this.ticks=0===e&&n===t.length-1?t:t.slice(e,n+1)},getLabelForIndex:function(t,e){var n=this.chart;return n.getDatasetMeta(e).controller._getValueScaleId()===this.id?this.getRightValue(n.data.datasets[e].data[t]):this._getLabels()[t]},_configure:function(){var t=this,e=t.options.offset,n=t.ticks;xn.prototype._configure.call(t),t.isHorizontal()||(t._reversePixels=!t._reversePixels),n&&(t._startValue=t.minIndex-(e?.5:0),t._valueRange=Math.max(n.length-(e?0:1),1))},getPixelForValue:function(t,e,n){var i,a,r,o=this;return yn(e)||yn(n)||(t=o.chart.data.datasets[n].data[e]),yn(t)||(i=o.isHorizontal()?t.x:t.y),(void 0!==i||void 0!==t&&isNaN(e))&&(a=o._getLabels(),t=V.valueOrDefault(i,t),e=-1!==(r=a.indexOf(t))?r:e,isNaN(e)&&(e=t)),o.getPixelForDecimal((e-o._startValue)/o._valueRange)},getPixelForTick:function(t){var e=this.ticks;return t<0||t>e.length-1?null:this.getPixelForValue(e[t],t+this.minIndex)},getValueForPixel:function(t){var e=Math.round(this._startValue+this.getDecimalForPixel(t)*this._valueRange);return Math.min(Math.max(e,0),this.ticks.length-1)},getBasePixel:function(){return this.bottom}}),kn={position:"bottom"};_n._defaults=kn;var wn=V.noop,Mn=V.isNullOrUndef;var Sn=xn.extend({getRightValue:function(t){return"string"==typeof t?+t:xn.prototype.getRightValue.call(this,t)},handleTickRangeOptions:function(){var t=this,e=t.options.ticks;if(e.beginAtZero){var n=V.sign(t.min),i=V.sign(t.max);n<0&&i<0?t.max=0:n>0&&i>0&&(t.min=0)}var a=void 0!==e.min||void 0!==e.suggestedMin,r=void 0!==e.max||void 0!==e.suggestedMax;void 0!==e.min?t.min=e.min:void 0!==e.suggestedMin&&(null===t.min?t.min=e.suggestedMin:t.min=Math.min(t.min,e.suggestedMin)),void 0!==e.max?t.max=e.max:void 0!==e.suggestedMax&&(null===t.max?t.max=e.suggestedMax:t.max=Math.max(t.max,e.suggestedMax)),a!==r&&t.min>=t.max&&(a?t.max=t.min+1:t.min=t.max-1),t.min===t.max&&(t.max++,e.beginAtZero||t.min--)},getTickLimit:function(){var t,e=this.options.ticks,n=e.stepSize,i=e.maxTicksLimit;return n?t=Math.ceil(this.max/n)-Math.floor(this.min/n)+1:(t=this._computeTickLimit(),i=i||11),i&&(t=Math.min(i,t)),t},_computeTickLimit:function(){return Number.POSITIVE_INFINITY},handleDirectionalChanges:wn,buildTicks:function(){var t=this,e=t.options.ticks,n=t.getTickLimit(),i={maxTicks:n=Math.max(2,n),min:e.min,max:e.max,precision:e.precision,stepSize:V.valueOrDefault(e.fixedStepSize,e.stepSize)},a=t.ticks=function(t,e){var n,i,a,r,o=[],s=t.stepSize,l=s||1,u=t.maxTicks-1,d=t.min,h=t.max,c=t.precision,f=e.min,g=e.max,p=V.niceNum((g-f)/u/l)*l;if(p<1e-14&&Mn(d)&&Mn(h))return[f,g];(r=Math.ceil(g/p)-Math.floor(f/p))>u&&(p=V.niceNum(r*p/u/l)*l),s||Mn(c)?n=Math.pow(10,V._decimalPlaces(p)):(n=Math.pow(10,c),p=Math.ceil(p*n)/n),i=Math.floor(f/p)*p,a=Math.ceil(g/p)*p,s&&(!Mn(d)&&V.almostWhole(d/p,p/1e3)&&(i=d),!Mn(h)&&V.almostWhole(h/p,p/1e3)&&(a=h)),r=(a-i)/p,r=V.almostEquals(r,Math.round(r),p/1e3)?Math.round(r):Math.ceil(r),i=Math.round(i*n)/n,a=Math.round(a*n)/n,o.push(Mn(d)?i:d);for(var m=1;m<r;++m)o.push(Math.round((i+m*p)*n)/n);return o.push(Mn(h)?a:h),o}(i,t);t.handleDirectionalChanges(),t.max=V.max(a),t.min=V.min(a),e.reverse?(a.reverse(),t.start=t.max,t.end=t.min):(t.start=t.min,t.end=t.max)},convertTicksToLabels:function(){var t=this;t.ticksAsNumbers=t.ticks.slice(),t.zeroLineIndex=t.ticks.indexOf(0),xn.prototype.convertTicksToLabels.call(t)},_configure:function(){var t,e=this,n=e.getTicks(),i=e.min,a=e.max;xn.prototype._configure.call(e),e.options.offset&&n.length&&(i-=t=(a-i)/Math.max(n.length-1,1)/2,a+=t),e._startValue=i,e._endValue=a,e._valueRange=a-i}}),Cn={position:"left",ticks:{callback:rn.formatters.linear}};function Pn(t,e,n,i){var a,r,o=t.options,s=function(t,e,n){var i=[n.type,void 0===e&&void 0===n.stack?n.index:"",n.stack].join(".");return void 0===t[i]&&(t[i]={pos:[],neg:[]}),t[i]}(e,o.stacked,n),l=s.pos,u=s.neg,d=i.length;for(a=0;a<d;++a)r=t._parseValue(i[a]),isNaN(r.min)||isNaN(r.max)||n.data[a].hidden||(l[a]=l[a]||0,u[a]=u[a]||0,o.relativePoints?l[a]=100:r.min<0||r.max<0?u[a]+=r.min:l[a]+=r.max)}function An(t,e,n){var i,a,r=n.length;for(i=0;i<r;++i)a=t._parseValue(n[i]),isNaN(a.min)||isNaN(a.max)||e.data[i].hidden||(t.min=Math.min(t.min,a.min),t.max=Math.max(t.max,a.max))}var Dn=Sn.extend({determineDataLimits:function(){var t,e,n,i,a=this,r=a.options,o=a.chart.data.datasets,s=a._getMatchingVisibleMetas(),l=r.stacked,u={},d=s.length;if(a.min=Number.POSITIVE_INFINITY,a.max=Number.NEGATIVE_INFINITY,void 0===l)for(t=0;!l&&t<d;++t)l=void 0!==(e=s[t]).stack;for(t=0;t<d;++t)n=o[(e=s[t]).index].data,l?Pn(a,u,e,n):An(a,e,n);V.each(u,(function(t){i=t.pos.concat(t.neg),a.min=Math.min(a.min,V.min(i)),a.max=Math.max(a.max,V.max(i))})),a.min=V.isFinite(a.min)&&!isNaN(a.min)?a.min:0,a.max=V.isFinite(a.max)&&!isNaN(a.max)?a.max:1,a.handleTickRangeOptions()},_computeTickLimit:function(){var t;return this.isHorizontal()?Math.ceil(this.width/40):(t=V.options._parseFont(this.options.ticks),Math.ceil(this.height/t.lineHeight))},handleDirectionalChanges:function(){this.isHorizontal()||this.ticks.reverse()},getLabelForIndex:function(t,e){return this._getScaleLabel(this.chart.data.datasets[e].data[t])},getPixelForValue:function(t){return this.getPixelForDecimal((+this.getRightValue(t)-this._startValue)/this._valueRange)},getValueForPixel:function(t){return this._startValue+this.getDecimalForPixel(t)*this._valueRange},getPixelForTick:function(t){var e=this.ticksAsNumbers;return t<0||t>e.length-1?null:this.getPixelForValue(e[t])}}),Tn=Cn;Dn._defaults=Tn;var In=V.valueOrDefault,Fn=V.math.log10;var Ln={position:"left",ticks:{callback:rn.formatters.logarithmic}};function On(t,e){return V.isFinite(t)&&t>=0?t:e}var Rn=xn.extend({determineDataLimits:function(){var t,e,n,i,a,r,o=this,s=o.options,l=o.chart,u=l.data.datasets,d=o.isHorizontal();function h(t){return d?t.xAxisID===o.id:t.yAxisID===o.id}o.min=Number.POSITIVE_INFINITY,o.max=Number.NEGATIVE_INFINITY,o.minNotZero=Number.POSITIVE_INFINITY;var c=s.stacked;if(void 0===c)for(t=0;t<u.length;t++)if(e=l.getDatasetMeta(t),l.isDatasetVisible(t)&&h(e)&&void 0!==e.stack){c=!0;break}if(s.stacked||c){var f={};for(t=0;t<u.length;t++){var g=[(e=l.getDatasetMeta(t)).type,void 0===s.stacked&&void 0===e.stack?t:"",e.stack].join(".");if(l.isDatasetVisible(t)&&h(e))for(void 0===f[g]&&(f[g]=[]),a=0,r=(i=u[t].data).length;a<r;a++){var p=f[g];n=o._parseValue(i[a]),isNaN(n.min)||isNaN(n.max)||e.data[a].hidden||n.min<0||n.max<0||(p[a]=p[a]||0,p[a]+=n.max)}}V.each(f,(function(t){if(t.length>0){var e=V.min(t),n=V.max(t);o.min=Math.min(o.min,e),o.max=Math.max(o.max,n)}}))}else for(t=0;t<u.length;t++)if(e=l.getDatasetMeta(t),l.isDatasetVisible(t)&&h(e))for(a=0,r=(i=u[t].data).length;a<r;a++)n=o._parseValue(i[a]),isNaN(n.min)||isNaN(n.max)||e.data[a].hidden||n.min<0||n.max<0||(o.min=Math.min(n.min,o.min),o.max=Math.max(n.max,o.max),0!==n.min&&(o.minNotZero=Math.min(n.min,o.minNotZero)));o.min=V.isFinite(o.min)?o.min:null,o.max=V.isFinite(o.max)?o.max:null,o.minNotZero=V.isFinite(o.minNotZero)?o.minNotZero:null,this.handleTickRangeOptions()},handleTickRangeOptions:function(){var t=this,e=t.options.ticks;t.min=On(e.min,t.min),t.max=On(e.max,t.max),t.min===t.max&&(0!==t.min&&null!==t.min?(t.min=Math.pow(10,Math.floor(Fn(t.min))-1),t.max=Math.pow(10,Math.floor(Fn(t.max))+1)):(t.min=1,t.max=10)),null===t.min&&(t.min=Math.pow(10,Math.floor(Fn(t.max))-1)),null===t.max&&(t.max=0!==t.min?Math.pow(10,Math.floor(Fn(t.min))+1):10),null===t.minNotZero&&(t.min>0?t.minNotZero=t.min:t.max<1?t.minNotZero=Math.pow(10,Math.floor(Fn(t.max))):t.minNotZero=1)},buildTicks:function(){var t=this,e=t.options.ticks,n=!t.isHorizontal(),i={min:On(e.min),max:On(e.max)},a=t.ticks=function(t,e){var n,i,a=[],r=In(t.min,Math.pow(10,Math.floor(Fn(e.min)))),o=Math.floor(Fn(e.max)),s=Math.ceil(e.max/Math.pow(10,o));0===r?(n=Math.floor(Fn(e.minNotZero)),i=Math.floor(e.minNotZero/Math.pow(10,n)),a.push(r),r=i*Math.pow(10,n)):(n=Math.floor(Fn(r)),i=Math.floor(r/Math.pow(10,n)));var l=n<0?Math.pow(10,Math.abs(n)):1;do{a.push(r),10===++i&&(i=1,l=++n>=0?1:l),r=Math.round(i*Math.pow(10,n)*l)/l}while(n<o||n===o&&i<s);var u=In(t.max,r);return a.push(u),a}(i,t);t.max=V.max(a),t.min=V.min(a),e.reverse?(n=!n,t.start=t.max,t.end=t.min):(t.start=t.min,t.end=t.max),n&&a.reverse()},convertTicksToLabels:function(){this.tickValues=this.ticks.slice(),xn.prototype.convertTicksToLabels.call(this)},getLabelForIndex:function(t,e){return this._getScaleLabel(this.chart.data.datasets[e].data[t])},getPixelForTick:function(t){var e=this.tickValues;return t<0||t>e.length-1?null:this.getPixelForValue(e[t])},_getFirstTickValue:function(t){var e=Math.floor(Fn(t));return Math.floor(t/Math.pow(10,e))*Math.pow(10,e)},_configure:function(){var t=this,e=t.min,n=0;xn.prototype._configure.call(t),0===e&&(e=t._getFirstTickValue(t.minNotZero),n=In(t.options.ticks.fontSize,z.global.defaultFontSize)/t._length),t._startValue=Fn(e),t._valueOffset=n,t._valueRange=(Fn(t.max)-Fn(e))/(1-n)},getPixelForValue:function(t){var e=this,n=0;return(t=+e.getRightValue(t))>e.min&&t>0&&(n=(Fn(t)-e._startValue)/e._valueRange+e._valueOffset),e.getPixelForDecimal(n)},getValueForPixel:function(t){var e=this,n=e.getDecimalForPixel(t);return 0===n&&0===e.min?0:Math.pow(10,e._startValue+(n-e._valueOffset)*e._valueRange)}}),zn=Ln;Rn._defaults=zn;var Nn=V.valueOrDefault,Bn=V.valueAtIndexOrDefault,En=V.options.resolve,Wn={display:!0,animate:!0,position:"chartArea",angleLines:{display:!0,color:"rgba(0,0,0,0.1)",lineWidth:1,borderDash:[],borderDashOffset:0},gridLines:{circular:!1},ticks:{showLabelBackdrop:!0,backdropColor:"rgba(255,255,255,0.75)",backdropPaddingY:2,backdropPaddingX:2,callback:rn.formatters.linear},pointLabels:{display:!0,fontSize:10,callback:function(t){return t}}};function Vn(t){var e=t.ticks;return e.display&&t.display?Nn(e.fontSize,z.global.defaultFontSize)+2*e.backdropPaddingY:0}function Hn(t,e,n,i,a){return t===i||t===a?{start:e-n/2,end:e+n/2}:t<i||t>a?{start:e-n,end:e}:{start:e,end:e+n}}function jn(t){return 0===t||180===t?"center":t<180?"left":"right"}function qn(t,e,n,i){var a,r,o=n.y+i/2;if(V.isArray(e))for(a=0,r=e.length;a<r;++a)t.fillText(e[a],n.x,o),o+=i;else t.fillText(e,n.x,o)}function Un(t,e,n){90===t||270===t?n.y-=e.h/2:(t>270||t<90)&&(n.y-=e.h)}function Yn(t){return V.isNumber(t)?t:0}var Gn=Sn.extend({setDimensions:function(){var t=this;t.width=t.maxWidth,t.height=t.maxHeight,t.paddingTop=Vn(t.options)/2,t.xCenter=Math.floor(t.width/2),t.yCenter=Math.floor((t.height-t.paddingTop)/2),t.drawingArea=Math.min(t.height-t.paddingTop,t.width)/2},determineDataLimits:function(){var t=this,e=t.chart,n=Number.POSITIVE_INFINITY,i=Number.NEGATIVE_INFINITY;V.each(e.data.datasets,(function(a,r){if(e.isDatasetVisible(r)){var o=e.getDatasetMeta(r);V.each(a.data,(function(e,a){var r=+t.getRightValue(e);isNaN(r)||o.data[a].hidden||(n=Math.min(r,n),i=Math.max(r,i))}))}})),t.min=n===Number.POSITIVE_INFINITY?0:n,t.max=i===Number.NEGATIVE_INFINITY?0:i,t.handleTickRangeOptions()},_computeTickLimit:function(){return Math.ceil(this.drawingArea/Vn(this.options))},convertTicksToLabels:function(){var t=this;Sn.prototype.convertTicksToLabels.call(t),t.pointLabels=t.chart.data.labels.map((function(){var e=V.callback(t.options.pointLabels.callback,arguments,t);return e||0===e?e:""}))},getLabelForIndex:function(t,e){return+this.getRightValue(this.chart.data.datasets[e].data[t])},fit:function(){var t=this.options;t.display&&t.pointLabels.display?function(t){var e,n,i,a=V.options._parseFont(t.options.pointLabels),r={l:0,r:t.width,t:0,b:t.height-t.paddingTop},o={};t.ctx.font=a.string,t._pointLabelSizes=[];var s,l,u,d=t.chart.data.labels.length;for(e=0;e<d;e++){i=t.getPointPosition(e,t.drawingArea+5),s=t.ctx,l=a.lineHeight,u=t.pointLabels[e],n=V.isArray(u)?{w:V.longestText(s,s.font,u),h:u.length*l}:{w:s.measureText(u).width,h:l},t._pointLabelSizes[e]=n;var h=t.getIndexAngle(e),c=V.toDegrees(h)%360,f=Hn(c,i.x,n.w,0,180),g=Hn(c,i.y,n.h,90,270);f.start<r.l&&(r.l=f.start,o.l=h),f.end>r.r&&(r.r=f.end,o.r=h),g.start<r.t&&(r.t=g.start,o.t=h),g.end>r.b&&(r.b=g.end,o.b=h)}t.setReductions(t.drawingArea,r,o)}(this):this.setCenterPoint(0,0,0,0)},setReductions:function(t,e,n){var i=this,a=e.l/Math.sin(n.l),r=Math.max(e.r-i.width,0)/Math.sin(n.r),o=-e.t/Math.cos(n.t),s=-Math.max(e.b-(i.height-i.paddingTop),0)/Math.cos(n.b);a=Yn(a),r=Yn(r),o=Yn(o),s=Yn(s),i.drawingArea=Math.min(Math.floor(t-(a+r)/2),Math.floor(t-(o+s)/2)),i.setCenterPoint(a,r,o,s)},setCenterPoint:function(t,e,n,i){var a=this,r=a.width-e-a.drawingArea,o=t+a.drawingArea,s=n+a.drawingArea,l=a.height-a.paddingTop-i-a.drawingArea;a.xCenter=Math.floor((o+r)/2+a.left),a.yCenter=Math.floor((s+l)/2+a.top+a.paddingTop)},getIndexAngle:function(t){var e=this.chart,n=(t*(360/e.data.labels.length)+((e.options||{}).startAngle||0))%360;return(n<0?n+360:n)*Math.PI*2/360},getDistanceFromCenterForValue:function(t){var e=this;if(V.isNullOrUndef(t))return NaN;var n=e.drawingArea/(e.max-e.min);return e.options.ticks.reverse?(e.max-t)*n:(t-e.min)*n},getPointPosition:function(t,e){var n=this.getIndexAngle(t)-Math.PI/2;return{x:Math.cos(n)*e+this.xCenter,y:Math.sin(n)*e+this.yCenter}},getPointPositionForValue:function(t,e){return this.getPointPosition(t,this.getDistanceFromCenterForValue(e))},getBasePosition:function(t){var e=this.min,n=this.max;return this.getPointPositionForValue(t||0,this.beginAtZero?0:e<0&&n<0?n:e>0&&n>0?e:0)},_drawGrid:function(){var t,e,n,i=this,a=i.ctx,r=i.options,o=r.gridLines,s=r.angleLines,l=Nn(s.lineWidth,o.lineWidth),u=Nn(s.color,o.color);if(r.pointLabels.display&&function(t){var e=t.ctx,n=t.options,i=n.pointLabels,a=Vn(n),r=t.getDistanceFromCenterForValue(n.ticks.reverse?t.min:t.max),o=V.options._parseFont(i);e.save(),e.font=o.string,e.textBaseline="middle";for(var s=t.chart.data.labels.length-1;s>=0;s--){var l=0===s?a/2:0,u=t.getPointPosition(s,r+l+5),d=Bn(i.fontColor,s,z.global.defaultFontColor);e.fillStyle=d;var h=t.getIndexAngle(s),c=V.toDegrees(h);e.textAlign=jn(c),Un(c,t._pointLabelSizes[s],u),qn(e,t.pointLabels[s],u,o.lineHeight)}e.restore()}(i),o.display&&V.each(i.ticks,(function(t,n){0!==n&&(e=i.getDistanceFromCenterForValue(i.ticksAsNumbers[n]),function(t,e,n,i){var a,r=t.ctx,o=e.circular,s=t.chart.data.labels.length,l=Bn(e.color,i-1),u=Bn(e.lineWidth,i-1);if((o||s)&&l&&u){if(r.save(),r.strokeStyle=l,r.lineWidth=u,r.setLineDash&&(r.setLineDash(e.borderDash||[]),r.lineDashOffset=e.borderDashOffset||0),r.beginPath(),o)r.arc(t.xCenter,t.yCenter,n,0,2*Math.PI);else{a=t.getPointPosition(0,n),r.moveTo(a.x,a.y);for(var d=1;d<s;d++)a=t.getPointPosition(d,n),r.lineTo(a.x,a.y)}r.closePath(),r.stroke(),r.restore()}}(i,o,e,n))})),s.display&&l&&u){for(a.save(),a.lineWidth=l,a.strokeStyle=u,a.setLineDash&&(a.setLineDash(En([s.borderDash,o.borderDash,[]])),a.lineDashOffset=En([s.borderDashOffset,o.borderDashOffset,0])),t=i.chart.data.labels.length-1;t>=0;t--)e=i.getDistanceFromCenterForValue(r.ticks.reverse?i.min:i.max),n=i.getPointPosition(t,e),a.beginPath(),a.moveTo(i.xCenter,i.yCenter),a.lineTo(n.x,n.y),a.stroke();a.restore()}},_drawLabels:function(){var t=this,e=t.ctx,n=t.options.ticks;if(n.display){var i,a,r=t.getIndexAngle(0),o=V.options._parseFont(n),s=Nn(n.fontColor,z.global.defaultFontColor);e.save(),e.font=o.string,e.translate(t.xCenter,t.yCenter),e.rotate(r),e.textAlign="center",e.textBaseline="middle",V.each(t.ticks,(function(r,l){(0!==l||n.reverse)&&(i=t.getDistanceFromCenterForValue(t.ticksAsNumbers[l]),n.showLabelBackdrop&&(a=e.measureText(r).width,e.fillStyle=n.backdropColor,e.fillRect(-a/2-n.backdropPaddingX,-i-o.size/2-n.backdropPaddingY,a+2*n.backdropPaddingX,o.size+2*n.backdropPaddingY)),e.fillStyle=s,e.fillText(r,0,-i))})),e.restore()}},_drawTitle:V.noop}),Xn=Wn;Gn._defaults=Xn;var Kn=V._deprecated,Zn=V.options.resolve,$n=V.valueOrDefault,Jn=Number.MIN_SAFE_INTEGER||-9007199254740991,Qn=Number.MAX_SAFE_INTEGER||9007199254740991,ti={millisecond:{common:!0,size:1,steps:1e3},second:{common:!0,size:1e3,steps:60},minute:{common:!0,size:6e4,steps:60},hour:{common:!0,size:36e5,steps:24},day:{common:!0,size:864e5,steps:30},week:{common:!1,size:6048e5,steps:4},month:{common:!0,size:2628e6,steps:12},quarter:{common:!1,size:7884e6,steps:4},year:{common:!0,size:3154e7}},ei=Object.keys(ti);function ni(t,e){return t-e}function ii(t){return V.valueOrDefault(t.time.min,t.ticks.min)}function ai(t){return V.valueOrDefault(t.time.max,t.ticks.max)}function ri(t,e,n,i){var a=function(t,e,n){for(var i,a,r,o=0,s=t.length-1;o>=0&&o<=s;){if(a=t[(i=o+s>>1)-1]||null,r=t[i],!a)return{lo:null,hi:r};if(r[e]<n)o=i+1;else{if(!(a[e]>n))return{lo:a,hi:r};s=i-1}}return{lo:r,hi:null}}(t,e,n),r=a.lo?a.hi?a.lo:t[t.length-2]:t[0],o=a.lo?a.hi?a.hi:t[t.length-1]:t[1],s=o[e]-r[e],l=s?(n-r[e])/s:0,u=(o[i]-r[i])*l;return r[i]+u}function oi(t,e){var n=t._adapter,i=t.options.time,a=i.parser,r=a||i.format,o=e;return"function"==typeof a&&(o=a(o)),V.isFinite(o)||(o="string"==typeof r?n.parse(o,r):n.parse(o)),null!==o?+o:(a||"function"!=typeof r||(o=r(e),V.isFinite(o)||(o=n.parse(o))),o)}function si(t,e){if(V.isNullOrUndef(e))return null;var n=t.options.time,i=oi(t,t.getRightValue(e));return null===i?i:(n.round&&(i=+t._adapter.startOf(i,n.round)),i)}function li(t,e,n,i){var a,r,o,s=ei.length;for(a=ei.indexOf(t);a<s-1;++a)if(o=(r=ti[ei[a]]).steps?r.steps:Qn,r.common&&Math.ceil((n-e)/(o*r.size))<=i)return ei[a];return ei[s-1]}function ui(t,e,n){var i,a,r=[],o={},s=e.length;for(i=0;i<s;++i)o[a=e[i]]=i,r.push({value:a,major:!1});return 0!==s&&n?function(t,e,n,i){var a,r,o=t._adapter,s=+o.startOf(e[0].value,i),l=e[e.length-1].value;for(a=s;a<=l;a=+o.add(a,1,i))(r=n[a])>=0&&(e[r].major=!0);return e}(t,r,o,n):r}var di=xn.extend({initialize:function(){this.mergeTicksOptions(),xn.prototype.initialize.call(this)},update:function(){var t=this,e=t.options,n=e.time||(e.time={}),i=t._adapter=new an._date(e.adapters.date);return Kn("time scale",n.format,"time.format","time.parser"),Kn("time scale",n.min,"time.min","ticks.min"),Kn("time scale",n.max,"time.max","ticks.max"),V.mergeIf(n.displayFormats,i.formats()),xn.prototype.update.apply(t,arguments)},getRightValue:function(t){return t&&void 0!==t.t&&(t=t.t),xn.prototype.getRightValue.call(this,t)},determineDataLimits:function(){var t,e,n,i,a,r,o,s=this,l=s.chart,u=s._adapter,d=s.options,h=d.time.unit||"day",c=Qn,f=Jn,g=[],p=[],m=[],v=s._getLabels();for(t=0,n=v.length;t<n;++t)m.push(si(s,v[t]));for(t=0,n=(l.data.datasets||[]).length;t<n;++t)if(l.isDatasetVisible(t))if(a=l.data.datasets[t].data,V.isObject(a[0]))for(p[t]=[],e=0,i=a.length;e<i;++e)r=si(s,a[e]),g.push(r),p[t][e]=r;else p[t]=m.slice(0),o||(g=g.concat(m),o=!0);else p[t]=[];m.length&&(c=Math.min(c,m[0]),f=Math.max(f,m[m.length-1])),g.length&&(g=n>1?function(t){var e,n,i,a={},r=[];for(e=0,n=t.length;e<n;++e)a[i=t[e]]||(a[i]=!0,r.push(i));return r}(g).sort(ni):g.sort(ni),c=Math.min(c,g[0]),f=Math.max(f,g[g.length-1])),c=si(s,ii(d))||c,f=si(s,ai(d))||f,c=c===Qn?+u.startOf(Date.now(),h):c,f=f===Jn?+u.endOf(Date.now(),h)+1:f,s.min=Math.min(c,f),s.max=Math.max(c+1,f),s._table=[],s._timestamps={data:g,datasets:p,labels:m}},buildTicks:function(){var t,e,n,i=this,a=i.min,r=i.max,o=i.options,s=o.ticks,l=o.time,u=i._timestamps,d=[],h=i.getLabelCapacity(a),c=s.source,f=o.distribution;for(u="data"===c||"auto"===c&&"series"===f?u.data:"labels"===c?u.labels:function(t,e,n,i){var a,r=t._adapter,o=t.options,s=o.time,l=s.unit||li(s.minUnit,e,n,i),u=Zn([s.stepSize,s.unitStepSize,1]),d="week"===l&&s.isoWeekday,h=e,c=[];if(d&&(h=+r.startOf(h,"isoWeek",d)),h=+r.startOf(h,d?"day":l),r.diff(n,e,l)>1e5*u)throw e+" and "+n+" are too far apart with stepSize of "+u+" "+l;for(a=h;a<n;a=+r.add(a,u,l))c.push(a);return a!==n&&"ticks"!==o.bounds||c.push(a),c}(i,a,r,h),"ticks"===o.bounds&&u.length&&(a=u[0],r=u[u.length-1]),a=si(i,ii(o))||a,r=si(i,ai(o))||r,t=0,e=u.length;t<e;++t)(n=u[t])>=a&&n<=r&&d.push(n);return i.min=a,i.max=r,i._unit=l.unit||(s.autoSkip?li(l.minUnit,i.min,i.max,h):function(t,e,n,i,a){var r,o;for(r=ei.length-1;r>=ei.indexOf(n);r--)if(o=ei[r],ti[o].common&&t._adapter.diff(a,i,o)>=e-1)return o;return ei[n?ei.indexOf(n):0]}(i,d.length,l.minUnit,i.min,i.max)),i._majorUnit=s.major.enabled&&"year"!==i._unit?function(t){for(var e=ei.indexOf(t)+1,n=ei.length;e<n;++e)if(ti[ei[e]].common)return ei[e]}(i._unit):void 0,i._table=function(t,e,n,i){if("linear"===i||!t.length)return[{time:e,pos:0},{time:n,pos:1}];var a,r,o,s,l,u=[],d=[e];for(a=0,r=t.length;a<r;++a)(s=t[a])>e&&s<n&&d.push(s);for(d.push(n),a=0,r=d.length;a<r;++a)l=d[a+1],o=d[a-1],s=d[a],void 0!==o&&void 0!==l&&Math.round((l+o)/2)===s||u.push({time:s,pos:a/(r-1)});return u}(i._timestamps.data,a,r,f),i._offsets=function(t,e,n,i,a){var r,o,s=0,l=0;return a.offset&&e.length&&(r=ri(t,"time",e[0],"pos"),s=1===e.length?1-r:(ri(t,"time",e[1],"pos")-r)/2,o=ri(t,"time",e[e.length-1],"pos"),l=1===e.length?o:(o-ri(t,"time",e[e.length-2],"pos"))/2),{start:s,end:l,factor:1/(s+1+l)}}(i._table,d,0,0,o),s.reverse&&d.reverse(),ui(i,d,i._majorUnit)},getLabelForIndex:function(t,e){var n=this,i=n._adapter,a=n.chart.data,r=n.options.time,o=a.labels&&t<a.labels.length?a.labels[t]:"",s=a.datasets[e].data[t];return V.isObject(s)&&(o=n.getRightValue(s)),r.tooltipFormat?i.format(oi(n,o),r.tooltipFormat):"string"==typeof o?o:i.format(oi(n,o),r.displayFormats.datetime)},tickFormatFunction:function(t,e,n,i){var a=this._adapter,r=this.options,o=r.time.displayFormats,s=o[this._unit],l=this._majorUnit,u=o[l],d=n[e],h=r.ticks,c=l&&u&&d&&d.major,f=a.format(t,i||(c?u:s)),g=c?h.major:h.minor,p=Zn([g.callback,g.userCallback,h.callback,h.userCallback]);return p?p(f,e,n):f},convertTicksToLabels:function(t){var e,n,i=[];for(e=0,n=t.length;e<n;++e)i.push(this.tickFormatFunction(t[e].value,e,t));return i},getPixelForOffset:function(t){var e=this._offsets,n=ri(this._table,"time",t,"pos");return this.getPixelForDecimal((e.start+n)*e.factor)},getPixelForValue:function(t,e,n){var i=null;if(void 0!==e&&void 0!==n&&(i=this._timestamps.datasets[n][e]),null===i&&(i=si(this,t)),null!==i)return this.getPixelForOffset(i)},getPixelForTick:function(t){var e=this.getTicks();return t>=0&&t<e.length?this.getPixelForOffset(e[t].value):null},getValueForPixel:function(t){var e=this._offsets,n=this.getDecimalForPixel(t)/e.factor-e.end,i=ri(this._table,"pos",n,"time");return this._adapter._create(i)},_getLabelSize:function(t){var e=this.options.ticks,n=this.ctx.measureText(t).width,i=V.toRadians(this.isHorizontal()?e.maxRotation:e.minRotation),a=Math.cos(i),r=Math.sin(i),o=$n(e.fontSize,z.global.defaultFontSize);return{w:n*a+o*r,h:n*r+o*a}},getLabelWidth:function(t){return this._getLabelSize(t).w},getLabelCapacity:function(t){var e=this,n=e.options.time,i=n.displayFormats,a=i[n.unit]||i.millisecond,r=e.tickFormatFunction(t,0,ui(e,[t],e._majorUnit),a),o=e._getLabelSize(r),s=Math.floor(e.isHorizontal()?e.width/o.w:e.height/o.h);return e.options.offset&&s--,s>0?s:1}}),hi={position:"bottom",distribution:"linear",bounds:"data",adapters:{},time:{parser:!1,unit:!1,round:!1,displayFormat:!1,isoWeekday:!1,minUnit:"millisecond",displayFormats:{}},ticks:{autoSkip:!1,source:"auto",major:{enabled:!1}}};di._defaults=hi;var ci={category:_n,linear:Dn,logarithmic:Rn,radialLinear:Gn,time:di},fi={datetime:"MMM D, YYYY, h:mm:ss a",millisecond:"h:mm:ss.SSS a",second:"h:mm:ss a",minute:"h:mm a",hour:"hA",day:"MMM D",week:"ll",month:"MMM YYYY",quarter:"[Q]Q - YYYY",year:"YYYY"};an._date.override("function"==typeof t?{_id:"moment",formats:function(){return fi},parse:function(e,n){return"string"==typeof e&&"string"==typeof n?e=t(e,n):e instanceof t||(e=t(e)),e.isValid()?e.valueOf():null},format:function(e,n){return t(e).format(n)},add:function(e,n,i){return t(e).add(n,i).valueOf()},diff:function(e,n,i){return t(e).diff(t(n),i)},startOf:function(e,n,i){return e=t(e),"isoWeek"===n?e.isoWeekday(i).valueOf():e.startOf(n).valueOf()},endOf:function(e,n){return t(e).endOf(n).valueOf()},_create:function(e){return t(e)}}:{}),z._set("global",{plugins:{filler:{propagate:!0}}});var gi={dataset:function(t){var e=t.fill,n=t.chart,i=n.getDatasetMeta(e),a=i&&n.isDatasetVisible(e)&&i.dataset._children||[],r=a.length||0;return r?function(t,e){return e<r&&a[e]._view||null}:null},boundary:function(t){var e=t.boundary,n=e?e.x:null,i=e?e.y:null;return V.isArray(e)?function(t,n){return e[n]}:function(t){return{x:null===n?t.x:n,y:null===i?t.y:i}}}};function pi(t,e,n){var i,a=t._model||{},r=a.fill;if(void 0===r&&(r=!!a.backgroundColor),!1===r||null===r)return!1;if(!0===r)return"origin";if(i=parseFloat(r,10),isFinite(i)&&Math.floor(i)===i)return"-"!==r[0]&&"+"!==r[0]||(i=e+i),!(i===e||i<0||i>=n)&&i;switch(r){case"bottom":return"start";case"top":return"end";case"zero":return"origin";case"origin":case"start":case"end":return r;default:return!1}}function mi(t){return(t.el._scale||{}).getPointPositionForValue?function(t){var e,n,i,a,r,o=t.el._scale,s=o.options,l=o.chart.data.labels.length,u=t.fill,d=[];if(!l)return null;for(e=s.ticks.reverse?o.max:o.min,n=s.ticks.reverse?o.min:o.max,i=o.getPointPositionForValue(0,e),a=0;a<l;++a)r="start"===u||"end"===u?o.getPointPositionForValue(a,"start"===u?e:n):o.getBasePosition(a),s.gridLines.circular&&(r.cx=i.x,r.cy=i.y,r.angle=o.getIndexAngle(a)-Math.PI/2),d.push(r);return d}(t):function(t){var e,n=t.el._model||{},i=t.el._scale||{},a=t.fill,r=null;if(isFinite(a))return null;if("start"===a?r=void 0===n.scaleBottom?i.bottom:n.scaleBottom:"end"===a?r=void 0===n.scaleTop?i.top:n.scaleTop:void 0!==n.scaleZero?r=n.scaleZero:i.getBasePixel&&(r=i.getBasePixel()),null!=r){if(void 0!==r.x&&void 0!==r.y)return r;if(V.isFinite(r))return{x:(e=i.isHorizontal())?r:null,y:e?null:r}}return null}(t)}function vi(t,e,n){var i,a=t[e].fill,r=[e];if(!n)return a;for(;!1!==a&&-1===r.indexOf(a);){if(!isFinite(a))return a;if(!(i=t[a]))return!1;if(i.visible)return a;r.push(a),a=i.fill}return!1}function bi(t){var e=t.fill,n="dataset";return!1===e?null:(isFinite(e)||(n="boundary"),gi[n](t))}function xi(t){return t&&!t.skip}function yi(t,e,n,i,a){var r,o,s,l;if(i&&a){for(t.moveTo(e[0].x,e[0].y),r=1;r<i;++r)V.canvas.lineTo(t,e[r-1],e[r]);if(void 0===n[0].angle)for(t.lineTo(n[a-1].x,n[a-1].y),r=a-1;r>0;--r)V.canvas.lineTo(t,n[r],n[r-1],!0);else for(o=n[0].cx,s=n[0].cy,l=Math.sqrt(Math.pow(n[0].x-o,2)+Math.pow(n[0].y-s,2)),r=a-1;r>0;--r)t.arc(o,s,l,n[r].angle,n[r-1].angle,!0)}}function _i(t,e,n,i,a,r){var o,s,l,u,d,h,c,f,g=e.length,p=i.spanGaps,m=[],v=[],b=0,x=0;for(t.beginPath(),o=0,s=g;o<s;++o)d=n(u=e[l=o%g]._view,l,i),h=xi(u),c=xi(d),r&&void 0===f&&h&&(s=g+(f=o+1)),h&&c?(b=m.push(u),x=v.push(d)):b&&x&&(p?(h&&m.push(u),c&&v.push(d)):(yi(t,m,v,b,x),b=x=0,m=[],v=[]));yi(t,m,v,b,x),t.closePath(),t.fillStyle=a,t.fill()}var ki={id:"filler",afterDatasetsUpdate:function(t,e){var n,i,a,r,o=(t.data.datasets||[]).length,s=e.propagate,l=[];for(i=0;i<o;++i)r=null,(a=(n=t.getDatasetMeta(i)).dataset)&&a._model&&a instanceof _t.Line&&(r={visible:t.isDatasetVisible(i),fill:pi(a,i,o),chart:t,el:a}),n.$filler=r,l.push(r);for(i=0;i<o;++i)(r=l[i])&&(r.fill=vi(l,i,s),r.boundary=mi(r),r.mapper=bi(r))},beforeDatasetsDraw:function(t){var e,n,i,a,r,o,s,l=t._getSortedVisibleDatasetMetas(),u=t.ctx;for(n=l.length-1;n>=0;--n)(e=l[n].$filler)&&e.visible&&(a=(i=e.el)._view,r=i._children||[],o=e.mapper,s=a.backgroundColor||z.global.defaultColor,o&&s&&r.length&&(V.canvas.clipArea(u,t.chartArea),_i(u,r,o,a,s,i._loop),V.canvas.unclipArea(u)))}},wi=V.rtl.getRtlAdapter,Mi=V.noop,Si=V.valueOrDefault;function Ci(t,e){return t.usePointStyle&&t.boxWidth>e?e:t.boxWidth}z._set("global",{legend:{display:!0,position:"top",align:"center",fullWidth:!0,reverse:!1,weight:1e3,onClick:function(t,e){var n=e.datasetIndex,i=this.chart,a=i.getDatasetMeta(n);a.hidden=null===a.hidden?!i.data.datasets[n].hidden:null,i.update()},onHover:null,onLeave:null,labels:{boxWidth:40,padding:10,generateLabels:function(t){var e=t.data.datasets,n=t.options.legend||{},i=n.labels&&n.labels.usePointStyle;return t._getSortedDatasetMetas().map((function(n){var a=n.controller.getStyle(i?0:void 0);return{text:e[n.index].label,fillStyle:a.backgroundColor,hidden:!t.isDatasetVisible(n.index),lineCap:a.borderCapStyle,lineDash:a.borderDash,lineDashOffset:a.borderDashOffset,lineJoin:a.borderJoinStyle,lineWidth:a.borderWidth,strokeStyle:a.borderColor,pointStyle:a.pointStyle,rotation:a.rotation,datasetIndex:n.index}}),this)}}},legendCallback:function(t){var e,n,i,a=document.createElement("ul"),r=t.data.datasets;for(a.setAttribute("class",t.id+"-legend"),e=0,n=r.length;e<n;e++)(i=a.appendChild(document.createElement("li"))).appendChild(document.createElement("span")).style.backgroundColor=r[e].backgroundColor,r[e].label&&i.appendChild(document.createTextNode(r[e].label));return a.outerHTML}});var Pi=X.extend({initialize:function(t){V.extend(this,t),this.legendHitBoxes=[],this._hoveredItem=null,this.doughnutMode=!1},beforeUpdate:Mi,update:function(t,e,n){var i=this;return i.beforeUpdate(),i.maxWidth=t,i.maxHeight=e,i.margins=n,i.beforeSetDimensions(),i.setDimensions(),i.afterSetDimensions(),i.beforeBuildLabels(),i.buildLabels(),i.afterBuildLabels(),i.beforeFit(),i.fit(),i.afterFit(),i.afterUpdate(),i.minSize},afterUpdate:Mi,beforeSetDimensions:Mi,setDimensions:function(){var t=this;t.isHorizontal()?(t.width=t.maxWidth,t.left=0,t.right=t.width):(t.height=t.maxHeight,t.top=0,t.bottom=t.height),t.paddingLeft=0,t.paddingTop=0,t.paddingRight=0,t.paddingBottom=0,t.minSize={width:0,height:0}},afterSetDimensions:Mi,beforeBuildLabels:Mi,buildLabels:function(){var t=this,e=t.options.labels||{},n=V.callback(e.generateLabels,[t.chart],t)||[];e.filter&&(n=n.filter((function(n){return e.filter(n,t.chart.data)}))),t.options.reverse&&n.reverse(),t.legendItems=n},afterBuildLabels:Mi,beforeFit:Mi,fit:function(){var t=this,e=t.options,n=e.labels,i=e.display,a=t.ctx,r=V.options._parseFont(n),o=r.size,s=t.legendHitBoxes=[],l=t.minSize,u=t.isHorizontal();if(u?(l.width=t.maxWidth,l.height=i?10:0):(l.width=i?10:0,l.height=t.maxHeight),i){if(a.font=r.string,u){var d=t.lineWidths=[0],h=0;a.textAlign="left",a.textBaseline="middle",V.each(t.legendItems,(function(t,e){var i=Ci(n,o)+o/2+a.measureText(t.text).width;(0===e||d[d.length-1]+i+2*n.padding>l.width)&&(h+=o+n.padding,d[d.length-(e>0?0:1)]=0),s[e]={left:0,top:0,width:i,height:o},d[d.length-1]+=i+n.padding})),l.height+=h}else{var c=n.padding,f=t.columnWidths=[],g=t.columnHeights=[],p=n.padding,m=0,v=0;V.each(t.legendItems,(function(t,e){var i=Ci(n,o)+o/2+a.measureText(t.text).width;e>0&&v+o+2*c>l.height&&(p+=m+n.padding,f.push(m),g.push(v),m=0,v=0),m=Math.max(m,i),v+=o+c,s[e]={left:0,top:0,width:i,height:o}})),p+=m,f.push(m),g.push(v),l.width+=p}t.width=l.width,t.height=l.height}else t.width=l.width=t.height=l.height=0},afterFit:Mi,isHorizontal:function(){return"top"===this.options.position||"bottom"===this.options.position},draw:function(){var t=this,e=t.options,n=e.labels,i=z.global,a=i.defaultColor,r=i.elements.line,o=t.height,s=t.columnHeights,l=t.width,u=t.lineWidths;if(e.display){var d,h=wi(e.rtl,t.left,t.minSize.width),c=t.ctx,f=Si(n.fontColor,i.defaultFontColor),g=V.options._parseFont(n),p=g.size;c.textAlign=h.textAlign("left"),c.textBaseline="middle",c.lineWidth=.5,c.strokeStyle=f,c.fillStyle=f,c.font=g.string;var m=Ci(n,p),v=t.legendHitBoxes,b=function(t,i){switch(e.align){case"start":return n.padding;case"end":return t-i;default:return(t-i+n.padding)/2}},x=t.isHorizontal();d=x?{x:t.left+b(l,u[0]),y:t.top+n.padding,line:0}:{x:t.left+n.padding,y:t.top+b(o,s[0]),line:0},V.rtl.overrideTextDirection(t.ctx,e.textDirection);var y=p+n.padding;V.each(t.legendItems,(function(e,i){var f=c.measureText(e.text).width,g=m+p/2+f,_=d.x,k=d.y;h.setWidth(t.minSize.width),x?i>0&&_+g+n.padding>t.left+t.minSize.width&&(k=d.y+=y,d.line++,_=d.x=t.left+b(l,u[d.line])):i>0&&k+y>t.top+t.minSize.height&&(_=d.x=_+t.columnWidths[d.line]+n.padding,d.line++,k=d.y=t.top+b(o,s[d.line]));var w=h.x(_);!function(t,e,i){if(!(isNaN(m)||m<=0)){c.save();var o=Si(i.lineWidth,r.borderWidth);if(c.fillStyle=Si(i.fillStyle,a),c.lineCap=Si(i.lineCap,r.borderCapStyle),c.lineDashOffset=Si(i.lineDashOffset,r.borderDashOffset),c.lineJoin=Si(i.lineJoin,r.borderJoinStyle),c.lineWidth=o,c.strokeStyle=Si(i.strokeStyle,a),c.setLineDash&&c.setLineDash(Si(i.lineDash,r.borderDash)),n&&n.usePointStyle){var s=m*Math.SQRT2/2,l=h.xPlus(t,m/2),u=e+p/2;V.canvas.drawPoint(c,i.pointStyle,s,l,u,i.rotation)}else c.fillRect(h.leftForLtr(t,m),e,m,p),0!==o&&c.strokeRect(h.leftForLtr(t,m),e,m,p);c.restore()}}(w,k,e),v[i].left=h.leftForLtr(w,v[i].width),v[i].top=k,function(t,e,n,i){var a=p/2,r=h.xPlus(t,m+a),o=e+a;c.fillText(n.text,r,o),n.hidden&&(c.beginPath(),c.lineWidth=2,c.moveTo(r,o),c.lineTo(h.xPlus(r,i),o),c.stroke())}(w,k,e,f),x?d.x+=g+n.padding:d.y+=y})),V.rtl.restoreTextDirection(t.ctx,e.textDirection)}},_getLegendItemAt:function(t,e){var n,i,a,r=this;if(t>=r.left&&t<=r.right&&e>=r.top&&e<=r.bottom)for(a=r.legendHitBoxes,n=0;n<a.length;++n)if(t>=(i=a[n]).left&&t<=i.left+i.width&&e>=i.top&&e<=i.top+i.height)return r.legendItems[n];return null},handleEvent:function(t){var e,n=this,i=n.options,a="mouseup"===t.type?"click":t.type;if("mousemove"===a){if(!i.onHover&&!i.onLeave)return}else{if("click"!==a)return;if(!i.onClick)return}e=n._getLegendItemAt(t.x,t.y),"click"===a?e&&i.onClick&&i.onClick.call(n,t.native,e):(i.onLeave&&e!==n._hoveredItem&&(n._hoveredItem&&i.onLeave.call(n,t.native,n._hoveredItem),n._hoveredItem=e),i.onHover&&e&&i.onHover.call(n,t.native,e))}});function Ai(t,e){var n=new Pi({ctx:t.ctx,options:e,chart:t});ge.configure(t,n,e),ge.addBox(t,n),t.legend=n}var Di={id:"legend",_element:Pi,beforeInit:function(t){var e=t.options.legend;e&&Ai(t,e)},beforeUpdate:function(t){var e=t.options.legend,n=t.legend;e?(V.mergeIf(e,z.global.legend),n?(ge.configure(t,n,e),n.options=e):Ai(t,e)):n&&(ge.removeBox(t,n),delete t.legend)},afterEvent:function(t,e){var n=t.legend;n&&n.handleEvent(e)}},Ti=V.noop;z._set("global",{title:{display:!1,fontStyle:"bold",fullWidth:!0,padding:10,position:"top",text:"",weight:2e3}});var Ii=X.extend({initialize:function(t){V.extend(this,t),this.legendHitBoxes=[]},beforeUpdate:Ti,update:function(t,e,n){var i=this;return i.beforeUpdate(),i.maxWidth=t,i.maxHeight=e,i.margins=n,i.beforeSetDimensions(),i.setDimensions(),i.afterSetDimensions(),i.beforeBuildLabels(),i.buildLabels(),i.afterBuildLabels(),i.beforeFit(),i.fit(),i.afterFit(),i.afterUpdate(),i.minSize},afterUpdate:Ti,beforeSetDimensions:Ti,setDimensions:function(){var t=this;t.isHorizontal()?(t.width=t.maxWidth,t.left=0,t.right=t.width):(t.height=t.maxHeight,t.top=0,t.bottom=t.height),t.paddingLeft=0,t.paddingTop=0,t.paddingRight=0,t.paddingBottom=0,t.minSize={width:0,height:0}},afterSetDimensions:Ti,beforeBuildLabels:Ti,buildLabels:Ti,afterBuildLabels:Ti,beforeFit:Ti,fit:function(){var t,e=this,n=e.options,i=e.minSize={},a=e.isHorizontal();n.display?(t=(V.isArray(n.text)?n.text.length:1)*V.options._parseFont(n).lineHeight+2*n.padding,e.width=i.width=a?e.maxWidth:t,e.height=i.height=a?t:e.maxHeight):e.width=i.width=e.height=i.height=0},afterFit:Ti,isHorizontal:function(){var t=this.options.position;return"top"===t||"bottom"===t},draw:function(){var t=this,e=t.ctx,n=t.options;if(n.display){var i,a,r,o=V.options._parseFont(n),s=o.lineHeight,l=s/2+n.padding,u=0,d=t.top,h=t.left,c=t.bottom,f=t.right;e.fillStyle=V.valueOrDefault(n.fontColor,z.global.defaultFontColor),e.font=o.string,t.isHorizontal()?(a=h+(f-h)/2,r=d+l,i=f-h):(a="left"===n.position?h+l:f-l,r=d+(c-d)/2,i=c-d,u=Math.PI*("left"===n.position?-.5:.5)),e.save(),e.translate(a,r),e.rotate(u),e.textAlign="center",e.textBaseline="middle";var g=n.text;if(V.isArray(g))for(var p=0,m=0;m<g.length;++m)e.fillText(g[m],0,p,i),p+=s;else e.fillText(g,0,0,i);e.restore()}}});function Fi(t,e){var n=new Ii({ctx:t.ctx,options:e,chart:t});ge.configure(t,n,e),ge.addBox(t,n),t.titleBlock=n}var Li={},Oi=ki,Ri=Di,zi={id:"title",_element:Ii,beforeInit:function(t){var e=t.options.title;e&&Fi(t,e)},beforeUpdate:function(t){var e=t.options.title,n=t.titleBlock;e?(V.mergeIf(e,z.global.title),n?(ge.configure(t,n,e),n.options=e):Fi(t,e)):n&&(ge.removeBox(t,n),delete t.titleBlock)}};for(var Ni in Li.filler=Oi,Li.legend=Ri,Li.title=zi,tn.helpers=V,function(){function t(t,e,n){var i;return"string"==typeof t?(i=parseInt(t,10),-1!==t.indexOf("%")&&(i=i/100*e.parentNode[n])):i=t,i}function e(t){return null!=t&&"none"!==t}function n(n,i,a){var r=document.defaultView,o=V._getParentNode(n),s=r.getComputedStyle(n)[i],l=r.getComputedStyle(o)[i],u=e(s),d=e(l),h=Number.POSITIVE_INFINITY;return u||d?Math.min(u?t(s,n,a):h,d?t(l,o,a):h):"none"}V.where=function(t,e){if(V.isArray(t)&&Array.prototype.filter)return t.filter(e);var n=[];return V.each(t,(function(t){e(t)&&n.push(t)})),n},V.findIndex=Array.prototype.findIndex?function(t,e,n){return t.findIndex(e,n)}:function(t,e,n){n=void 0===n?t:n;for(var i=0,a=t.length;i<a;++i)if(e.call(n,t[i],i,t))return i;return-1},V.findNextWhere=function(t,e,n){V.isNullOrUndef(n)&&(n=-1);for(var i=n+1;i<t.length;i++){var a=t[i];if(e(a))return a}},V.findPreviousWhere=function(t,e,n){V.isNullOrUndef(n)&&(n=t.length);for(var i=n-1;i>=0;i--){var a=t[i];if(e(a))return a}},V.isNumber=function(t){return!isNaN(parseFloat(t))&&isFinite(t)},V.almostEquals=function(t,e,n){return Math.abs(t-e)<n},V.almostWhole=function(t,e){var n=Math.round(t);return n-e<=t&&n+e>=t},V.max=function(t){return t.reduce((function(t,e){return isNaN(e)?t:Math.max(t,e)}),Number.NEGATIVE_INFINITY)},V.min=function(t){return t.reduce((function(t,e){return isNaN(e)?t:Math.min(t,e)}),Number.POSITIVE_INFINITY)},V.sign=Math.sign?function(t){return Math.sign(t)}:function(t){return 0===(t=+t)||isNaN(t)?t:t>0?1:-1},V.toRadians=function(t){return t*(Math.PI/180)},V.toDegrees=function(t){return t*(180/Math.PI)},V._decimalPlaces=function(t){if(V.isFinite(t)){for(var e=1,n=0;Math.round(t*e)/e!==t;)e*=10,n++;return n}},V.getAngleFromPoint=function(t,e){var n=e.x-t.x,i=e.y-t.y,a=Math.sqrt(n*n+i*i),r=Math.atan2(i,n);return r<-.5*Math.PI&&(r+=2*Math.PI),{angle:r,distance:a}},V.distanceBetweenPoints=function(t,e){return Math.sqrt(Math.pow(e.x-t.x,2)+Math.pow(e.y-t.y,2))},V.aliasPixel=function(t){return t%2==0?0:.5},V._alignPixel=function(t,e,n){var i=t.currentDevicePixelRatio,a=n/2;return Math.round((e-a)*i)/i+a},V.splineCurve=function(t,e,n,i){var a=t.skip?e:t,r=e,o=n.skip?e:n,s=Math.sqrt(Math.pow(r.x-a.x,2)+Math.pow(r.y-a.y,2)),l=Math.sqrt(Math.pow(o.x-r.x,2)+Math.pow(o.y-r.y,2)),u=s/(s+l),d=l/(s+l),h=i*(u=isNaN(u)?0:u),c=i*(d=isNaN(d)?0:d);return{previous:{x:r.x-h*(o.x-a.x),y:r.y-h*(o.y-a.y)},next:{x:r.x+c*(o.x-a.x),y:r.y+c*(o.y-a.y)}}},V.EPSILON=Number.EPSILON||1e-14,V.splineCurveMonotone=function(t){var e,n,i,a,r,o,s,l,u,d=(t||[]).map((function(t){return{model:t._model,deltaK:0,mK:0}})),h=d.length;for(e=0;e<h;++e)if(!(i=d[e]).model.skip){if(n=e>0?d[e-1]:null,(a=e<h-1?d[e+1]:null)&&!a.model.skip){var c=a.model.x-i.model.x;i.deltaK=0!==c?(a.model.y-i.model.y)/c:0}!n||n.model.skip?i.mK=i.deltaK:!a||a.model.skip?i.mK=n.deltaK:this.sign(n.deltaK)!==this.sign(i.deltaK)?i.mK=0:i.mK=(n.deltaK+i.deltaK)/2}for(e=0;e<h-1;++e)i=d[e],a=d[e+1],i.model.skip||a.model.skip||(V.almostEquals(i.deltaK,0,this.EPSILON)?i.mK=a.mK=0:(r=i.mK/i.deltaK,o=a.mK/i.deltaK,(l=Math.pow(r,2)+Math.pow(o,2))<=9||(s=3/Math.sqrt(l),i.mK=r*s*i.deltaK,a.mK=o*s*i.deltaK)));for(e=0;e<h;++e)(i=d[e]).model.skip||(n=e>0?d[e-1]:null,a=e<h-1?d[e+1]:null,n&&!n.model.skip&&(u=(i.model.x-n.model.x)/3,i.model.controlPointPreviousX=i.model.x-u,i.model.controlPointPreviousY=i.model.y-u*i.mK),a&&!a.model.skip&&(u=(a.model.x-i.model.x)/3,i.model.controlPointNextX=i.model.x+u,i.model.controlPointNextY=i.model.y+u*i.mK))},V.nextItem=function(t,e,n){return n?e>=t.length-1?t[0]:t[e+1]:e>=t.length-1?t[t.length-1]:t[e+1]},V.previousItem=function(t,e,n){return n?e<=0?t[t.length-1]:t[e-1]:e<=0?t[0]:t[e-1]},V.niceNum=function(t,e){var n=Math.floor(V.log10(t)),i=t/Math.pow(10,n);return(e?i<1.5?1:i<3?2:i<7?5:10:i<=1?1:i<=2?2:i<=5?5:10)*Math.pow(10,n)},V.requestAnimFrame="undefined"==typeof window?function(t){t()}:window.requestAnimationFrame||window.webkitRequestAnimationFrame||window.mozRequestAnimationFrame||window.oRequestAnimationFrame||window.msRequestAnimationFrame||function(t){return window.setTimeout(t,1e3/60)},V.getRelativePosition=function(t,e){var n,i,a=t.originalEvent||t,r=t.target||t.srcElement,o=r.getBoundingClientRect(),s=a.touches;s&&s.length>0?(n=s[0].clientX,i=s[0].clientY):(n=a.clientX,i=a.clientY);var l=parseFloat(V.getStyle(r,"padding-left")),u=parseFloat(V.getStyle(r,"padding-top")),d=parseFloat(V.getStyle(r,"padding-right")),h=parseFloat(V.getStyle(r,"padding-bottom")),c=o.right-o.left-l-d,f=o.bottom-o.top-u-h;return{x:n=Math.round((n-o.left-l)/c*r.width/e.currentDevicePixelRatio),y:i=Math.round((i-o.top-u)/f*r.height/e.currentDevicePixelRatio)}},V.getConstraintWidth=function(t){return n(t,"max-width","clientWidth")},V.getConstraintHeight=function(t){return n(t,"max-height","clientHeight")},V._calculatePadding=function(t,e,n){return(e=V.getStyle(t,e)).indexOf("%")>-1?n*parseInt(e,10)/100:parseInt(e,10)},V._getParentNode=function(t){var e=t.parentNode;return e&&"[object ShadowRoot]"===e.toString()&&(e=e.host),e},V.getMaximumWidth=function(t){var e=V._getParentNode(t);if(!e)return t.clientWidth;var n=e.clientWidth,i=n-V._calculatePadding(e,"padding-left",n)-V._calculatePadding(e,"padding-right",n),a=V.getConstraintWidth(t);return isNaN(a)?i:Math.min(i,a)},V.getMaximumHeight=function(t){var e=V._getParentNode(t);if(!e)return t.clientHeight;var n=e.clientHeight,i=n-V._calculatePadding(e,"padding-top",n)-V._calculatePadding(e,"padding-bottom",n),a=V.getConstraintHeight(t);return isNaN(a)?i:Math.min(i,a)},V.getStyle=function(t,e){return t.currentStyle?t.currentStyle[e]:document.defaultView.getComputedStyle(t,null).getPropertyValue(e)},V.retinaScale=function(t,e){var n=t.currentDevicePixelRatio=e||"undefined"!=typeof window&&window.devicePixelRatio||1;if(1!==n){var i=t.canvas,a=t.height,r=t.width;i.height=a*n,i.width=r*n,t.ctx.scale(n,n),i.style.height||i.style.width||(i.style.height=a+"px",i.style.width=r+"px")}},V.fontString=function(t,e,n){return e+" "+t+"px "+n},V.longestText=function(t,e,n,i){var a=(i=i||{}).data=i.data||{},r=i.garbageCollect=i.garbageCollect||[];i.font!==e&&(a=i.data={},r=i.garbageCollect=[],i.font=e),t.font=e;var o,s,l,u,d,h=0,c=n.length;for(o=0;o<c;o++)if(null!=(u=n[o])&&!0!==V.isArray(u))h=V.measureText(t,a,r,h,u);else if(V.isArray(u))for(s=0,l=u.length;s<l;s++)null==(d=u[s])||V.isArray(d)||(h=V.measureText(t,a,r,h,d));var f=r.length/2;if(f>n.length){for(o=0;o<f;o++)delete a[r[o]];r.splice(0,f)}return h},V.measureText=function(t,e,n,i,a){var r=e[a];return r||(r=e[a]=t.measureText(a).width,n.push(a)),r>i&&(i=r),i},V.numberOfLabelLines=function(t){var e=1;return V.each(t,(function(t){V.isArray(t)&&t.length>e&&(e=t.length)})),e},V.color=k?function(t){return t instanceof CanvasGradient&&(t=z.global.defaultColor),k(t)}:function(t){return console.error("Color.js not found!"),t},V.getHoverColor=function(t){return t instanceof CanvasPattern||t instanceof CanvasGradient?t:V.color(t).saturate(.5).darken(.1).rgbString()}}(),tn._adapters=an,tn.Animation=Z,tn.animationService=$,tn.controllers=$t,tn.DatasetController=nt,tn.defaults=z,tn.Element=X,tn.elements=_t,tn.Interaction=ae,tn.layouts=ge,tn.platform=Fe,tn.plugins=Le,tn.Scale=xn,tn.scaleService=Oe,tn.Ticks=rn,tn.Tooltip=Ue,tn.helpers.each(ci,(function(t,e){tn.scaleService.registerScaleType(e,t,t._defaults)})),Li)Li.hasOwnProperty(Ni)&&tn.plugins.register(Li[Ni]);tn.platform.initialize();var Bi=tn;return"undefined"!=typeof window&&(window.Chart=tn),tn.Chart=tn,tn.Legend=Li.legend._element,tn.Title=Li.title._element,tn.pluginService=tn.plugins,tn.PluginBase=tn.Element.extend({}),tn.canvasHelpers=tn.helpers.canvas,tn.layoutService=tn.layouts,tn.LinearScaleBase=Sn,tn.helpers.each(["Bar","Bubble","Doughnut","Line","PolarArea","Radar","Scatter"],(function(t){tn[t]=function(e,n){return new tn(e,tn.helpers.merge(n||{},{type:t.charAt(0).toLowerCase()+t.slice(1)}))}})),Bi}));
 function consoleLog(...x) { if (DEBUGGING) { console.log(...x); } }
 function consoleError(...x) { if (DEBUGGING) { console.error(...x); } }
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 19);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+
+var TYPED_OK =  (typeof Uint8Array !== 'undefined') &&
+                (typeof Uint16Array !== 'undefined') &&
+                (typeof Int32Array !== 'undefined');
+
+function _has(obj, key) {
+  return Object.prototype.hasOwnProperty.call(obj, key);
+}
+
+exports.assign = function (obj /*from1, from2, from3, ...*/) {
+  var sources = Array.prototype.slice.call(arguments, 1);
+  while (sources.length) {
+    var source = sources.shift();
+    if (!source) { continue; }
+
+    if (typeof source !== 'object') {
+      throw new TypeError(source + 'must be non-object');
+    }
+
+    for (var p in source) {
+      if (_has(source, p)) {
+        obj[p] = source[p];
+      }
+    }
+  }
+
+  return obj;
+};
+
+
+// reduce buffer size, avoiding mem copy
+exports.shrinkBuf = function (buf, size) {
+  if (buf.length === size) { return buf; }
+  if (buf.subarray) { return buf.subarray(0, size); }
+  buf.length = size;
+  return buf;
+};
+
+
+var fnTyped = {
+  arraySet: function (dest, src, src_offs, len, dest_offs) {
+    if (src.subarray && dest.subarray) {
+      dest.set(src.subarray(src_offs, src_offs + len), dest_offs);
+      return;
+    }
+    // Fallback to ordinary array
+    for (var i = 0; i < len; i++) {
+      dest[dest_offs + i] = src[src_offs + i];
+    }
+  },
+  // Join array of chunks to single array.
+  flattenChunks: function (chunks) {
+    var i, l, len, pos, chunk, result;
+
+    // calculate data length
+    len = 0;
+    for (i = 0, l = chunks.length; i < l; i++) {
+      len += chunks[i].length;
+    }
+
+    // join chunks
+    result = new Uint8Array(len);
+    pos = 0;
+    for (i = 0, l = chunks.length; i < l; i++) {
+      chunk = chunks[i];
+      result.set(chunk, pos);
+      pos += chunk.length;
+    }
+
+    return result;
+  }
+};
+
+var fnUntyped = {
+  arraySet: function (dest, src, src_offs, len, dest_offs) {
+    for (var i = 0; i < len; i++) {
+      dest[dest_offs + i] = src[src_offs + i];
+    }
+  },
+  // Join array of chunks to single array.
+  flattenChunks: function (chunks) {
+    return [].concat.apply([], chunks);
+  }
+};
+
+
+// Enable/Disable typed arrays use, for testing
+//
+exports.setTyped = function (on) {
+  if (on) {
+    exports.Buf8  = Uint8Array;
+    exports.Buf16 = Uint16Array;
+    exports.Buf32 = Int32Array;
+    exports.assign(exports, fnTyped);
+  } else {
+    exports.Buf8  = Array;
+    exports.Buf16 = Array;
+    exports.Buf32 = Array;
+    exports.assign(exports, fnUntyped);
+  }
+};
+
+exports.setTyped(TYPED_OK);
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+module.exports = {
+  2:      'need dictionary',     /* Z_NEED_DICT       2  */
+  1:      'stream end',          /* Z_STREAM_END      1  */
+  0:      '',                    /* Z_OK              0  */
+  '-1':   'file error',          /* Z_ERRNO         (-1) */
+  '-2':   'stream error',        /* Z_STREAM_ERROR  (-2) */
+  '-3':   'data error',          /* Z_DATA_ERROR    (-3) */
+  '-4':   'insufficient memory', /* Z_MEM_ERROR     (-4) */
+  '-5':   'buffer error',        /* Z_BUF_ERROR     (-5) */
+  '-6':   'incompatible version' /* Z_VERSION_ERROR (-6) */
+};
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// Note: adler32 takes 12% for level 0 and 2% for level 6.
+// It isn't worth it to make additional optimizations as in original.
+// Small size is preferable.
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+function adler32(adler, buf, len, pos) {
+  var s1 = (adler & 0xffff) |0,
+      s2 = ((adler >>> 16) & 0xffff) |0,
+      n = 0;
+
+  while (len !== 0) {
+    // Set limit ~ twice less than 5552, to keep
+    // s2 in 31-bits, because we force signed ints.
+    // in other case %= will fail.
+    n = len > 2000 ? 2000 : len;
+    len -= n;
+
+    do {
+      s1 = (s1 + buf[pos++]) |0;
+      s2 = (s2 + s1) |0;
+    } while (--n);
+
+    s1 %= 65521;
+    s2 %= 65521;
+  }
+
+  return (s1 | (s2 << 16)) |0;
+}
+
+
+module.exports = adler32;
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// Note: we can't get significant speed boost here.
+// So write code to minimize size - no pregenerated tables
+// and array tools dependencies.
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+// Use ordinary array, since untyped makes no boost here
+function makeTable() {
+  var c, table = [];
+
+  for (var n = 0; n < 256; n++) {
+    c = n;
+    for (var k = 0; k < 8; k++) {
+      c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
+    }
+    table[n] = c;
+  }
+
+  return table;
+}
+
+// Create table on load. Just 255 signed longs. Not a problem.
+var crcTable = makeTable();
+
+
+function crc32(crc, buf, len, pos) {
+  var t = crcTable,
+      end = pos + len;
+
+  crc ^= -1;
+
+  for (var i = pos; i < end; i++) {
+    crc = (crc >>> 8) ^ t[(crc ^ buf[i]) & 0xFF];
+  }
+
+  return (crc ^ (-1)); // >>> 0;
+}
+
+
+module.exports = crc32;
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// String encode/decode helpers
+
+
+
+var utils = __webpack_require__(0);
+
+
+// Quick check if we can use fast array to bin string conversion
+//
+// - apply(Array) can fail on Android 2.2
+// - apply(Uint8Array) can fail on iOS 5.1 Safari
+//
+var STR_APPLY_OK = true;
+var STR_APPLY_UIA_OK = true;
+
+try { String.fromCharCode.apply(null, [ 0 ]); } catch (__) { STR_APPLY_OK = false; }
+try { String.fromCharCode.apply(null, new Uint8Array(1)); } catch (__) { STR_APPLY_UIA_OK = false; }
+
+
+// Table with utf8 lengths (calculated by first byte of sequence)
+// Note, that 5 & 6-byte values and some 4-byte values can not be represented in JS,
+// because max possible codepoint is 0x10ffff
+var _utf8len = new utils.Buf8(256);
+for (var q = 0; q < 256; q++) {
+  _utf8len[q] = (q >= 252 ? 6 : q >= 248 ? 5 : q >= 240 ? 4 : q >= 224 ? 3 : q >= 192 ? 2 : 1);
+}
+_utf8len[254] = _utf8len[254] = 1; // Invalid sequence start
+
+
+// convert string to array (typed, when possible)
+exports.string2buf = function (str) {
+  var buf, c, c2, m_pos, i, str_len = str.length, buf_len = 0;
+
+  // count binary size
+  for (m_pos = 0; m_pos < str_len; m_pos++) {
+    c = str.charCodeAt(m_pos);
+    if ((c & 0xfc00) === 0xd800 && (m_pos + 1 < str_len)) {
+      c2 = str.charCodeAt(m_pos + 1);
+      if ((c2 & 0xfc00) === 0xdc00) {
+        c = 0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00);
+        m_pos++;
+      }
+    }
+    buf_len += c < 0x80 ? 1 : c < 0x800 ? 2 : c < 0x10000 ? 3 : 4;
+  }
+
+  // allocate buffer
+  buf = new utils.Buf8(buf_len);
+
+  // convert
+  for (i = 0, m_pos = 0; i < buf_len; m_pos++) {
+    c = str.charCodeAt(m_pos);
+    if ((c & 0xfc00) === 0xd800 && (m_pos + 1 < str_len)) {
+      c2 = str.charCodeAt(m_pos + 1);
+      if ((c2 & 0xfc00) === 0xdc00) {
+        c = 0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00);
+        m_pos++;
+      }
+    }
+    if (c < 0x80) {
+      /* one byte */
+      buf[i++] = c;
+    } else if (c < 0x800) {
+      /* two bytes */
+      buf[i++] = 0xC0 | (c >>> 6);
+      buf[i++] = 0x80 | (c & 0x3f);
+    } else if (c < 0x10000) {
+      /* three bytes */
+      buf[i++] = 0xE0 | (c >>> 12);
+      buf[i++] = 0x80 | (c >>> 6 & 0x3f);
+      buf[i++] = 0x80 | (c & 0x3f);
+    } else {
+      /* four bytes */
+      buf[i++] = 0xf0 | (c >>> 18);
+      buf[i++] = 0x80 | (c >>> 12 & 0x3f);
+      buf[i++] = 0x80 | (c >>> 6 & 0x3f);
+      buf[i++] = 0x80 | (c & 0x3f);
+    }
+  }
+
+  return buf;
+};
+
+// Helper (used in 2 places)
+function buf2binstring(buf, len) {
+  // On Chrome, the arguments in a function call that are allowed is `65534`.
+  // If the length of the buffer is smaller than that, we can use this optimization,
+  // otherwise we will take a slower path.
+  if (len < 65534) {
+    if ((buf.subarray && STR_APPLY_UIA_OK) || (!buf.subarray && STR_APPLY_OK)) {
+      return String.fromCharCode.apply(null, utils.shrinkBuf(buf, len));
+    }
+  }
+
+  var result = '';
+  for (var i = 0; i < len; i++) {
+    result += String.fromCharCode(buf[i]);
+  }
+  return result;
+}
+
+
+// Convert byte array to binary string
+exports.buf2binstring = function (buf) {
+  return buf2binstring(buf, buf.length);
+};
+
+
+// Convert binary string (typed, when possible)
+exports.binstring2buf = function (str) {
+  var buf = new utils.Buf8(str.length);
+  for (var i = 0, len = buf.length; i < len; i++) {
+    buf[i] = str.charCodeAt(i);
+  }
+  return buf;
+};
+
+
+// convert array to string
+exports.buf2string = function (buf, max) {
+  var i, out, c, c_len;
+  var len = max || buf.length;
+
+  // Reserve max possible length (2 words per char)
+  // NB: by unknown reasons, Array is significantly faster for
+  //     String.fromCharCode.apply than Uint16Array.
+  var utf16buf = new Array(len * 2);
+
+  for (out = 0, i = 0; i < len;) {
+    c = buf[i++];
+    // quick process ascii
+    if (c < 0x80) { utf16buf[out++] = c; continue; }
+
+    c_len = _utf8len[c];
+    // skip 5 & 6 byte codes
+    if (c_len > 4) { utf16buf[out++] = 0xfffd; i += c_len - 1; continue; }
+
+    // apply mask on first byte
+    c &= c_len === 2 ? 0x1f : c_len === 3 ? 0x0f : 0x07;
+    // join the rest
+    while (c_len > 1 && i < len) {
+      c = (c << 6) | (buf[i++] & 0x3f);
+      c_len--;
+    }
+
+    // terminated by end of string?
+    if (c_len > 1) { utf16buf[out++] = 0xfffd; continue; }
+
+    if (c < 0x10000) {
+      utf16buf[out++] = c;
+    } else {
+      c -= 0x10000;
+      utf16buf[out++] = 0xd800 | ((c >> 10) & 0x3ff);
+      utf16buf[out++] = 0xdc00 | (c & 0x3ff);
+    }
+  }
+
+  return buf2binstring(utf16buf, out);
+};
+
+
+// Calculate max possible position in utf8 buffer,
+// that will not break sequence. If that's not possible
+// - (very small limits) return max size as is.
+//
+// buf[] - utf8 bytes array
+// max   - length limit (mandatory);
+exports.utf8border = function (buf, max) {
+  var pos;
+
+  max = max || buf.length;
+  if (max > buf.length) { max = buf.length; }
+
+  // go back from last position, until start of sequence found
+  pos = max - 1;
+  while (pos >= 0 && (buf[pos] & 0xC0) === 0x80) { pos--; }
+
+  // Very small and broken sequence,
+  // return max, because we should return something anyway.
+  if (pos < 0) { return max; }
+
+  // If we came to start of buffer - that means buffer is too small,
+  // return max too.
+  if (pos === 0) { return max; }
+
+  return (pos + _utf8len[buf[pos]] > max) ? pos : max;
+};
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+function ZStream() {
+  /* next input byte */
+  this.input = null; // JS specific, because we have no pointers
+  this.next_in = 0;
+  /* number of bytes available at input */
+  this.avail_in = 0;
+  /* total number of input bytes read so far */
+  this.total_in = 0;
+  /* next output byte should be put there */
+  this.output = null; // JS specific, because we have no pointers
+  this.next_out = 0;
+  /* remaining free space at output */
+  this.avail_out = 0;
+  /* total number of bytes output so far */
+  this.total_out = 0;
+  /* last error message, NULL if no error */
+  this.msg = ''/*Z_NULL*/;
+  /* not visible by applications */
+  this.state = null;
+  /* best guess about the data type: binary or text */
+  this.data_type = 2/*Z_UNKNOWN*/;
+  /* adler32 value of the uncompressed data */
+  this.adler = 0;
+}
+
+module.exports = ZStream;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+module.exports = {
+
+  /* Allowed flush values; see deflate() and inflate() below for details */
+  Z_NO_FLUSH:         0,
+  Z_PARTIAL_FLUSH:    1,
+  Z_SYNC_FLUSH:       2,
+  Z_FULL_FLUSH:       3,
+  Z_FINISH:           4,
+  Z_BLOCK:            5,
+  Z_TREES:            6,
+
+  /* Return codes for the compression/decompression functions. Negative values
+  * are errors, positive values are used for special but normal events.
+  */
+  Z_OK:               0,
+  Z_STREAM_END:       1,
+  Z_NEED_DICT:        2,
+  Z_ERRNO:           -1,
+  Z_STREAM_ERROR:    -2,
+  Z_DATA_ERROR:      -3,
+  //Z_MEM_ERROR:     -4,
+  Z_BUF_ERROR:       -5,
+  //Z_VERSION_ERROR: -6,
+
+  /* compression levels */
+  Z_NO_COMPRESSION:         0,
+  Z_BEST_SPEED:             1,
+  Z_BEST_COMPRESSION:       9,
+  Z_DEFAULT_COMPRESSION:   -1,
+
+
+  Z_FILTERED:               1,
+  Z_HUFFMAN_ONLY:           2,
+  Z_RLE:                    3,
+  Z_FIXED:                  4,
+  Z_DEFAULT_STRATEGY:       0,
+
+  /* Possible values of the data_type field (though see inflate()) */
+  Z_BINARY:                 0,
+  Z_TEXT:                   1,
+  //Z_ASCII:                1, // = Z_TEXT (deprecated)
+  Z_UNKNOWN:                2,
+
+  /* The deflate compression method */
+  Z_DEFLATED:               8
+  //Z_NULL:                 null // Use -1 or null inline, depending on var type
+};
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// Top level file is just a mixin of submodules & constants
+
+
+var assign    = __webpack_require__(0).assign;
+
+var deflate   = __webpack_require__(8);
+var inflate   = __webpack_require__(11);
+var constants = __webpack_require__(6);
+
+var pako = {};
+
+assign(pako, deflate, inflate, constants);
+
+module.exports = pako;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+
+var zlib_deflate = __webpack_require__(9);
+var utils        = __webpack_require__(0);
+var strings      = __webpack_require__(4);
+var msg          = __webpack_require__(1);
+var ZStream      = __webpack_require__(5);
+
+var toString = Object.prototype.toString;
+
+/* Public constants ==========================================================*/
+/* ===========================================================================*/
+
+var Z_NO_FLUSH      = 0;
+var Z_FINISH        = 4;
+
+var Z_OK            = 0;
+var Z_STREAM_END    = 1;
+var Z_SYNC_FLUSH    = 2;
+
+var Z_DEFAULT_COMPRESSION = -1;
+
+var Z_DEFAULT_STRATEGY    = 0;
+
+var Z_DEFLATED  = 8;
+
+/* ===========================================================================*/
+
+
+/**
+ * class Deflate
+ *
+ * Generic JS-style wrapper for zlib calls. If you don't need
+ * streaming behaviour - use more simple functions: [[deflate]],
+ * [[deflateRaw]] and [[gzip]].
+ **/
+
+/* internal
+ * Deflate.chunks -> Array
+ *
+ * Chunks of output data, if [[Deflate#onData]] not overridden.
+ **/
+
+/**
+ * Deflate.result -> Uint8Array|Array
+ *
+ * Compressed result, generated by default [[Deflate#onData]]
+ * and [[Deflate#onEnd]] handlers. Filled after you push last chunk
+ * (call [[Deflate#push]] with `Z_FINISH` / `true` param)  or if you
+ * push a chunk with explicit flush (call [[Deflate#push]] with
+ * `Z_SYNC_FLUSH` param).
+ **/
+
+/**
+ * Deflate.err -> Number
+ *
+ * Error code after deflate finished. 0 (Z_OK) on success.
+ * You will not need it in real life, because deflate errors
+ * are possible only on wrong options or bad `onData` / `onEnd`
+ * custom handlers.
+ **/
+
+/**
+ * Deflate.msg -> String
+ *
+ * Error message, if [[Deflate.err]] != 0
+ **/
+
+
+/**
+ * new Deflate(options)
+ * - options (Object): zlib deflate options.
+ *
+ * Creates new deflator instance with specified params. Throws exception
+ * on bad params. Supported options:
+ *
+ * - `level`
+ * - `windowBits`
+ * - `memLevel`
+ * - `strategy`
+ * - `dictionary`
+ *
+ * [http://zlib.net/manual.html#Advanced](http://zlib.net/manual.html#Advanced)
+ * for more information on these.
+ *
+ * Additional options, for internal needs:
+ *
+ * - `chunkSize` - size of generated data chunks (16K by default)
+ * - `raw` (Boolean) - do raw deflate
+ * - `gzip` (Boolean) - create gzip wrapper
+ * - `to` (String) - if equal to 'string', then result will be "binary string"
+ *    (each char code [0..255])
+ * - `header` (Object) - custom header for gzip
+ *   - `text` (Boolean) - true if compressed data believed to be text
+ *   - `time` (Number) - modification time, unix timestamp
+ *   - `os` (Number) - operation system code
+ *   - `extra` (Array) - array of bytes with extra data (max 65536)
+ *   - `name` (String) - file name (binary string)
+ *   - `comment` (String) - comment (binary string)
+ *   - `hcrc` (Boolean) - true if header crc should be added
+ *
+ * ##### Example:
+ *
+ * ```javascript
+ * var pako = require('pako')
+ *   , chunk1 = Uint8Array([1,2,3,4,5,6,7,8,9])
+ *   , chunk2 = Uint8Array([10,11,12,13,14,15,16,17,18,19]);
+ *
+ * var deflate = new pako.Deflate({ level: 3});
+ *
+ * deflate.push(chunk1, false);
+ * deflate.push(chunk2, true);  // true -> last chunk
+ *
+ * if (deflate.err) { throw new Error(deflate.err); }
+ *
+ * console.log(deflate.result);
+ * ```
+ **/
+function Deflate(options) {
+  if (!(this instanceof Deflate)) return new Deflate(options);
+
+  this.options = utils.assign({
+    level: Z_DEFAULT_COMPRESSION,
+    method: Z_DEFLATED,
+    chunkSize: 16384,
+    windowBits: 15,
+    memLevel: 8,
+    strategy: Z_DEFAULT_STRATEGY,
+    to: ''
+  }, options || {});
+
+  var opt = this.options;
+
+  if (opt.raw && (opt.windowBits > 0)) {
+    opt.windowBits = -opt.windowBits;
+  }
+
+  else if (opt.gzip && (opt.windowBits > 0) && (opt.windowBits < 16)) {
+    opt.windowBits += 16;
+  }
+
+  this.err    = 0;      // error code, if happens (0 = Z_OK)
+  this.msg    = '';     // error message
+  this.ended  = false;  // used to avoid multiple onEnd() calls
+  this.chunks = [];     // chunks of compressed data
+
+  this.strm = new ZStream();
+  this.strm.avail_out = 0;
+
+  var status = zlib_deflate.deflateInit2(
+    this.strm,
+    opt.level,
+    opt.method,
+    opt.windowBits,
+    opt.memLevel,
+    opt.strategy
+  );
+
+  if (status !== Z_OK) {
+    throw new Error(msg[status]);
+  }
+
+  if (opt.header) {
+    zlib_deflate.deflateSetHeader(this.strm, opt.header);
+  }
+
+  if (opt.dictionary) {
+    var dict;
+    // Convert data if needed
+    if (typeof opt.dictionary === 'string') {
+      // If we need to compress text, change encoding to utf8.
+      dict = strings.string2buf(opt.dictionary);
+    } else if (toString.call(opt.dictionary) === '[object ArrayBuffer]') {
+      dict = new Uint8Array(opt.dictionary);
+    } else {
+      dict = opt.dictionary;
+    }
+
+    status = zlib_deflate.deflateSetDictionary(this.strm, dict);
+
+    if (status !== Z_OK) {
+      throw new Error(msg[status]);
+    }
+
+    this._dict_set = true;
+  }
+}
+
+/**
+ * Deflate#push(data[, mode]) -> Boolean
+ * - data (Uint8Array|Array|ArrayBuffer|String): input data. Strings will be
+ *   converted to utf8 byte sequence.
+ * - mode (Number|Boolean): 0..6 for corresponding Z_NO_FLUSH..Z_TREE modes.
+ *   See constants. Skipped or `false` means Z_NO_FLUSH, `true` means Z_FINISH.
+ *
+ * Sends input data to deflate pipe, generating [[Deflate#onData]] calls with
+ * new compressed chunks. Returns `true` on success. The last data block must have
+ * mode Z_FINISH (or `true`). That will flush internal pending buffers and call
+ * [[Deflate#onEnd]]. For interim explicit flushes (without ending the stream) you
+ * can use mode Z_SYNC_FLUSH, keeping the compression context.
+ *
+ * On fail call [[Deflate#onEnd]] with error code and return false.
+ *
+ * We strongly recommend to use `Uint8Array` on input for best speed (output
+ * array format is detected automatically). Also, don't skip last param and always
+ * use the same type in your code (boolean or number). That will improve JS speed.
+ *
+ * For regular `Array`-s make sure all elements are [0..255].
+ *
+ * ##### Example
+ *
+ * ```javascript
+ * push(chunk, false); // push one of data chunks
+ * ...
+ * push(chunk, true);  // push last chunk
+ * ```
+ **/
+Deflate.prototype.push = function (data, mode) {
+  var strm = this.strm;
+  var chunkSize = this.options.chunkSize;
+  var status, _mode;
+
+  if (this.ended) { return false; }
+
+  _mode = (mode === ~~mode) ? mode : ((mode === true) ? Z_FINISH : Z_NO_FLUSH);
+
+  // Convert data if needed
+  if (typeof data === 'string') {
+    // If we need to compress text, change encoding to utf8.
+    strm.input = strings.string2buf(data);
+  } else if (toString.call(data) === '[object ArrayBuffer]') {
+    strm.input = new Uint8Array(data);
+  } else {
+    strm.input = data;
+  }
+
+  strm.next_in = 0;
+  strm.avail_in = strm.input.length;
+
+  do {
+    if (strm.avail_out === 0) {
+      strm.output = new utils.Buf8(chunkSize);
+      strm.next_out = 0;
+      strm.avail_out = chunkSize;
+    }
+    status = zlib_deflate.deflate(strm, _mode);    /* no bad return value */
+
+    if (status !== Z_STREAM_END && status !== Z_OK) {
+      this.onEnd(status);
+      this.ended = true;
+      return false;
+    }
+    if (strm.avail_out === 0 || (strm.avail_in === 0 && (_mode === Z_FINISH || _mode === Z_SYNC_FLUSH))) {
+      if (this.options.to === 'string') {
+        this.onData(strings.buf2binstring(utils.shrinkBuf(strm.output, strm.next_out)));
+      } else {
+        this.onData(utils.shrinkBuf(strm.output, strm.next_out));
+      }
+    }
+  } while ((strm.avail_in > 0 || strm.avail_out === 0) && status !== Z_STREAM_END);
+
+  // Finalize on the last chunk.
+  if (_mode === Z_FINISH) {
+    status = zlib_deflate.deflateEnd(this.strm);
+    this.onEnd(status);
+    this.ended = true;
+    return status === Z_OK;
+  }
+
+  // callback interim results if Z_SYNC_FLUSH.
+  if (_mode === Z_SYNC_FLUSH) {
+    this.onEnd(Z_OK);
+    strm.avail_out = 0;
+    return true;
+  }
+
+  return true;
+};
+
+
+/**
+ * Deflate#onData(chunk) -> Void
+ * - chunk (Uint8Array|Array|String): output data. Type of array depends
+ *   on js engine support. When string output requested, each chunk
+ *   will be string.
+ *
+ * By default, stores data blocks in `chunks[]` property and glue
+ * those in `onEnd`. Override this handler, if you need another behaviour.
+ **/
+Deflate.prototype.onData = function (chunk) {
+  this.chunks.push(chunk);
+};
+
+
+/**
+ * Deflate#onEnd(status) -> Void
+ * - status (Number): deflate status. 0 (Z_OK) on success,
+ *   other if not.
+ *
+ * Called once after you tell deflate that the input stream is
+ * complete (Z_FINISH) or should be flushed (Z_SYNC_FLUSH)
+ * or if an error happened. By default - join collected chunks,
+ * free memory and fill `results` / `err` properties.
+ **/
+Deflate.prototype.onEnd = function (status) {
+  // On success - join
+  if (status === Z_OK) {
+    if (this.options.to === 'string') {
+      this.result = this.chunks.join('');
+    } else {
+      this.result = utils.flattenChunks(this.chunks);
+    }
+  }
+  this.chunks = [];
+  this.err = status;
+  this.msg = this.strm.msg;
+};
+
+
+/**
+ * deflate(data[, options]) -> Uint8Array|Array|String
+ * - data (Uint8Array|Array|String): input data to compress.
+ * - options (Object): zlib deflate options.
+ *
+ * Compress `data` with deflate algorithm and `options`.
+ *
+ * Supported options are:
+ *
+ * - level
+ * - windowBits
+ * - memLevel
+ * - strategy
+ * - dictionary
+ *
+ * [http://zlib.net/manual.html#Advanced](http://zlib.net/manual.html#Advanced)
+ * for more information on these.
+ *
+ * Sugar (options):
+ *
+ * - `raw` (Boolean) - say that we work with raw stream, if you don't wish to specify
+ *   negative windowBits implicitly.
+ * - `to` (String) - if equal to 'string', then result will be "binary string"
+ *    (each char code [0..255])
+ *
+ * ##### Example:
+ *
+ * ```javascript
+ * var pako = require('pako')
+ *   , data = Uint8Array([1,2,3,4,5,6,7,8,9]);
+ *
+ * console.log(pako.deflate(data));
+ * ```
+ **/
+function deflate(input, options) {
+  var deflator = new Deflate(options);
+
+  deflator.push(input, true);
+
+  // That will never happens, if you don't cheat with options :)
+  if (deflator.err) { throw deflator.msg || msg[deflator.err]; }
+
+  return deflator.result;
+}
+
+
+/**
+ * deflateRaw(data[, options]) -> Uint8Array|Array|String
+ * - data (Uint8Array|Array|String): input data to compress.
+ * - options (Object): zlib deflate options.
+ *
+ * The same as [[deflate]], but creates raw data, without wrapper
+ * (header and adler32 crc).
+ **/
+function deflateRaw(input, options) {
+  options = options || {};
+  options.raw = true;
+  return deflate(input, options);
+}
+
+
+/**
+ * gzip(data[, options]) -> Uint8Array|Array|String
+ * - data (Uint8Array|Array|String): input data to compress.
+ * - options (Object): zlib deflate options.
+ *
+ * The same as [[deflate]], but create gzip wrapper instead of
+ * deflate one.
+ **/
+function gzip(input, options) {
+  options = options || {};
+  options.gzip = true;
+  return deflate(input, options);
+}
+
+
+exports.Deflate = Deflate;
+exports.deflate = deflate;
+exports.deflateRaw = deflateRaw;
+exports.gzip = gzip;
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+var utils   = __webpack_require__(0);
+var trees   = __webpack_require__(10);
+var adler32 = __webpack_require__(2);
+var crc32   = __webpack_require__(3);
+var msg     = __webpack_require__(1);
+
+/* Public constants ==========================================================*/
+/* ===========================================================================*/
+
+
+/* Allowed flush values; see deflate() and inflate() below for details */
+var Z_NO_FLUSH      = 0;
+var Z_PARTIAL_FLUSH = 1;
+//var Z_SYNC_FLUSH    = 2;
+var Z_FULL_FLUSH    = 3;
+var Z_FINISH        = 4;
+var Z_BLOCK         = 5;
+//var Z_TREES         = 6;
+
+
+/* Return codes for the compression/decompression functions. Negative values
+ * are errors, positive values are used for special but normal events.
+ */
+var Z_OK            = 0;
+var Z_STREAM_END    = 1;
+//var Z_NEED_DICT     = 2;
+//var Z_ERRNO         = -1;
+var Z_STREAM_ERROR  = -2;
+var Z_DATA_ERROR    = -3;
+//var Z_MEM_ERROR     = -4;
+var Z_BUF_ERROR     = -5;
+//var Z_VERSION_ERROR = -6;
+
+
+/* compression levels */
+//var Z_NO_COMPRESSION      = 0;
+//var Z_BEST_SPEED          = 1;
+//var Z_BEST_COMPRESSION    = 9;
+var Z_DEFAULT_COMPRESSION = -1;
+
+
+var Z_FILTERED            = 1;
+var Z_HUFFMAN_ONLY        = 2;
+var Z_RLE                 = 3;
+var Z_FIXED               = 4;
+var Z_DEFAULT_STRATEGY    = 0;
+
+/* Possible values of the data_type field (though see inflate()) */
+//var Z_BINARY              = 0;
+//var Z_TEXT                = 1;
+//var Z_ASCII               = 1; // = Z_TEXT
+var Z_UNKNOWN             = 2;
+
+
+/* The deflate compression method */
+var Z_DEFLATED  = 8;
+
+/*============================================================================*/
+
+
+var MAX_MEM_LEVEL = 9;
+/* Maximum value for memLevel in deflateInit2 */
+var MAX_WBITS = 15;
+/* 32K LZ77 window */
+var DEF_MEM_LEVEL = 8;
+
+
+var LENGTH_CODES  = 29;
+/* number of length codes, not counting the special END_BLOCK code */
+var LITERALS      = 256;
+/* number of literal bytes 0..255 */
+var L_CODES       = LITERALS + 1 + LENGTH_CODES;
+/* number of Literal or Length codes, including the END_BLOCK code */
+var D_CODES       = 30;
+/* number of distance codes */
+var BL_CODES      = 19;
+/* number of codes used to transfer the bit lengths */
+var HEAP_SIZE     = 2 * L_CODES + 1;
+/* maximum heap size */
+var MAX_BITS  = 15;
+/* All codes must not exceed MAX_BITS bits */
+
+var MIN_MATCH = 3;
+var MAX_MATCH = 258;
+var MIN_LOOKAHEAD = (MAX_MATCH + MIN_MATCH + 1);
+
+var PRESET_DICT = 0x20;
+
+var INIT_STATE = 42;
+var EXTRA_STATE = 69;
+var NAME_STATE = 73;
+var COMMENT_STATE = 91;
+var HCRC_STATE = 103;
+var BUSY_STATE = 113;
+var FINISH_STATE = 666;
+
+var BS_NEED_MORE      = 1; /* block not completed, need more input or more output */
+var BS_BLOCK_DONE     = 2; /* block flush performed */
+var BS_FINISH_STARTED = 3; /* finish started, need only more output at next deflate */
+var BS_FINISH_DONE    = 4; /* finish done, accept no more input or output */
+
+var OS_CODE = 0x03; // Unix :) . Don't detect, use this default.
+
+function err(strm, errorCode) {
+  strm.msg = msg[errorCode];
+  return errorCode;
+}
+
+function rank(f) {
+  return ((f) << 1) - ((f) > 4 ? 9 : 0);
+}
+
+function zero(buf) { var len = buf.length; while (--len >= 0) { buf[len] = 0; } }
+
+
+/* =========================================================================
+ * Flush as much pending output as possible. All deflate() output goes
+ * through this function so some applications may wish to modify it
+ * to avoid allocating a large strm->output buffer and copying into it.
+ * (See also read_buf()).
+ */
+function flush_pending(strm) {
+  var s = strm.state;
+
+  //_tr_flush_bits(s);
+  var len = s.pending;
+  if (len > strm.avail_out) {
+    len = strm.avail_out;
+  }
+  if (len === 0) { return; }
+
+  utils.arraySet(strm.output, s.pending_buf, s.pending_out, len, strm.next_out);
+  strm.next_out += len;
+  s.pending_out += len;
+  strm.total_out += len;
+  strm.avail_out -= len;
+  s.pending -= len;
+  if (s.pending === 0) {
+    s.pending_out = 0;
+  }
+}
+
+
+function flush_block_only(s, last) {
+  trees._tr_flush_block(s, (s.block_start >= 0 ? s.block_start : -1), s.strstart - s.block_start, last);
+  s.block_start = s.strstart;
+  flush_pending(s.strm);
+}
+
+
+function put_byte(s, b) {
+  s.pending_buf[s.pending++] = b;
+}
+
+
+/* =========================================================================
+ * Put a short in the pending buffer. The 16-bit value is put in MSB order.
+ * IN assertion: the stream state is correct and there is enough room in
+ * pending_buf.
+ */
+function putShortMSB(s, b) {
+//  put_byte(s, (Byte)(b >> 8));
+//  put_byte(s, (Byte)(b & 0xff));
+  s.pending_buf[s.pending++] = (b >>> 8) & 0xff;
+  s.pending_buf[s.pending++] = b & 0xff;
+}
+
+
+/* ===========================================================================
+ * Read a new buffer from the current input stream, update the adler32
+ * and total number of bytes read.  All deflate() input goes through
+ * this function so some applications may wish to modify it to avoid
+ * allocating a large strm->input buffer and copying from it.
+ * (See also flush_pending()).
+ */
+function read_buf(strm, buf, start, size) {
+  var len = strm.avail_in;
+
+  if (len > size) { len = size; }
+  if (len === 0) { return 0; }
+
+  strm.avail_in -= len;
+
+  // zmemcpy(buf, strm->next_in, len);
+  utils.arraySet(buf, strm.input, strm.next_in, len, start);
+  if (strm.state.wrap === 1) {
+    strm.adler = adler32(strm.adler, buf, len, start);
+  }
+
+  else if (strm.state.wrap === 2) {
+    strm.adler = crc32(strm.adler, buf, len, start);
+  }
+
+  strm.next_in += len;
+  strm.total_in += len;
+
+  return len;
+}
+
+
+/* ===========================================================================
+ * Set match_start to the longest match starting at the given string and
+ * return its length. Matches shorter or equal to prev_length are discarded,
+ * in which case the result is equal to prev_length and match_start is
+ * garbage.
+ * IN assertions: cur_match is the head of the hash chain for the current
+ *   string (strstart) and its distance is <= MAX_DIST, and prev_length >= 1
+ * OUT assertion: the match length is not greater than s->lookahead.
+ */
+function longest_match(s, cur_match) {
+  var chain_length = s.max_chain_length;      /* max hash chain length */
+  var scan = s.strstart; /* current string */
+  var match;                       /* matched string */
+  var len;                           /* length of current match */
+  var best_len = s.prev_length;              /* best match length so far */
+  var nice_match = s.nice_match;             /* stop if match long enough */
+  var limit = (s.strstart > (s.w_size - MIN_LOOKAHEAD)) ?
+      s.strstart - (s.w_size - MIN_LOOKAHEAD) : 0/*NIL*/;
+
+  var _win = s.window; // shortcut
+
+  var wmask = s.w_mask;
+  var prev  = s.prev;
+
+  /* Stop when cur_match becomes <= limit. To simplify the code,
+   * we prevent matches with the string of window index 0.
+   */
+
+  var strend = s.strstart + MAX_MATCH;
+  var scan_end1  = _win[scan + best_len - 1];
+  var scan_end   = _win[scan + best_len];
+
+  /* The code is optimized for HASH_BITS >= 8 and MAX_MATCH-2 multiple of 16.
+   * It is easy to get rid of this optimization if necessary.
+   */
+  // Assert(s->hash_bits >= 8 && MAX_MATCH == 258, "Code too clever");
+
+  /* Do not waste too much time if we already have a good match: */
+  if (s.prev_length >= s.good_match) {
+    chain_length >>= 2;
+  }
+  /* Do not look for matches beyond the end of the input. This is necessary
+   * to make deflate deterministic.
+   */
+  if (nice_match > s.lookahead) { nice_match = s.lookahead; }
+
+  // Assert((ulg)s->strstart <= s->window_size-MIN_LOOKAHEAD, "need lookahead");
+
+  do {
+    // Assert(cur_match < s->strstart, "no future");
+    match = cur_match;
+
+    /* Skip to next match if the match length cannot increase
+     * or if the match length is less than 2.  Note that the checks below
+     * for insufficient lookahead only occur occasionally for performance
+     * reasons.  Therefore uninitialized memory will be accessed, and
+     * conditional jumps will be made that depend on those values.
+     * However the length of the match is limited to the lookahead, so
+     * the output of deflate is not affected by the uninitialized values.
+     */
+
+    if (_win[match + best_len]     !== scan_end  ||
+        _win[match + best_len - 1] !== scan_end1 ||
+        _win[match]                !== _win[scan] ||
+        _win[++match]              !== _win[scan + 1]) {
+      continue;
+    }
+
+    /* The check at best_len-1 can be removed because it will be made
+     * again later. (This heuristic is not always a win.)
+     * It is not necessary to compare scan[2] and match[2] since they
+     * are always equal when the other bytes match, given that
+     * the hash keys are equal and that HASH_BITS >= 8.
+     */
+    scan += 2;
+    match++;
+    // Assert(*scan == *match, "match[2]?");
+
+    /* We check for insufficient lookahead only every 8th comparison;
+     * the 256th check will be made at strstart+258.
+     */
+    do {
+      /*jshint noempty:false*/
+    } while (_win[++scan] === _win[++match] && _win[++scan] === _win[++match] &&
+             _win[++scan] === _win[++match] && _win[++scan] === _win[++match] &&
+             _win[++scan] === _win[++match] && _win[++scan] === _win[++match] &&
+             _win[++scan] === _win[++match] && _win[++scan] === _win[++match] &&
+             scan < strend);
+
+    // Assert(scan <= s->window+(unsigned)(s->window_size-1), "wild scan");
+
+    len = MAX_MATCH - (strend - scan);
+    scan = strend - MAX_MATCH;
+
+    if (len > best_len) {
+      s.match_start = cur_match;
+      best_len = len;
+      if (len >= nice_match) {
+        break;
+      }
+      scan_end1  = _win[scan + best_len - 1];
+      scan_end   = _win[scan + best_len];
+    }
+  } while ((cur_match = prev[cur_match & wmask]) > limit && --chain_length !== 0);
+
+  if (best_len <= s.lookahead) {
+    return best_len;
+  }
+  return s.lookahead;
+}
+
+
+/* ===========================================================================
+ * Fill the window when the lookahead becomes insufficient.
+ * Updates strstart and lookahead.
+ *
+ * IN assertion: lookahead < MIN_LOOKAHEAD
+ * OUT assertions: strstart <= window_size-MIN_LOOKAHEAD
+ *    At least one byte has been read, or avail_in == 0; reads are
+ *    performed for at least two bytes (required for the zip translate_eol
+ *    option -- not supported here).
+ */
+function fill_window(s) {
+  var _w_size = s.w_size;
+  var p, n, m, more, str;
+
+  //Assert(s->lookahead < MIN_LOOKAHEAD, "already enough lookahead");
+
+  do {
+    more = s.window_size - s.lookahead - s.strstart;
+
+    // JS ints have 32 bit, block below not needed
+    /* Deal with !@#$% 64K limit: */
+    //if (sizeof(int) <= 2) {
+    //    if (more == 0 && s->strstart == 0 && s->lookahead == 0) {
+    //        more = wsize;
+    //
+    //  } else if (more == (unsigned)(-1)) {
+    //        /* Very unlikely, but possible on 16 bit machine if
+    //         * strstart == 0 && lookahead == 1 (input done a byte at time)
+    //         */
+    //        more--;
+    //    }
+    //}
+
+
+    /* If the window is almost full and there is insufficient lookahead,
+     * move the upper half to the lower one to make room in the upper half.
+     */
+    if (s.strstart >= _w_size + (_w_size - MIN_LOOKAHEAD)) {
+
+      utils.arraySet(s.window, s.window, _w_size, _w_size, 0);
+      s.match_start -= _w_size;
+      s.strstart -= _w_size;
+      /* we now have strstart >= MAX_DIST */
+      s.block_start -= _w_size;
+
+      /* Slide the hash table (could be avoided with 32 bit values
+       at the expense of memory usage). We slide even when level == 0
+       to keep the hash table consistent if we switch back to level > 0
+       later. (Using level 0 permanently is not an optimal usage of
+       zlib, so we don't care about this pathological case.)
+       */
+
+      n = s.hash_size;
+      p = n;
+      do {
+        m = s.head[--p];
+        s.head[p] = (m >= _w_size ? m - _w_size : 0);
+      } while (--n);
+
+      n = _w_size;
+      p = n;
+      do {
+        m = s.prev[--p];
+        s.prev[p] = (m >= _w_size ? m - _w_size : 0);
+        /* If n is not on any hash chain, prev[n] is garbage but
+         * its value will never be used.
+         */
+      } while (--n);
+
+      more += _w_size;
+    }
+    if (s.strm.avail_in === 0) {
+      break;
+    }
+
+    /* If there was no sliding:
+     *    strstart <= WSIZE+MAX_DIST-1 && lookahead <= MIN_LOOKAHEAD - 1 &&
+     *    more == window_size - lookahead - strstart
+     * => more >= window_size - (MIN_LOOKAHEAD-1 + WSIZE + MAX_DIST-1)
+     * => more >= window_size - 2*WSIZE + 2
+     * In the BIG_MEM or MMAP case (not yet supported),
+     *   window_size == input_size + MIN_LOOKAHEAD  &&
+     *   strstart + s->lookahead <= input_size => more >= MIN_LOOKAHEAD.
+     * Otherwise, window_size == 2*WSIZE so more >= 2.
+     * If there was sliding, more >= WSIZE. So in all cases, more >= 2.
+     */
+    //Assert(more >= 2, "more < 2");
+    n = read_buf(s.strm, s.window, s.strstart + s.lookahead, more);
+    s.lookahead += n;
+
+    /* Initialize the hash value now that we have some input: */
+    if (s.lookahead + s.insert >= MIN_MATCH) {
+      str = s.strstart - s.insert;
+      s.ins_h = s.window[str];
+
+      /* UPDATE_HASH(s, s->ins_h, s->window[str + 1]); */
+      s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[str + 1]) & s.hash_mask;
+//#if MIN_MATCH != 3
+//        Call update_hash() MIN_MATCH-3 more times
+//#endif
+      while (s.insert) {
+        /* UPDATE_HASH(s, s->ins_h, s->window[str + MIN_MATCH-1]); */
+        s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[str + MIN_MATCH - 1]) & s.hash_mask;
+
+        s.prev[str & s.w_mask] = s.head[s.ins_h];
+        s.head[s.ins_h] = str;
+        str++;
+        s.insert--;
+        if (s.lookahead + s.insert < MIN_MATCH) {
+          break;
+        }
+      }
+    }
+    /* If the whole input has less than MIN_MATCH bytes, ins_h is garbage,
+     * but this is not important since only literal bytes will be emitted.
+     */
+
+  } while (s.lookahead < MIN_LOOKAHEAD && s.strm.avail_in !== 0);
+
+  /* If the WIN_INIT bytes after the end of the current data have never been
+   * written, then zero those bytes in order to avoid memory check reports of
+   * the use of uninitialized (or uninitialised as Julian writes) bytes by
+   * the longest match routines.  Update the high water mark for the next
+   * time through here.  WIN_INIT is set to MAX_MATCH since the longest match
+   * routines allow scanning to strstart + MAX_MATCH, ignoring lookahead.
+   */
+//  if (s.high_water < s.window_size) {
+//    var curr = s.strstart + s.lookahead;
+//    var init = 0;
+//
+//    if (s.high_water < curr) {
+//      /* Previous high water mark below current data -- zero WIN_INIT
+//       * bytes or up to end of window, whichever is less.
+//       */
+//      init = s.window_size - curr;
+//      if (init > WIN_INIT)
+//        init = WIN_INIT;
+//      zmemzero(s->window + curr, (unsigned)init);
+//      s->high_water = curr + init;
+//    }
+//    else if (s->high_water < (ulg)curr + WIN_INIT) {
+//      /* High water mark at or above current data, but below current data
+//       * plus WIN_INIT -- zero out to current data plus WIN_INIT, or up
+//       * to end of window, whichever is less.
+//       */
+//      init = (ulg)curr + WIN_INIT - s->high_water;
+//      if (init > s->window_size - s->high_water)
+//        init = s->window_size - s->high_water;
+//      zmemzero(s->window + s->high_water, (unsigned)init);
+//      s->high_water += init;
+//    }
+//  }
+//
+//  Assert((ulg)s->strstart <= s->window_size - MIN_LOOKAHEAD,
+//    "not enough room for search");
+}
+
+/* ===========================================================================
+ * Copy without compression as much as possible from the input stream, return
+ * the current block state.
+ * This function does not insert new strings in the dictionary since
+ * uncompressible data is probably not useful. This function is used
+ * only for the level=0 compression option.
+ * NOTE: this function should be optimized to avoid extra copying from
+ * window to pending_buf.
+ */
+function deflate_stored(s, flush) {
+  /* Stored blocks are limited to 0xffff bytes, pending_buf is limited
+   * to pending_buf_size, and each stored block has a 5 byte header:
+   */
+  var max_block_size = 0xffff;
+
+  if (max_block_size > s.pending_buf_size - 5) {
+    max_block_size = s.pending_buf_size - 5;
+  }
+
+  /* Copy as much as possible from input to output: */
+  for (;;) {
+    /* Fill the window as much as possible: */
+    if (s.lookahead <= 1) {
+
+      //Assert(s->strstart < s->w_size+MAX_DIST(s) ||
+      //  s->block_start >= (long)s->w_size, "slide too late");
+//      if (!(s.strstart < s.w_size + (s.w_size - MIN_LOOKAHEAD) ||
+//        s.block_start >= s.w_size)) {
+//        throw  new Error("slide too late");
+//      }
+
+      fill_window(s);
+      if (s.lookahead === 0 && flush === Z_NO_FLUSH) {
+        return BS_NEED_MORE;
+      }
+
+      if (s.lookahead === 0) {
+        break;
+      }
+      /* flush the current block */
+    }
+    //Assert(s->block_start >= 0L, "block gone");
+//    if (s.block_start < 0) throw new Error("block gone");
+
+    s.strstart += s.lookahead;
+    s.lookahead = 0;
+
+    /* Emit a stored block if pending_buf will be full: */
+    var max_start = s.block_start + max_block_size;
+
+    if (s.strstart === 0 || s.strstart >= max_start) {
+      /* strstart == 0 is possible when wraparound on 16-bit machine */
+      s.lookahead = s.strstart - max_start;
+      s.strstart = max_start;
+      /*** FLUSH_BLOCK(s, 0); ***/
+      flush_block_only(s, false);
+      if (s.strm.avail_out === 0) {
+        return BS_NEED_MORE;
+      }
+      /***/
+
+
+    }
+    /* Flush if we may have to slide, otherwise block_start may become
+     * negative and the data will be gone:
+     */
+    if (s.strstart - s.block_start >= (s.w_size - MIN_LOOKAHEAD)) {
+      /*** FLUSH_BLOCK(s, 0); ***/
+      flush_block_only(s, false);
+      if (s.strm.avail_out === 0) {
+        return BS_NEED_MORE;
+      }
+      /***/
+    }
+  }
+
+  s.insert = 0;
+
+  if (flush === Z_FINISH) {
+    /*** FLUSH_BLOCK(s, 1); ***/
+    flush_block_only(s, true);
+    if (s.strm.avail_out === 0) {
+      return BS_FINISH_STARTED;
+    }
+    /***/
+    return BS_FINISH_DONE;
+  }
+
+  if (s.strstart > s.block_start) {
+    /*** FLUSH_BLOCK(s, 0); ***/
+    flush_block_only(s, false);
+    if (s.strm.avail_out === 0) {
+      return BS_NEED_MORE;
+    }
+    /***/
+  }
+
+  return BS_NEED_MORE;
+}
+
+/* ===========================================================================
+ * Compress as much as possible from the input stream, return the current
+ * block state.
+ * This function does not perform lazy evaluation of matches and inserts
+ * new strings in the dictionary only for unmatched strings or for short
+ * matches. It is used only for the fast compression options.
+ */
+function deflate_fast(s, flush) {
+  var hash_head;        /* head of the hash chain */
+  var bflush;           /* set if current block must be flushed */
+
+  for (;;) {
+    /* Make sure that we always have enough lookahead, except
+     * at the end of the input file. We need MAX_MATCH bytes
+     * for the next match, plus MIN_MATCH bytes to insert the
+     * string following the next match.
+     */
+    if (s.lookahead < MIN_LOOKAHEAD) {
+      fill_window(s);
+      if (s.lookahead < MIN_LOOKAHEAD && flush === Z_NO_FLUSH) {
+        return BS_NEED_MORE;
+      }
+      if (s.lookahead === 0) {
+        break; /* flush the current block */
+      }
+    }
+
+    /* Insert the string window[strstart .. strstart+2] in the
+     * dictionary, and set hash_head to the head of the hash chain:
+     */
+    hash_head = 0/*NIL*/;
+    if (s.lookahead >= MIN_MATCH) {
+      /*** INSERT_STRING(s, s.strstart, hash_head); ***/
+      s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH - 1]) & s.hash_mask;
+      hash_head = s.prev[s.strstart & s.w_mask] = s.head[s.ins_h];
+      s.head[s.ins_h] = s.strstart;
+      /***/
+    }
+
+    /* Find the longest match, discarding those <= prev_length.
+     * At this point we have always match_length < MIN_MATCH
+     */
+    if (hash_head !== 0/*NIL*/ && ((s.strstart - hash_head) <= (s.w_size - MIN_LOOKAHEAD))) {
+      /* To simplify the code, we prevent matches with the string
+       * of window index 0 (in particular we have to avoid a match
+       * of the string with itself at the start of the input file).
+       */
+      s.match_length = longest_match(s, hash_head);
+      /* longest_match() sets match_start */
+    }
+    if (s.match_length >= MIN_MATCH) {
+      // check_match(s, s.strstart, s.match_start, s.match_length); // for debug only
+
+      /*** _tr_tally_dist(s, s.strstart - s.match_start,
+                     s.match_length - MIN_MATCH, bflush); ***/
+      bflush = trees._tr_tally(s, s.strstart - s.match_start, s.match_length - MIN_MATCH);
+
+      s.lookahead -= s.match_length;
+
+      /* Insert new strings in the hash table only if the match length
+       * is not too large. This saves time but degrades compression.
+       */
+      if (s.match_length <= s.max_lazy_match/*max_insert_length*/ && s.lookahead >= MIN_MATCH) {
+        s.match_length--; /* string at strstart already in table */
+        do {
+          s.strstart++;
+          /*** INSERT_STRING(s, s.strstart, hash_head); ***/
+          s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH - 1]) & s.hash_mask;
+          hash_head = s.prev[s.strstart & s.w_mask] = s.head[s.ins_h];
+          s.head[s.ins_h] = s.strstart;
+          /***/
+          /* strstart never exceeds WSIZE-MAX_MATCH, so there are
+           * always MIN_MATCH bytes ahead.
+           */
+        } while (--s.match_length !== 0);
+        s.strstart++;
+      } else
+      {
+        s.strstart += s.match_length;
+        s.match_length = 0;
+        s.ins_h = s.window[s.strstart];
+        /* UPDATE_HASH(s, s.ins_h, s.window[s.strstart+1]); */
+        s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + 1]) & s.hash_mask;
+
+//#if MIN_MATCH != 3
+//                Call UPDATE_HASH() MIN_MATCH-3 more times
+//#endif
+        /* If lookahead < MIN_MATCH, ins_h is garbage, but it does not
+         * matter since it will be recomputed at next deflate call.
+         */
+      }
+    } else {
+      /* No match, output a literal byte */
+      //Tracevv((stderr,"%c", s.window[s.strstart]));
+      /*** _tr_tally_lit(s, s.window[s.strstart], bflush); ***/
+      bflush = trees._tr_tally(s, 0, s.window[s.strstart]);
+
+      s.lookahead--;
+      s.strstart++;
+    }
+    if (bflush) {
+      /*** FLUSH_BLOCK(s, 0); ***/
+      flush_block_only(s, false);
+      if (s.strm.avail_out === 0) {
+        return BS_NEED_MORE;
+      }
+      /***/
+    }
+  }
+  s.insert = ((s.strstart < (MIN_MATCH - 1)) ? s.strstart : MIN_MATCH - 1);
+  if (flush === Z_FINISH) {
+    /*** FLUSH_BLOCK(s, 1); ***/
+    flush_block_only(s, true);
+    if (s.strm.avail_out === 0) {
+      return BS_FINISH_STARTED;
+    }
+    /***/
+    return BS_FINISH_DONE;
+  }
+  if (s.last_lit) {
+    /*** FLUSH_BLOCK(s, 0); ***/
+    flush_block_only(s, false);
+    if (s.strm.avail_out === 0) {
+      return BS_NEED_MORE;
+    }
+    /***/
+  }
+  return BS_BLOCK_DONE;
+}
+
+/* ===========================================================================
+ * Same as above, but achieves better compression. We use a lazy
+ * evaluation for matches: a match is finally adopted only if there is
+ * no better match at the next window position.
+ */
+function deflate_slow(s, flush) {
+  var hash_head;          /* head of hash chain */
+  var bflush;              /* set if current block must be flushed */
+
+  var max_insert;
+
+  /* Process the input block. */
+  for (;;) {
+    /* Make sure that we always have enough lookahead, except
+     * at the end of the input file. We need MAX_MATCH bytes
+     * for the next match, plus MIN_MATCH bytes to insert the
+     * string following the next match.
+     */
+    if (s.lookahead < MIN_LOOKAHEAD) {
+      fill_window(s);
+      if (s.lookahead < MIN_LOOKAHEAD && flush === Z_NO_FLUSH) {
+        return BS_NEED_MORE;
+      }
+      if (s.lookahead === 0) { break; } /* flush the current block */
+    }
+
+    /* Insert the string window[strstart .. strstart+2] in the
+     * dictionary, and set hash_head to the head of the hash chain:
+     */
+    hash_head = 0/*NIL*/;
+    if (s.lookahead >= MIN_MATCH) {
+      /*** INSERT_STRING(s, s.strstart, hash_head); ***/
+      s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH - 1]) & s.hash_mask;
+      hash_head = s.prev[s.strstart & s.w_mask] = s.head[s.ins_h];
+      s.head[s.ins_h] = s.strstart;
+      /***/
+    }
+
+    /* Find the longest match, discarding those <= prev_length.
+     */
+    s.prev_length = s.match_length;
+    s.prev_match = s.match_start;
+    s.match_length = MIN_MATCH - 1;
+
+    if (hash_head !== 0/*NIL*/ && s.prev_length < s.max_lazy_match &&
+        s.strstart - hash_head <= (s.w_size - MIN_LOOKAHEAD)/*MAX_DIST(s)*/) {
+      /* To simplify the code, we prevent matches with the string
+       * of window index 0 (in particular we have to avoid a match
+       * of the string with itself at the start of the input file).
+       */
+      s.match_length = longest_match(s, hash_head);
+      /* longest_match() sets match_start */
+
+      if (s.match_length <= 5 &&
+         (s.strategy === Z_FILTERED || (s.match_length === MIN_MATCH && s.strstart - s.match_start > 4096/*TOO_FAR*/))) {
+
+        /* If prev_match is also MIN_MATCH, match_start is garbage
+         * but we will ignore the current match anyway.
+         */
+        s.match_length = MIN_MATCH - 1;
+      }
+    }
+    /* If there was a match at the previous step and the current
+     * match is not better, output the previous match:
+     */
+    if (s.prev_length >= MIN_MATCH && s.match_length <= s.prev_length) {
+      max_insert = s.strstart + s.lookahead - MIN_MATCH;
+      /* Do not insert strings in hash table beyond this. */
+
+      //check_match(s, s.strstart-1, s.prev_match, s.prev_length);
+
+      /***_tr_tally_dist(s, s.strstart - 1 - s.prev_match,
+                     s.prev_length - MIN_MATCH, bflush);***/
+      bflush = trees._tr_tally(s, s.strstart - 1 - s.prev_match, s.prev_length - MIN_MATCH);
+      /* Insert in hash table all strings up to the end of the match.
+       * strstart-1 and strstart are already inserted. If there is not
+       * enough lookahead, the last two strings are not inserted in
+       * the hash table.
+       */
+      s.lookahead -= s.prev_length - 1;
+      s.prev_length -= 2;
+      do {
+        if (++s.strstart <= max_insert) {
+          /*** INSERT_STRING(s, s.strstart, hash_head); ***/
+          s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[s.strstart + MIN_MATCH - 1]) & s.hash_mask;
+          hash_head = s.prev[s.strstart & s.w_mask] = s.head[s.ins_h];
+          s.head[s.ins_h] = s.strstart;
+          /***/
+        }
+      } while (--s.prev_length !== 0);
+      s.match_available = 0;
+      s.match_length = MIN_MATCH - 1;
+      s.strstart++;
+
+      if (bflush) {
+        /*** FLUSH_BLOCK(s, 0); ***/
+        flush_block_only(s, false);
+        if (s.strm.avail_out === 0) {
+          return BS_NEED_MORE;
+        }
+        /***/
+      }
+
+    } else if (s.match_available) {
+      /* If there was no match at the previous position, output a
+       * single literal. If there was a match but the current match
+       * is longer, truncate the previous match to a single literal.
+       */
+      //Tracevv((stderr,"%c", s->window[s->strstart-1]));
+      /*** _tr_tally_lit(s, s.window[s.strstart-1], bflush); ***/
+      bflush = trees._tr_tally(s, 0, s.window[s.strstart - 1]);
+
+      if (bflush) {
+        /*** FLUSH_BLOCK_ONLY(s, 0) ***/
+        flush_block_only(s, false);
+        /***/
+      }
+      s.strstart++;
+      s.lookahead--;
+      if (s.strm.avail_out === 0) {
+        return BS_NEED_MORE;
+      }
+    } else {
+      /* There is no previous match to compare with, wait for
+       * the next step to decide.
+       */
+      s.match_available = 1;
+      s.strstart++;
+      s.lookahead--;
+    }
+  }
+  //Assert (flush != Z_NO_FLUSH, "no flush?");
+  if (s.match_available) {
+    //Tracevv((stderr,"%c", s->window[s->strstart-1]));
+    /*** _tr_tally_lit(s, s.window[s.strstart-1], bflush); ***/
+    bflush = trees._tr_tally(s, 0, s.window[s.strstart - 1]);
+
+    s.match_available = 0;
+  }
+  s.insert = s.strstart < MIN_MATCH - 1 ? s.strstart : MIN_MATCH - 1;
+  if (flush === Z_FINISH) {
+    /*** FLUSH_BLOCK(s, 1); ***/
+    flush_block_only(s, true);
+    if (s.strm.avail_out === 0) {
+      return BS_FINISH_STARTED;
+    }
+    /***/
+    return BS_FINISH_DONE;
+  }
+  if (s.last_lit) {
+    /*** FLUSH_BLOCK(s, 0); ***/
+    flush_block_only(s, false);
+    if (s.strm.avail_out === 0) {
+      return BS_NEED_MORE;
+    }
+    /***/
+  }
+
+  return BS_BLOCK_DONE;
+}
+
+
+/* ===========================================================================
+ * For Z_RLE, simply look for runs of bytes, generate matches only of distance
+ * one.  Do not maintain a hash table.  (It will be regenerated if this run of
+ * deflate switches away from Z_RLE.)
+ */
+function deflate_rle(s, flush) {
+  var bflush;            /* set if current block must be flushed */
+  var prev;              /* byte at distance one to match */
+  var scan, strend;      /* scan goes up to strend for length of run */
+
+  var _win = s.window;
+
+  for (;;) {
+    /* Make sure that we always have enough lookahead, except
+     * at the end of the input file. We need MAX_MATCH bytes
+     * for the longest run, plus one for the unrolled loop.
+     */
+    if (s.lookahead <= MAX_MATCH) {
+      fill_window(s);
+      if (s.lookahead <= MAX_MATCH && flush === Z_NO_FLUSH) {
+        return BS_NEED_MORE;
+      }
+      if (s.lookahead === 0) { break; } /* flush the current block */
+    }
+
+    /* See how many times the previous byte repeats */
+    s.match_length = 0;
+    if (s.lookahead >= MIN_MATCH && s.strstart > 0) {
+      scan = s.strstart - 1;
+      prev = _win[scan];
+      if (prev === _win[++scan] && prev === _win[++scan] && prev === _win[++scan]) {
+        strend = s.strstart + MAX_MATCH;
+        do {
+          /*jshint noempty:false*/
+        } while (prev === _win[++scan] && prev === _win[++scan] &&
+                 prev === _win[++scan] && prev === _win[++scan] &&
+                 prev === _win[++scan] && prev === _win[++scan] &&
+                 prev === _win[++scan] && prev === _win[++scan] &&
+                 scan < strend);
+        s.match_length = MAX_MATCH - (strend - scan);
+        if (s.match_length > s.lookahead) {
+          s.match_length = s.lookahead;
+        }
+      }
+      //Assert(scan <= s->window+(uInt)(s->window_size-1), "wild scan");
+    }
+
+    /* Emit match if have run of MIN_MATCH or longer, else emit literal */
+    if (s.match_length >= MIN_MATCH) {
+      //check_match(s, s.strstart, s.strstart - 1, s.match_length);
+
+      /*** _tr_tally_dist(s, 1, s.match_length - MIN_MATCH, bflush); ***/
+      bflush = trees._tr_tally(s, 1, s.match_length - MIN_MATCH);
+
+      s.lookahead -= s.match_length;
+      s.strstart += s.match_length;
+      s.match_length = 0;
+    } else {
+      /* No match, output a literal byte */
+      //Tracevv((stderr,"%c", s->window[s->strstart]));
+      /*** _tr_tally_lit(s, s.window[s.strstart], bflush); ***/
+      bflush = trees._tr_tally(s, 0, s.window[s.strstart]);
+
+      s.lookahead--;
+      s.strstart++;
+    }
+    if (bflush) {
+      /*** FLUSH_BLOCK(s, 0); ***/
+      flush_block_only(s, false);
+      if (s.strm.avail_out === 0) {
+        return BS_NEED_MORE;
+      }
+      /***/
+    }
+  }
+  s.insert = 0;
+  if (flush === Z_FINISH) {
+    /*** FLUSH_BLOCK(s, 1); ***/
+    flush_block_only(s, true);
+    if (s.strm.avail_out === 0) {
+      return BS_FINISH_STARTED;
+    }
+    /***/
+    return BS_FINISH_DONE;
+  }
+  if (s.last_lit) {
+    /*** FLUSH_BLOCK(s, 0); ***/
+    flush_block_only(s, false);
+    if (s.strm.avail_out === 0) {
+      return BS_NEED_MORE;
+    }
+    /***/
+  }
+  return BS_BLOCK_DONE;
+}
+
+/* ===========================================================================
+ * For Z_HUFFMAN_ONLY, do not look for matches.  Do not maintain a hash table.
+ * (It will be regenerated if this run of deflate switches away from Huffman.)
+ */
+function deflate_huff(s, flush) {
+  var bflush;             /* set if current block must be flushed */
+
+  for (;;) {
+    /* Make sure that we have a literal to write. */
+    if (s.lookahead === 0) {
+      fill_window(s);
+      if (s.lookahead === 0) {
+        if (flush === Z_NO_FLUSH) {
+          return BS_NEED_MORE;
+        }
+        break;      /* flush the current block */
+      }
+    }
+
+    /* Output a literal byte */
+    s.match_length = 0;
+    //Tracevv((stderr,"%c", s->window[s->strstart]));
+    /*** _tr_tally_lit(s, s.window[s.strstart], bflush); ***/
+    bflush = trees._tr_tally(s, 0, s.window[s.strstart]);
+    s.lookahead--;
+    s.strstart++;
+    if (bflush) {
+      /*** FLUSH_BLOCK(s, 0); ***/
+      flush_block_only(s, false);
+      if (s.strm.avail_out === 0) {
+        return BS_NEED_MORE;
+      }
+      /***/
+    }
+  }
+  s.insert = 0;
+  if (flush === Z_FINISH) {
+    /*** FLUSH_BLOCK(s, 1); ***/
+    flush_block_only(s, true);
+    if (s.strm.avail_out === 0) {
+      return BS_FINISH_STARTED;
+    }
+    /***/
+    return BS_FINISH_DONE;
+  }
+  if (s.last_lit) {
+    /*** FLUSH_BLOCK(s, 0); ***/
+    flush_block_only(s, false);
+    if (s.strm.avail_out === 0) {
+      return BS_NEED_MORE;
+    }
+    /***/
+  }
+  return BS_BLOCK_DONE;
+}
+
+/* Values for max_lazy_match, good_match and max_chain_length, depending on
+ * the desired pack level (0..9). The values given below have been tuned to
+ * exclude worst case performance for pathological files. Better values may be
+ * found for specific files.
+ */
+function Config(good_length, max_lazy, nice_length, max_chain, func) {
+  this.good_length = good_length;
+  this.max_lazy = max_lazy;
+  this.nice_length = nice_length;
+  this.max_chain = max_chain;
+  this.func = func;
+}
+
+var configuration_table;
+
+configuration_table = [
+  /*      good lazy nice chain */
+  new Config(0, 0, 0, 0, deflate_stored),          /* 0 store only */
+  new Config(4, 4, 8, 4, deflate_fast),            /* 1 max speed, no lazy matches */
+  new Config(4, 5, 16, 8, deflate_fast),           /* 2 */
+  new Config(4, 6, 32, 32, deflate_fast),          /* 3 */
+
+  new Config(4, 4, 16, 16, deflate_slow),          /* 4 lazy matches */
+  new Config(8, 16, 32, 32, deflate_slow),         /* 5 */
+  new Config(8, 16, 128, 128, deflate_slow),       /* 6 */
+  new Config(8, 32, 128, 256, deflate_slow),       /* 7 */
+  new Config(32, 128, 258, 1024, deflate_slow),    /* 8 */
+  new Config(32, 258, 258, 4096, deflate_slow)     /* 9 max compression */
+];
+
+
+/* ===========================================================================
+ * Initialize the "longest match" routines for a new zlib stream
+ */
+function lm_init(s) {
+  s.window_size = 2 * s.w_size;
+
+  /*** CLEAR_HASH(s); ***/
+  zero(s.head); // Fill with NIL (= 0);
+
+  /* Set the default configuration parameters:
+   */
+  s.max_lazy_match = configuration_table[s.level].max_lazy;
+  s.good_match = configuration_table[s.level].good_length;
+  s.nice_match = configuration_table[s.level].nice_length;
+  s.max_chain_length = configuration_table[s.level].max_chain;
+
+  s.strstart = 0;
+  s.block_start = 0;
+  s.lookahead = 0;
+  s.insert = 0;
+  s.match_length = s.prev_length = MIN_MATCH - 1;
+  s.match_available = 0;
+  s.ins_h = 0;
+}
+
+
+function DeflateState() {
+  this.strm = null;            /* pointer back to this zlib stream */
+  this.status = 0;            /* as the name implies */
+  this.pending_buf = null;      /* output still pending */
+  this.pending_buf_size = 0;  /* size of pending_buf */
+  this.pending_out = 0;       /* next pending byte to output to the stream */
+  this.pending = 0;           /* nb of bytes in the pending buffer */
+  this.wrap = 0;              /* bit 0 true for zlib, bit 1 true for gzip */
+  this.gzhead = null;         /* gzip header information to write */
+  this.gzindex = 0;           /* where in extra, name, or comment */
+  this.method = Z_DEFLATED; /* can only be DEFLATED */
+  this.last_flush = -1;   /* value of flush param for previous deflate call */
+
+  this.w_size = 0;  /* LZ77 window size (32K by default) */
+  this.w_bits = 0;  /* log2(w_size)  (8..16) */
+  this.w_mask = 0;  /* w_size - 1 */
+
+  this.window = null;
+  /* Sliding window. Input bytes are read into the second half of the window,
+   * and move to the first half later to keep a dictionary of at least wSize
+   * bytes. With this organization, matches are limited to a distance of
+   * wSize-MAX_MATCH bytes, but this ensures that IO is always
+   * performed with a length multiple of the block size.
+   */
+
+  this.window_size = 0;
+  /* Actual size of window: 2*wSize, except when the user input buffer
+   * is directly used as sliding window.
+   */
+
+  this.prev = null;
+  /* Link to older string with same hash index. To limit the size of this
+   * array to 64K, this link is maintained only for the last 32K strings.
+   * An index in this array is thus a window index modulo 32K.
+   */
+
+  this.head = null;   /* Heads of the hash chains or NIL. */
+
+  this.ins_h = 0;       /* hash index of string to be inserted */
+  this.hash_size = 0;   /* number of elements in hash table */
+  this.hash_bits = 0;   /* log2(hash_size) */
+  this.hash_mask = 0;   /* hash_size-1 */
+
+  this.hash_shift = 0;
+  /* Number of bits by which ins_h must be shifted at each input
+   * step. It must be such that after MIN_MATCH steps, the oldest
+   * byte no longer takes part in the hash key, that is:
+   *   hash_shift * MIN_MATCH >= hash_bits
+   */
+
+  this.block_start = 0;
+  /* Window position at the beginning of the current output block. Gets
+   * negative when the window is moved backwards.
+   */
+
+  this.match_length = 0;      /* length of best match */
+  this.prev_match = 0;        /* previous match */
+  this.match_available = 0;   /* set if previous match exists */
+  this.strstart = 0;          /* start of string to insert */
+  this.match_start = 0;       /* start of matching string */
+  this.lookahead = 0;         /* number of valid bytes ahead in window */
+
+  this.prev_length = 0;
+  /* Length of the best match at previous step. Matches not greater than this
+   * are discarded. This is used in the lazy match evaluation.
+   */
+
+  this.max_chain_length = 0;
+  /* To speed up deflation, hash chains are never searched beyond this
+   * length.  A higher limit improves compression ratio but degrades the
+   * speed.
+   */
+
+  this.max_lazy_match = 0;
+  /* Attempt to find a better match only when the current match is strictly
+   * smaller than this value. This mechanism is used only for compression
+   * levels >= 4.
+   */
+  // That's alias to max_lazy_match, don't use directly
+  //this.max_insert_length = 0;
+  /* Insert new strings in the hash table only if the match length is not
+   * greater than this length. This saves time but degrades compression.
+   * max_insert_length is used only for compression levels <= 3.
+   */
+
+  this.level = 0;     /* compression level (1..9) */
+  this.strategy = 0;  /* favor or force Huffman coding*/
+
+  this.good_match = 0;
+  /* Use a faster search when the previous match is longer than this */
+
+  this.nice_match = 0; /* Stop searching when current match exceeds this */
+
+              /* used by trees.c: */
+
+  /* Didn't use ct_data typedef below to suppress compiler warning */
+
+  // struct ct_data_s dyn_ltree[HEAP_SIZE];   /* literal and length tree */
+  // struct ct_data_s dyn_dtree[2*D_CODES+1]; /* distance tree */
+  // struct ct_data_s bl_tree[2*BL_CODES+1];  /* Huffman tree for bit lengths */
+
+  // Use flat array of DOUBLE size, with interleaved fata,
+  // because JS does not support effective
+  this.dyn_ltree  = new utils.Buf16(HEAP_SIZE * 2);
+  this.dyn_dtree  = new utils.Buf16((2 * D_CODES + 1) * 2);
+  this.bl_tree    = new utils.Buf16((2 * BL_CODES + 1) * 2);
+  zero(this.dyn_ltree);
+  zero(this.dyn_dtree);
+  zero(this.bl_tree);
+
+  this.l_desc   = null;         /* desc. for literal tree */
+  this.d_desc   = null;         /* desc. for distance tree */
+  this.bl_desc  = null;         /* desc. for bit length tree */
+
+  //ush bl_count[MAX_BITS+1];
+  this.bl_count = new utils.Buf16(MAX_BITS + 1);
+  /* number of codes at each bit length for an optimal tree */
+
+  //int heap[2*L_CODES+1];      /* heap used to build the Huffman trees */
+  this.heap = new utils.Buf16(2 * L_CODES + 1);  /* heap used to build the Huffman trees */
+  zero(this.heap);
+
+  this.heap_len = 0;               /* number of elements in the heap */
+  this.heap_max = 0;               /* element of largest frequency */
+  /* The sons of heap[n] are heap[2*n] and heap[2*n+1]. heap[0] is not used.
+   * The same heap array is used to build all trees.
+   */
+
+  this.depth = new utils.Buf16(2 * L_CODES + 1); //uch depth[2*L_CODES+1];
+  zero(this.depth);
+  /* Depth of each subtree used as tie breaker for trees of equal frequency
+   */
+
+  this.l_buf = 0;          /* buffer index for literals or lengths */
+
+  this.lit_bufsize = 0;
+  /* Size of match buffer for literals/lengths.  There are 4 reasons for
+   * limiting lit_bufsize to 64K:
+   *   - frequencies can be kept in 16 bit counters
+   *   - if compression is not successful for the first block, all input
+   *     data is still in the window so we can still emit a stored block even
+   *     when input comes from standard input.  (This can also be done for
+   *     all blocks if lit_bufsize is not greater than 32K.)
+   *   - if compression is not successful for a file smaller than 64K, we can
+   *     even emit a stored file instead of a stored block (saving 5 bytes).
+   *     This is applicable only for zip (not gzip or zlib).
+   *   - creating new Huffman trees less frequently may not provide fast
+   *     adaptation to changes in the input data statistics. (Take for
+   *     example a binary file with poorly compressible code followed by
+   *     a highly compressible string table.) Smaller buffer sizes give
+   *     fast adaptation but have of course the overhead of transmitting
+   *     trees more frequently.
+   *   - I can't count above 4
+   */
+
+  this.last_lit = 0;      /* running index in l_buf */
+
+  this.d_buf = 0;
+  /* Buffer index for distances. To simplify the code, d_buf and l_buf have
+   * the same number of elements. To use different lengths, an extra flag
+   * array would be necessary.
+   */
+
+  this.opt_len = 0;       /* bit length of current block with optimal trees */
+  this.static_len = 0;    /* bit length of current block with static trees */
+  this.matches = 0;       /* number of string matches in current block */
+  this.insert = 0;        /* bytes at end of window left to insert */
+
+
+  this.bi_buf = 0;
+  /* Output buffer. bits are inserted starting at the bottom (least
+   * significant bits).
+   */
+  this.bi_valid = 0;
+  /* Number of valid bits in bi_buf.  All bits above the last valid bit
+   * are always zero.
+   */
+
+  // Used for window memory init. We safely ignore it for JS. That makes
+  // sense only for pointers and memory check tools.
+  //this.high_water = 0;
+  /* High water mark offset in window for initialized bytes -- bytes above
+   * this are set to zero in order to avoid memory check warnings when
+   * longest match routines access bytes past the input.  This is then
+   * updated to the new high water mark.
+   */
+}
+
+
+function deflateResetKeep(strm) {
+  var s;
+
+  if (!strm || !strm.state) {
+    return err(strm, Z_STREAM_ERROR);
+  }
+
+  strm.total_in = strm.total_out = 0;
+  strm.data_type = Z_UNKNOWN;
+
+  s = strm.state;
+  s.pending = 0;
+  s.pending_out = 0;
+
+  if (s.wrap < 0) {
+    s.wrap = -s.wrap;
+    /* was made negative by deflate(..., Z_FINISH); */
+  }
+  s.status = (s.wrap ? INIT_STATE : BUSY_STATE);
+  strm.adler = (s.wrap === 2) ?
+    0  // crc32(0, Z_NULL, 0)
+  :
+    1; // adler32(0, Z_NULL, 0)
+  s.last_flush = Z_NO_FLUSH;
+  trees._tr_init(s);
+  return Z_OK;
+}
+
+
+function deflateReset(strm) {
+  var ret = deflateResetKeep(strm);
+  if (ret === Z_OK) {
+    lm_init(strm.state);
+  }
+  return ret;
+}
+
+
+function deflateSetHeader(strm, head) {
+  if (!strm || !strm.state) { return Z_STREAM_ERROR; }
+  if (strm.state.wrap !== 2) { return Z_STREAM_ERROR; }
+  strm.state.gzhead = head;
+  return Z_OK;
+}
+
+
+function deflateInit2(strm, level, method, windowBits, memLevel, strategy) {
+  if (!strm) { // === Z_NULL
+    return Z_STREAM_ERROR;
+  }
+  var wrap = 1;
+
+  if (level === Z_DEFAULT_COMPRESSION) {
+    level = 6;
+  }
+
+  if (windowBits < 0) { /* suppress zlib wrapper */
+    wrap = 0;
+    windowBits = -windowBits;
+  }
+
+  else if (windowBits > 15) {
+    wrap = 2;           /* write gzip wrapper instead */
+    windowBits -= 16;
+  }
+
+
+  if (memLevel < 1 || memLevel > MAX_MEM_LEVEL || method !== Z_DEFLATED ||
+    windowBits < 8 || windowBits > 15 || level < 0 || level > 9 ||
+    strategy < 0 || strategy > Z_FIXED) {
+    return err(strm, Z_STREAM_ERROR);
+  }
+
+
+  if (windowBits === 8) {
+    windowBits = 9;
+  }
+  /* until 256-byte window bug fixed */
+
+  var s = new DeflateState();
+
+  strm.state = s;
+  s.strm = strm;
+
+  s.wrap = wrap;
+  s.gzhead = null;
+  s.w_bits = windowBits;
+  s.w_size = 1 << s.w_bits;
+  s.w_mask = s.w_size - 1;
+
+  s.hash_bits = memLevel + 7;
+  s.hash_size = 1 << s.hash_bits;
+  s.hash_mask = s.hash_size - 1;
+  s.hash_shift = ~~((s.hash_bits + MIN_MATCH - 1) / MIN_MATCH);
+
+  s.window = new utils.Buf8(s.w_size * 2);
+  s.head = new utils.Buf16(s.hash_size);
+  s.prev = new utils.Buf16(s.w_size);
+
+  // Don't need mem init magic for JS.
+  //s.high_water = 0;  /* nothing written to s->window yet */
+
+  s.lit_bufsize = 1 << (memLevel + 6); /* 16K elements by default */
+
+  s.pending_buf_size = s.lit_bufsize * 4;
+
+  //overlay = (ushf *) ZALLOC(strm, s->lit_bufsize, sizeof(ush)+2);
+  //s->pending_buf = (uchf *) overlay;
+  s.pending_buf = new utils.Buf8(s.pending_buf_size);
+
+  // It is offset from `s.pending_buf` (size is `s.lit_bufsize * 2`)
+  //s->d_buf = overlay + s->lit_bufsize/sizeof(ush);
+  s.d_buf = 1 * s.lit_bufsize;
+
+  //s->l_buf = s->pending_buf + (1+sizeof(ush))*s->lit_bufsize;
+  s.l_buf = (1 + 2) * s.lit_bufsize;
+
+  s.level = level;
+  s.strategy = strategy;
+  s.method = method;
+
+  return deflateReset(strm);
+}
+
+function deflateInit(strm, level) {
+  return deflateInit2(strm, level, Z_DEFLATED, MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY);
+}
+
+
+function deflate(strm, flush) {
+  var old_flush, s;
+  var beg, val; // for gzip header write only
+
+  if (!strm || !strm.state ||
+    flush > Z_BLOCK || flush < 0) {
+    return strm ? err(strm, Z_STREAM_ERROR) : Z_STREAM_ERROR;
+  }
+
+  s = strm.state;
+
+  if (!strm.output ||
+      (!strm.input && strm.avail_in !== 0) ||
+      (s.status === FINISH_STATE && flush !== Z_FINISH)) {
+    return err(strm, (strm.avail_out === 0) ? Z_BUF_ERROR : Z_STREAM_ERROR);
+  }
+
+  s.strm = strm; /* just in case */
+  old_flush = s.last_flush;
+  s.last_flush = flush;
+
+  /* Write the header */
+  if (s.status === INIT_STATE) {
+
+    if (s.wrap === 2) { // GZIP header
+      strm.adler = 0;  //crc32(0L, Z_NULL, 0);
+      put_byte(s, 31);
+      put_byte(s, 139);
+      put_byte(s, 8);
+      if (!s.gzhead) { // s->gzhead == Z_NULL
+        put_byte(s, 0);
+        put_byte(s, 0);
+        put_byte(s, 0);
+        put_byte(s, 0);
+        put_byte(s, 0);
+        put_byte(s, s.level === 9 ? 2 :
+                    (s.strategy >= Z_HUFFMAN_ONLY || s.level < 2 ?
+                     4 : 0));
+        put_byte(s, OS_CODE);
+        s.status = BUSY_STATE;
+      }
+      else {
+        put_byte(s, (s.gzhead.text ? 1 : 0) +
+                    (s.gzhead.hcrc ? 2 : 0) +
+                    (!s.gzhead.extra ? 0 : 4) +
+                    (!s.gzhead.name ? 0 : 8) +
+                    (!s.gzhead.comment ? 0 : 16)
+        );
+        put_byte(s, s.gzhead.time & 0xff);
+        put_byte(s, (s.gzhead.time >> 8) & 0xff);
+        put_byte(s, (s.gzhead.time >> 16) & 0xff);
+        put_byte(s, (s.gzhead.time >> 24) & 0xff);
+        put_byte(s, s.level === 9 ? 2 :
+                    (s.strategy >= Z_HUFFMAN_ONLY || s.level < 2 ?
+                     4 : 0));
+        put_byte(s, s.gzhead.os & 0xff);
+        if (s.gzhead.extra && s.gzhead.extra.length) {
+          put_byte(s, s.gzhead.extra.length & 0xff);
+          put_byte(s, (s.gzhead.extra.length >> 8) & 0xff);
+        }
+        if (s.gzhead.hcrc) {
+          strm.adler = crc32(strm.adler, s.pending_buf, s.pending, 0);
+        }
+        s.gzindex = 0;
+        s.status = EXTRA_STATE;
+      }
+    }
+    else // DEFLATE header
+    {
+      var header = (Z_DEFLATED + ((s.w_bits - 8) << 4)) << 8;
+      var level_flags = -1;
+
+      if (s.strategy >= Z_HUFFMAN_ONLY || s.level < 2) {
+        level_flags = 0;
+      } else if (s.level < 6) {
+        level_flags = 1;
+      } else if (s.level === 6) {
+        level_flags = 2;
+      } else {
+        level_flags = 3;
+      }
+      header |= (level_flags << 6);
+      if (s.strstart !== 0) { header |= PRESET_DICT; }
+      header += 31 - (header % 31);
+
+      s.status = BUSY_STATE;
+      putShortMSB(s, header);
+
+      /* Save the adler32 of the preset dictionary: */
+      if (s.strstart !== 0) {
+        putShortMSB(s, strm.adler >>> 16);
+        putShortMSB(s, strm.adler & 0xffff);
+      }
+      strm.adler = 1; // adler32(0L, Z_NULL, 0);
+    }
+  }
+
+//#ifdef GZIP
+  if (s.status === EXTRA_STATE) {
+    if (s.gzhead.extra/* != Z_NULL*/) {
+      beg = s.pending;  /* start of bytes to update crc */
+
+      while (s.gzindex < (s.gzhead.extra.length & 0xffff)) {
+        if (s.pending === s.pending_buf_size) {
+          if (s.gzhead.hcrc && s.pending > beg) {
+            strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+          }
+          flush_pending(strm);
+          beg = s.pending;
+          if (s.pending === s.pending_buf_size) {
+            break;
+          }
+        }
+        put_byte(s, s.gzhead.extra[s.gzindex] & 0xff);
+        s.gzindex++;
+      }
+      if (s.gzhead.hcrc && s.pending > beg) {
+        strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+      }
+      if (s.gzindex === s.gzhead.extra.length) {
+        s.gzindex = 0;
+        s.status = NAME_STATE;
+      }
+    }
+    else {
+      s.status = NAME_STATE;
+    }
+  }
+  if (s.status === NAME_STATE) {
+    if (s.gzhead.name/* != Z_NULL*/) {
+      beg = s.pending;  /* start of bytes to update crc */
+      //int val;
+
+      do {
+        if (s.pending === s.pending_buf_size) {
+          if (s.gzhead.hcrc && s.pending > beg) {
+            strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+          }
+          flush_pending(strm);
+          beg = s.pending;
+          if (s.pending === s.pending_buf_size) {
+            val = 1;
+            break;
+          }
+        }
+        // JS specific: little magic to add zero terminator to end of string
+        if (s.gzindex < s.gzhead.name.length) {
+          val = s.gzhead.name.charCodeAt(s.gzindex++) & 0xff;
+        } else {
+          val = 0;
+        }
+        put_byte(s, val);
+      } while (val !== 0);
+
+      if (s.gzhead.hcrc && s.pending > beg) {
+        strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+      }
+      if (val === 0) {
+        s.gzindex = 0;
+        s.status = COMMENT_STATE;
+      }
+    }
+    else {
+      s.status = COMMENT_STATE;
+    }
+  }
+  if (s.status === COMMENT_STATE) {
+    if (s.gzhead.comment/* != Z_NULL*/) {
+      beg = s.pending;  /* start of bytes to update crc */
+      //int val;
+
+      do {
+        if (s.pending === s.pending_buf_size) {
+          if (s.gzhead.hcrc && s.pending > beg) {
+            strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+          }
+          flush_pending(strm);
+          beg = s.pending;
+          if (s.pending === s.pending_buf_size) {
+            val = 1;
+            break;
+          }
+        }
+        // JS specific: little magic to add zero terminator to end of string
+        if (s.gzindex < s.gzhead.comment.length) {
+          val = s.gzhead.comment.charCodeAt(s.gzindex++) & 0xff;
+        } else {
+          val = 0;
+        }
+        put_byte(s, val);
+      } while (val !== 0);
+
+      if (s.gzhead.hcrc && s.pending > beg) {
+        strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
+      }
+      if (val === 0) {
+        s.status = HCRC_STATE;
+      }
+    }
+    else {
+      s.status = HCRC_STATE;
+    }
+  }
+  if (s.status === HCRC_STATE) {
+    if (s.gzhead.hcrc) {
+      if (s.pending + 2 > s.pending_buf_size) {
+        flush_pending(strm);
+      }
+      if (s.pending + 2 <= s.pending_buf_size) {
+        put_byte(s, strm.adler & 0xff);
+        put_byte(s, (strm.adler >> 8) & 0xff);
+        strm.adler = 0; //crc32(0L, Z_NULL, 0);
+        s.status = BUSY_STATE;
+      }
+    }
+    else {
+      s.status = BUSY_STATE;
+    }
+  }
+//#endif
+
+  /* Flush as much pending output as possible */
+  if (s.pending !== 0) {
+    flush_pending(strm);
+    if (strm.avail_out === 0) {
+      /* Since avail_out is 0, deflate will be called again with
+       * more output space, but possibly with both pending and
+       * avail_in equal to zero. There won't be anything to do,
+       * but this is not an error situation so make sure we
+       * return OK instead of BUF_ERROR at next call of deflate:
+       */
+      s.last_flush = -1;
+      return Z_OK;
+    }
+
+    /* Make sure there is something to do and avoid duplicate consecutive
+     * flushes. For repeated and useless calls with Z_FINISH, we keep
+     * returning Z_STREAM_END instead of Z_BUF_ERROR.
+     */
+  } else if (strm.avail_in === 0 && rank(flush) <= rank(old_flush) &&
+    flush !== Z_FINISH) {
+    return err(strm, Z_BUF_ERROR);
+  }
+
+  /* User must not provide more input after the first FINISH: */
+  if (s.status === FINISH_STATE && strm.avail_in !== 0) {
+    return err(strm, Z_BUF_ERROR);
+  }
+
+  /* Start a new block or continue the current one.
+   */
+  if (strm.avail_in !== 0 || s.lookahead !== 0 ||
+    (flush !== Z_NO_FLUSH && s.status !== FINISH_STATE)) {
+    var bstate = (s.strategy === Z_HUFFMAN_ONLY) ? deflate_huff(s, flush) :
+      (s.strategy === Z_RLE ? deflate_rle(s, flush) :
+        configuration_table[s.level].func(s, flush));
+
+    if (bstate === BS_FINISH_STARTED || bstate === BS_FINISH_DONE) {
+      s.status = FINISH_STATE;
+    }
+    if (bstate === BS_NEED_MORE || bstate === BS_FINISH_STARTED) {
+      if (strm.avail_out === 0) {
+        s.last_flush = -1;
+        /* avoid BUF_ERROR next call, see above */
+      }
+      return Z_OK;
+      /* If flush != Z_NO_FLUSH && avail_out == 0, the next call
+       * of deflate should use the same flush parameter to make sure
+       * that the flush is complete. So we don't have to output an
+       * empty block here, this will be done at next call. This also
+       * ensures that for a very small output buffer, we emit at most
+       * one empty block.
+       */
+    }
+    if (bstate === BS_BLOCK_DONE) {
+      if (flush === Z_PARTIAL_FLUSH) {
+        trees._tr_align(s);
+      }
+      else if (flush !== Z_BLOCK) { /* FULL_FLUSH or SYNC_FLUSH */
+
+        trees._tr_stored_block(s, 0, 0, false);
+        /* For a full flush, this empty block will be recognized
+         * as a special marker by inflate_sync().
+         */
+        if (flush === Z_FULL_FLUSH) {
+          /*** CLEAR_HASH(s); ***/             /* forget history */
+          zero(s.head); // Fill with NIL (= 0);
+
+          if (s.lookahead === 0) {
+            s.strstart = 0;
+            s.block_start = 0;
+            s.insert = 0;
+          }
+        }
+      }
+      flush_pending(strm);
+      if (strm.avail_out === 0) {
+        s.last_flush = -1; /* avoid BUF_ERROR at next call, see above */
+        return Z_OK;
+      }
+    }
+  }
+  //Assert(strm->avail_out > 0, "bug2");
+  //if (strm.avail_out <= 0) { throw new Error("bug2");}
+
+  if (flush !== Z_FINISH) { return Z_OK; }
+  if (s.wrap <= 0) { return Z_STREAM_END; }
+
+  /* Write the trailer */
+  if (s.wrap === 2) {
+    put_byte(s, strm.adler & 0xff);
+    put_byte(s, (strm.adler >> 8) & 0xff);
+    put_byte(s, (strm.adler >> 16) & 0xff);
+    put_byte(s, (strm.adler >> 24) & 0xff);
+    put_byte(s, strm.total_in & 0xff);
+    put_byte(s, (strm.total_in >> 8) & 0xff);
+    put_byte(s, (strm.total_in >> 16) & 0xff);
+    put_byte(s, (strm.total_in >> 24) & 0xff);
+  }
+  else
+  {
+    putShortMSB(s, strm.adler >>> 16);
+    putShortMSB(s, strm.adler & 0xffff);
+  }
+
+  flush_pending(strm);
+  /* If avail_out is zero, the application will call deflate again
+   * to flush the rest.
+   */
+  if (s.wrap > 0) { s.wrap = -s.wrap; }
+  /* write the trailer only once! */
+  return s.pending !== 0 ? Z_OK : Z_STREAM_END;
+}
+
+function deflateEnd(strm) {
+  var status;
+
+  if (!strm/*== Z_NULL*/ || !strm.state/*== Z_NULL*/) {
+    return Z_STREAM_ERROR;
+  }
+
+  status = strm.state.status;
+  if (status !== INIT_STATE &&
+    status !== EXTRA_STATE &&
+    status !== NAME_STATE &&
+    status !== COMMENT_STATE &&
+    status !== HCRC_STATE &&
+    status !== BUSY_STATE &&
+    status !== FINISH_STATE
+  ) {
+    return err(strm, Z_STREAM_ERROR);
+  }
+
+  strm.state = null;
+
+  return status === BUSY_STATE ? err(strm, Z_DATA_ERROR) : Z_OK;
+}
+
+
+/* =========================================================================
+ * Initializes the compression dictionary from the given byte
+ * sequence without producing any compressed output.
+ */
+function deflateSetDictionary(strm, dictionary) {
+  var dictLength = dictionary.length;
+
+  var s;
+  var str, n;
+  var wrap;
+  var avail;
+  var next;
+  var input;
+  var tmpDict;
+
+  if (!strm/*== Z_NULL*/ || !strm.state/*== Z_NULL*/) {
+    return Z_STREAM_ERROR;
+  }
+
+  s = strm.state;
+  wrap = s.wrap;
+
+  if (wrap === 2 || (wrap === 1 && s.status !== INIT_STATE) || s.lookahead) {
+    return Z_STREAM_ERROR;
+  }
+
+  /* when using zlib wrappers, compute Adler-32 for provided dictionary */
+  if (wrap === 1) {
+    /* adler32(strm->adler, dictionary, dictLength); */
+    strm.adler = adler32(strm.adler, dictionary, dictLength, 0);
+  }
+
+  s.wrap = 0;   /* avoid computing Adler-32 in read_buf */
+
+  /* if dictionary would fill window, just replace the history */
+  if (dictLength >= s.w_size) {
+    if (wrap === 0) {            /* already empty otherwise */
+      /*** CLEAR_HASH(s); ***/
+      zero(s.head); // Fill with NIL (= 0);
+      s.strstart = 0;
+      s.block_start = 0;
+      s.insert = 0;
+    }
+    /* use the tail */
+    // dictionary = dictionary.slice(dictLength - s.w_size);
+    tmpDict = new utils.Buf8(s.w_size);
+    utils.arraySet(tmpDict, dictionary, dictLength - s.w_size, s.w_size, 0);
+    dictionary = tmpDict;
+    dictLength = s.w_size;
+  }
+  /* insert dictionary into window and hash */
+  avail = strm.avail_in;
+  next = strm.next_in;
+  input = strm.input;
+  strm.avail_in = dictLength;
+  strm.next_in = 0;
+  strm.input = dictionary;
+  fill_window(s);
+  while (s.lookahead >= MIN_MATCH) {
+    str = s.strstart;
+    n = s.lookahead - (MIN_MATCH - 1);
+    do {
+      /* UPDATE_HASH(s, s->ins_h, s->window[str + MIN_MATCH-1]); */
+      s.ins_h = ((s.ins_h << s.hash_shift) ^ s.window[str + MIN_MATCH - 1]) & s.hash_mask;
+
+      s.prev[str & s.w_mask] = s.head[s.ins_h];
+
+      s.head[s.ins_h] = str;
+      str++;
+    } while (--n);
+    s.strstart = str;
+    s.lookahead = MIN_MATCH - 1;
+    fill_window(s);
+  }
+  s.strstart += s.lookahead;
+  s.block_start = s.strstart;
+  s.insert = s.lookahead;
+  s.lookahead = 0;
+  s.match_length = s.prev_length = MIN_MATCH - 1;
+  s.match_available = 0;
+  strm.next_in = next;
+  strm.input = input;
+  strm.avail_in = avail;
+  s.wrap = wrap;
+  return Z_OK;
+}
+
+
+exports.deflateInit = deflateInit;
+exports.deflateInit2 = deflateInit2;
+exports.deflateReset = deflateReset;
+exports.deflateResetKeep = deflateResetKeep;
+exports.deflateSetHeader = deflateSetHeader;
+exports.deflate = deflate;
+exports.deflateEnd = deflateEnd;
+exports.deflateSetDictionary = deflateSetDictionary;
+exports.deflateInfo = 'pako deflate (from Nodeca project)';
+
+/* Not implemented
+exports.deflateBound = deflateBound;
+exports.deflateCopy = deflateCopy;
+exports.deflateParams = deflateParams;
+exports.deflatePending = deflatePending;
+exports.deflatePrime = deflatePrime;
+exports.deflateTune = deflateTune;
+*/
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+/* eslint-disable space-unary-ops */
+
+var utils = __webpack_require__(0);
+
+/* Public constants ==========================================================*/
+/* ===========================================================================*/
+
+
+//var Z_FILTERED          = 1;
+//var Z_HUFFMAN_ONLY      = 2;
+//var Z_RLE               = 3;
+var Z_FIXED               = 4;
+//var Z_DEFAULT_STRATEGY  = 0;
+
+/* Possible values of the data_type field (though see inflate()) */
+var Z_BINARY              = 0;
+var Z_TEXT                = 1;
+//var Z_ASCII             = 1; // = Z_TEXT
+var Z_UNKNOWN             = 2;
+
+/*============================================================================*/
+
+
+function zero(buf) { var len = buf.length; while (--len >= 0) { buf[len] = 0; } }
+
+// From zutil.h
+
+var STORED_BLOCK = 0;
+var STATIC_TREES = 1;
+var DYN_TREES    = 2;
+/* The three kinds of block type */
+
+var MIN_MATCH    = 3;
+var MAX_MATCH    = 258;
+/* The minimum and maximum match lengths */
+
+// From deflate.h
+/* ===========================================================================
+ * Internal compression state.
+ */
+
+var LENGTH_CODES  = 29;
+/* number of length codes, not counting the special END_BLOCK code */
+
+var LITERALS      = 256;
+/* number of literal bytes 0..255 */
+
+var L_CODES       = LITERALS + 1 + LENGTH_CODES;
+/* number of Literal or Length codes, including the END_BLOCK code */
+
+var D_CODES       = 30;
+/* number of distance codes */
+
+var BL_CODES      = 19;
+/* number of codes used to transfer the bit lengths */
+
+var HEAP_SIZE     = 2 * L_CODES + 1;
+/* maximum heap size */
+
+var MAX_BITS      = 15;
+/* All codes must not exceed MAX_BITS bits */
+
+var Buf_size      = 16;
+/* size of bit buffer in bi_buf */
+
+
+/* ===========================================================================
+ * Constants
+ */
+
+var MAX_BL_BITS = 7;
+/* Bit length codes must not exceed MAX_BL_BITS bits */
+
+var END_BLOCK   = 256;
+/* end of block literal code */
+
+var REP_3_6     = 16;
+/* repeat previous bit length 3-6 times (2 bits of repeat count) */
+
+var REPZ_3_10   = 17;
+/* repeat a zero length 3-10 times  (3 bits of repeat count) */
+
+var REPZ_11_138 = 18;
+/* repeat a zero length 11-138 times  (7 bits of repeat count) */
+
+/* eslint-disable comma-spacing,array-bracket-spacing */
+var extra_lbits =   /* extra bits for each length code */
+  [0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0];
+
+var extra_dbits =   /* extra bits for each distance code */
+  [0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13];
+
+var extra_blbits =  /* extra bits for each bit length code */
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,7];
+
+var bl_order =
+  [16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15];
+/* eslint-enable comma-spacing,array-bracket-spacing */
+
+/* The lengths of the bit length codes are sent in order of decreasing
+ * probability, to avoid transmitting the lengths for unused bit length codes.
+ */
+
+/* ===========================================================================
+ * Local data. These are initialized only once.
+ */
+
+// We pre-fill arrays with 0 to avoid uninitialized gaps
+
+var DIST_CODE_LEN = 512; /* see definition of array dist_code below */
+
+// !!!! Use flat array instead of structure, Freq = i*2, Len = i*2+1
+var static_ltree  = new Array((L_CODES + 2) * 2);
+zero(static_ltree);
+/* The static literal tree. Since the bit lengths are imposed, there is no
+ * need for the L_CODES extra codes used during heap construction. However
+ * The codes 286 and 287 are needed to build a canonical tree (see _tr_init
+ * below).
+ */
+
+var static_dtree  = new Array(D_CODES * 2);
+zero(static_dtree);
+/* The static distance tree. (Actually a trivial tree since all codes use
+ * 5 bits.)
+ */
+
+var _dist_code    = new Array(DIST_CODE_LEN);
+zero(_dist_code);
+/* Distance codes. The first 256 values correspond to the distances
+ * 3 .. 258, the last 256 values correspond to the top 8 bits of
+ * the 15 bit distances.
+ */
+
+var _length_code  = new Array(MAX_MATCH - MIN_MATCH + 1);
+zero(_length_code);
+/* length code for each normalized match length (0 == MIN_MATCH) */
+
+var base_length   = new Array(LENGTH_CODES);
+zero(base_length);
+/* First normalized length for each code (0 = MIN_MATCH) */
+
+var base_dist     = new Array(D_CODES);
+zero(base_dist);
+/* First normalized distance for each code (0 = distance of 1) */
+
+
+function StaticTreeDesc(static_tree, extra_bits, extra_base, elems, max_length) {
+
+  this.static_tree  = static_tree;  /* static tree or NULL */
+  this.extra_bits   = extra_bits;   /* extra bits for each code or NULL */
+  this.extra_base   = extra_base;   /* base index for extra_bits */
+  this.elems        = elems;        /* max number of elements in the tree */
+  this.max_length   = max_length;   /* max bit length for the codes */
+
+  // show if `static_tree` has data or dummy - needed for monomorphic objects
+  this.has_stree    = static_tree && static_tree.length;
+}
+
+
+var static_l_desc;
+var static_d_desc;
+var static_bl_desc;
+
+
+function TreeDesc(dyn_tree, stat_desc) {
+  this.dyn_tree = dyn_tree;     /* the dynamic tree */
+  this.max_code = 0;            /* largest code with non zero frequency */
+  this.stat_desc = stat_desc;   /* the corresponding static tree */
+}
+
+
+
+function d_code(dist) {
+  return dist < 256 ? _dist_code[dist] : _dist_code[256 + (dist >>> 7)];
+}
+
+
+/* ===========================================================================
+ * Output a short LSB first on the stream.
+ * IN assertion: there is enough room in pendingBuf.
+ */
+function put_short(s, w) {
+//    put_byte(s, (uch)((w) & 0xff));
+//    put_byte(s, (uch)((ush)(w) >> 8));
+  s.pending_buf[s.pending++] = (w) & 0xff;
+  s.pending_buf[s.pending++] = (w >>> 8) & 0xff;
+}
+
+
+/* ===========================================================================
+ * Send a value on a given number of bits.
+ * IN assertion: length <= 16 and value fits in length bits.
+ */
+function send_bits(s, value, length) {
+  if (s.bi_valid > (Buf_size - length)) {
+    s.bi_buf |= (value << s.bi_valid) & 0xffff;
+    put_short(s, s.bi_buf);
+    s.bi_buf = value >> (Buf_size - s.bi_valid);
+    s.bi_valid += length - Buf_size;
+  } else {
+    s.bi_buf |= (value << s.bi_valid) & 0xffff;
+    s.bi_valid += length;
+  }
+}
+
+
+function send_code(s, c, tree) {
+  send_bits(s, tree[c * 2]/*.Code*/, tree[c * 2 + 1]/*.Len*/);
+}
+
+
+/* ===========================================================================
+ * Reverse the first len bits of a code, using straightforward code (a faster
+ * method would use a table)
+ * IN assertion: 1 <= len <= 15
+ */
+function bi_reverse(code, len) {
+  var res = 0;
+  do {
+    res |= code & 1;
+    code >>>= 1;
+    res <<= 1;
+  } while (--len > 0);
+  return res >>> 1;
+}
+
+
+/* ===========================================================================
+ * Flush the bit buffer, keeping at most 7 bits in it.
+ */
+function bi_flush(s) {
+  if (s.bi_valid === 16) {
+    put_short(s, s.bi_buf);
+    s.bi_buf = 0;
+    s.bi_valid = 0;
+
+  } else if (s.bi_valid >= 8) {
+    s.pending_buf[s.pending++] = s.bi_buf & 0xff;
+    s.bi_buf >>= 8;
+    s.bi_valid -= 8;
+  }
+}
+
+
+/* ===========================================================================
+ * Compute the optimal bit lengths for a tree and update the total bit length
+ * for the current block.
+ * IN assertion: the fields freq and dad are set, heap[heap_max] and
+ *    above are the tree nodes sorted by increasing frequency.
+ * OUT assertions: the field len is set to the optimal bit length, the
+ *     array bl_count contains the frequencies for each bit length.
+ *     The length opt_len is updated; static_len is also updated if stree is
+ *     not null.
+ */
+function gen_bitlen(s, desc)
+//    deflate_state *s;
+//    tree_desc *desc;    /* the tree descriptor */
+{
+  var tree            = desc.dyn_tree;
+  var max_code        = desc.max_code;
+  var stree           = desc.stat_desc.static_tree;
+  var has_stree       = desc.stat_desc.has_stree;
+  var extra           = desc.stat_desc.extra_bits;
+  var base            = desc.stat_desc.extra_base;
+  var max_length      = desc.stat_desc.max_length;
+  var h;              /* heap index */
+  var n, m;           /* iterate over the tree elements */
+  var bits;           /* bit length */
+  var xbits;          /* extra bits */
+  var f;              /* frequency */
+  var overflow = 0;   /* number of elements with bit length too large */
+
+  for (bits = 0; bits <= MAX_BITS; bits++) {
+    s.bl_count[bits] = 0;
+  }
+
+  /* In a first pass, compute the optimal bit lengths (which may
+   * overflow in the case of the bit length tree).
+   */
+  tree[s.heap[s.heap_max] * 2 + 1]/*.Len*/ = 0; /* root of the heap */
+
+  for (h = s.heap_max + 1; h < HEAP_SIZE; h++) {
+    n = s.heap[h];
+    bits = tree[tree[n * 2 + 1]/*.Dad*/ * 2 + 1]/*.Len*/ + 1;
+    if (bits > max_length) {
+      bits = max_length;
+      overflow++;
+    }
+    tree[n * 2 + 1]/*.Len*/ = bits;
+    /* We overwrite tree[n].Dad which is no longer needed */
+
+    if (n > max_code) { continue; } /* not a leaf node */
+
+    s.bl_count[bits]++;
+    xbits = 0;
+    if (n >= base) {
+      xbits = extra[n - base];
+    }
+    f = tree[n * 2]/*.Freq*/;
+    s.opt_len += f * (bits + xbits);
+    if (has_stree) {
+      s.static_len += f * (stree[n * 2 + 1]/*.Len*/ + xbits);
+    }
+  }
+  if (overflow === 0) { return; }
+
+  // Trace((stderr,"\nbit length overflow\n"));
+  /* This happens for example on obj2 and pic of the Calgary corpus */
+
+  /* Find the first bit length which could increase: */
+  do {
+    bits = max_length - 1;
+    while (s.bl_count[bits] === 0) { bits--; }
+    s.bl_count[bits]--;      /* move one leaf down the tree */
+    s.bl_count[bits + 1] += 2; /* move one overflow item as its brother */
+    s.bl_count[max_length]--;
+    /* The brother of the overflow item also moves one step up,
+     * but this does not affect bl_count[max_length]
+     */
+    overflow -= 2;
+  } while (overflow > 0);
+
+  /* Now recompute all bit lengths, scanning in increasing frequency.
+   * h is still equal to HEAP_SIZE. (It is simpler to reconstruct all
+   * lengths instead of fixing only the wrong ones. This idea is taken
+   * from 'ar' written by Haruhiko Okumura.)
+   */
+  for (bits = max_length; bits !== 0; bits--) {
+    n = s.bl_count[bits];
+    while (n !== 0) {
+      m = s.heap[--h];
+      if (m > max_code) { continue; }
+      if (tree[m * 2 + 1]/*.Len*/ !== bits) {
+        // Trace((stderr,"code %d bits %d->%d\n", m, tree[m].Len, bits));
+        s.opt_len += (bits - tree[m * 2 + 1]/*.Len*/) * tree[m * 2]/*.Freq*/;
+        tree[m * 2 + 1]/*.Len*/ = bits;
+      }
+      n--;
+    }
+  }
+}
+
+
+/* ===========================================================================
+ * Generate the codes for a given tree and bit counts (which need not be
+ * optimal).
+ * IN assertion: the array bl_count contains the bit length statistics for
+ * the given tree and the field len is set for all tree elements.
+ * OUT assertion: the field code is set for all tree elements of non
+ *     zero code length.
+ */
+function gen_codes(tree, max_code, bl_count)
+//    ct_data *tree;             /* the tree to decorate */
+//    int max_code;              /* largest code with non zero frequency */
+//    ushf *bl_count;            /* number of codes at each bit length */
+{
+  var next_code = new Array(MAX_BITS + 1); /* next code value for each bit length */
+  var code = 0;              /* running code value */
+  var bits;                  /* bit index */
+  var n;                     /* code index */
+
+  /* The distribution counts are first used to generate the code values
+   * without bit reversal.
+   */
+  for (bits = 1; bits <= MAX_BITS; bits++) {
+    next_code[bits] = code = (code + bl_count[bits - 1]) << 1;
+  }
+  /* Check that the bit counts in bl_count are consistent. The last code
+   * must be all ones.
+   */
+  //Assert (code + bl_count[MAX_BITS]-1 == (1<<MAX_BITS)-1,
+  //        "inconsistent bit counts");
+  //Tracev((stderr,"\ngen_codes: max_code %d ", max_code));
+
+  for (n = 0;  n <= max_code; n++) {
+    var len = tree[n * 2 + 1]/*.Len*/;
+    if (len === 0) { continue; }
+    /* Now reverse the bits */
+    tree[n * 2]/*.Code*/ = bi_reverse(next_code[len]++, len);
+
+    //Tracecv(tree != static_ltree, (stderr,"\nn %3d %c l %2d c %4x (%x) ",
+    //     n, (isgraph(n) ? n : ' '), len, tree[n].Code, next_code[len]-1));
+  }
+}
+
+
+/* ===========================================================================
+ * Initialize the various 'constant' tables.
+ */
+function tr_static_init() {
+  var n;        /* iterates over tree elements */
+  var bits;     /* bit counter */
+  var length;   /* length value */
+  var code;     /* code value */
+  var dist;     /* distance index */
+  var bl_count = new Array(MAX_BITS + 1);
+  /* number of codes at each bit length for an optimal tree */
+
+  // do check in _tr_init()
+  //if (static_init_done) return;
+
+  /* For some embedded targets, global variables are not initialized: */
+/*#ifdef NO_INIT_GLOBAL_POINTERS
+  static_l_desc.static_tree = static_ltree;
+  static_l_desc.extra_bits = extra_lbits;
+  static_d_desc.static_tree = static_dtree;
+  static_d_desc.extra_bits = extra_dbits;
+  static_bl_desc.extra_bits = extra_blbits;
+#endif*/
+
+  /* Initialize the mapping length (0..255) -> length code (0..28) */
+  length = 0;
+  for (code = 0; code < LENGTH_CODES - 1; code++) {
+    base_length[code] = length;
+    for (n = 0; n < (1 << extra_lbits[code]); n++) {
+      _length_code[length++] = code;
+    }
+  }
+  //Assert (length == 256, "tr_static_init: length != 256");
+  /* Note that the length 255 (match length 258) can be represented
+   * in two different ways: code 284 + 5 bits or code 285, so we
+   * overwrite length_code[255] to use the best encoding:
+   */
+  _length_code[length - 1] = code;
+
+  /* Initialize the mapping dist (0..32K) -> dist code (0..29) */
+  dist = 0;
+  for (code = 0; code < 16; code++) {
+    base_dist[code] = dist;
+    for (n = 0; n < (1 << extra_dbits[code]); n++) {
+      _dist_code[dist++] = code;
+    }
+  }
+  //Assert (dist == 256, "tr_static_init: dist != 256");
+  dist >>= 7; /* from now on, all distances are divided by 128 */
+  for (; code < D_CODES; code++) {
+    base_dist[code] = dist << 7;
+    for (n = 0; n < (1 << (extra_dbits[code] - 7)); n++) {
+      _dist_code[256 + dist++] = code;
+    }
+  }
+  //Assert (dist == 256, "tr_static_init: 256+dist != 512");
+
+  /* Construct the codes of the static literal tree */
+  for (bits = 0; bits <= MAX_BITS; bits++) {
+    bl_count[bits] = 0;
+  }
+
+  n = 0;
+  while (n <= 143) {
+    static_ltree[n * 2 + 1]/*.Len*/ = 8;
+    n++;
+    bl_count[8]++;
+  }
+  while (n <= 255) {
+    static_ltree[n * 2 + 1]/*.Len*/ = 9;
+    n++;
+    bl_count[9]++;
+  }
+  while (n <= 279) {
+    static_ltree[n * 2 + 1]/*.Len*/ = 7;
+    n++;
+    bl_count[7]++;
+  }
+  while (n <= 287) {
+    static_ltree[n * 2 + 1]/*.Len*/ = 8;
+    n++;
+    bl_count[8]++;
+  }
+  /* Codes 286 and 287 do not exist, but we must include them in the
+   * tree construction to get a canonical Huffman tree (longest code
+   * all ones)
+   */
+  gen_codes(static_ltree, L_CODES + 1, bl_count);
+
+  /* The static distance tree is trivial: */
+  for (n = 0; n < D_CODES; n++) {
+    static_dtree[n * 2 + 1]/*.Len*/ = 5;
+    static_dtree[n * 2]/*.Code*/ = bi_reverse(n, 5);
+  }
+
+  // Now data ready and we can init static trees
+  static_l_desc = new StaticTreeDesc(static_ltree, extra_lbits, LITERALS + 1, L_CODES, MAX_BITS);
+  static_d_desc = new StaticTreeDesc(static_dtree, extra_dbits, 0,          D_CODES, MAX_BITS);
+  static_bl_desc = new StaticTreeDesc(new Array(0), extra_blbits, 0,         BL_CODES, MAX_BL_BITS);
+
+  //static_init_done = true;
+}
+
+
+/* ===========================================================================
+ * Initialize a new block.
+ */
+function init_block(s) {
+  var n; /* iterates over tree elements */
+
+  /* Initialize the trees. */
+  for (n = 0; n < L_CODES;  n++) { s.dyn_ltree[n * 2]/*.Freq*/ = 0; }
+  for (n = 0; n < D_CODES;  n++) { s.dyn_dtree[n * 2]/*.Freq*/ = 0; }
+  for (n = 0; n < BL_CODES; n++) { s.bl_tree[n * 2]/*.Freq*/ = 0; }
+
+  s.dyn_ltree[END_BLOCK * 2]/*.Freq*/ = 1;
+  s.opt_len = s.static_len = 0;
+  s.last_lit = s.matches = 0;
+}
+
+
+/* ===========================================================================
+ * Flush the bit buffer and align the output on a byte boundary
+ */
+function bi_windup(s)
+{
+  if (s.bi_valid > 8) {
+    put_short(s, s.bi_buf);
+  } else if (s.bi_valid > 0) {
+    //put_byte(s, (Byte)s->bi_buf);
+    s.pending_buf[s.pending++] = s.bi_buf;
+  }
+  s.bi_buf = 0;
+  s.bi_valid = 0;
+}
+
+/* ===========================================================================
+ * Copy a stored block, storing first the length and its
+ * one's complement if requested.
+ */
+function copy_block(s, buf, len, header)
+//DeflateState *s;
+//charf    *buf;    /* the input data */
+//unsigned len;     /* its length */
+//int      header;  /* true if block header must be written */
+{
+  bi_windup(s);        /* align on byte boundary */
+
+  if (header) {
+    put_short(s, len);
+    put_short(s, ~len);
+  }
+//  while (len--) {
+//    put_byte(s, *buf++);
+//  }
+  utils.arraySet(s.pending_buf, s.window, buf, len, s.pending);
+  s.pending += len;
+}
+
+/* ===========================================================================
+ * Compares to subtrees, using the tree depth as tie breaker when
+ * the subtrees have equal frequency. This minimizes the worst case length.
+ */
+function smaller(tree, n, m, depth) {
+  var _n2 = n * 2;
+  var _m2 = m * 2;
+  return (tree[_n2]/*.Freq*/ < tree[_m2]/*.Freq*/ ||
+         (tree[_n2]/*.Freq*/ === tree[_m2]/*.Freq*/ && depth[n] <= depth[m]));
+}
+
+/* ===========================================================================
+ * Restore the heap property by moving down the tree starting at node k,
+ * exchanging a node with the smallest of its two sons if necessary, stopping
+ * when the heap property is re-established (each father smaller than its
+ * two sons).
+ */
+function pqdownheap(s, tree, k)
+//    deflate_state *s;
+//    ct_data *tree;  /* the tree to restore */
+//    int k;               /* node to move down */
+{
+  var v = s.heap[k];
+  var j = k << 1;  /* left son of k */
+  while (j <= s.heap_len) {
+    /* Set j to the smallest of the two sons: */
+    if (j < s.heap_len &&
+      smaller(tree, s.heap[j + 1], s.heap[j], s.depth)) {
+      j++;
+    }
+    /* Exit if v is smaller than both sons */
+    if (smaller(tree, v, s.heap[j], s.depth)) { break; }
+
+    /* Exchange v with the smallest son */
+    s.heap[k] = s.heap[j];
+    k = j;
+
+    /* And continue down the tree, setting j to the left son of k */
+    j <<= 1;
+  }
+  s.heap[k] = v;
+}
+
+
+// inlined manually
+// var SMALLEST = 1;
+
+/* ===========================================================================
+ * Send the block data compressed using the given Huffman trees
+ */
+function compress_block(s, ltree, dtree)
+//    deflate_state *s;
+//    const ct_data *ltree; /* literal tree */
+//    const ct_data *dtree; /* distance tree */
+{
+  var dist;           /* distance of matched string */
+  var lc;             /* match length or unmatched char (if dist == 0) */
+  var lx = 0;         /* running index in l_buf */
+  var code;           /* the code to send */
+  var extra;          /* number of extra bits to send */
+
+  if (s.last_lit !== 0) {
+    do {
+      dist = (s.pending_buf[s.d_buf + lx * 2] << 8) | (s.pending_buf[s.d_buf + lx * 2 + 1]);
+      lc = s.pending_buf[s.l_buf + lx];
+      lx++;
+
+      if (dist === 0) {
+        send_code(s, lc, ltree); /* send a literal byte */
+        //Tracecv(isgraph(lc), (stderr," '%c' ", lc));
+      } else {
+        /* Here, lc is the match length - MIN_MATCH */
+        code = _length_code[lc];
+        send_code(s, code + LITERALS + 1, ltree); /* send the length code */
+        extra = extra_lbits[code];
+        if (extra !== 0) {
+          lc -= base_length[code];
+          send_bits(s, lc, extra);       /* send the extra length bits */
+        }
+        dist--; /* dist is now the match distance - 1 */
+        code = d_code(dist);
+        //Assert (code < D_CODES, "bad d_code");
+
+        send_code(s, code, dtree);       /* send the distance code */
+        extra = extra_dbits[code];
+        if (extra !== 0) {
+          dist -= base_dist[code];
+          send_bits(s, dist, extra);   /* send the extra distance bits */
+        }
+      } /* literal or match pair ? */
+
+      /* Check that the overlay between pending_buf and d_buf+l_buf is ok: */
+      //Assert((uInt)(s->pending) < s->lit_bufsize + 2*lx,
+      //       "pendingBuf overflow");
+
+    } while (lx < s.last_lit);
+  }
+
+  send_code(s, END_BLOCK, ltree);
+}
+
+
+/* ===========================================================================
+ * Construct one Huffman tree and assigns the code bit strings and lengths.
+ * Update the total bit length for the current block.
+ * IN assertion: the field freq is set for all tree elements.
+ * OUT assertions: the fields len and code are set to the optimal bit length
+ *     and corresponding code. The length opt_len is updated; static_len is
+ *     also updated if stree is not null. The field max_code is set.
+ */
+function build_tree(s, desc)
+//    deflate_state *s;
+//    tree_desc *desc; /* the tree descriptor */
+{
+  var tree     = desc.dyn_tree;
+  var stree    = desc.stat_desc.static_tree;
+  var has_stree = desc.stat_desc.has_stree;
+  var elems    = desc.stat_desc.elems;
+  var n, m;          /* iterate over heap elements */
+  var max_code = -1; /* largest code with non zero frequency */
+  var node;          /* new node being created */
+
+  /* Construct the initial heap, with least frequent element in
+   * heap[SMALLEST]. The sons of heap[n] are heap[2*n] and heap[2*n+1].
+   * heap[0] is not used.
+   */
+  s.heap_len = 0;
+  s.heap_max = HEAP_SIZE;
+
+  for (n = 0; n < elems; n++) {
+    if (tree[n * 2]/*.Freq*/ !== 0) {
+      s.heap[++s.heap_len] = max_code = n;
+      s.depth[n] = 0;
+
+    } else {
+      tree[n * 2 + 1]/*.Len*/ = 0;
+    }
+  }
+
+  /* The pkzip format requires that at least one distance code exists,
+   * and that at least one bit should be sent even if there is only one
+   * possible code. So to avoid special checks later on we force at least
+   * two codes of non zero frequency.
+   */
+  while (s.heap_len < 2) {
+    node = s.heap[++s.heap_len] = (max_code < 2 ? ++max_code : 0);
+    tree[node * 2]/*.Freq*/ = 1;
+    s.depth[node] = 0;
+    s.opt_len--;
+
+    if (has_stree) {
+      s.static_len -= stree[node * 2 + 1]/*.Len*/;
+    }
+    /* node is 0 or 1 so it does not have extra bits */
+  }
+  desc.max_code = max_code;
+
+  /* The elements heap[heap_len/2+1 .. heap_len] are leaves of the tree,
+   * establish sub-heaps of increasing lengths:
+   */
+  for (n = (s.heap_len >> 1/*int /2*/); n >= 1; n--) { pqdownheap(s, tree, n); }
+
+  /* Construct the Huffman tree by repeatedly combining the least two
+   * frequent nodes.
+   */
+  node = elems;              /* next internal node of the tree */
+  do {
+    //pqremove(s, tree, n);  /* n = node of least frequency */
+    /*** pqremove ***/
+    n = s.heap[1/*SMALLEST*/];
+    s.heap[1/*SMALLEST*/] = s.heap[s.heap_len--];
+    pqdownheap(s, tree, 1/*SMALLEST*/);
+    /***/
+
+    m = s.heap[1/*SMALLEST*/]; /* m = node of next least frequency */
+
+    s.heap[--s.heap_max] = n; /* keep the nodes sorted by frequency */
+    s.heap[--s.heap_max] = m;
+
+    /* Create a new node father of n and m */
+    tree[node * 2]/*.Freq*/ = tree[n * 2]/*.Freq*/ + tree[m * 2]/*.Freq*/;
+    s.depth[node] = (s.depth[n] >= s.depth[m] ? s.depth[n] : s.depth[m]) + 1;
+    tree[n * 2 + 1]/*.Dad*/ = tree[m * 2 + 1]/*.Dad*/ = node;
+
+    /* and insert the new node in the heap */
+    s.heap[1/*SMALLEST*/] = node++;
+    pqdownheap(s, tree, 1/*SMALLEST*/);
+
+  } while (s.heap_len >= 2);
+
+  s.heap[--s.heap_max] = s.heap[1/*SMALLEST*/];
+
+  /* At this point, the fields freq and dad are set. We can now
+   * generate the bit lengths.
+   */
+  gen_bitlen(s, desc);
+
+  /* The field len is now set, we can generate the bit codes */
+  gen_codes(tree, max_code, s.bl_count);
+}
+
+
+/* ===========================================================================
+ * Scan a literal or distance tree to determine the frequencies of the codes
+ * in the bit length tree.
+ */
+function scan_tree(s, tree, max_code)
+//    deflate_state *s;
+//    ct_data *tree;   /* the tree to be scanned */
+//    int max_code;    /* and its largest code of non zero frequency */
+{
+  var n;                     /* iterates over all tree elements */
+  var prevlen = -1;          /* last emitted length */
+  var curlen;                /* length of current code */
+
+  var nextlen = tree[0 * 2 + 1]/*.Len*/; /* length of next code */
+
+  var count = 0;             /* repeat count of the current code */
+  var max_count = 7;         /* max repeat count */
+  var min_count = 4;         /* min repeat count */
+
+  if (nextlen === 0) {
+    max_count = 138;
+    min_count = 3;
+  }
+  tree[(max_code + 1) * 2 + 1]/*.Len*/ = 0xffff; /* guard */
+
+  for (n = 0; n <= max_code; n++) {
+    curlen = nextlen;
+    nextlen = tree[(n + 1) * 2 + 1]/*.Len*/;
+
+    if (++count < max_count && curlen === nextlen) {
+      continue;
+
+    } else if (count < min_count) {
+      s.bl_tree[curlen * 2]/*.Freq*/ += count;
+
+    } else if (curlen !== 0) {
+
+      if (curlen !== prevlen) { s.bl_tree[curlen * 2]/*.Freq*/++; }
+      s.bl_tree[REP_3_6 * 2]/*.Freq*/++;
+
+    } else if (count <= 10) {
+      s.bl_tree[REPZ_3_10 * 2]/*.Freq*/++;
+
+    } else {
+      s.bl_tree[REPZ_11_138 * 2]/*.Freq*/++;
+    }
+
+    count = 0;
+    prevlen = curlen;
+
+    if (nextlen === 0) {
+      max_count = 138;
+      min_count = 3;
+
+    } else if (curlen === nextlen) {
+      max_count = 6;
+      min_count = 3;
+
+    } else {
+      max_count = 7;
+      min_count = 4;
+    }
+  }
+}
+
+
+/* ===========================================================================
+ * Send a literal or distance tree in compressed form, using the codes in
+ * bl_tree.
+ */
+function send_tree(s, tree, max_code)
+//    deflate_state *s;
+//    ct_data *tree; /* the tree to be scanned */
+//    int max_code;       /* and its largest code of non zero frequency */
+{
+  var n;                     /* iterates over all tree elements */
+  var prevlen = -1;          /* last emitted length */
+  var curlen;                /* length of current code */
+
+  var nextlen = tree[0 * 2 + 1]/*.Len*/; /* length of next code */
+
+  var count = 0;             /* repeat count of the current code */
+  var max_count = 7;         /* max repeat count */
+  var min_count = 4;         /* min repeat count */
+
+  /* tree[max_code+1].Len = -1; */  /* guard already set */
+  if (nextlen === 0) {
+    max_count = 138;
+    min_count = 3;
+  }
+
+  for (n = 0; n <= max_code; n++) {
+    curlen = nextlen;
+    nextlen = tree[(n + 1) * 2 + 1]/*.Len*/;
+
+    if (++count < max_count && curlen === nextlen) {
+      continue;
+
+    } else if (count < min_count) {
+      do { send_code(s, curlen, s.bl_tree); } while (--count !== 0);
+
+    } else if (curlen !== 0) {
+      if (curlen !== prevlen) {
+        send_code(s, curlen, s.bl_tree);
+        count--;
+      }
+      //Assert(count >= 3 && count <= 6, " 3_6?");
+      send_code(s, REP_3_6, s.bl_tree);
+      send_bits(s, count - 3, 2);
+
+    } else if (count <= 10) {
+      send_code(s, REPZ_3_10, s.bl_tree);
+      send_bits(s, count - 3, 3);
+
+    } else {
+      send_code(s, REPZ_11_138, s.bl_tree);
+      send_bits(s, count - 11, 7);
+    }
+
+    count = 0;
+    prevlen = curlen;
+    if (nextlen === 0) {
+      max_count = 138;
+      min_count = 3;
+
+    } else if (curlen === nextlen) {
+      max_count = 6;
+      min_count = 3;
+
+    } else {
+      max_count = 7;
+      min_count = 4;
+    }
+  }
+}
+
+
+/* ===========================================================================
+ * Construct the Huffman tree for the bit lengths and return the index in
+ * bl_order of the last bit length code to send.
+ */
+function build_bl_tree(s) {
+  var max_blindex;  /* index of last bit length code of non zero freq */
+
+  /* Determine the bit length frequencies for literal and distance trees */
+  scan_tree(s, s.dyn_ltree, s.l_desc.max_code);
+  scan_tree(s, s.dyn_dtree, s.d_desc.max_code);
+
+  /* Build the bit length tree: */
+  build_tree(s, s.bl_desc);
+  /* opt_len now includes the length of the tree representations, except
+   * the lengths of the bit lengths codes and the 5+5+4 bits for the counts.
+   */
+
+  /* Determine the number of bit length codes to send. The pkzip format
+   * requires that at least 4 bit length codes be sent. (appnote.txt says
+   * 3 but the actual value used is 4.)
+   */
+  for (max_blindex = BL_CODES - 1; max_blindex >= 3; max_blindex--) {
+    if (s.bl_tree[bl_order[max_blindex] * 2 + 1]/*.Len*/ !== 0) {
+      break;
+    }
+  }
+  /* Update opt_len to include the bit length tree and counts */
+  s.opt_len += 3 * (max_blindex + 1) + 5 + 5 + 4;
+  //Tracev((stderr, "\ndyn trees: dyn %ld, stat %ld",
+  //        s->opt_len, s->static_len));
+
+  return max_blindex;
+}
+
+
+/* ===========================================================================
+ * Send the header for a block using dynamic Huffman trees: the counts, the
+ * lengths of the bit length codes, the literal tree and the distance tree.
+ * IN assertion: lcodes >= 257, dcodes >= 1, blcodes >= 4.
+ */
+function send_all_trees(s, lcodes, dcodes, blcodes)
+//    deflate_state *s;
+//    int lcodes, dcodes, blcodes; /* number of codes for each tree */
+{
+  var rank;                    /* index in bl_order */
+
+  //Assert (lcodes >= 257 && dcodes >= 1 && blcodes >= 4, "not enough codes");
+  //Assert (lcodes <= L_CODES && dcodes <= D_CODES && blcodes <= BL_CODES,
+  //        "too many codes");
+  //Tracev((stderr, "\nbl counts: "));
+  send_bits(s, lcodes - 257, 5); /* not +255 as stated in appnote.txt */
+  send_bits(s, dcodes - 1,   5);
+  send_bits(s, blcodes - 4,  4); /* not -3 as stated in appnote.txt */
+  for (rank = 0; rank < blcodes; rank++) {
+    //Tracev((stderr, "\nbl code %2d ", bl_order[rank]));
+    send_bits(s, s.bl_tree[bl_order[rank] * 2 + 1]/*.Len*/, 3);
+  }
+  //Tracev((stderr, "\nbl tree: sent %ld", s->bits_sent));
+
+  send_tree(s, s.dyn_ltree, lcodes - 1); /* literal tree */
+  //Tracev((stderr, "\nlit tree: sent %ld", s->bits_sent));
+
+  send_tree(s, s.dyn_dtree, dcodes - 1); /* distance tree */
+  //Tracev((stderr, "\ndist tree: sent %ld", s->bits_sent));
+}
+
+
+/* ===========================================================================
+ * Check if the data type is TEXT or BINARY, using the following algorithm:
+ * - TEXT if the two conditions below are satisfied:
+ *    a) There are no non-portable control characters belonging to the
+ *       "black list" (0..6, 14..25, 28..31).
+ *    b) There is at least one printable character belonging to the
+ *       "white list" (9 {TAB}, 10 {LF}, 13 {CR}, 32..255).
+ * - BINARY otherwise.
+ * - The following partially-portable control characters form a
+ *   "gray list" that is ignored in this detection algorithm:
+ *   (7 {BEL}, 8 {BS}, 11 {VT}, 12 {FF}, 26 {SUB}, 27 {ESC}).
+ * IN assertion: the fields Freq of dyn_ltree are set.
+ */
+function detect_data_type(s) {
+  /* black_mask is the bit mask of black-listed bytes
+   * set bits 0..6, 14..25, and 28..31
+   * 0xf3ffc07f = binary 11110011111111111100000001111111
+   */
+  var black_mask = 0xf3ffc07f;
+  var n;
+
+  /* Check for non-textual ("black-listed") bytes. */
+  for (n = 0; n <= 31; n++, black_mask >>>= 1) {
+    if ((black_mask & 1) && (s.dyn_ltree[n * 2]/*.Freq*/ !== 0)) {
+      return Z_BINARY;
+    }
+  }
+
+  /* Check for textual ("white-listed") bytes. */
+  if (s.dyn_ltree[9 * 2]/*.Freq*/ !== 0 || s.dyn_ltree[10 * 2]/*.Freq*/ !== 0 ||
+      s.dyn_ltree[13 * 2]/*.Freq*/ !== 0) {
+    return Z_TEXT;
+  }
+  for (n = 32; n < LITERALS; n++) {
+    if (s.dyn_ltree[n * 2]/*.Freq*/ !== 0) {
+      return Z_TEXT;
+    }
+  }
+
+  /* There are no "black-listed" or "white-listed" bytes:
+   * this stream either is empty or has tolerated ("gray-listed") bytes only.
+   */
+  return Z_BINARY;
+}
+
+
+var static_init_done = false;
+
+/* ===========================================================================
+ * Initialize the tree data structures for a new zlib stream.
+ */
+function _tr_init(s)
+{
+
+  if (!static_init_done) {
+    tr_static_init();
+    static_init_done = true;
+  }
+
+  s.l_desc  = new TreeDesc(s.dyn_ltree, static_l_desc);
+  s.d_desc  = new TreeDesc(s.dyn_dtree, static_d_desc);
+  s.bl_desc = new TreeDesc(s.bl_tree, static_bl_desc);
+
+  s.bi_buf = 0;
+  s.bi_valid = 0;
+
+  /* Initialize the first block of the first file: */
+  init_block(s);
+}
+
+
+/* ===========================================================================
+ * Send a stored block
+ */
+function _tr_stored_block(s, buf, stored_len, last)
+//DeflateState *s;
+//charf *buf;       /* input block */
+//ulg stored_len;   /* length of input block */
+//int last;         /* one if this is the last block for a file */
+{
+  send_bits(s, (STORED_BLOCK << 1) + (last ? 1 : 0), 3);    /* send block type */
+  copy_block(s, buf, stored_len, true); /* with header */
+}
+
+
+/* ===========================================================================
+ * Send one empty static block to give enough lookahead for inflate.
+ * This takes 10 bits, of which 7 may remain in the bit buffer.
+ */
+function _tr_align(s) {
+  send_bits(s, STATIC_TREES << 1, 3);
+  send_code(s, END_BLOCK, static_ltree);
+  bi_flush(s);
+}
+
+
+/* ===========================================================================
+ * Determine the best encoding for the current block: dynamic trees, static
+ * trees or store, and output the encoded block to the zip file.
+ */
+function _tr_flush_block(s, buf, stored_len, last)
+//DeflateState *s;
+//charf *buf;       /* input block, or NULL if too old */
+//ulg stored_len;   /* length of input block */
+//int last;         /* one if this is the last block for a file */
+{
+  var opt_lenb, static_lenb;  /* opt_len and static_len in bytes */
+  var max_blindex = 0;        /* index of last bit length code of non zero freq */
+
+  /* Build the Huffman trees unless a stored block is forced */
+  if (s.level > 0) {
+
+    /* Check if the file is binary or text */
+    if (s.strm.data_type === Z_UNKNOWN) {
+      s.strm.data_type = detect_data_type(s);
+    }
+
+    /* Construct the literal and distance trees */
+    build_tree(s, s.l_desc);
+    // Tracev((stderr, "\nlit data: dyn %ld, stat %ld", s->opt_len,
+    //        s->static_len));
+
+    build_tree(s, s.d_desc);
+    // Tracev((stderr, "\ndist data: dyn %ld, stat %ld", s->opt_len,
+    //        s->static_len));
+    /* At this point, opt_len and static_len are the total bit lengths of
+     * the compressed block data, excluding the tree representations.
+     */
+
+    /* Build the bit length tree for the above two trees, and get the index
+     * in bl_order of the last bit length code to send.
+     */
+    max_blindex = build_bl_tree(s);
+
+    /* Determine the best encoding. Compute the block lengths in bytes. */
+    opt_lenb = (s.opt_len + 3 + 7) >>> 3;
+    static_lenb = (s.static_len + 3 + 7) >>> 3;
+
+    // Tracev((stderr, "\nopt %lu(%lu) stat %lu(%lu) stored %lu lit %u ",
+    //        opt_lenb, s->opt_len, static_lenb, s->static_len, stored_len,
+    //        s->last_lit));
+
+    if (static_lenb <= opt_lenb) { opt_lenb = static_lenb; }
+
+  } else {
+    // Assert(buf != (char*)0, "lost buf");
+    opt_lenb = static_lenb = stored_len + 5; /* force a stored block */
+  }
+
+  if ((stored_len + 4 <= opt_lenb) && (buf !== -1)) {
+    /* 4: two words for the lengths */
+
+    /* The test buf != NULL is only necessary if LIT_BUFSIZE > WSIZE.
+     * Otherwise we can't have processed more than WSIZE input bytes since
+     * the last block flush, because compression would have been
+     * successful. If LIT_BUFSIZE <= WSIZE, it is never too late to
+     * transform a block into a stored block.
+     */
+    _tr_stored_block(s, buf, stored_len, last);
+
+  } else if (s.strategy === Z_FIXED || static_lenb === opt_lenb) {
+
+    send_bits(s, (STATIC_TREES << 1) + (last ? 1 : 0), 3);
+    compress_block(s, static_ltree, static_dtree);
+
+  } else {
+    send_bits(s, (DYN_TREES << 1) + (last ? 1 : 0), 3);
+    send_all_trees(s, s.l_desc.max_code + 1, s.d_desc.max_code + 1, max_blindex + 1);
+    compress_block(s, s.dyn_ltree, s.dyn_dtree);
+  }
+  // Assert (s->compressed_len == s->bits_sent, "bad compressed size");
+  /* The above check is made mod 2^32, for files larger than 512 MB
+   * and uLong implemented on 32 bits.
+   */
+  init_block(s);
+
+  if (last) {
+    bi_windup(s);
+  }
+  // Tracev((stderr,"\ncomprlen %lu(%lu) ", s->compressed_len>>3,
+  //       s->compressed_len-7*last));
+}
+
+/* ===========================================================================
+ * Save the match info and tally the frequency counts. Return true if
+ * the current block must be flushed.
+ */
+function _tr_tally(s, dist, lc)
+//    deflate_state *s;
+//    unsigned dist;  /* distance of matched string */
+//    unsigned lc;    /* match length-MIN_MATCH or unmatched char (if dist==0) */
+{
+  //var out_length, in_length, dcode;
+
+  s.pending_buf[s.d_buf + s.last_lit * 2]     = (dist >>> 8) & 0xff;
+  s.pending_buf[s.d_buf + s.last_lit * 2 + 1] = dist & 0xff;
+
+  s.pending_buf[s.l_buf + s.last_lit] = lc & 0xff;
+  s.last_lit++;
+
+  if (dist === 0) {
+    /* lc is the unmatched char */
+    s.dyn_ltree[lc * 2]/*.Freq*/++;
+  } else {
+    s.matches++;
+    /* Here, lc is the match length - MIN_MATCH */
+    dist--;             /* dist = match distance - 1 */
+    //Assert((ush)dist < (ush)MAX_DIST(s) &&
+    //       (ush)lc <= (ush)(MAX_MATCH-MIN_MATCH) &&
+    //       (ush)d_code(dist) < (ush)D_CODES,  "_tr_tally: bad match");
+
+    s.dyn_ltree[(_length_code[lc] + LITERALS + 1) * 2]/*.Freq*/++;
+    s.dyn_dtree[d_code(dist) * 2]/*.Freq*/++;
+  }
+
+// (!) This block is disabled in zlib defaults,
+// don't enable it for binary compatibility
+
+//#ifdef TRUNCATE_BLOCK
+//  /* Try to guess if it is profitable to stop the current block here */
+//  if ((s.last_lit & 0x1fff) === 0 && s.level > 2) {
+//    /* Compute an upper bound for the compressed length */
+//    out_length = s.last_lit*8;
+//    in_length = s.strstart - s.block_start;
+//
+//    for (dcode = 0; dcode < D_CODES; dcode++) {
+//      out_length += s.dyn_dtree[dcode*2]/*.Freq*/ * (5 + extra_dbits[dcode]);
+//    }
+//    out_length >>>= 3;
+//    //Tracev((stderr,"\nlast_lit %u, in %ld, out ~%ld(%ld%%) ",
+//    //       s->last_lit, in_length, out_length,
+//    //       100L - out_length*100L/in_length));
+//    if (s.matches < (s.last_lit>>1)/*int /2*/ && out_length < (in_length>>1)/*int /2*/) {
+//      return true;
+//    }
+//  }
+//#endif
+
+  return (s.last_lit === s.lit_bufsize - 1);
+  /* We avoid equality with lit_bufsize because of wraparound at 64K
+   * on 16 bit machines and because stored blocks are restricted to
+   * 64K-1 bytes.
+   */
+}
+
+exports._tr_init  = _tr_init;
+exports._tr_stored_block = _tr_stored_block;
+exports._tr_flush_block  = _tr_flush_block;
+exports._tr_tally = _tr_tally;
+exports._tr_align = _tr_align;
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+
+var zlib_inflate = __webpack_require__(12);
+var utils        = __webpack_require__(0);
+var strings      = __webpack_require__(4);
+var c            = __webpack_require__(6);
+var msg          = __webpack_require__(1);
+var ZStream      = __webpack_require__(5);
+var GZheader     = __webpack_require__(15);
+
+var toString = Object.prototype.toString;
+
+/**
+ * class Inflate
+ *
+ * Generic JS-style wrapper for zlib calls. If you don't need
+ * streaming behaviour - use more simple functions: [[inflate]]
+ * and [[inflateRaw]].
+ **/
+
+/* internal
+ * inflate.chunks -> Array
+ *
+ * Chunks of output data, if [[Inflate#onData]] not overridden.
+ **/
+
+/**
+ * Inflate.result -> Uint8Array|Array|String
+ *
+ * Uncompressed result, generated by default [[Inflate#onData]]
+ * and [[Inflate#onEnd]] handlers. Filled after you push last chunk
+ * (call [[Inflate#push]] with `Z_FINISH` / `true` param) or if you
+ * push a chunk with explicit flush (call [[Inflate#push]] with
+ * `Z_SYNC_FLUSH` param).
+ **/
+
+/**
+ * Inflate.err -> Number
+ *
+ * Error code after inflate finished. 0 (Z_OK) on success.
+ * Should be checked if broken data possible.
+ **/
+
+/**
+ * Inflate.msg -> String
+ *
+ * Error message, if [[Inflate.err]] != 0
+ **/
+
+
+/**
+ * new Inflate(options)
+ * - options (Object): zlib inflate options.
+ *
+ * Creates new inflator instance with specified params. Throws exception
+ * on bad params. Supported options:
+ *
+ * - `windowBits`
+ * - `dictionary`
+ *
+ * [http://zlib.net/manual.html#Advanced](http://zlib.net/manual.html#Advanced)
+ * for more information on these.
+ *
+ * Additional options, for internal needs:
+ *
+ * - `chunkSize` - size of generated data chunks (16K by default)
+ * - `raw` (Boolean) - do raw inflate
+ * - `to` (String) - if equal to 'string', then result will be converted
+ *   from utf8 to utf16 (javascript) string. When string output requested,
+ *   chunk length can differ from `chunkSize`, depending on content.
+ *
+ * By default, when no options set, autodetect deflate/gzip data format via
+ * wrapper header.
+ *
+ * ##### Example:
+ *
+ * ```javascript
+ * var pako = require('pako')
+ *   , chunk1 = Uint8Array([1,2,3,4,5,6,7,8,9])
+ *   , chunk2 = Uint8Array([10,11,12,13,14,15,16,17,18,19]);
+ *
+ * var inflate = new pako.Inflate({ level: 3});
+ *
+ * inflate.push(chunk1, false);
+ * inflate.push(chunk2, true);  // true -> last chunk
+ *
+ * if (inflate.err) { throw new Error(inflate.err); }
+ *
+ * console.log(inflate.result);
+ * ```
+ **/
+function Inflate(options) {
+  if (!(this instanceof Inflate)) return new Inflate(options);
+
+  this.options = utils.assign({
+    chunkSize: 16384,
+    windowBits: 0,
+    to: ''
+  }, options || {});
+
+  var opt = this.options;
+
+  // Force window size for `raw` data, if not set directly,
+  // because we have no header for autodetect.
+  if (opt.raw && (opt.windowBits >= 0) && (opt.windowBits < 16)) {
+    opt.windowBits = -opt.windowBits;
+    if (opt.windowBits === 0) { opt.windowBits = -15; }
+  }
+
+  // If `windowBits` not defined (and mode not raw) - set autodetect flag for gzip/deflate
+  if ((opt.windowBits >= 0) && (opt.windowBits < 16) &&
+      !(options && options.windowBits)) {
+    opt.windowBits += 32;
+  }
+
+  // Gzip header has no info about windows size, we can do autodetect only
+  // for deflate. So, if window size not set, force it to max when gzip possible
+  if ((opt.windowBits > 15) && (opt.windowBits < 48)) {
+    // bit 3 (16) -> gzipped data
+    // bit 4 (32) -> autodetect gzip/deflate
+    if ((opt.windowBits & 15) === 0) {
+      opt.windowBits |= 15;
+    }
+  }
+
+  this.err    = 0;      // error code, if happens (0 = Z_OK)
+  this.msg    = '';     // error message
+  this.ended  = false;  // used to avoid multiple onEnd() calls
+  this.chunks = [];     // chunks of compressed data
+
+  this.strm   = new ZStream();
+  this.strm.avail_out = 0;
+
+  var status  = zlib_inflate.inflateInit2(
+    this.strm,
+    opt.windowBits
+  );
+
+  if (status !== c.Z_OK) {
+    throw new Error(msg[status]);
+  }
+
+  this.header = new GZheader();
+
+  zlib_inflate.inflateGetHeader(this.strm, this.header);
+
+  // Setup dictionary
+  if (opt.dictionary) {
+    // Convert data if needed
+    if (typeof opt.dictionary === 'string') {
+      opt.dictionary = strings.string2buf(opt.dictionary);
+    } else if (toString.call(opt.dictionary) === '[object ArrayBuffer]') {
+      opt.dictionary = new Uint8Array(opt.dictionary);
+    }
+    if (opt.raw) { //In raw mode we need to set the dictionary early
+      status = zlib_inflate.inflateSetDictionary(this.strm, opt.dictionary);
+      if (status !== c.Z_OK) {
+        throw new Error(msg[status]);
+      }
+    }
+  }
+}
+
+/**
+ * Inflate#push(data[, mode]) -> Boolean
+ * - data (Uint8Array|Array|ArrayBuffer|String): input data
+ * - mode (Number|Boolean): 0..6 for corresponding Z_NO_FLUSH..Z_TREE modes.
+ *   See constants. Skipped or `false` means Z_NO_FLUSH, `true` means Z_FINISH.
+ *
+ * Sends input data to inflate pipe, generating [[Inflate#onData]] calls with
+ * new output chunks. Returns `true` on success. The last data block must have
+ * mode Z_FINISH (or `true`). That will flush internal pending buffers and call
+ * [[Inflate#onEnd]]. For interim explicit flushes (without ending the stream) you
+ * can use mode Z_SYNC_FLUSH, keeping the decompression context.
+ *
+ * On fail call [[Inflate#onEnd]] with error code and return false.
+ *
+ * We strongly recommend to use `Uint8Array` on input for best speed (output
+ * format is detected automatically). Also, don't skip last param and always
+ * use the same type in your code (boolean or number). That will improve JS speed.
+ *
+ * For regular `Array`-s make sure all elements are [0..255].
+ *
+ * ##### Example
+ *
+ * ```javascript
+ * push(chunk, false); // push one of data chunks
+ * ...
+ * push(chunk, true);  // push last chunk
+ * ```
+ **/
+Inflate.prototype.push = function (data, mode) {
+  var strm = this.strm;
+  var chunkSize = this.options.chunkSize;
+  var dictionary = this.options.dictionary;
+  var status, _mode;
+  var next_out_utf8, tail, utf8str;
+
+  // Flag to properly process Z_BUF_ERROR on testing inflate call
+  // when we check that all output data was flushed.
+  var allowBufError = false;
+
+  if (this.ended) { return false; }
+  _mode = (mode === ~~mode) ? mode : ((mode === true) ? c.Z_FINISH : c.Z_NO_FLUSH);
+
+  // Convert data if needed
+  if (typeof data === 'string') {
+    // Only binary strings can be decompressed on practice
+    strm.input = strings.binstring2buf(data);
+  } else if (toString.call(data) === '[object ArrayBuffer]') {
+    strm.input = new Uint8Array(data);
+  } else {
+    strm.input = data;
+  }
+
+  strm.next_in = 0;
+  strm.avail_in = strm.input.length;
+
+  do {
+    if (strm.avail_out === 0) {
+      strm.output = new utils.Buf8(chunkSize);
+      strm.next_out = 0;
+      strm.avail_out = chunkSize;
+    }
+
+    status = zlib_inflate.inflate(strm, c.Z_NO_FLUSH);    /* no bad return value */
+
+    if (status === c.Z_NEED_DICT && dictionary) {
+      status = zlib_inflate.inflateSetDictionary(this.strm, dictionary);
+    }
+
+    if (status === c.Z_BUF_ERROR && allowBufError === true) {
+      status = c.Z_OK;
+      allowBufError = false;
+    }
+
+    if (status !== c.Z_STREAM_END && status !== c.Z_OK) {
+      this.onEnd(status);
+      this.ended = true;
+      return false;
+    }
+
+    if (strm.next_out) {
+      if (strm.avail_out === 0 || status === c.Z_STREAM_END || (strm.avail_in === 0 && (_mode === c.Z_FINISH || _mode === c.Z_SYNC_FLUSH))) {
+
+        if (this.options.to === 'string') {
+
+          next_out_utf8 = strings.utf8border(strm.output, strm.next_out);
+
+          tail = strm.next_out - next_out_utf8;
+          utf8str = strings.buf2string(strm.output, next_out_utf8);
+
+          // move tail
+          strm.next_out = tail;
+          strm.avail_out = chunkSize - tail;
+          if (tail) { utils.arraySet(strm.output, strm.output, next_out_utf8, tail, 0); }
+
+          this.onData(utf8str);
+
+        } else {
+          this.onData(utils.shrinkBuf(strm.output, strm.next_out));
+        }
+      }
+    }
+
+    // When no more input data, we should check that internal inflate buffers
+    // are flushed. The only way to do it when avail_out = 0 - run one more
+    // inflate pass. But if output data not exists, inflate return Z_BUF_ERROR.
+    // Here we set flag to process this error properly.
+    //
+    // NOTE. Deflate does not return error in this case and does not needs such
+    // logic.
+    if (strm.avail_in === 0 && strm.avail_out === 0) {
+      allowBufError = true;
+    }
+
+  } while ((strm.avail_in > 0 || strm.avail_out === 0) && status !== c.Z_STREAM_END);
+
+  if (status === c.Z_STREAM_END) {
+    _mode = c.Z_FINISH;
+  }
+
+  // Finalize on the last chunk.
+  if (_mode === c.Z_FINISH) {
+    status = zlib_inflate.inflateEnd(this.strm);
+    this.onEnd(status);
+    this.ended = true;
+    return status === c.Z_OK;
+  }
+
+  // callback interim results if Z_SYNC_FLUSH.
+  if (_mode === c.Z_SYNC_FLUSH) {
+    this.onEnd(c.Z_OK);
+    strm.avail_out = 0;
+    return true;
+  }
+
+  return true;
+};
+
+
+/**
+ * Inflate#onData(chunk) -> Void
+ * - chunk (Uint8Array|Array|String): output data. Type of array depends
+ *   on js engine support. When string output requested, each chunk
+ *   will be string.
+ *
+ * By default, stores data blocks in `chunks[]` property and glue
+ * those in `onEnd`. Override this handler, if you need another behaviour.
+ **/
+Inflate.prototype.onData = function (chunk) {
+  this.chunks.push(chunk);
+};
+
+
+/**
+ * Inflate#onEnd(status) -> Void
+ * - status (Number): inflate status. 0 (Z_OK) on success,
+ *   other if not.
+ *
+ * Called either after you tell inflate that the input stream is
+ * complete (Z_FINISH) or should be flushed (Z_SYNC_FLUSH)
+ * or if an error happened. By default - join collected chunks,
+ * free memory and fill `results` / `err` properties.
+ **/
+Inflate.prototype.onEnd = function (status) {
+  // On success - join
+  if (status === c.Z_OK) {
+    if (this.options.to === 'string') {
+      // Glue & convert here, until we teach pako to send
+      // utf8 aligned strings to onData
+      this.result = this.chunks.join('');
+    } else {
+      this.result = utils.flattenChunks(this.chunks);
+    }
+  }
+  this.chunks = [];
+  this.err = status;
+  this.msg = this.strm.msg;
+};
+
+
+/**
+ * inflate(data[, options]) -> Uint8Array|Array|String
+ * - data (Uint8Array|Array|String): input data to decompress.
+ * - options (Object): zlib inflate options.
+ *
+ * Decompress `data` with inflate/ungzip and `options`. Autodetect
+ * format via wrapper header by default. That's why we don't provide
+ * separate `ungzip` method.
+ *
+ * Supported options are:
+ *
+ * - windowBits
+ *
+ * [http://zlib.net/manual.html#Advanced](http://zlib.net/manual.html#Advanced)
+ * for more information.
+ *
+ * Sugar (options):
+ *
+ * - `raw` (Boolean) - say that we work with raw stream, if you don't wish to specify
+ *   negative windowBits implicitly.
+ * - `to` (String) - if equal to 'string', then result will be converted
+ *   from utf8 to utf16 (javascript) string. When string output requested,
+ *   chunk length can differ from `chunkSize`, depending on content.
+ *
+ *
+ * ##### Example:
+ *
+ * ```javascript
+ * var pako = require('pako')
+ *   , input = pako.deflate([1,2,3,4,5,6,7,8,9])
+ *   , output;
+ *
+ * try {
+ *   output = pako.inflate(input);
+ * } catch (err)
+ *   console.log(err);
+ * }
+ * ```
+ **/
+function inflate(input, options) {
+  var inflator = new Inflate(options);
+
+  inflator.push(input, true);
+
+  // That will never happens, if you don't cheat with options :)
+  if (inflator.err) { throw inflator.msg || msg[inflator.err]; }
+
+  return inflator.result;
+}
+
+
+/**
+ * inflateRaw(data[, options]) -> Uint8Array|Array|String
+ * - data (Uint8Array|Array|String): input data to decompress.
+ * - options (Object): zlib inflate options.
+ *
+ * The same as [[inflate]], but creates raw data, without wrapper
+ * (header and adler32 crc).
+ **/
+function inflateRaw(input, options) {
+  options = options || {};
+  options.raw = true;
+  return inflate(input, options);
+}
+
+
+/**
+ * ungzip(data[, options]) -> Uint8Array|Array|String
+ * - data (Uint8Array|Array|String): input data to decompress.
+ * - options (Object): zlib inflate options.
+ *
+ * Just shortcut to [[inflate]], because it autodetects format
+ * by header.content. Done for convenience.
+ **/
+
+
+exports.Inflate = Inflate;
+exports.inflate = inflate;
+exports.inflateRaw = inflateRaw;
+exports.ungzip  = inflate;
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+var utils         = __webpack_require__(0);
+var adler32       = __webpack_require__(2);
+var crc32         = __webpack_require__(3);
+var inflate_fast  = __webpack_require__(13);
+var inflate_table = __webpack_require__(14);
+
+var CODES = 0;
+var LENS = 1;
+var DISTS = 2;
+
+/* Public constants ==========================================================*/
+/* ===========================================================================*/
+
+
+/* Allowed flush values; see deflate() and inflate() below for details */
+//var Z_NO_FLUSH      = 0;
+//var Z_PARTIAL_FLUSH = 1;
+//var Z_SYNC_FLUSH    = 2;
+//var Z_FULL_FLUSH    = 3;
+var Z_FINISH        = 4;
+var Z_BLOCK         = 5;
+var Z_TREES         = 6;
+
+
+/* Return codes for the compression/decompression functions. Negative values
+ * are errors, positive values are used for special but normal events.
+ */
+var Z_OK            = 0;
+var Z_STREAM_END    = 1;
+var Z_NEED_DICT     = 2;
+//var Z_ERRNO         = -1;
+var Z_STREAM_ERROR  = -2;
+var Z_DATA_ERROR    = -3;
+var Z_MEM_ERROR     = -4;
+var Z_BUF_ERROR     = -5;
+//var Z_VERSION_ERROR = -6;
+
+/* The deflate compression method */
+var Z_DEFLATED  = 8;
+
+
+/* STATES ====================================================================*/
+/* ===========================================================================*/
+
+
+var    HEAD = 1;       /* i: waiting for magic header */
+var    FLAGS = 2;      /* i: waiting for method and flags (gzip) */
+var    TIME = 3;       /* i: waiting for modification time (gzip) */
+var    OS = 4;         /* i: waiting for extra flags and operating system (gzip) */
+var    EXLEN = 5;      /* i: waiting for extra length (gzip) */
+var    EXTRA = 6;      /* i: waiting for extra bytes (gzip) */
+var    NAME = 7;       /* i: waiting for end of file name (gzip) */
+var    COMMENT = 8;    /* i: waiting for end of comment (gzip) */
+var    HCRC = 9;       /* i: waiting for header crc (gzip) */
+var    DICTID = 10;    /* i: waiting for dictionary check value */
+var    DICT = 11;      /* waiting for inflateSetDictionary() call */
+var        TYPE = 12;      /* i: waiting for type bits, including last-flag bit */
+var        TYPEDO = 13;    /* i: same, but skip check to exit inflate on new block */
+var        STORED = 14;    /* i: waiting for stored size (length and complement) */
+var        COPY_ = 15;     /* i/o: same as COPY below, but only first time in */
+var        COPY = 16;      /* i/o: waiting for input or output to copy stored block */
+var        TABLE = 17;     /* i: waiting for dynamic block table lengths */
+var        LENLENS = 18;   /* i: waiting for code length code lengths */
+var        CODELENS = 19;  /* i: waiting for length/lit and distance code lengths */
+var            LEN_ = 20;      /* i: same as LEN below, but only first time in */
+var            LEN = 21;       /* i: waiting for length/lit/eob code */
+var            LENEXT = 22;    /* i: waiting for length extra bits */
+var            DIST = 23;      /* i: waiting for distance code */
+var            DISTEXT = 24;   /* i: waiting for distance extra bits */
+var            MATCH = 25;     /* o: waiting for output space to copy string */
+var            LIT = 26;       /* o: waiting for output space to write literal */
+var    CHECK = 27;     /* i: waiting for 32-bit check value */
+var    LENGTH = 28;    /* i: waiting for 32-bit length (gzip) */
+var    DONE = 29;      /* finished check, done -- remain here until reset */
+var    BAD = 30;       /* got a data error -- remain here until reset */
+var    MEM = 31;       /* got an inflate() memory error -- remain here until reset */
+var    SYNC = 32;      /* looking for synchronization bytes to restart inflate() */
+
+/* ===========================================================================*/
+
+
+
+var ENOUGH_LENS = 852;
+var ENOUGH_DISTS = 592;
+//var ENOUGH =  (ENOUGH_LENS+ENOUGH_DISTS);
+
+var MAX_WBITS = 15;
+/* 32K LZ77 window */
+var DEF_WBITS = MAX_WBITS;
+
+
+function zswap32(q) {
+  return  (((q >>> 24) & 0xff) +
+          ((q >>> 8) & 0xff00) +
+          ((q & 0xff00) << 8) +
+          ((q & 0xff) << 24));
+}
+
+
+function InflateState() {
+  this.mode = 0;             /* current inflate mode */
+  this.last = false;          /* true if processing last block */
+  this.wrap = 0;              /* bit 0 true for zlib, bit 1 true for gzip */
+  this.havedict = false;      /* true if dictionary provided */
+  this.flags = 0;             /* gzip header method and flags (0 if zlib) */
+  this.dmax = 0;              /* zlib header max distance (INFLATE_STRICT) */
+  this.check = 0;             /* protected copy of check value */
+  this.total = 0;             /* protected copy of output count */
+  // TODO: may be {}
+  this.head = null;           /* where to save gzip header information */
+
+  /* sliding window */
+  this.wbits = 0;             /* log base 2 of requested window size */
+  this.wsize = 0;             /* window size or zero if not using window */
+  this.whave = 0;             /* valid bytes in the window */
+  this.wnext = 0;             /* window write index */
+  this.window = null;         /* allocated sliding window, if needed */
+
+  /* bit accumulator */
+  this.hold = 0;              /* input bit accumulator */
+  this.bits = 0;              /* number of bits in "in" */
+
+  /* for string and stored block copying */
+  this.length = 0;            /* literal or length of data to copy */
+  this.offset = 0;            /* distance back to copy string from */
+
+  /* for table and code decoding */
+  this.extra = 0;             /* extra bits needed */
+
+  /* fixed and dynamic code tables */
+  this.lencode = null;          /* starting table for length/literal codes */
+  this.distcode = null;         /* starting table for distance codes */
+  this.lenbits = 0;           /* index bits for lencode */
+  this.distbits = 0;          /* index bits for distcode */
+
+  /* dynamic table building */
+  this.ncode = 0;             /* number of code length code lengths */
+  this.nlen = 0;              /* number of length code lengths */
+  this.ndist = 0;             /* number of distance code lengths */
+  this.have = 0;              /* number of code lengths in lens[] */
+  this.next = null;              /* next available space in codes[] */
+
+  this.lens = new utils.Buf16(320); /* temporary storage for code lengths */
+  this.work = new utils.Buf16(288); /* work area for code table building */
+
+  /*
+   because we don't have pointers in js, we use lencode and distcode directly
+   as buffers so we don't need codes
+  */
+  //this.codes = new utils.Buf32(ENOUGH);       /* space for code tables */
+  this.lendyn = null;              /* dynamic table for length/literal codes (JS specific) */
+  this.distdyn = null;             /* dynamic table for distance codes (JS specific) */
+  this.sane = 0;                   /* if false, allow invalid distance too far */
+  this.back = 0;                   /* bits back of last unprocessed length/lit */
+  this.was = 0;                    /* initial length of match */
+}
+
+function inflateResetKeep(strm) {
+  var state;
+
+  if (!strm || !strm.state) { return Z_STREAM_ERROR; }
+  state = strm.state;
+  strm.total_in = strm.total_out = state.total = 0;
+  strm.msg = ''; /*Z_NULL*/
+  if (state.wrap) {       /* to support ill-conceived Java test suite */
+    strm.adler = state.wrap & 1;
+  }
+  state.mode = HEAD;
+  state.last = 0;
+  state.havedict = 0;
+  state.dmax = 32768;
+  state.head = null/*Z_NULL*/;
+  state.hold = 0;
+  state.bits = 0;
+  //state.lencode = state.distcode = state.next = state.codes;
+  state.lencode = state.lendyn = new utils.Buf32(ENOUGH_LENS);
+  state.distcode = state.distdyn = new utils.Buf32(ENOUGH_DISTS);
+
+  state.sane = 1;
+  state.back = -1;
+  //Tracev((stderr, "inflate: reset\n"));
+  return Z_OK;
+}
+
+function inflateReset(strm) {
+  var state;
+
+  if (!strm || !strm.state) { return Z_STREAM_ERROR; }
+  state = strm.state;
+  state.wsize = 0;
+  state.whave = 0;
+  state.wnext = 0;
+  return inflateResetKeep(strm);
+
+}
+
+function inflateReset2(strm, windowBits) {
+  var wrap;
+  var state;
+
+  /* get the state */
+  if (!strm || !strm.state) { return Z_STREAM_ERROR; }
+  state = strm.state;
+
+  /* extract wrap request from windowBits parameter */
+  if (windowBits < 0) {
+    wrap = 0;
+    windowBits = -windowBits;
+  }
+  else {
+    wrap = (windowBits >> 4) + 1;
+    if (windowBits < 48) {
+      windowBits &= 15;
+    }
+  }
+
+  /* set number of window bits, free window if different */
+  if (windowBits && (windowBits < 8 || windowBits > 15)) {
+    return Z_STREAM_ERROR;
+  }
+  if (state.window !== null && state.wbits !== windowBits) {
+    state.window = null;
+  }
+
+  /* update state and reset the rest of it */
+  state.wrap = wrap;
+  state.wbits = windowBits;
+  return inflateReset(strm);
+}
+
+function inflateInit2(strm, windowBits) {
+  var ret;
+  var state;
+
+  if (!strm) { return Z_STREAM_ERROR; }
+  //strm.msg = Z_NULL;                 /* in case we return an error */
+
+  state = new InflateState();
+
+  //if (state === Z_NULL) return Z_MEM_ERROR;
+  //Tracev((stderr, "inflate: allocated\n"));
+  strm.state = state;
+  state.window = null/*Z_NULL*/;
+  ret = inflateReset2(strm, windowBits);
+  if (ret !== Z_OK) {
+    strm.state = null/*Z_NULL*/;
+  }
+  return ret;
+}
+
+function inflateInit(strm) {
+  return inflateInit2(strm, DEF_WBITS);
+}
+
+
 /*
+ Return state with length and distance decoding tables and index sizes set to
+ fixed code decoding.  Normally this returns fixed tables from inffixed.h.
+ If BUILDFIXED is defined, then instead this routine builds the tables the
+ first time it's called, and returns those tables the first time and
+ thereafter.  This reduces the size of the code by about 2K bytes, in
+ exchange for a little execution time.  However, BUILDFIXED should not be
+ used for threaded applications, since the rewriting of the tables and virgin
+ may not be thread-safe.
+ */
+var virgin = true;
+
+var lenfix, distfix; // We have no pointers in JS, so keep tables separate
+
+function fixedtables(state) {
+  /* build fixed huffman tables if first call (may not be thread safe) */
+  if (virgin) {
+    var sym;
+
+    lenfix = new utils.Buf32(512);
+    distfix = new utils.Buf32(32);
+
+    /* literal/length table */
+    sym = 0;
+    while (sym < 144) { state.lens[sym++] = 8; }
+    while (sym < 256) { state.lens[sym++] = 9; }
+    while (sym < 280) { state.lens[sym++] = 7; }
+    while (sym < 288) { state.lens[sym++] = 8; }
+
+    inflate_table(LENS,  state.lens, 0, 288, lenfix,   0, state.work, { bits: 9 });
+
+    /* distance table */
+    sym = 0;
+    while (sym < 32) { state.lens[sym++] = 5; }
+
+    inflate_table(DISTS, state.lens, 0, 32,   distfix, 0, state.work, { bits: 5 });
+
+    /* do this just once */
+    virgin = false;
+  }
+
+  state.lencode = lenfix;
+  state.lenbits = 9;
+  state.distcode = distfix;
+  state.distbits = 5;
+}
+
+
+/*
+ Update the window with the last wsize (normally 32K) bytes written before
+ returning.  If window does not exist yet, create it.  This is only called
+ when a window is already in use, or when output has been written during this
+ inflate call, but the end of the deflate stream has not been reached yet.
+ It is also called to create a window for dictionary data when a dictionary
+ is loaded.
+
+ Providing output buffers larger than 32K to inflate() should provide a speed
+ advantage, since only the last 32K of output is copied to the sliding window
+ upon return from inflate(), and since all distances after the first 32K of
+ output will fall in the output data, making match copies simpler and faster.
+ The advantage may be dependent on the size of the processor's data caches.
+ */
+function updatewindow(strm, src, end, copy) {
+  var dist;
+  var state = strm.state;
+
+  /* if it hasn't been done already, allocate space for the window */
+  if (state.window === null) {
+    state.wsize = 1 << state.wbits;
+    state.wnext = 0;
+    state.whave = 0;
+
+    state.window = new utils.Buf8(state.wsize);
+  }
+
+  /* copy state->wsize or less output bytes into the circular window */
+  if (copy >= state.wsize) {
+    utils.arraySet(state.window, src, end - state.wsize, state.wsize, 0);
+    state.wnext = 0;
+    state.whave = state.wsize;
+  }
+  else {
+    dist = state.wsize - state.wnext;
+    if (dist > copy) {
+      dist = copy;
+    }
+    //zmemcpy(state->window + state->wnext, end - copy, dist);
+    utils.arraySet(state.window, src, end - copy, dist, state.wnext);
+    copy -= dist;
+    if (copy) {
+      //zmemcpy(state->window, end - copy, copy);
+      utils.arraySet(state.window, src, end - copy, copy, 0);
+      state.wnext = copy;
+      state.whave = state.wsize;
+    }
+    else {
+      state.wnext += dist;
+      if (state.wnext === state.wsize) { state.wnext = 0; }
+      if (state.whave < state.wsize) { state.whave += dist; }
+    }
+  }
+  return 0;
+}
+
+function inflate(strm, flush) {
+  var state;
+  var input, output;          // input/output buffers
+  var next;                   /* next input INDEX */
+  var put;                    /* next output INDEX */
+  var have, left;             /* available input and output */
+  var hold;                   /* bit buffer */
+  var bits;                   /* bits in bit buffer */
+  var _in, _out;              /* save starting available input and output */
+  var copy;                   /* number of stored or match bytes to copy */
+  var from;                   /* where to copy match bytes from */
+  var from_source;
+  var here = 0;               /* current decoding table entry */
+  var here_bits, here_op, here_val; // paked "here" denormalized (JS specific)
+  //var last;                   /* parent table entry */
+  var last_bits, last_op, last_val; // paked "last" denormalized (JS specific)
+  var len;                    /* length to copy for repeats, bits to drop */
+  var ret;                    /* return code */
+  var hbuf = new utils.Buf8(4);    /* buffer for gzip header crc calculation */
+  var opts;
+
+  var n; // temporary var for NEED_BITS
+
+  var order = /* permutation of code lengths */
+    [ 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15 ];
+
+
+  if (!strm || !strm.state || !strm.output ||
+      (!strm.input && strm.avail_in !== 0)) {
+    return Z_STREAM_ERROR;
+  }
+
+  state = strm.state;
+  if (state.mode === TYPE) { state.mode = TYPEDO; }    /* skip check */
+
+
+  //--- LOAD() ---
+  put = strm.next_out;
+  output = strm.output;
+  left = strm.avail_out;
+  next = strm.next_in;
+  input = strm.input;
+  have = strm.avail_in;
+  hold = state.hold;
+  bits = state.bits;
+  //---
+
+  _in = have;
+  _out = left;
+  ret = Z_OK;
+
+  inf_leave: // goto emulation
+  for (;;) {
+    switch (state.mode) {
+      case HEAD:
+        if (state.wrap === 0) {
+          state.mode = TYPEDO;
+          break;
+        }
+        //=== NEEDBITS(16);
+        while (bits < 16) {
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+        }
+        //===//
+        if ((state.wrap & 2) && hold === 0x8b1f) {  /* gzip header */
+          state.check = 0/*crc32(0L, Z_NULL, 0)*/;
+          //=== CRC2(state.check, hold);
+          hbuf[0] = hold & 0xff;
+          hbuf[1] = (hold >>> 8) & 0xff;
+          state.check = crc32(state.check, hbuf, 2, 0);
+          //===//
+
+          //=== INITBITS();
+          hold = 0;
+          bits = 0;
+          //===//
+          state.mode = FLAGS;
+          break;
+        }
+        state.flags = 0;           /* expect zlib header */
+        if (state.head) {
+          state.head.done = false;
+        }
+        if (!(state.wrap & 1) ||   /* check if zlib header allowed */
+          (((hold & 0xff)/*BITS(8)*/ << 8) + (hold >> 8)) % 31) {
+          strm.msg = 'incorrect header check';
+          state.mode = BAD;
+          break;
+        }
+        if ((hold & 0x0f)/*BITS(4)*/ !== Z_DEFLATED) {
+          strm.msg = 'unknown compression method';
+          state.mode = BAD;
+          break;
+        }
+        //--- DROPBITS(4) ---//
+        hold >>>= 4;
+        bits -= 4;
+        //---//
+        len = (hold & 0x0f)/*BITS(4)*/ + 8;
+        if (state.wbits === 0) {
+          state.wbits = len;
+        }
+        else if (len > state.wbits) {
+          strm.msg = 'invalid window size';
+          state.mode = BAD;
+          break;
+        }
+        state.dmax = 1 << len;
+        //Tracev((stderr, "inflate:   zlib header ok\n"));
+        strm.adler = state.check = 1/*adler32(0L, Z_NULL, 0)*/;
+        state.mode = hold & 0x200 ? DICTID : TYPE;
+        //=== INITBITS();
+        hold = 0;
+        bits = 0;
+        //===//
+        break;
+      case FLAGS:
+        //=== NEEDBITS(16); */
+        while (bits < 16) {
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+        }
+        //===//
+        state.flags = hold;
+        if ((state.flags & 0xff) !== Z_DEFLATED) {
+          strm.msg = 'unknown compression method';
+          state.mode = BAD;
+          break;
+        }
+        if (state.flags & 0xe000) {
+          strm.msg = 'unknown header flags set';
+          state.mode = BAD;
+          break;
+        }
+        if (state.head) {
+          state.head.text = ((hold >> 8) & 1);
+        }
+        if (state.flags & 0x0200) {
+          //=== CRC2(state.check, hold);
+          hbuf[0] = hold & 0xff;
+          hbuf[1] = (hold >>> 8) & 0xff;
+          state.check = crc32(state.check, hbuf, 2, 0);
+          //===//
+        }
+        //=== INITBITS();
+        hold = 0;
+        bits = 0;
+        //===//
+        state.mode = TIME;
+        /* falls through */
+      case TIME:
+        //=== NEEDBITS(32); */
+        while (bits < 32) {
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+        }
+        //===//
+        if (state.head) {
+          state.head.time = hold;
+        }
+        if (state.flags & 0x0200) {
+          //=== CRC4(state.check, hold)
+          hbuf[0] = hold & 0xff;
+          hbuf[1] = (hold >>> 8) & 0xff;
+          hbuf[2] = (hold >>> 16) & 0xff;
+          hbuf[3] = (hold >>> 24) & 0xff;
+          state.check = crc32(state.check, hbuf, 4, 0);
+          //===
+        }
+        //=== INITBITS();
+        hold = 0;
+        bits = 0;
+        //===//
+        state.mode = OS;
+        /* falls through */
+      case OS:
+        //=== NEEDBITS(16); */
+        while (bits < 16) {
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+        }
+        //===//
+        if (state.head) {
+          state.head.xflags = (hold & 0xff);
+          state.head.os = (hold >> 8);
+        }
+        if (state.flags & 0x0200) {
+          //=== CRC2(state.check, hold);
+          hbuf[0] = hold & 0xff;
+          hbuf[1] = (hold >>> 8) & 0xff;
+          state.check = crc32(state.check, hbuf, 2, 0);
+          //===//
+        }
+        //=== INITBITS();
+        hold = 0;
+        bits = 0;
+        //===//
+        state.mode = EXLEN;
+        /* falls through */
+      case EXLEN:
+        if (state.flags & 0x0400) {
+          //=== NEEDBITS(16); */
+          while (bits < 16) {
+            if (have === 0) { break inf_leave; }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          //===//
+          state.length = hold;
+          if (state.head) {
+            state.head.extra_len = hold;
+          }
+          if (state.flags & 0x0200) {
+            //=== CRC2(state.check, hold);
+            hbuf[0] = hold & 0xff;
+            hbuf[1] = (hold >>> 8) & 0xff;
+            state.check = crc32(state.check, hbuf, 2, 0);
+            //===//
+          }
+          //=== INITBITS();
+          hold = 0;
+          bits = 0;
+          //===//
+        }
+        else if (state.head) {
+          state.head.extra = null/*Z_NULL*/;
+        }
+        state.mode = EXTRA;
+        /* falls through */
+      case EXTRA:
+        if (state.flags & 0x0400) {
+          copy = state.length;
+          if (copy > have) { copy = have; }
+          if (copy) {
+            if (state.head) {
+              len = state.head.extra_len - state.length;
+              if (!state.head.extra) {
+                // Use untyped array for more convenient processing later
+                state.head.extra = new Array(state.head.extra_len);
+              }
+              utils.arraySet(
+                state.head.extra,
+                input,
+                next,
+                // extra field is limited to 65536 bytes
+                // - no need for additional size check
+                copy,
+                /*len + copy > state.head.extra_max - len ? state.head.extra_max : copy,*/
+                len
+              );
+              //zmemcpy(state.head.extra + len, next,
+              //        len + copy > state.head.extra_max ?
+              //        state.head.extra_max - len : copy);
+            }
+            if (state.flags & 0x0200) {
+              state.check = crc32(state.check, input, copy, next);
+            }
+            have -= copy;
+            next += copy;
+            state.length -= copy;
+          }
+          if (state.length) { break inf_leave; }
+        }
+        state.length = 0;
+        state.mode = NAME;
+        /* falls through */
+      case NAME:
+        if (state.flags & 0x0800) {
+          if (have === 0) { break inf_leave; }
+          copy = 0;
+          do {
+            // TODO: 2 or 1 bytes?
+            len = input[next + copy++];
+            /* use constant limit because in js we should not preallocate memory */
+            if (state.head && len &&
+                (state.length < 65536 /*state.head.name_max*/)) {
+              state.head.name += String.fromCharCode(len);
+            }
+          } while (len && copy < have);
+
+          if (state.flags & 0x0200) {
+            state.check = crc32(state.check, input, copy, next);
+          }
+          have -= copy;
+          next += copy;
+          if (len) { break inf_leave; }
+        }
+        else if (state.head) {
+          state.head.name = null;
+        }
+        state.length = 0;
+        state.mode = COMMENT;
+        /* falls through */
+      case COMMENT:
+        if (state.flags & 0x1000) {
+          if (have === 0) { break inf_leave; }
+          copy = 0;
+          do {
+            len = input[next + copy++];
+            /* use constant limit because in js we should not preallocate memory */
+            if (state.head && len &&
+                (state.length < 65536 /*state.head.comm_max*/)) {
+              state.head.comment += String.fromCharCode(len);
+            }
+          } while (len && copy < have);
+          if (state.flags & 0x0200) {
+            state.check = crc32(state.check, input, copy, next);
+          }
+          have -= copy;
+          next += copy;
+          if (len) { break inf_leave; }
+        }
+        else if (state.head) {
+          state.head.comment = null;
+        }
+        state.mode = HCRC;
+        /* falls through */
+      case HCRC:
+        if (state.flags & 0x0200) {
+          //=== NEEDBITS(16); */
+          while (bits < 16) {
+            if (have === 0) { break inf_leave; }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          //===//
+          if (hold !== (state.check & 0xffff)) {
+            strm.msg = 'header crc mismatch';
+            state.mode = BAD;
+            break;
+          }
+          //=== INITBITS();
+          hold = 0;
+          bits = 0;
+          //===//
+        }
+        if (state.head) {
+          state.head.hcrc = ((state.flags >> 9) & 1);
+          state.head.done = true;
+        }
+        strm.adler = state.check = 0;
+        state.mode = TYPE;
+        break;
+      case DICTID:
+        //=== NEEDBITS(32); */
+        while (bits < 32) {
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+        }
+        //===//
+        strm.adler = state.check = zswap32(hold);
+        //=== INITBITS();
+        hold = 0;
+        bits = 0;
+        //===//
+        state.mode = DICT;
+        /* falls through */
+      case DICT:
+        if (state.havedict === 0) {
+          //--- RESTORE() ---
+          strm.next_out = put;
+          strm.avail_out = left;
+          strm.next_in = next;
+          strm.avail_in = have;
+          state.hold = hold;
+          state.bits = bits;
+          //---
+          return Z_NEED_DICT;
+        }
+        strm.adler = state.check = 1/*adler32(0L, Z_NULL, 0)*/;
+        state.mode = TYPE;
+        /* falls through */
+      case TYPE:
+        if (flush === Z_BLOCK || flush === Z_TREES) { break inf_leave; }
+        /* falls through */
+      case TYPEDO:
+        if (state.last) {
+          //--- BYTEBITS() ---//
+          hold >>>= bits & 7;
+          bits -= bits & 7;
+          //---//
+          state.mode = CHECK;
+          break;
+        }
+        //=== NEEDBITS(3); */
+        while (bits < 3) {
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+        }
+        //===//
+        state.last = (hold & 0x01)/*BITS(1)*/;
+        //--- DROPBITS(1) ---//
+        hold >>>= 1;
+        bits -= 1;
+        //---//
+
+        switch ((hold & 0x03)/*BITS(2)*/) {
+          case 0:                             /* stored block */
+            //Tracev((stderr, "inflate:     stored block%s\n",
+            //        state.last ? " (last)" : ""));
+            state.mode = STORED;
+            break;
+          case 1:                             /* fixed block */
+            fixedtables(state);
+            //Tracev((stderr, "inflate:     fixed codes block%s\n",
+            //        state.last ? " (last)" : ""));
+            state.mode = LEN_;             /* decode codes */
+            if (flush === Z_TREES) {
+              //--- DROPBITS(2) ---//
+              hold >>>= 2;
+              bits -= 2;
+              //---//
+              break inf_leave;
+            }
+            break;
+          case 2:                             /* dynamic block */
+            //Tracev((stderr, "inflate:     dynamic codes block%s\n",
+            //        state.last ? " (last)" : ""));
+            state.mode = TABLE;
+            break;
+          case 3:
+            strm.msg = 'invalid block type';
+            state.mode = BAD;
+        }
+        //--- DROPBITS(2) ---//
+        hold >>>= 2;
+        bits -= 2;
+        //---//
+        break;
+      case STORED:
+        //--- BYTEBITS() ---// /* go to byte boundary */
+        hold >>>= bits & 7;
+        bits -= bits & 7;
+        //---//
+        //=== NEEDBITS(32); */
+        while (bits < 32) {
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+        }
+        //===//
+        if ((hold & 0xffff) !== ((hold >>> 16) ^ 0xffff)) {
+          strm.msg = 'invalid stored block lengths';
+          state.mode = BAD;
+          break;
+        }
+        state.length = hold & 0xffff;
+        //Tracev((stderr, "inflate:       stored length %u\n",
+        //        state.length));
+        //=== INITBITS();
+        hold = 0;
+        bits = 0;
+        //===//
+        state.mode = COPY_;
+        if (flush === Z_TREES) { break inf_leave; }
+        /* falls through */
+      case COPY_:
+        state.mode = COPY;
+        /* falls through */
+      case COPY:
+        copy = state.length;
+        if (copy) {
+          if (copy > have) { copy = have; }
+          if (copy > left) { copy = left; }
+          if (copy === 0) { break inf_leave; }
+          //--- zmemcpy(put, next, copy); ---
+          utils.arraySet(output, input, next, copy, put);
+          //---//
+          have -= copy;
+          next += copy;
+          left -= copy;
+          put += copy;
+          state.length -= copy;
+          break;
+        }
+        //Tracev((stderr, "inflate:       stored end\n"));
+        state.mode = TYPE;
+        break;
+      case TABLE:
+        //=== NEEDBITS(14); */
+        while (bits < 14) {
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+        }
+        //===//
+        state.nlen = (hold & 0x1f)/*BITS(5)*/ + 257;
+        //--- DROPBITS(5) ---//
+        hold >>>= 5;
+        bits -= 5;
+        //---//
+        state.ndist = (hold & 0x1f)/*BITS(5)*/ + 1;
+        //--- DROPBITS(5) ---//
+        hold >>>= 5;
+        bits -= 5;
+        //---//
+        state.ncode = (hold & 0x0f)/*BITS(4)*/ + 4;
+        //--- DROPBITS(4) ---//
+        hold >>>= 4;
+        bits -= 4;
+        //---//
+//#ifndef PKZIP_BUG_WORKAROUND
+        if (state.nlen > 286 || state.ndist > 30) {
+          strm.msg = 'too many length or distance symbols';
+          state.mode = BAD;
+          break;
+        }
+//#endif
+        //Tracev((stderr, "inflate:       table sizes ok\n"));
+        state.have = 0;
+        state.mode = LENLENS;
+        /* falls through */
+      case LENLENS:
+        while (state.have < state.ncode) {
+          //=== NEEDBITS(3);
+          while (bits < 3) {
+            if (have === 0) { break inf_leave; }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          //===//
+          state.lens[order[state.have++]] = (hold & 0x07);//BITS(3);
+          //--- DROPBITS(3) ---//
+          hold >>>= 3;
+          bits -= 3;
+          //---//
+        }
+        while (state.have < 19) {
+          state.lens[order[state.have++]] = 0;
+        }
+        // We have separate tables & no pointers. 2 commented lines below not needed.
+        //state.next = state.codes;
+        //state.lencode = state.next;
+        // Switch to use dynamic table
+        state.lencode = state.lendyn;
+        state.lenbits = 7;
+
+        opts = { bits: state.lenbits };
+        ret = inflate_table(CODES, state.lens, 0, 19, state.lencode, 0, state.work, opts);
+        state.lenbits = opts.bits;
+
+        if (ret) {
+          strm.msg = 'invalid code lengths set';
+          state.mode = BAD;
+          break;
+        }
+        //Tracev((stderr, "inflate:       code lengths ok\n"));
+        state.have = 0;
+        state.mode = CODELENS;
+        /* falls through */
+      case CODELENS:
+        while (state.have < state.nlen + state.ndist) {
+          for (;;) {
+            here = state.lencode[hold & ((1 << state.lenbits) - 1)];/*BITS(state.lenbits)*/
+            here_bits = here >>> 24;
+            here_op = (here >>> 16) & 0xff;
+            here_val = here & 0xffff;
+
+            if ((here_bits) <= bits) { break; }
+            //--- PULLBYTE() ---//
+            if (have === 0) { break inf_leave; }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+            //---//
+          }
+          if (here_val < 16) {
+            //--- DROPBITS(here.bits) ---//
+            hold >>>= here_bits;
+            bits -= here_bits;
+            //---//
+            state.lens[state.have++] = here_val;
+          }
+          else {
+            if (here_val === 16) {
+              //=== NEEDBITS(here.bits + 2);
+              n = here_bits + 2;
+              while (bits < n) {
+                if (have === 0) { break inf_leave; }
+                have--;
+                hold += input[next++] << bits;
+                bits += 8;
+              }
+              //===//
+              //--- DROPBITS(here.bits) ---//
+              hold >>>= here_bits;
+              bits -= here_bits;
+              //---//
+              if (state.have === 0) {
+                strm.msg = 'invalid bit length repeat';
+                state.mode = BAD;
+                break;
+              }
+              len = state.lens[state.have - 1];
+              copy = 3 + (hold & 0x03);//BITS(2);
+              //--- DROPBITS(2) ---//
+              hold >>>= 2;
+              bits -= 2;
+              //---//
+            }
+            else if (here_val === 17) {
+              //=== NEEDBITS(here.bits + 3);
+              n = here_bits + 3;
+              while (bits < n) {
+                if (have === 0) { break inf_leave; }
+                have--;
+                hold += input[next++] << bits;
+                bits += 8;
+              }
+              //===//
+              //--- DROPBITS(here.bits) ---//
+              hold >>>= here_bits;
+              bits -= here_bits;
+              //---//
+              len = 0;
+              copy = 3 + (hold & 0x07);//BITS(3);
+              //--- DROPBITS(3) ---//
+              hold >>>= 3;
+              bits -= 3;
+              //---//
+            }
+            else {
+              //=== NEEDBITS(here.bits + 7);
+              n = here_bits + 7;
+              while (bits < n) {
+                if (have === 0) { break inf_leave; }
+                have--;
+                hold += input[next++] << bits;
+                bits += 8;
+              }
+              //===//
+              //--- DROPBITS(here.bits) ---//
+              hold >>>= here_bits;
+              bits -= here_bits;
+              //---//
+              len = 0;
+              copy = 11 + (hold & 0x7f);//BITS(7);
+              //--- DROPBITS(7) ---//
+              hold >>>= 7;
+              bits -= 7;
+              //---//
+            }
+            if (state.have + copy > state.nlen + state.ndist) {
+              strm.msg = 'invalid bit length repeat';
+              state.mode = BAD;
+              break;
+            }
+            while (copy--) {
+              state.lens[state.have++] = len;
+            }
+          }
+        }
+
+        /* handle error breaks in while */
+        if (state.mode === BAD) { break; }
+
+        /* check for end-of-block code (better have one) */
+        if (state.lens[256] === 0) {
+          strm.msg = 'invalid code -- missing end-of-block';
+          state.mode = BAD;
+          break;
+        }
+
+        /* build code tables -- note: do not change the lenbits or distbits
+           values here (9 and 6) without reading the comments in inftrees.h
+           concerning the ENOUGH constants, which depend on those values */
+        state.lenbits = 9;
+
+        opts = { bits: state.lenbits };
+        ret = inflate_table(LENS, state.lens, 0, state.nlen, state.lencode, 0, state.work, opts);
+        // We have separate tables & no pointers. 2 commented lines below not needed.
+        // state.next_index = opts.table_index;
+        state.lenbits = opts.bits;
+        // state.lencode = state.next;
+
+        if (ret) {
+          strm.msg = 'invalid literal/lengths set';
+          state.mode = BAD;
+          break;
+        }
+
+        state.distbits = 6;
+        //state.distcode.copy(state.codes);
+        // Switch to use dynamic table
+        state.distcode = state.distdyn;
+        opts = { bits: state.distbits };
+        ret = inflate_table(DISTS, state.lens, state.nlen, state.ndist, state.distcode, 0, state.work, opts);
+        // We have separate tables & no pointers. 2 commented lines below not needed.
+        // state.next_index = opts.table_index;
+        state.distbits = opts.bits;
+        // state.distcode = state.next;
+
+        if (ret) {
+          strm.msg = 'invalid distances set';
+          state.mode = BAD;
+          break;
+        }
+        //Tracev((stderr, 'inflate:       codes ok\n'));
+        state.mode = LEN_;
+        if (flush === Z_TREES) { break inf_leave; }
+        /* falls through */
+      case LEN_:
+        state.mode = LEN;
+        /* falls through */
+      case LEN:
+        if (have >= 6 && left >= 258) {
+          //--- RESTORE() ---
+          strm.next_out = put;
+          strm.avail_out = left;
+          strm.next_in = next;
+          strm.avail_in = have;
+          state.hold = hold;
+          state.bits = bits;
+          //---
+          inflate_fast(strm, _out);
+          //--- LOAD() ---
+          put = strm.next_out;
+          output = strm.output;
+          left = strm.avail_out;
+          next = strm.next_in;
+          input = strm.input;
+          have = strm.avail_in;
+          hold = state.hold;
+          bits = state.bits;
+          //---
+
+          if (state.mode === TYPE) {
+            state.back = -1;
+          }
+          break;
+        }
+        state.back = 0;
+        for (;;) {
+          here = state.lencode[hold & ((1 << state.lenbits) - 1)];  /*BITS(state.lenbits)*/
+          here_bits = here >>> 24;
+          here_op = (here >>> 16) & 0xff;
+          here_val = here & 0xffff;
+
+          if (here_bits <= bits) { break; }
+          //--- PULLBYTE() ---//
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+          //---//
+        }
+        if (here_op && (here_op & 0xf0) === 0) {
+          last_bits = here_bits;
+          last_op = here_op;
+          last_val = here_val;
+          for (;;) {
+            here = state.lencode[last_val +
+                    ((hold & ((1 << (last_bits + last_op)) - 1))/*BITS(last.bits + last.op)*/ >> last_bits)];
+            here_bits = here >>> 24;
+            here_op = (here >>> 16) & 0xff;
+            here_val = here & 0xffff;
+
+            if ((last_bits + here_bits) <= bits) { break; }
+            //--- PULLBYTE() ---//
+            if (have === 0) { break inf_leave; }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+            //---//
+          }
+          //--- DROPBITS(last.bits) ---//
+          hold >>>= last_bits;
+          bits -= last_bits;
+          //---//
+          state.back += last_bits;
+        }
+        //--- DROPBITS(here.bits) ---//
+        hold >>>= here_bits;
+        bits -= here_bits;
+        //---//
+        state.back += here_bits;
+        state.length = here_val;
+        if (here_op === 0) {
+          //Tracevv((stderr, here.val >= 0x20 && here.val < 0x7f ?
+          //        "inflate:         literal '%c'\n" :
+          //        "inflate:         literal 0x%02x\n", here.val));
+          state.mode = LIT;
+          break;
+        }
+        if (here_op & 32) {
+          //Tracevv((stderr, "inflate:         end of block\n"));
+          state.back = -1;
+          state.mode = TYPE;
+          break;
+        }
+        if (here_op & 64) {
+          strm.msg = 'invalid literal/length code';
+          state.mode = BAD;
+          break;
+        }
+        state.extra = here_op & 15;
+        state.mode = LENEXT;
+        /* falls through */
+      case LENEXT:
+        if (state.extra) {
+          //=== NEEDBITS(state.extra);
+          n = state.extra;
+          while (bits < n) {
+            if (have === 0) { break inf_leave; }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          //===//
+          state.length += hold & ((1 << state.extra) - 1)/*BITS(state.extra)*/;
+          //--- DROPBITS(state.extra) ---//
+          hold >>>= state.extra;
+          bits -= state.extra;
+          //---//
+          state.back += state.extra;
+        }
+        //Tracevv((stderr, "inflate:         length %u\n", state.length));
+        state.was = state.length;
+        state.mode = DIST;
+        /* falls through */
+      case DIST:
+        for (;;) {
+          here = state.distcode[hold & ((1 << state.distbits) - 1)];/*BITS(state.distbits)*/
+          here_bits = here >>> 24;
+          here_op = (here >>> 16) & 0xff;
+          here_val = here & 0xffff;
+
+          if ((here_bits) <= bits) { break; }
+          //--- PULLBYTE() ---//
+          if (have === 0) { break inf_leave; }
+          have--;
+          hold += input[next++] << bits;
+          bits += 8;
+          //---//
+        }
+        if ((here_op & 0xf0) === 0) {
+          last_bits = here_bits;
+          last_op = here_op;
+          last_val = here_val;
+          for (;;) {
+            here = state.distcode[last_val +
+                    ((hold & ((1 << (last_bits + last_op)) - 1))/*BITS(last.bits + last.op)*/ >> last_bits)];
+            here_bits = here >>> 24;
+            here_op = (here >>> 16) & 0xff;
+            here_val = here & 0xffff;
+
+            if ((last_bits + here_bits) <= bits) { break; }
+            //--- PULLBYTE() ---//
+            if (have === 0) { break inf_leave; }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+            //---//
+          }
+          //--- DROPBITS(last.bits) ---//
+          hold >>>= last_bits;
+          bits -= last_bits;
+          //---//
+          state.back += last_bits;
+        }
+        //--- DROPBITS(here.bits) ---//
+        hold >>>= here_bits;
+        bits -= here_bits;
+        //---//
+        state.back += here_bits;
+        if (here_op & 64) {
+          strm.msg = 'invalid distance code';
+          state.mode = BAD;
+          break;
+        }
+        state.offset = here_val;
+        state.extra = (here_op) & 15;
+        state.mode = DISTEXT;
+        /* falls through */
+      case DISTEXT:
+        if (state.extra) {
+          //=== NEEDBITS(state.extra);
+          n = state.extra;
+          while (bits < n) {
+            if (have === 0) { break inf_leave; }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          //===//
+          state.offset += hold & ((1 << state.extra) - 1)/*BITS(state.extra)*/;
+          //--- DROPBITS(state.extra) ---//
+          hold >>>= state.extra;
+          bits -= state.extra;
+          //---//
+          state.back += state.extra;
+        }
+//#ifdef INFLATE_STRICT
+        if (state.offset > state.dmax) {
+          strm.msg = 'invalid distance too far back';
+          state.mode = BAD;
+          break;
+        }
+//#endif
+        //Tracevv((stderr, "inflate:         distance %u\n", state.offset));
+        state.mode = MATCH;
+        /* falls through */
+      case MATCH:
+        if (left === 0) { break inf_leave; }
+        copy = _out - left;
+        if (state.offset > copy) {         /* copy from window */
+          copy = state.offset - copy;
+          if (copy > state.whave) {
+            if (state.sane) {
+              strm.msg = 'invalid distance too far back';
+              state.mode = BAD;
+              break;
+            }
+// (!) This block is disabled in zlib defaults,
+// don't enable it for binary compatibility
+//#ifdef INFLATE_ALLOW_INVALID_DISTANCE_TOOFAR_ARRR
+//          Trace((stderr, "inflate.c too far\n"));
+//          copy -= state.whave;
+//          if (copy > state.length) { copy = state.length; }
+//          if (copy > left) { copy = left; }
+//          left -= copy;
+//          state.length -= copy;
+//          do {
+//            output[put++] = 0;
+//          } while (--copy);
+//          if (state.length === 0) { state.mode = LEN; }
+//          break;
+//#endif
+          }
+          if (copy > state.wnext) {
+            copy -= state.wnext;
+            from = state.wsize - copy;
+          }
+          else {
+            from = state.wnext - copy;
+          }
+          if (copy > state.length) { copy = state.length; }
+          from_source = state.window;
+        }
+        else {                              /* copy from output */
+          from_source = output;
+          from = put - state.offset;
+          copy = state.length;
+        }
+        if (copy > left) { copy = left; }
+        left -= copy;
+        state.length -= copy;
+        do {
+          output[put++] = from_source[from++];
+        } while (--copy);
+        if (state.length === 0) { state.mode = LEN; }
+        break;
+      case LIT:
+        if (left === 0) { break inf_leave; }
+        output[put++] = state.length;
+        left--;
+        state.mode = LEN;
+        break;
+      case CHECK:
+        if (state.wrap) {
+          //=== NEEDBITS(32);
+          while (bits < 32) {
+            if (have === 0) { break inf_leave; }
+            have--;
+            // Use '|' instead of '+' to make sure that result is signed
+            hold |= input[next++] << bits;
+            bits += 8;
+          }
+          //===//
+          _out -= left;
+          strm.total_out += _out;
+          state.total += _out;
+          if (_out) {
+            strm.adler = state.check =
+                /*UPDATE(state.check, put - _out, _out);*/
+                (state.flags ? crc32(state.check, output, _out, put - _out) : adler32(state.check, output, _out, put - _out));
+
+          }
+          _out = left;
+          // NB: crc32 stored as signed 32-bit int, zswap32 returns signed too
+          if ((state.flags ? hold : zswap32(hold)) !== state.check) {
+            strm.msg = 'incorrect data check';
+            state.mode = BAD;
+            break;
+          }
+          //=== INITBITS();
+          hold = 0;
+          bits = 0;
+          //===//
+          //Tracev((stderr, "inflate:   check matches trailer\n"));
+        }
+        state.mode = LENGTH;
+        /* falls through */
+      case LENGTH:
+        if (state.wrap && state.flags) {
+          //=== NEEDBITS(32);
+          while (bits < 32) {
+            if (have === 0) { break inf_leave; }
+            have--;
+            hold += input[next++] << bits;
+            bits += 8;
+          }
+          //===//
+          if (hold !== (state.total & 0xffffffff)) {
+            strm.msg = 'incorrect length check';
+            state.mode = BAD;
+            break;
+          }
+          //=== INITBITS();
+          hold = 0;
+          bits = 0;
+          //===//
+          //Tracev((stderr, "inflate:   length matches trailer\n"));
+        }
+        state.mode = DONE;
+        /* falls through */
+      case DONE:
+        ret = Z_STREAM_END;
+        break inf_leave;
+      case BAD:
+        ret = Z_DATA_ERROR;
+        break inf_leave;
+      case MEM:
+        return Z_MEM_ERROR;
+      case SYNC:
+        /* falls through */
+      default:
+        return Z_STREAM_ERROR;
+    }
+  }
+
+  // inf_leave <- here is real place for "goto inf_leave", emulated via "break inf_leave"
+
+  /*
+     Return from inflate(), updating the total counts and the check value.
+     If there was no progress during the inflate() call, return a buffer
+     error.  Call updatewindow() to create and/or update the window state.
+     Note: a memory error from inflate() is non-recoverable.
+   */
+
+  //--- RESTORE() ---
+  strm.next_out = put;
+  strm.avail_out = left;
+  strm.next_in = next;
+  strm.avail_in = have;
+  state.hold = hold;
+  state.bits = bits;
+  //---
+
+  if (state.wsize || (_out !== strm.avail_out && state.mode < BAD &&
+                      (state.mode < CHECK || flush !== Z_FINISH))) {
+    if (updatewindow(strm, strm.output, strm.next_out, _out - strm.avail_out)) {
+      state.mode = MEM;
+      return Z_MEM_ERROR;
+    }
+  }
+  _in -= strm.avail_in;
+  _out -= strm.avail_out;
+  strm.total_in += _in;
+  strm.total_out += _out;
+  state.total += _out;
+  if (state.wrap && _out) {
+    strm.adler = state.check = /*UPDATE(state.check, strm.next_out - _out, _out);*/
+      (state.flags ? crc32(state.check, output, _out, strm.next_out - _out) : adler32(state.check, output, _out, strm.next_out - _out));
+  }
+  strm.data_type = state.bits + (state.last ? 64 : 0) +
+                    (state.mode === TYPE ? 128 : 0) +
+                    (state.mode === LEN_ || state.mode === COPY_ ? 256 : 0);
+  if (((_in === 0 && _out === 0) || flush === Z_FINISH) && ret === Z_OK) {
+    ret = Z_BUF_ERROR;
+  }
+  return ret;
+}
+
+function inflateEnd(strm) {
+
+  if (!strm || !strm.state /*|| strm->zfree == (free_func)0*/) {
+    return Z_STREAM_ERROR;
+  }
+
+  var state = strm.state;
+  if (state.window) {
+    state.window = null;
+  }
+  strm.state = null;
+  return Z_OK;
+}
+
+function inflateGetHeader(strm, head) {
+  var state;
+
+  /* check state */
+  if (!strm || !strm.state) { return Z_STREAM_ERROR; }
+  state = strm.state;
+  if ((state.wrap & 2) === 0) { return Z_STREAM_ERROR; }
+
+  /* save header structure */
+  state.head = head;
+  head.done = false;
+  return Z_OK;
+}
+
+function inflateSetDictionary(strm, dictionary) {
+  var dictLength = dictionary.length;
+
+  var state;
+  var dictid;
+  var ret;
+
+  /* check state */
+  if (!strm /* == Z_NULL */ || !strm.state /* == Z_NULL */) { return Z_STREAM_ERROR; }
+  state = strm.state;
+
+  if (state.wrap !== 0 && state.mode !== DICT) {
+    return Z_STREAM_ERROR;
+  }
+
+  /* check for correct dictionary identifier */
+  if (state.mode === DICT) {
+    dictid = 1; /* adler32(0, null, 0)*/
+    /* dictid = adler32(dictid, dictionary, dictLength); */
+    dictid = adler32(dictid, dictionary, dictLength, 0);
+    if (dictid !== state.check) {
+      return Z_DATA_ERROR;
+    }
+  }
+  /* copy dictionary to window using updatewindow(), which will amend the
+   existing dictionary if appropriate */
+  ret = updatewindow(strm, dictionary, dictLength, dictLength);
+  if (ret) {
+    state.mode = MEM;
+    return Z_MEM_ERROR;
+  }
+  state.havedict = 1;
+  // Tracev((stderr, "inflate:   dictionary set\n"));
+  return Z_OK;
+}
+
+exports.inflateReset = inflateReset;
+exports.inflateReset2 = inflateReset2;
+exports.inflateResetKeep = inflateResetKeep;
+exports.inflateInit = inflateInit;
+exports.inflateInit2 = inflateInit2;
+exports.inflate = inflate;
+exports.inflateEnd = inflateEnd;
+exports.inflateGetHeader = inflateGetHeader;
+exports.inflateSetDictionary = inflateSetDictionary;
+exports.inflateInfo = 'pako inflate (from Nodeca project)';
+
+/* Not implemented
+exports.inflateCopy = inflateCopy;
+exports.inflateGetDictionary = inflateGetDictionary;
+exports.inflateMark = inflateMark;
+exports.inflatePrime = inflatePrime;
+exports.inflateSync = inflateSync;
+exports.inflateSyncPoint = inflateSyncPoint;
+exports.inflateUndermine = inflateUndermine;
+*/
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+// See state defs from inflate.js
+var BAD = 30;       /* got a data error -- remain here until reset */
+var TYPE = 12;      /* i: waiting for type bits, including last-flag bit */
+
+/*
+   Decode literal, length, and distance codes and write out the resulting
+   literal and match bytes until either not enough input or output is
+   available, an end-of-block is encountered, or a data error is encountered.
+   When large enough input and output buffers are supplied to inflate(), for
+   example, a 16K input buffer and a 64K output buffer, more than 95% of the
+   inflate execution time is spent in this routine.
+
+   Entry assumptions:
+
+        state.mode === LEN
+        strm.avail_in >= 6
+        strm.avail_out >= 258
+        start >= strm.avail_out
+        state.bits < 8
+
+   On return, state.mode is one of:
+
+        LEN -- ran out of enough output space or enough available input
+        TYPE -- reached end of block code, inflate() to interpret next block
+        BAD -- error in block data
+
+   Notes:
+
+    - The maximum input bits used by a length/distance pair is 15 bits for the
+      length code, 5 bits for the length extra, 15 bits for the distance code,
+      and 13 bits for the distance extra.  This totals 48 bits, or six bytes.
+      Therefore if strm.avail_in >= 6, then there is enough input to avoid
+      checking for available input while decoding.
+
+    - The maximum bytes that a single length/distance pair can output is 258
+      bytes, which is the maximum length that can be coded.  inflate_fast()
+      requires strm.avail_out >= 258 for each loop to avoid checking for
+      output space.
+ */
+module.exports = function inflate_fast(strm, start) {
+  var state;
+  var _in;                    /* local strm.input */
+  var last;                   /* have enough input while in < last */
+  var _out;                   /* local strm.output */
+  var beg;                    /* inflate()'s initial strm.output */
+  var end;                    /* while out < end, enough space available */
+//#ifdef INFLATE_STRICT
+  var dmax;                   /* maximum distance from zlib header */
+//#endif
+  var wsize;                  /* window size or zero if not using window */
+  var whave;                  /* valid bytes in the window */
+  var wnext;                  /* window write index */
+  // Use `s_window` instead `window`, avoid conflict with instrumentation tools
+  var s_window;               /* allocated sliding window, if wsize != 0 */
+  var hold;                   /* local strm.hold */
+  var bits;                   /* local strm.bits */
+  var lcode;                  /* local strm.lencode */
+  var dcode;                  /* local strm.distcode */
+  var lmask;                  /* mask for first level of length codes */
+  var dmask;                  /* mask for first level of distance codes */
+  var here;                   /* retrieved table entry */
+  var op;                     /* code bits, operation, extra bits, or */
+                              /*  window position, window bytes to copy */
+  var len;                    /* match length, unused bytes */
+  var dist;                   /* match distance */
+  var from;                   /* where to copy match from */
+  var from_source;
+
+
+  var input, output; // JS specific, because we have no pointers
+
+  /* copy state to local variables */
+  state = strm.state;
+  //here = state.here;
+  _in = strm.next_in;
+  input = strm.input;
+  last = _in + (strm.avail_in - 5);
+  _out = strm.next_out;
+  output = strm.output;
+  beg = _out - (start - strm.avail_out);
+  end = _out + (strm.avail_out - 257);
+//#ifdef INFLATE_STRICT
+  dmax = state.dmax;
+//#endif
+  wsize = state.wsize;
+  whave = state.whave;
+  wnext = state.wnext;
+  s_window = state.window;
+  hold = state.hold;
+  bits = state.bits;
+  lcode = state.lencode;
+  dcode = state.distcode;
+  lmask = (1 << state.lenbits) - 1;
+  dmask = (1 << state.distbits) - 1;
+
+
+  /* decode literals and length/distances until end-of-block or not enough
+     input data or output space */
+
+  top:
+  do {
+    if (bits < 15) {
+      hold += input[_in++] << bits;
+      bits += 8;
+      hold += input[_in++] << bits;
+      bits += 8;
+    }
+
+    here = lcode[hold & lmask];
+
+    dolen:
+    for (;;) { // Goto emulation
+      op = here >>> 24/*here.bits*/;
+      hold >>>= op;
+      bits -= op;
+      op = (here >>> 16) & 0xff/*here.op*/;
+      if (op === 0) {                          /* literal */
+        //Tracevv((stderr, here.val >= 0x20 && here.val < 0x7f ?
+        //        "inflate:         literal '%c'\n" :
+        //        "inflate:         literal 0x%02x\n", here.val));
+        output[_out++] = here & 0xffff/*here.val*/;
+      }
+      else if (op & 16) {                     /* length base */
+        len = here & 0xffff/*here.val*/;
+        op &= 15;                           /* number of extra bits */
+        if (op) {
+          if (bits < op) {
+            hold += input[_in++] << bits;
+            bits += 8;
+          }
+          len += hold & ((1 << op) - 1);
+          hold >>>= op;
+          bits -= op;
+        }
+        //Tracevv((stderr, "inflate:         length %u\n", len));
+        if (bits < 15) {
+          hold += input[_in++] << bits;
+          bits += 8;
+          hold += input[_in++] << bits;
+          bits += 8;
+        }
+        here = dcode[hold & dmask];
+
+        dodist:
+        for (;;) { // goto emulation
+          op = here >>> 24/*here.bits*/;
+          hold >>>= op;
+          bits -= op;
+          op = (here >>> 16) & 0xff/*here.op*/;
+
+          if (op & 16) {                      /* distance base */
+            dist = here & 0xffff/*here.val*/;
+            op &= 15;                       /* number of extra bits */
+            if (bits < op) {
+              hold += input[_in++] << bits;
+              bits += 8;
+              if (bits < op) {
+                hold += input[_in++] << bits;
+                bits += 8;
+              }
+            }
+            dist += hold & ((1 << op) - 1);
+//#ifdef INFLATE_STRICT
+            if (dist > dmax) {
+              strm.msg = 'invalid distance too far back';
+              state.mode = BAD;
+              break top;
+            }
+//#endif
+            hold >>>= op;
+            bits -= op;
+            //Tracevv((stderr, "inflate:         distance %u\n", dist));
+            op = _out - beg;                /* max distance in output */
+            if (dist > op) {                /* see if copy from window */
+              op = dist - op;               /* distance back in window */
+              if (op > whave) {
+                if (state.sane) {
+                  strm.msg = 'invalid distance too far back';
+                  state.mode = BAD;
+                  break top;
+                }
+
+// (!) This block is disabled in zlib defaults,
+// don't enable it for binary compatibility
+//#ifdef INFLATE_ALLOW_INVALID_DISTANCE_TOOFAR_ARRR
+//                if (len <= op - whave) {
+//                  do {
+//                    output[_out++] = 0;
+//                  } while (--len);
+//                  continue top;
+//                }
+//                len -= op - whave;
+//                do {
+//                  output[_out++] = 0;
+//                } while (--op > whave);
+//                if (op === 0) {
+//                  from = _out - dist;
+//                  do {
+//                    output[_out++] = output[from++];
+//                  } while (--len);
+//                  continue top;
+//                }
+//#endif
+              }
+              from = 0; // window index
+              from_source = s_window;
+              if (wnext === 0) {           /* very common case */
+                from += wsize - op;
+                if (op < len) {         /* some from window */
+                  len -= op;
+                  do {
+                    output[_out++] = s_window[from++];
+                  } while (--op);
+                  from = _out - dist;  /* rest from output */
+                  from_source = output;
+                }
+              }
+              else if (wnext < op) {      /* wrap around window */
+                from += wsize + wnext - op;
+                op -= wnext;
+                if (op < len) {         /* some from end of window */
+                  len -= op;
+                  do {
+                    output[_out++] = s_window[from++];
+                  } while (--op);
+                  from = 0;
+                  if (wnext < len) {  /* some from start of window */
+                    op = wnext;
+                    len -= op;
+                    do {
+                      output[_out++] = s_window[from++];
+                    } while (--op);
+                    from = _out - dist;      /* rest from output */
+                    from_source = output;
+                  }
+                }
+              }
+              else {                      /* contiguous in window */
+                from += wnext - op;
+                if (op < len) {         /* some from window */
+                  len -= op;
+                  do {
+                    output[_out++] = s_window[from++];
+                  } while (--op);
+                  from = _out - dist;  /* rest from output */
+                  from_source = output;
+                }
+              }
+              while (len > 2) {
+                output[_out++] = from_source[from++];
+                output[_out++] = from_source[from++];
+                output[_out++] = from_source[from++];
+                len -= 3;
+              }
+              if (len) {
+                output[_out++] = from_source[from++];
+                if (len > 1) {
+                  output[_out++] = from_source[from++];
+                }
+              }
+            }
+            else {
+              from = _out - dist;          /* copy direct from output */
+              do {                        /* minimum length is three */
+                output[_out++] = output[from++];
+                output[_out++] = output[from++];
+                output[_out++] = output[from++];
+                len -= 3;
+              } while (len > 2);
+              if (len) {
+                output[_out++] = output[from++];
+                if (len > 1) {
+                  output[_out++] = output[from++];
+                }
+              }
+            }
+          }
+          else if ((op & 64) === 0) {          /* 2nd level distance code */
+            here = dcode[(here & 0xffff)/*here.val*/ + (hold & ((1 << op) - 1))];
+            continue dodist;
+          }
+          else {
+            strm.msg = 'invalid distance code';
+            state.mode = BAD;
+            break top;
+          }
+
+          break; // need to emulate goto via "continue"
+        }
+      }
+      else if ((op & 64) === 0) {              /* 2nd level length code */
+        here = lcode[(here & 0xffff)/*here.val*/ + (hold & ((1 << op) - 1))];
+        continue dolen;
+      }
+      else if (op & 32) {                     /* end-of-block */
+        //Tracevv((stderr, "inflate:         end of block\n"));
+        state.mode = TYPE;
+        break top;
+      }
+      else {
+        strm.msg = 'invalid literal/length code';
+        state.mode = BAD;
+        break top;
+      }
+
+      break; // need to emulate goto via "continue"
+    }
+  } while (_in < last && _out < end);
+
+  /* return unused bytes (on entry, bits < 8, so in won't go too far back) */
+  len = bits >> 3;
+  _in -= len;
+  bits -= len << 3;
+  hold &= (1 << bits) - 1;
+
+  /* update state and return */
+  strm.next_in = _in;
+  strm.next_out = _out;
+  strm.avail_in = (_in < last ? 5 + (last - _in) : 5 - (_in - last));
+  strm.avail_out = (_out < end ? 257 + (end - _out) : 257 - (_out - end));
+  state.hold = hold;
+  state.bits = bits;
+  return;
+};
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+var utils = __webpack_require__(0);
+
+var MAXBITS = 15;
+var ENOUGH_LENS = 852;
+var ENOUGH_DISTS = 592;
+//var ENOUGH = (ENOUGH_LENS+ENOUGH_DISTS);
+
+var CODES = 0;
+var LENS = 1;
+var DISTS = 2;
+
+var lbase = [ /* Length codes 257..285 base */
+  3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31,
+  35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258, 0, 0
+];
+
+var lext = [ /* Length codes 257..285 extra */
+  16, 16, 16, 16, 16, 16, 16, 16, 17, 17, 17, 17, 18, 18, 18, 18,
+  19, 19, 19, 19, 20, 20, 20, 20, 21, 21, 21, 21, 16, 72, 78
+];
+
+var dbase = [ /* Distance codes 0..29 base */
+  1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193,
+  257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145,
+  8193, 12289, 16385, 24577, 0, 0
+];
+
+var dext = [ /* Distance codes 0..29 extra */
+  16, 16, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22,
+  23, 23, 24, 24, 25, 25, 26, 26, 27, 27,
+  28, 28, 29, 29, 64, 64
+];
+
+module.exports = function inflate_table(type, lens, lens_index, codes, table, table_index, work, opts)
+{
+  var bits = opts.bits;
+      //here = opts.here; /* table entry for duplication */
+
+  var len = 0;               /* a code's length in bits */
+  var sym = 0;               /* index of code symbols */
+  var min = 0, max = 0;          /* minimum and maximum code lengths */
+  var root = 0;              /* number of index bits for root table */
+  var curr = 0;              /* number of index bits for current table */
+  var drop = 0;              /* code bits to drop for sub-table */
+  var left = 0;                   /* number of prefix codes available */
+  var used = 0;              /* code entries in table used */
+  var huff = 0;              /* Huffman code */
+  var incr;              /* for incrementing code, index */
+  var fill;              /* index for replicating entries */
+  var low;               /* low bits for current root entry */
+  var mask;              /* mask for low root bits */
+  var next;             /* next available space in table */
+  var base = null;     /* base value table to use */
+  var base_index = 0;
+//  var shoextra;    /* extra bits table to use */
+  var end;                    /* use base and extra for symbol > end */
+  var count = new utils.Buf16(MAXBITS + 1); //[MAXBITS+1];    /* number of codes of each length */
+  var offs = new utils.Buf16(MAXBITS + 1); //[MAXBITS+1];     /* offsets in table for each length */
+  var extra = null;
+  var extra_index = 0;
+
+  var here_bits, here_op, here_val;
+
+  /*
+   Process a set of code lengths to create a canonical Huffman code.  The
+   code lengths are lens[0..codes-1].  Each length corresponds to the
+   symbols 0..codes-1.  The Huffman code is generated by first sorting the
+   symbols by length from short to long, and retaining the symbol order
+   for codes with equal lengths.  Then the code starts with all zero bits
+   for the first code of the shortest length, and the codes are integer
+   increments for the same length, and zeros are appended as the length
+   increases.  For the deflate format, these bits are stored backwards
+   from their more natural integer increment ordering, and so when the
+   decoding tables are built in the large loop below, the integer codes
+   are incremented backwards.
+
+   This routine assumes, but does not check, that all of the entries in
+   lens[] are in the range 0..MAXBITS.  The caller must assure this.
+   1..MAXBITS is interpreted as that code length.  zero means that that
+   symbol does not occur in this code.
+
+   The codes are sorted by computing a count of codes for each length,
+   creating from that a table of starting indices for each length in the
+   sorted table, and then entering the symbols in order in the sorted
+   table.  The sorted table is work[], with that space being provided by
+   the caller.
+
+   The length counts are used for other purposes as well, i.e. finding
+   the minimum and maximum length codes, determining if there are any
+   codes at all, checking for a valid set of lengths, and looking ahead
+   at length counts to determine sub-table sizes when building the
+   decoding tables.
+   */
+
+  /* accumulate lengths for codes (assumes lens[] all in 0..MAXBITS) */
+  for (len = 0; len <= MAXBITS; len++) {
+    count[len] = 0;
+  }
+  for (sym = 0; sym < codes; sym++) {
+    count[lens[lens_index + sym]]++;
+  }
+
+  /* bound code lengths, force root to be within code lengths */
+  root = bits;
+  for (max = MAXBITS; max >= 1; max--) {
+    if (count[max] !== 0) { break; }
+  }
+  if (root > max) {
+    root = max;
+  }
+  if (max === 0) {                     /* no symbols to code at all */
+    //table.op[opts.table_index] = 64;  //here.op = (var char)64;    /* invalid code marker */
+    //table.bits[opts.table_index] = 1;   //here.bits = (var char)1;
+    //table.val[opts.table_index++] = 0;   //here.val = (var short)0;
+    table[table_index++] = (1 << 24) | (64 << 16) | 0;
+
+
+    //table.op[opts.table_index] = 64;
+    //table.bits[opts.table_index] = 1;
+    //table.val[opts.table_index++] = 0;
+    table[table_index++] = (1 << 24) | (64 << 16) | 0;
+
+    opts.bits = 1;
+    return 0;     /* no symbols, but wait for decoding to report error */
+  }
+  for (min = 1; min < max; min++) {
+    if (count[min] !== 0) { break; }
+  }
+  if (root < min) {
+    root = min;
+  }
+
+  /* check for an over-subscribed or incomplete set of lengths */
+  left = 1;
+  for (len = 1; len <= MAXBITS; len++) {
+    left <<= 1;
+    left -= count[len];
+    if (left < 0) {
+      return -1;
+    }        /* over-subscribed */
+  }
+  if (left > 0 && (type === CODES || max !== 1)) {
+    return -1;                      /* incomplete set */
+  }
+
+  /* generate offsets into symbol table for each length for sorting */
+  offs[1] = 0;
+  for (len = 1; len < MAXBITS; len++) {
+    offs[len + 1] = offs[len] + count[len];
+  }
+
+  /* sort symbols by length, by symbol order within each length */
+  for (sym = 0; sym < codes; sym++) {
+    if (lens[lens_index + sym] !== 0) {
+      work[offs[lens[lens_index + sym]]++] = sym;
+    }
+  }
+
+  /*
+   Create and fill in decoding tables.  In this loop, the table being
+   filled is at next and has curr index bits.  The code being used is huff
+   with length len.  That code is converted to an index by dropping drop
+   bits off of the bottom.  For codes where len is less than drop + curr,
+   those top drop + curr - len bits are incremented through all values to
+   fill the table with replicated entries.
+
+   root is the number of index bits for the root table.  When len exceeds
+   root, sub-tables are created pointed to by the root entry with an index
+   of the low root bits of huff.  This is saved in low to check for when a
+   new sub-table should be started.  drop is zero when the root table is
+   being filled, and drop is root when sub-tables are being filled.
+
+   When a new sub-table is needed, it is necessary to look ahead in the
+   code lengths to determine what size sub-table is needed.  The length
+   counts are used for this, and so count[] is decremented as codes are
+   entered in the tables.
+
+   used keeps track of how many table entries have been allocated from the
+   provided *table space.  It is checked for LENS and DIST tables against
+   the constants ENOUGH_LENS and ENOUGH_DISTS to guard against changes in
+   the initial root table size constants.  See the comments in inftrees.h
+   for more information.
+
+   sym increments through all symbols, and the loop terminates when
+   all codes of length max, i.e. all codes, have been processed.  This
+   routine permits incomplete codes, so another loop after this one fills
+   in the rest of the decoding tables with invalid code markers.
+   */
+
+  /* set up for code type */
+  // poor man optimization - use if-else instead of switch,
+  // to avoid deopts in old v8
+  if (type === CODES) {
+    base = extra = work;    /* dummy value--not used */
+    end = 19;
+
+  } else if (type === LENS) {
+    base = lbase;
+    base_index -= 257;
+    extra = lext;
+    extra_index -= 257;
+    end = 256;
+
+  } else {                    /* DISTS */
+    base = dbase;
+    extra = dext;
+    end = -1;
+  }
+
+  /* initialize opts for loop */
+  huff = 0;                   /* starting code */
+  sym = 0;                    /* starting code symbol */
+  len = min;                  /* starting code length */
+  next = table_index;              /* current table to fill in */
+  curr = root;                /* current table index bits */
+  drop = 0;                   /* current bits to drop from code for index */
+  low = -1;                   /* trigger new sub-table when len > root */
+  used = 1 << root;          /* use root table entries */
+  mask = used - 1;            /* mask for comparing low */
+
+  /* check available table space */
+  if ((type === LENS && used > ENOUGH_LENS) ||
+    (type === DISTS && used > ENOUGH_DISTS)) {
+    return 1;
+  }
+
+  /* process all codes and make table entries */
+  for (;;) {
+    /* create table entry */
+    here_bits = len - drop;
+    if (work[sym] < end) {
+      here_op = 0;
+      here_val = work[sym];
+    }
+    else if (work[sym] > end) {
+      here_op = extra[extra_index + work[sym]];
+      here_val = base[base_index + work[sym]];
+    }
+    else {
+      here_op = 32 + 64;         /* end of block */
+      here_val = 0;
+    }
+
+    /* replicate for those indices with low len bits equal to huff */
+    incr = 1 << (len - drop);
+    fill = 1 << curr;
+    min = fill;                 /* save offset to next table */
+    do {
+      fill -= incr;
+      table[next + (huff >> drop) + fill] = (here_bits << 24) | (here_op << 16) | here_val |0;
+    } while (fill !== 0);
+
+    /* backwards increment the len-bit code huff */
+    incr = 1 << (len - 1);
+    while (huff & incr) {
+      incr >>= 1;
+    }
+    if (incr !== 0) {
+      huff &= incr - 1;
+      huff += incr;
+    } else {
+      huff = 0;
+    }
+
+    /* go to next symbol, update count, len */
+    sym++;
+    if (--count[len] === 0) {
+      if (len === max) { break; }
+      len = lens[lens_index + work[sym]];
+    }
+
+    /* create new sub-table if needed */
+    if (len > root && (huff & mask) !== low) {
+      /* if first time, transition to sub-tables */
+      if (drop === 0) {
+        drop = root;
+      }
+
+      /* increment past last table */
+      next += min;            /* here min is 1 << curr */
+
+      /* determine length of next table */
+      curr = len - drop;
+      left = 1 << curr;
+      while (curr + drop < max) {
+        left -= count[curr + drop];
+        if (left <= 0) { break; }
+        curr++;
+        left <<= 1;
+      }
+
+      /* check for enough space */
+      used += 1 << curr;
+      if ((type === LENS && used > ENOUGH_LENS) ||
+        (type === DISTS && used > ENOUGH_DISTS)) {
+        return 1;
+      }
+
+      /* point entry in root table to sub-table */
+      low = huff & mask;
+      /*table.op[low] = curr;
+      table.bits[low] = root;
+      table.val[low] = next - opts.table_index;*/
+      table[low] = (root << 24) | (curr << 16) | (next - table_index) |0;
+    }
+  }
+
+  /* fill in remaining table entry if code is incomplete (guaranteed to have
+   at most one remaining entry, since if the code is incomplete, the
+   maximum code length that was allowed to get this far is one bit) */
+  if (huff !== 0) {
+    //table.op[next + huff] = 64;            /* invalid code marker */
+    //table.bits[next + huff] = len - drop;
+    //table.val[next + huff] = 0;
+    table[next + huff] = ((len - drop) << 24) | (64 << 16) |0;
+  }
+
+  /* set return parameters */
+  //opts.table_index += used;
+  opts.bits = root;
+  return 0;
+};
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+function GZheader() {
+  /* true if compressed data believed to be text */
+  this.text       = 0;
+  /* modification time */
+  this.time       = 0;
+  /* extra flags (not used when writing a gzip file) */
+  this.xflags     = 0;
+  /* operating system */
+  this.os         = 0;
+  /* pointer to extra field or Z_NULL if none */
+  this.extra      = null;
+  /* extra field length (valid if extra != Z_NULL) */
+  this.extra_len  = 0; // Actually, we don't need it in JS,
+                       // but leave for few code modifications
+
+  //
+  // Setup limits is not necessary because in js we should not preallocate memory
+  // for inflate use constant limit in 65536 bytes
+  //
+
+  /* space at extra (only when reading header) */
+  // this.extra_max  = 0;
+  /* pointer to zero-terminated file name or Z_NULL */
+  this.name       = '';
+  /* space at name (only when reading header) */
+  // this.name_max   = 0;
+  /* pointer to zero-terminated comment or Z_NULL */
+  this.comment    = '';
+  /* space at comment (only when reading header) */
+  // this.comm_max   = 0;
+  /* true if there was or will be a header crc */
+  this.hcrc       = 0;
+  /* true when done reading gzip header (not used when writing a gzip file) */
+  this.done       = false;
+}
+
+module.exports = GZheader;
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*!
+ * Platform.js <https://mths.be/platform>
+ * Copyright 2014-2018 Benjamin Tan <https://bnjmnt4n.now.sh/>
+ * Copyright 2011-2013 John-David Dalton <http://allyoucanleet.com/>
+ * Available under MIT license <https://mths.be/mit>
+ */
+;(function() {
+  'use strict';
+
+  /** Used to determine if values are of the language type `Object`. */
+  var objectTypes = {
+    'function': true,
+    'object': true
+  };
+
+  /** Used as a reference to the global object. */
+  var root = (objectTypes[typeof window] && window) || this;
+
+  /** Backup possible global object. */
+  var oldRoot = root;
+
+  /** Detect free variable `exports`. */
+  var freeExports = objectTypes[typeof exports] && exports;
+
+  /** Detect free variable `module`. */
+  var freeModule = objectTypes[typeof module] && module && !module.nodeType && module;
+
+  /** Detect free variable `global` from Node.js or Browserified code and use it as `root`. */
+  var freeGlobal = freeExports && freeModule && typeof global == 'object' && global;
+  if (freeGlobal && (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal || freeGlobal.self === freeGlobal)) {
+    root = freeGlobal;
+  }
+
+  /**
+   * Used as the maximum length of an array-like object.
+   * See the [ES6 spec](http://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength)
+   * for more details.
+   */
+  var maxSafeInteger = Math.pow(2, 53) - 1;
+
+  /** Regular expression to detect Opera. */
+  var reOpera = /\bOpera/;
+
+  /** Possible global object. */
+  var thisBinding = this;
+
+  /** Used for native method references. */
+  var objectProto = Object.prototype;
+
+  /** Used to check for own properties of an object. */
+  var hasOwnProperty = objectProto.hasOwnProperty;
+
+  /** Used to resolve the internal `[[Class]]` of values. */
+  var toString = objectProto.toString;
+
+  /*--------------------------------------------------------------------------*/
+
+  /**
+   * Capitalizes a string value.
+   *
+   * @private
+   * @param {string} string The string to capitalize.
+   * @returns {string} The capitalized string.
+   */
+  function capitalize(string) {
+    string = String(string);
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  /**
+   * A utility function to clean up the OS name.
+   *
+   * @private
+   * @param {string} os The OS name to clean up.
+   * @param {string} [pattern] A `RegExp` pattern matching the OS name.
+   * @param {string} [label] A label for the OS.
+   */
+  function cleanupOS(os, pattern, label) {
+    // Platform tokens are defined at:
+    // http://msdn.microsoft.com/en-us/library/ms537503(VS.85).aspx
+    // http://web.archive.org/web/20081122053950/http://msdn.microsoft.com/en-us/library/ms537503(VS.85).aspx
+    var data = {
+      '10.0': '10',
+      '6.4':  '10 Technical Preview',
+      '6.3':  '8.1',
+      '6.2':  '8',
+      '6.1':  'Server 2008 R2 / 7',
+      '6.0':  'Server 2008 / Vista',
+      '5.2':  'Server 2003 / XP 64-bit',
+      '5.1':  'XP',
+      '5.01': '2000 SP1',
+      '5.0':  '2000',
+      '4.0':  'NT',
+      '4.90': 'ME'
+    };
+    // Detect Windows version from platform tokens.
+    if (pattern && label && /^Win/i.test(os) && !/^Windows Phone /i.test(os) &&
+        (data = data[/[\d.]+$/.exec(os)])) {
+      os = 'Windows ' + data;
+    }
+    // Correct character case and cleanup string.
+    os = String(os);
+
+    if (pattern && label) {
+      os = os.replace(RegExp(pattern, 'i'), label);
+    }
+
+    os = format(
+      os.replace(/ ce$/i, ' CE')
+        .replace(/\bhpw/i, 'web')
+        .replace(/\bMacintosh\b/, 'Mac OS')
+        .replace(/_PowerPC\b/i, ' OS')
+        .replace(/\b(OS X) [^ \d]+/i, '$1')
+        .replace(/\bMac (OS X)\b/, '$1')
+        .replace(/\/(\d)/, ' $1')
+        .replace(/_/g, '.')
+        .replace(/(?: BePC|[ .]*fc[ \d.]+)$/i, '')
+        .replace(/\bx86\.64\b/gi, 'x86_64')
+        .replace(/\b(Windows Phone) OS\b/, '$1')
+        .replace(/\b(Chrome OS \w+) [\d.]+\b/, '$1')
+        .split(' on ')[0]
+    );
+
+    return os;
+  }
+
+  /**
+   * An iteration utility for arrays and objects.
+   *
+   * @private
+   * @param {Array|Object} object The object to iterate over.
+   * @param {Function} callback The function called per iteration.
+   */
+  function each(object, callback) {
+    var index = -1,
+        length = object ? object.length : 0;
+
+    if (typeof length == 'number' && length > -1 && length <= maxSafeInteger) {
+      while (++index < length) {
+        callback(object[index], index, object);
+      }
+    } else {
+      forOwn(object, callback);
+    }
+  }
+
+  /**
+   * Trim and conditionally capitalize string values.
+   *
+   * @private
+   * @param {string} string The string to format.
+   * @returns {string} The formatted string.
+   */
+  function format(string) {
+    string = trim(string);
+    return /^(?:webOS|i(?:OS|P))/.test(string)
+      ? string
+      : capitalize(string);
+  }
+
+  /**
+   * Iterates over an object's own properties, executing the `callback` for each.
+   *
+   * @private
+   * @param {Object} object The object to iterate over.
+   * @param {Function} callback The function executed per own property.
+   */
+  function forOwn(object, callback) {
+    for (var key in object) {
+      if (hasOwnProperty.call(object, key)) {
+        callback(object[key], key, object);
+      }
+    }
+  }
+
+  /**
+   * Gets the internal `[[Class]]` of a value.
+   *
+   * @private
+   * @param {*} value The value.
+   * @returns {string} The `[[Class]]`.
+   */
+  function getClassOf(value) {
+    return value == null
+      ? capitalize(value)
+      : toString.call(value).slice(8, -1);
+  }
+
+  /**
+   * Host objects can return type values that are different from their actual
+   * data type. The objects we are concerned with usually return non-primitive
+   * types of "object", "function", or "unknown".
+   *
+   * @private
+   * @param {*} object The owner of the property.
+   * @param {string} property The property to check.
+   * @returns {boolean} Returns `true` if the property value is a non-primitive, else `false`.
+   */
+  function isHostType(object, property) {
+    var type = object != null ? typeof object[property] : 'number';
+    return !/^(?:boolean|number|string|undefined)$/.test(type) &&
+      (type == 'object' ? !!object[property] : true);
+  }
+
+  /**
+   * Prepares a string for use in a `RegExp` by making hyphens and spaces optional.
+   *
+   * @private
+   * @param {string} string The string to qualify.
+   * @returns {string} The qualified string.
+   */
+  function qualify(string) {
+    return String(string).replace(/([ -])(?!$)/g, '$1?');
+  }
+
+  /**
+   * A bare-bones `Array#reduce` like utility function.
+   *
+   * @private
+   * @param {Array} array The array to iterate over.
+   * @param {Function} callback The function called per iteration.
+   * @returns {*} The accumulated result.
+   */
+  function reduce(array, callback) {
+    var accumulator = null;
+    each(array, function(value, index) {
+      accumulator = callback(accumulator, value, index, array);
+    });
+    return accumulator;
+  }
+
+  /**
+   * Removes leading and trailing whitespace from a string.
+   *
+   * @private
+   * @param {string} string The string to trim.
+   * @returns {string} The trimmed string.
+   */
+  function trim(string) {
+    return String(string).replace(/^ +| +$/g, '');
+  }
+
+  /*--------------------------------------------------------------------------*/
+
+  /**
+   * Creates a new platform object.
+   *
+   * @memberOf platform
+   * @param {Object|string} [ua=navigator.userAgent] The user agent string or
+   *  context object.
+   * @returns {Object} A platform object.
+   */
+  function parse(ua) {
+
+    /** The environment context object. */
+    var context = root;
+
+    /** Used to flag when a custom context is provided. */
+    var isCustomContext = ua && typeof ua == 'object' && getClassOf(ua) != 'String';
+
+    // Juggle arguments.
+    if (isCustomContext) {
+      context = ua;
+      ua = null;
+    }
+
+    /** Browser navigator object. */
+    var nav = context.navigator || {};
+
+    /** Browser user agent string. */
+    var userAgent = nav.userAgent || '';
+
+    ua || (ua = userAgent);
+
+    /** Used to flag when `thisBinding` is the [ModuleScope]. */
+    var isModuleScope = isCustomContext || thisBinding == oldRoot;
+
+    /** Used to detect if browser is like Chrome. */
+    var likeChrome = isCustomContext
+      ? !!nav.likeChrome
+      : /\bChrome\b/.test(ua) && !/internal|\n/i.test(toString.toString());
+
+    /** Internal `[[Class]]` value shortcuts. */
+    var objectClass = 'Object',
+        airRuntimeClass = isCustomContext ? objectClass : 'ScriptBridgingProxyObject',
+        enviroClass = isCustomContext ? objectClass : 'Environment',
+        javaClass = (isCustomContext && context.java) ? 'JavaPackage' : getClassOf(context.java),
+        phantomClass = isCustomContext ? objectClass : 'RuntimeObject';
+
+    /** Detect Java environments. */
+    var java = /\bJava/.test(javaClass) && context.java;
+
+    /** Detect Rhino. */
+    var rhino = java && getClassOf(context.environment) == enviroClass;
+
+    /** A character to represent alpha. */
+    var alpha = java ? 'a' : '\u03b1';
+
+    /** A character to represent beta. */
+    var beta = java ? 'b' : '\u03b2';
+
+    /** Browser document object. */
+    var doc = context.document || {};
+
+    /**
+     * Detect Opera browser (Presto-based).
+     * http://www.howtocreate.co.uk/operaStuff/operaObject.html
+     * http://dev.opera.com/articles/view/opera-mini-web-content-authoring-guidelines/#operamini
+     */
+    var opera = context.operamini || context.opera;
+
+    /** Opera `[[Class]]`. */
+    var operaClass = reOpera.test(operaClass = (isCustomContext && opera) ? opera['[[Class]]'] : getClassOf(opera))
+      ? operaClass
+      : (opera = null);
+
+    /*------------------------------------------------------------------------*/
+
+    /** Temporary variable used over the script's lifetime. */
+    var data;
+
+    /** The CPU architecture. */
+    var arch = ua;
+
+    /** Platform description array. */
+    var description = [];
+
+    /** Platform alpha/beta indicator. */
+    var prerelease = null;
+
+    /** A flag to indicate that environment features should be used to resolve the platform. */
+    var useFeatures = ua == userAgent;
+
+    /** The browser/environment version. */
+    var version = useFeatures && opera && typeof opera.version == 'function' && opera.version();
+
+    /** A flag to indicate if the OS ends with "/ Version" */
+    var isSpecialCasedOS;
+
+    /* Detectable layout engines (order is important). */
+    var layout = getLayout([
+      { 'label': 'EdgeHTML', 'pattern': 'Edge' },
+      'Trident',
+      { 'label': 'WebKit', 'pattern': 'AppleWebKit' },
+      'iCab',
+      'Presto',
+      'NetFront',
+      'Tasman',
+      'KHTML',
+      'Gecko'
+    ]);
+
+    /* Detectable browser names (order is important). */
+    var name = getName([
+      'Adobe AIR',
+      'Arora',
+      'Avant Browser',
+      'Breach',
+      'Camino',
+      'Electron',
+      'Epiphany',
+      'Fennec',
+      'Flock',
+      'Galeon',
+      'GreenBrowser',
+      'iCab',
+      'Iceweasel',
+      'K-Meleon',
+      'Konqueror',
+      'Lunascape',
+      'Maxthon',
+      { 'label': 'Microsoft Edge', 'pattern': 'Edge' },
+      'Midori',
+      'Nook Browser',
+      'PaleMoon',
+      'PhantomJS',
+      'Raven',
+      'Rekonq',
+      'RockMelt',
+      { 'label': 'Samsung Internet', 'pattern': 'SamsungBrowser' },
+      'SeaMonkey',
+      { 'label': 'Silk', 'pattern': '(?:Cloud9|Silk-Accelerated)' },
+      'Sleipnir',
+      'SlimBrowser',
+      { 'label': 'SRWare Iron', 'pattern': 'Iron' },
+      'Sunrise',
+      'Swiftfox',
+      'Waterfox',
+      'WebPositive',
+      'Opera Mini',
+      { 'label': 'Opera Mini', 'pattern': 'OPiOS' },
+      'Opera',
+      { 'label': 'Opera', 'pattern': 'OPR' },
+      'Chrome',
+      { 'label': 'Chrome Mobile', 'pattern': '(?:CriOS|CrMo)' },
+      { 'label': 'Firefox', 'pattern': '(?:Firefox|Minefield)' },
+      { 'label': 'Firefox for iOS', 'pattern': 'FxiOS' },
+      { 'label': 'IE', 'pattern': 'IEMobile' },
+      { 'label': 'IE', 'pattern': 'MSIE' },
+      'Safari'
+    ]);
+
+    /* Detectable products (order is important). */
+    var product = getProduct([
+      { 'label': 'BlackBerry', 'pattern': 'BB10' },
+      'BlackBerry',
+      { 'label': 'Galaxy S', 'pattern': 'GT-I9000' },
+      { 'label': 'Galaxy S2', 'pattern': 'GT-I9100' },
+      { 'label': 'Galaxy S3', 'pattern': 'GT-I9300' },
+      { 'label': 'Galaxy S4', 'pattern': 'GT-I9500' },
+      { 'label': 'Galaxy S5', 'pattern': 'SM-G900' },
+      { 'label': 'Galaxy S6', 'pattern': 'SM-G920' },
+      { 'label': 'Galaxy S6 Edge', 'pattern': 'SM-G925' },
+      { 'label': 'Galaxy S7', 'pattern': 'SM-G930' },
+      { 'label': 'Galaxy S7 Edge', 'pattern': 'SM-G935' },
+      'Google TV',
+      'Lumia',
+      'iPad',
+      'iPod',
+      'iPhone',
+      'Kindle',
+      { 'label': 'Kindle Fire', 'pattern': '(?:Cloud9|Silk-Accelerated)' },
+      'Nexus',
+      'Nook',
+      'PlayBook',
+      'PlayStation Vita',
+      'PlayStation',
+      'TouchPad',
+      'Transformer',
+      { 'label': 'Wii U', 'pattern': 'WiiU' },
+      'Wii',
+      'Xbox One',
+      { 'label': 'Xbox 360', 'pattern': 'Xbox' },
+      'Xoom'
+    ]);
+
+    /* Detectable manufacturers. */
+    var manufacturer = getManufacturer({
+      'Apple': { 'iPad': 1, 'iPhone': 1, 'iPod': 1 },
+      'Archos': {},
+      'Amazon': { 'Kindle': 1, 'Kindle Fire': 1 },
+      'Asus': { 'Transformer': 1 },
+      'Barnes & Noble': { 'Nook': 1 },
+      'BlackBerry': { 'PlayBook': 1 },
+      'Google': { 'Google TV': 1, 'Nexus': 1 },
+      'HP': { 'TouchPad': 1 },
+      'HTC': {},
+      'LG': {},
+      'Microsoft': { 'Xbox': 1, 'Xbox One': 1 },
+      'Motorola': { 'Xoom': 1 },
+      'Nintendo': { 'Wii U': 1,  'Wii': 1 },
+      'Nokia': { 'Lumia': 1 },
+      'Samsung': { 'Galaxy S': 1, 'Galaxy S2': 1, 'Galaxy S3': 1, 'Galaxy S4': 1 },
+      'Sony': { 'PlayStation': 1, 'PlayStation Vita': 1 }
+    });
+
+    /* Detectable operating systems (order is important). */
+    var os = getOS([
+      'Windows Phone',
+      'Android',
+      'CentOS',
+      { 'label': 'Chrome OS', 'pattern': 'CrOS' },
+      'Debian',
+      'Fedora',
+      'FreeBSD',
+      'Gentoo',
+      'Haiku',
+      'Kubuntu',
+      'Linux Mint',
+      'OpenBSD',
+      'Red Hat',
+      'SuSE',
+      'Ubuntu',
+      'Xubuntu',
+      'Cygwin',
+      'Symbian OS',
+      'hpwOS',
+      'webOS ',
+      'webOS',
+      'Tablet OS',
+      'Tizen',
+      'Linux',
+      'Mac OS X',
+      'Macintosh',
+      'Mac',
+      'Windows 98;',
+      'Windows '
+    ]);
+
+    /*------------------------------------------------------------------------*/
+
+    /**
+     * Picks the layout engine from an array of guesses.
+     *
+     * @private
+     * @param {Array} guesses An array of guesses.
+     * @returns {null|string} The detected layout engine.
+     */
+    function getLayout(guesses) {
+      return reduce(guesses, function(result, guess) {
+        return result || RegExp('\\b' + (
+          guess.pattern || qualify(guess)
+        ) + '\\b', 'i').exec(ua) && (guess.label || guess);
+      });
+    }
+
+    /**
+     * Picks the manufacturer from an array of guesses.
+     *
+     * @private
+     * @param {Array} guesses An object of guesses.
+     * @returns {null|string} The detected manufacturer.
+     */
+    function getManufacturer(guesses) {
+      return reduce(guesses, function(result, value, key) {
+        // Lookup the manufacturer by product or scan the UA for the manufacturer.
+        return result || (
+          value[product] ||
+          value[/^[a-z]+(?: +[a-z]+\b)*/i.exec(product)] ||
+          RegExp('\\b' + qualify(key) + '(?:\\b|\\w*\\d)', 'i').exec(ua)
+        ) && key;
+      });
+    }
+
+    /**
+     * Picks the browser name from an array of guesses.
+     *
+     * @private
+     * @param {Array} guesses An array of guesses.
+     * @returns {null|string} The detected browser name.
+     */
+    function getName(guesses) {
+      return reduce(guesses, function(result, guess) {
+        return result || RegExp('\\b' + (
+          guess.pattern || qualify(guess)
+        ) + '\\b', 'i').exec(ua) && (guess.label || guess);
+      });
+    }
+
+    /**
+     * Picks the OS name from an array of guesses.
+     *
+     * @private
+     * @param {Array} guesses An array of guesses.
+     * @returns {null|string} The detected OS name.
+     */
+    function getOS(guesses) {
+      return reduce(guesses, function(result, guess) {
+        var pattern = guess.pattern || qualify(guess);
+        if (!result && (result =
+              RegExp('\\b' + pattern + '(?:/[\\d.]+|[ \\w.]*)', 'i').exec(ua)
+            )) {
+          result = cleanupOS(result, pattern, guess.label || guess);
+        }
+        return result;
+      });
+    }
+
+    /**
+     * Picks the product name from an array of guesses.
+     *
+     * @private
+     * @param {Array} guesses An array of guesses.
+     * @returns {null|string} The detected product name.
+     */
+    function getProduct(guesses) {
+      return reduce(guesses, function(result, guess) {
+        var pattern = guess.pattern || qualify(guess);
+        if (!result && (result =
+              RegExp('\\b' + pattern + ' *\\d+[.\\w_]*', 'i').exec(ua) ||
+              RegExp('\\b' + pattern + ' *\\w+-[\\w]*', 'i').exec(ua) ||
+              RegExp('\\b' + pattern + '(?:; *(?:[a-z]+[_-])?[a-z]+\\d+|[^ ();-]*)', 'i').exec(ua)
+            )) {
+          // Split by forward slash and append product version if needed.
+          if ((result = String((guess.label && !RegExp(pattern, 'i').test(guess.label)) ? guess.label : result).split('/'))[1] && !/[\d.]+/.test(result[0])) {
+            result[0] += ' ' + result[1];
+          }
+          // Correct character case and cleanup string.
+          guess = guess.label || guess;
+          result = format(result[0]
+            .replace(RegExp(pattern, 'i'), guess)
+            .replace(RegExp('; *(?:' + guess + '[_-])?', 'i'), ' ')
+            .replace(RegExp('(' + guess + ')[-_.]?(\\w)', 'i'), '$1 $2'));
+        }
+        return result;
+      });
+    }
+
+    /**
+     * Resolves the version using an array of UA patterns.
+     *
+     * @private
+     * @param {Array} patterns An array of UA patterns.
+     * @returns {null|string} The detected version.
+     */
+    function getVersion(patterns) {
+      return reduce(patterns, function(result, pattern) {
+        return result || (RegExp(pattern +
+          '(?:-[\\d.]+/|(?: for [\\w-]+)?[ /-])([\\d.]+[^ ();/_-]*)', 'i').exec(ua) || 0)[1] || null;
+      });
+    }
+
+    /**
+     * Returns `platform.description` when the platform object is coerced to a string.
+     *
+     * @name toString
+     * @memberOf platform
+     * @returns {string} Returns `platform.description` if available, else an empty string.
+     */
+    function toStringPlatform() {
+      return this.description || '';
+    }
+
+    /*------------------------------------------------------------------------*/
+
+    // Convert layout to an array so we can add extra details.
+    layout && (layout = [layout]);
+
+    // Detect product names that contain their manufacturer's name.
+    if (manufacturer && !product) {
+      product = getProduct([manufacturer]);
+    }
+    // Clean up Google TV.
+    if ((data = /\bGoogle TV\b/.exec(product))) {
+      product = data[0];
+    }
+    // Detect simulators.
+    if (/\bSimulator\b/i.test(ua)) {
+      product = (product ? product + ' ' : '') + 'Simulator';
+    }
+    // Detect Opera Mini 8+ running in Turbo/Uncompressed mode on iOS.
+    if (name == 'Opera Mini' && /\bOPiOS\b/.test(ua)) {
+      description.push('running in Turbo/Uncompressed mode');
+    }
+    // Detect IE Mobile 11.
+    if (name == 'IE' && /\blike iPhone OS\b/.test(ua)) {
+      data = parse(ua.replace(/like iPhone OS/, ''));
+      manufacturer = data.manufacturer;
+      product = data.product;
+    }
+    // Detect iOS.
+    else if (/^iP/.test(product)) {
+      name || (name = 'Safari');
+      os = 'iOS' + ((data = / OS ([\d_]+)/i.exec(ua))
+        ? ' ' + data[1].replace(/_/g, '.')
+        : '');
+    }
+    // Detect Kubuntu.
+    else if (name == 'Konqueror' && !/buntu/i.test(os)) {
+      os = 'Kubuntu';
+    }
+    // Detect Android browsers.
+    else if ((manufacturer && manufacturer != 'Google' &&
+        ((/Chrome/.test(name) && !/\bMobile Safari\b/i.test(ua)) || /\bVita\b/.test(product))) ||
+        (/\bAndroid\b/.test(os) && /^Chrome/.test(name) && /\bVersion\//i.test(ua))) {
+      name = 'Android Browser';
+      os = /\bAndroid\b/.test(os) ? os : 'Android';
+    }
+    // Detect Silk desktop/accelerated modes.
+    else if (name == 'Silk') {
+      if (!/\bMobi/i.test(ua)) {
+        os = 'Android';
+        description.unshift('desktop mode');
+      }
+      if (/Accelerated *= *true/i.test(ua)) {
+        description.unshift('accelerated');
+      }
+    }
+    // Detect PaleMoon identifying as Firefox.
+    else if (name == 'PaleMoon' && (data = /\bFirefox\/([\d.]+)\b/.exec(ua))) {
+      description.push('identifying as Firefox ' + data[1]);
+    }
+    // Detect Firefox OS and products running Firefox.
+    else if (name == 'Firefox' && (data = /\b(Mobile|Tablet|TV)\b/i.exec(ua))) {
+      os || (os = 'Firefox OS');
+      product || (product = data[1]);
+    }
+    // Detect false positives for Firefox/Safari.
+    else if (!name || (data = !/\bMinefield\b/i.test(ua) && /\b(?:Firefox|Safari)\b/.exec(name))) {
+      // Escape the `/` for Firefox 1.
+      if (name && !product && /[\/,]|^[^(]+?\)/.test(ua.slice(ua.indexOf(data + '/') + 8))) {
+        // Clear name of false positives.
+        name = null;
+      }
+      // Reassign a generic name.
+      if ((data = product || manufacturer || os) &&
+          (product || manufacturer || /\b(?:Android|Symbian OS|Tablet OS|webOS)\b/.test(os))) {
+        name = /[a-z]+(?: Hat)?/i.exec(/\bAndroid\b/.test(os) ? os : data) + ' Browser';
+      }
+    }
+    // Add Chrome version to description for Electron.
+    else if (name == 'Electron' && (data = (/\bChrome\/([\d.]+)\b/.exec(ua) || 0)[1])) {
+      description.push('Chromium ' + data);
+    }
+    // Detect non-Opera (Presto-based) versions (order is important).
+    if (!version) {
+      version = getVersion([
+        '(?:Cloud9|CriOS|CrMo|Edge|FxiOS|IEMobile|Iron|Opera ?Mini|OPiOS|OPR|Raven|SamsungBrowser|Silk(?!/[\\d.]+$))',
+        'Version',
+        qualify(name),
+        '(?:Firefox|Minefield|NetFront)'
+      ]);
+    }
+    // Detect stubborn layout engines.
+    if ((data =
+          layout == 'iCab' && parseFloat(version) > 3 && 'WebKit' ||
+          /\bOpera\b/.test(name) && (/\bOPR\b/.test(ua) ? 'Blink' : 'Presto') ||
+          /\b(?:Midori|Nook|Safari)\b/i.test(ua) && !/^(?:Trident|EdgeHTML)$/.test(layout) && 'WebKit' ||
+          !layout && /\bMSIE\b/i.test(ua) && (os == 'Mac OS' ? 'Tasman' : 'Trident') ||
+          layout == 'WebKit' && /\bPlayStation\b(?! Vita\b)/i.test(name) && 'NetFront'
+        )) {
+      layout = [data];
+    }
+    // Detect Windows Phone 7 desktop mode.
+    if (name == 'IE' && (data = (/; *(?:XBLWP|ZuneWP)(\d+)/i.exec(ua) || 0)[1])) {
+      name += ' Mobile';
+      os = 'Windows Phone ' + (/\+$/.test(data) ? data : data + '.x');
+      description.unshift('desktop mode');
+    }
+    // Detect Windows Phone 8.x desktop mode.
+    else if (/\bWPDesktop\b/i.test(ua)) {
+      name = 'IE Mobile';
+      os = 'Windows Phone 8.x';
+      description.unshift('desktop mode');
+      version || (version = (/\brv:([\d.]+)/.exec(ua) || 0)[1]);
+    }
+    // Detect IE 11 identifying as other browsers.
+    else if (name != 'IE' && layout == 'Trident' && (data = /\brv:([\d.]+)/.exec(ua))) {
+      if (name) {
+        description.push('identifying as ' + name + (version ? ' ' + version : ''));
+      }
+      name = 'IE';
+      version = data[1];
+    }
+    // Leverage environment features.
+    if (useFeatures) {
+      // Detect server-side environments.
+      // Rhino has a global function while others have a global object.
+      if (isHostType(context, 'global')) {
+        if (java) {
+          data = java.lang.System;
+          arch = data.getProperty('os.arch');
+          os = os || data.getProperty('os.name') + ' ' + data.getProperty('os.version');
+        }
+        if (rhino) {
+          try {
+            version = context.require('ringo/engine').version.join('.');
+            name = 'RingoJS';
+          } catch(e) {
+            if ((data = context.system) && data.global.system == context.system) {
+              name = 'Narwhal';
+              os || (os = data[0].os || null);
+            }
+          }
+          if (!name) {
+            name = 'Rhino';
+          }
+        }
+        else if (
+          typeof context.process == 'object' && !context.process.browser &&
+          (data = context.process)
+        ) {
+          if (typeof data.versions == 'object') {
+            if (typeof data.versions.electron == 'string') {
+              description.push('Node ' + data.versions.node);
+              name = 'Electron';
+              version = data.versions.electron;
+            } else if (typeof data.versions.nw == 'string') {
+              description.push('Chromium ' + version, 'Node ' + data.versions.node);
+              name = 'NW.js';
+              version = data.versions.nw;
+            }
+          }
+          if (!name) {
+            name = 'Node.js';
+            arch = data.arch;
+            os = data.platform;
+            version = /[\d.]+/.exec(data.version);
+            version = version ? version[0] : null;
+          }
+        }
+      }
+      // Detect Adobe AIR.
+      else if (getClassOf((data = context.runtime)) == airRuntimeClass) {
+        name = 'Adobe AIR';
+        os = data.flash.system.Capabilities.os;
+      }
+      // Detect PhantomJS.
+      else if (getClassOf((data = context.phantom)) == phantomClass) {
+        name = 'PhantomJS';
+        version = (data = data.version || null) && (data.major + '.' + data.minor + '.' + data.patch);
+      }
+      // Detect IE compatibility modes.
+      else if (typeof doc.documentMode == 'number' && (data = /\bTrident\/(\d+)/i.exec(ua))) {
+        // We're in compatibility mode when the Trident version + 4 doesn't
+        // equal the document mode.
+        version = [version, doc.documentMode];
+        if ((data = +data[1] + 4) != version[1]) {
+          description.push('IE ' + version[1] + ' mode');
+          layout && (layout[1] = '');
+          version[1] = data;
+        }
+        version = name == 'IE' ? String(version[1].toFixed(1)) : version[0];
+      }
+      // Detect IE 11 masking as other browsers.
+      else if (typeof doc.documentMode == 'number' && /^(?:Chrome|Firefox)\b/.test(name)) {
+        description.push('masking as ' + name + ' ' + version);
+        name = 'IE';
+        version = '11.0';
+        layout = ['Trident'];
+        os = 'Windows';
+      }
+      os = os && format(os);
+    }
+    // Detect prerelease phases.
+    if (version && (data =
+          /(?:[ab]|dp|pre|[ab]\d+pre)(?:\d+\+?)?$/i.exec(version) ||
+          /(?:alpha|beta)(?: ?\d)?/i.exec(ua + ';' + (useFeatures && nav.appMinorVersion)) ||
+          /\bMinefield\b/i.test(ua) && 'a'
+        )) {
+      prerelease = /b/i.test(data) ? 'beta' : 'alpha';
+      version = version.replace(RegExp(data + '\\+?$'), '') +
+        (prerelease == 'beta' ? beta : alpha) + (/\d+\+?/.exec(data) || '');
+    }
+    // Detect Firefox Mobile.
+    if (name == 'Fennec' || name == 'Firefox' && /\b(?:Android|Firefox OS)\b/.test(os)) {
+      name = 'Firefox Mobile';
+    }
+    // Obscure Maxthon's unreliable version.
+    else if (name == 'Maxthon' && version) {
+      version = version.replace(/\.[\d.]+/, '.x');
+    }
+    // Detect Xbox 360 and Xbox One.
+    else if (/\bXbox\b/i.test(product)) {
+      if (product == 'Xbox 360') {
+        os = null;
+      }
+      if (product == 'Xbox 360' && /\bIEMobile\b/.test(ua)) {
+        description.unshift('mobile mode');
+      }
+    }
+    // Add mobile postfix.
+    else if ((/^(?:Chrome|IE|Opera)$/.test(name) || name && !product && !/Browser|Mobi/.test(name)) &&
+        (os == 'Windows CE' || /Mobi/i.test(ua))) {
+      name += ' Mobile';
+    }
+    // Detect IE platform preview.
+    else if (name == 'IE' && useFeatures) {
+      try {
+        if (context.external === null) {
+          description.unshift('platform preview');
+        }
+      } catch(e) {
+        description.unshift('embedded');
+      }
+    }
+    // Detect BlackBerry OS version.
+    // http://docs.blackberry.com/en/developers/deliverables/18169/HTTP_headers_sent_by_BB_Browser_1234911_11.jsp
+    else if ((/\bBlackBerry\b/.test(product) || /\bBB10\b/.test(ua)) && (data =
+          (RegExp(product.replace(/ +/g, ' *') + '/([.\\d]+)', 'i').exec(ua) || 0)[1] ||
+          version
+        )) {
+      data = [data, /BB10/.test(ua)];
+      os = (data[1] ? (product = null, manufacturer = 'BlackBerry') : 'Device Software') + ' ' + data[0];
+      version = null;
+    }
+    // Detect Opera identifying/masking itself as another browser.
+    // http://www.opera.com/support/kb/view/843/
+    else if (this != forOwn && product != 'Wii' && (
+          (useFeatures && opera) ||
+          (/Opera/.test(name) && /\b(?:MSIE|Firefox)\b/i.test(ua)) ||
+          (name == 'Firefox' && /\bOS X (?:\d+\.){2,}/.test(os)) ||
+          (name == 'IE' && (
+            (os && !/^Win/.test(os) && version > 5.5) ||
+            /\bWindows XP\b/.test(os) && version > 8 ||
+            version == 8 && !/\bTrident\b/.test(ua)
+          ))
+        ) && !reOpera.test((data = parse.call(forOwn, ua.replace(reOpera, '') + ';'))) && data.name) {
+      // When "identifying", the UA contains both Opera and the other browser's name.
+      data = 'ing as ' + data.name + ((data = data.version) ? ' ' + data : '');
+      if (reOpera.test(name)) {
+        if (/\bIE\b/.test(data) && os == 'Mac OS') {
+          os = null;
+        }
+        data = 'identify' + data;
+      }
+      // When "masking", the UA contains only the other browser's name.
+      else {
+        data = 'mask' + data;
+        if (operaClass) {
+          name = format(operaClass.replace(/([a-z])([A-Z])/g, '$1 $2'));
+        } else {
+          name = 'Opera';
+        }
+        if (/\bIE\b/.test(data)) {
+          os = null;
+        }
+        if (!useFeatures) {
+          version = null;
+        }
+      }
+      layout = ['Presto'];
+      description.push(data);
+    }
+    // Detect WebKit Nightly and approximate Chrome/Safari versions.
+    if ((data = (/\bAppleWebKit\/([\d.]+\+?)/i.exec(ua) || 0)[1])) {
+      // Correct build number for numeric comparison.
+      // (e.g. "532.5" becomes "532.05")
+      data = [parseFloat(data.replace(/\.(\d)$/, '.0$1')), data];
+      // Nightly builds are postfixed with a "+".
+      if (name == 'Safari' && data[1].slice(-1) == '+') {
+        name = 'WebKit Nightly';
+        prerelease = 'alpha';
+        version = data[1].slice(0, -1);
+      }
+      // Clear incorrect browser versions.
+      else if (version == data[1] ||
+          version == (data[2] = (/\bSafari\/([\d.]+\+?)/i.exec(ua) || 0)[1])) {
+        version = null;
+      }
+      // Use the full Chrome version when available.
+      data[1] = (/\bChrome\/([\d.]+)/i.exec(ua) || 0)[1];
+      // Detect Blink layout engine.
+      if (data[0] == 537.36 && data[2] == 537.36 && parseFloat(data[1]) >= 28 && layout == 'WebKit') {
+        layout = ['Blink'];
+      }
+      // Detect JavaScriptCore.
+      // http://stackoverflow.com/questions/6768474/how-can-i-detect-which-javascript-engine-v8-or-jsc-is-used-at-runtime-in-androi
+      if (!useFeatures || (!likeChrome && !data[1])) {
+        layout && (layout[1] = 'like Safari');
+        data = (data = data[0], data < 400 ? 1 : data < 500 ? 2 : data < 526 ? 3 : data < 533 ? 4 : data < 534 ? '4+' : data < 535 ? 5 : data < 537 ? 6 : data < 538 ? 7 : data < 601 ? 8 : '8');
+      } else {
+        layout && (layout[1] = 'like Chrome');
+        data = data[1] || (data = data[0], data < 530 ? 1 : data < 532 ? 2 : data < 532.05 ? 3 : data < 533 ? 4 : data < 534.03 ? 5 : data < 534.07 ? 6 : data < 534.10 ? 7 : data < 534.13 ? 8 : data < 534.16 ? 9 : data < 534.24 ? 10 : data < 534.30 ? 11 : data < 535.01 ? 12 : data < 535.02 ? '13+' : data < 535.07 ? 15 : data < 535.11 ? 16 : data < 535.19 ? 17 : data < 536.05 ? 18 : data < 536.10 ? 19 : data < 537.01 ? 20 : data < 537.11 ? '21+' : data < 537.13 ? 23 : data < 537.18 ? 24 : data < 537.24 ? 25 : data < 537.36 ? 26 : layout != 'Blink' ? '27' : '28');
+      }
+      // Add the postfix of ".x" or "+" for approximate versions.
+      layout && (layout[1] += ' ' + (data += typeof data == 'number' ? '.x' : /[.+]/.test(data) ? '' : '+'));
+      // Obscure version for some Safari 1-2 releases.
+      if (name == 'Safari' && (!version || parseInt(version) > 45)) {
+        version = data;
+      }
+    }
+    // Detect Opera desktop modes.
+    if (name == 'Opera' &&  (data = /\bzbov|zvav$/.exec(os))) {
+      name += ' ';
+      description.unshift('desktop mode');
+      if (data == 'zvav') {
+        name += 'Mini';
+        version = null;
+      } else {
+        name += 'Mobile';
+      }
+      os = os.replace(RegExp(' *' + data + '$'), '');
+    }
+    // Detect Chrome desktop mode.
+    else if (name == 'Safari' && /\bChrome\b/.exec(layout && layout[1])) {
+      description.unshift('desktop mode');
+      name = 'Chrome Mobile';
+      version = null;
+
+      if (/\bOS X\b/.test(os)) {
+        manufacturer = 'Apple';
+        os = 'iOS 4.3+';
+      } else {
+        os = null;
+      }
+    }
+    // Strip incorrect OS versions.
+    if (version && version.indexOf((data = /[\d.]+$/.exec(os))) == 0 &&
+        ua.indexOf('/' + data + '-') > -1) {
+      os = trim(os.replace(data, ''));
+    }
+    // Add layout engine.
+    if (layout && !/\b(?:Avant|Nook)\b/.test(name) && (
+        /Browser|Lunascape|Maxthon/.test(name) ||
+        name != 'Safari' && /^iOS/.test(os) && /\bSafari\b/.test(layout[1]) ||
+        /^(?:Adobe|Arora|Breach|Midori|Opera|Phantom|Rekonq|Rock|Samsung Internet|Sleipnir|Web)/.test(name) && layout[1])) {
+      // Don't add layout details to description if they are falsey.
+      (data = layout[layout.length - 1]) && description.push(data);
+    }
+    // Combine contextual information.
+    if (description.length) {
+      description = ['(' + description.join('; ') + ')'];
+    }
+    // Append manufacturer to description.
+    if (manufacturer && product && product.indexOf(manufacturer) < 0) {
+      description.push('on ' + manufacturer);
+    }
+    // Append product to description.
+    if (product) {
+      description.push((/^on /.test(description[description.length - 1]) ? '' : 'on ') + product);
+    }
+    // Parse the OS into an object.
+    if (os) {
+      data = / ([\d.+]+)$/.exec(os);
+      isSpecialCasedOS = data && os.charAt(os.length - data[0].length - 1) == '/';
+      os = {
+        'architecture': 32,
+        'family': (data && !isSpecialCasedOS) ? os.replace(data[0], '') : os,
+        'version': data ? data[1] : null,
+        'toString': function() {
+          var version = this.version;
+          return this.family + ((version && !isSpecialCasedOS) ? ' ' + version : '') + (this.architecture == 64 ? ' 64-bit' : '');
+        }
+      };
+    }
+    // Add browser/OS architecture.
+    if ((data = /\b(?:AMD|IA|Win|WOW|x86_|x)64\b/i.exec(arch)) && !/\bi686\b/i.test(arch)) {
+      if (os) {
+        os.architecture = 64;
+        os.family = os.family.replace(RegExp(' *' + data), '');
+      }
+      if (
+          name && (/\bWOW64\b/i.test(ua) ||
+          (useFeatures && /\w(?:86|32)$/.test(nav.cpuClass || nav.platform) && !/\bWin64; x64\b/i.test(ua)))
+      ) {
+        description.unshift('32-bit');
+      }
+    }
+    // Chrome 39 and above on OS X is always 64-bit.
+    else if (
+        os && /^OS X/.test(os.family) &&
+        name == 'Chrome' && parseFloat(version) >= 39
+    ) {
+      os.architecture = 64;
+    }
+
+    ua || (ua = null);
+
+    /*------------------------------------------------------------------------*/
+
+    /**
+     * The platform object.
+     *
+     * @name platform
+     * @type Object
+     */
+    var platform = {};
+
+    /**
+     * The platform description.
+     *
+     * @memberOf platform
+     * @type string|null
+     */
+    platform.description = ua;
+
+    /**
+     * The name of the browser's layout engine.
+     *
+     * The list of common layout engines include:
+     * "Blink", "EdgeHTML", "Gecko", "Trident" and "WebKit"
+     *
+     * @memberOf platform
+     * @type string|null
+     */
+    platform.layout = layout && layout[0];
+
+    /**
+     * The name of the product's manufacturer.
+     *
+     * The list of manufacturers include:
+     * "Apple", "Archos", "Amazon", "Asus", "Barnes & Noble", "BlackBerry",
+     * "Google", "HP", "HTC", "LG", "Microsoft", "Motorola", "Nintendo",
+     * "Nokia", "Samsung" and "Sony"
+     *
+     * @memberOf platform
+     * @type string|null
+     */
+    platform.manufacturer = manufacturer;
+
+    /**
+     * The name of the browser/environment.
+     *
+     * The list of common browser names include:
+     * "Chrome", "Electron", "Firefox", "Firefox for iOS", "IE",
+     * "Microsoft Edge", "PhantomJS", "Safari", "SeaMonkey", "Silk",
+     * "Opera Mini" and "Opera"
+     *
+     * Mobile versions of some browsers have "Mobile" appended to their name:
+     * eg. "Chrome Mobile", "Firefox Mobile", "IE Mobile" and "Opera Mobile"
+     *
+     * @memberOf platform
+     * @type string|null
+     */
+    platform.name = name;
+
+    /**
+     * The alpha/beta release indicator.
+     *
+     * @memberOf platform
+     * @type string|null
+     */
+    platform.prerelease = prerelease;
+
+    /**
+     * The name of the product hosting the browser.
+     *
+     * The list of common products include:
+     *
+     * "BlackBerry", "Galaxy S4", "Lumia", "iPad", "iPod", "iPhone", "Kindle",
+     * "Kindle Fire", "Nexus", "Nook", "PlayBook", "TouchPad" and "Transformer"
+     *
+     * @memberOf platform
+     * @type string|null
+     */
+    platform.product = product;
+
+    /**
+     * The browser's user agent string.
+     *
+     * @memberOf platform
+     * @type string|null
+     */
+    platform.ua = ua;
+
+    /**
+     * The browser/environment version.
+     *
+     * @memberOf platform
+     * @type string|null
+     */
+    platform.version = name && version;
+
+    /**
+     * The name of the operating system.
+     *
+     * @memberOf platform
+     * @type Object
+     */
+    platform.os = os || {
+
+      /**
+       * The CPU architecture the OS is built for.
+       *
+       * @memberOf platform.os
+       * @type number|null
+       */
+      'architecture': null,
+
+      /**
+       * The family of the OS.
+       *
+       * Common values include:
+       * "Windows", "Windows Server 2008 R2 / 7", "Windows Server 2008 / Vista",
+       * "Windows XP", "OS X", "Ubuntu", "Debian", "Fedora", "Red Hat", "SuSE",
+       * "Android", "iOS" and "Windows Phone"
+       *
+       * @memberOf platform.os
+       * @type string|null
+       */
+      'family': null,
+
+      /**
+       * The version of the OS.
+       *
+       * @memberOf platform.os
+       * @type string|null
+       */
+      'version': null,
+
+      /**
+       * Returns the OS string.
+       *
+       * @memberOf platform.os
+       * @returns {string} The OS string.
+       */
+      'toString': function() { return 'null'; }
+    };
+
+    platform.parse = parse;
+    platform.toString = toStringPlatform;
+
+    if (platform.version) {
+      description.unshift(version);
+    }
+    if (platform.name) {
+      description.unshift(name);
+    }
+    if (os && name && !(os == String(os).split(' ')[0] && (os == name.split(' ')[0] || product))) {
+      description.push(product ? '(' + os + ')' : 'on ' + os);
+    }
+    if (description.length) {
+      platform.description = description.join(' ');
+    }
+    return platform;
+  }
+
+  /*--------------------------------------------------------------------------*/
+
+  // Export platform.
+  var platform = parse();
+
+  // Some AMD build optimizers, like r.js, check for condition patterns like the following:
+  if (true) {
+    // Expose platform on the global object to prevent errors when platform is
+    // loaded by a script tag in the presence of an AMD loader.
+    // See http://requirejs.org/docs/errors.html#mismatch for more details.
+    root.platform = platform;
+
+    // Define as an anonymous module so platform can be aliased through path mapping.
+    !(__WEBPACK_AMD_DEFINE_RESULT__ = (function() {
+      return platform;
+    }).call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  }
+  // Check for `exports` after `define` in case a build optimizer adds an `exports` object.
+  else {}
+}.call(this));
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17)(module), __webpack_require__(18)))
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if (!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if (!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || new Function("return this")();
+} catch (e) {
+	// This works if the window reference is available
+	if (typeof window === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, "install", function() { return /* binding */ install; });
+
+// CONCATENATED MODULE: ./src/xapi.ts
+const NAMESPACE_USER_MESSAGES = "user-";
+const PREFIX_PEBL_THREAD = "peblThread://";
+const PREFIX_PEBL = "pebl://";
+const PREFIX_PEBL_EXTENSION = "https://www.peblproject.com/definitions.html#";
+// -------------------------------
+class XApiStatement {
+    constructor(raw) {
+        this.id = raw.id;
+        this.actor = raw.actor;
+        this.verb = raw.verb;
+        this.context = raw.context;
+        this.stored = raw.stored;
+        this.timestamp = raw.timestamp;
+        this.result = raw.result;
+        this["object"] = raw.object;
+        this.attachments = raw.attachments;
+        if (this["object"].definition) {
+            let extensions = this["object"].definition.extensions;
+            this.browserName = extensions[PREFIX_PEBL_EXTENSION + "browserName"];
+            this.browserVersion = extensions[PREFIX_PEBL_EXTENSION + "browserVersion"];
+            this.osName = extensions[PREFIX_PEBL_EXTENSION + "osName"];
+            this.osVersion = extensions[PREFIX_PEBL_EXTENSION + "osVersion"];
+            this.contextOrigin = extensions[PREFIX_PEBL_EXTENSION + "contextOrigin"];
+            this.contextUrl = extensions[PREFIX_PEBL_EXTENSION + "contextUrl"];
+            this.currentTeam = extensions[PREFIX_PEBL_EXTENSION + "currentTeam"];
+            this.currentClass = extensions[PREFIX_PEBL_EXTENSION + "currentClass"];
+        }
+    }
+    toXAPI() {
+        return new XApiStatement(this);
+    }
+    getActorId() {
+        return this.actor.mbox || this.actor.openid ||
+            (this.actor.account && this.actor.account.name);
+    }
+    static is(x) {
+        if (x.verb)
+            return true;
+        else
+            return false;
+    }
+}
+// -------------------------------
+class Reference extends XApiStatement {
+    constructor(raw) {
+        super(raw);
+        this.thread = this["object"].id;
+        if (this.thread.indexOf(PREFIX_PEBL_THREAD) != -1)
+            this.thread = this.thread.substring(PREFIX_PEBL_THREAD.length);
+        this.name = this.object.definition.name["en-US"];
+        let extensions = this["object"].definition.extensions;
+        this.book = extensions[PREFIX_PEBL_EXTENSION + "book"];
+        this.docType = extensions[PREFIX_PEBL_EXTENSION + "docType"];
+        this.location = extensions[PREFIX_PEBL_EXTENSION + "location"];
+        this.card = extensions[PREFIX_PEBL_EXTENSION + "card"];
+        this.url = extensions[PREFIX_PEBL_EXTENSION + "url"];
+        this.target = extensions[PREFIX_PEBL_EXTENSION + "target"];
+        this.externalURL = extensions[PREFIX_PEBL_EXTENSION + "externalURL"];
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "pushed") || (verb == "pulled");
+    }
+}
+// -------------------------------
+class Annotation extends XApiStatement {
+    constructor(raw) {
+        super(raw);
+        this.title = this.object.definition.name && this.object.definition.name["en-US"];
+        this.text = this.object.definition.description && this.object.definition.description["en-US"];
+        this.book = this.object.id;
+        if (this.book.indexOf(PREFIX_PEBL) != -1)
+            this.book = this.book.substring(this.book.indexOf(PREFIX_PEBL) + PREFIX_PEBL.length);
+        else if (this.book.indexOf(PREFIX_PEBL_THREAD) != -1)
+            this.book = this.book.substring(this.book.indexOf(PREFIX_PEBL_THREAD) + PREFIX_PEBL_THREAD.length);
+        this.owner = this.getActorId();
+        let extensions = this.object.definition.extensions;
+        this.type = extensions[PREFIX_PEBL_EXTENSION + "type"];
+        this.cfi = extensions[PREFIX_PEBL_EXTENSION + "cfi"];
+        this.idRef = extensions[PREFIX_PEBL_EXTENSION + "idRef"];
+        this.style = extensions[PREFIX_PEBL_EXTENSION + "style"];
+        if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
+            this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
+        this.pinned = raw.pinned;
+        this.pinMessage = raw.pinMessage;
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "commented") || (verb == "bookmarked") || (verb == "annotated");
+    }
+}
+// -------------------------------
+class SharedAnnotation extends Annotation {
+    constructor(raw) {
+        super(raw);
+        let extensions = this.object.definition.extensions;
+        if (extensions) {
+            this.groupId = extensions[PREFIX_PEBL_EXTENSION + 'groupId'];
+        }
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "shared");
+    }
+}
+// -------------------------------
+class Action extends XApiStatement {
+    constructor(raw) {
+        super(raw);
+        this.activityId = this.object.id;
+        this.action = this.verb.display["en-US"];
+        this.book = this.object.id;
+        if (this.book.indexOf(PREFIX_PEBL) != -1)
+            this.book = this.book.substring(this.book.indexOf(PREFIX_PEBL) + PREFIX_PEBL.length);
+        else if (this.book.indexOf(PREFIX_PEBL_THREAD) != -1)
+            this.book = this.book.substring(this.book.indexOf(PREFIX_PEBL_THREAD) + PREFIX_PEBL_THREAD.length);
+        if (this.object.definition) {
+            this.name = this.object.definition.name && this.object.definition.name["en-US"];
+            this.description = this.object.definition.description && this.object.definition.description["en-US"];
+            let extensions = this.object.definition.extensions;
+            if (extensions) {
+                this.target = extensions[PREFIX_PEBL_EXTENSION + "target"];
+                this.type = extensions[PREFIX_PEBL_EXTENSION + "type"];
+                this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
+                this.cfi = extensions[PREFIX_PEBL_EXTENSION + "cfi"];
+                if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
+                    this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
+            }
+        }
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "preferred") || (verb == "morphed") || (verb == "interacted") || (verb == "experienced") || (verb == "disliked") ||
+            (verb == "liked") || (verb == "accessed") || (verb == "hid") || (verb == "showed") || (verb == "displayed") || (verb == "undisplayed") ||
+            (verb == "searched") || (verb == "selected") || (verb == "unbookmarked") || (verb == "discarded") || (verb == "unshared") || (verb == "unannotated") ||
+            (verb == "submitted");
+    }
+}
+// -------------------------------
+class Navigation extends XApiStatement {
+    constructor(raw) {
+        super(raw);
+        this.type = this.verb.display["en-US"];
+        this.activityId = this.object.id;
+        this.book = this.object.id;
+        if (this.book.indexOf(PREFIX_PEBL) != -1)
+            this.book = this.book.substring(this.book.indexOf(PREFIX_PEBL) + PREFIX_PEBL.length);
+        else if (this.book.indexOf(PREFIX_PEBL_THREAD) != -1)
+            this.book = this.book.substring(this.book.indexOf(PREFIX_PEBL_THREAD) + PREFIX_PEBL_THREAD.length);
+        let extensions = this.object.definition.extensions;
+        if (extensions) {
+            this.firstCfi = extensions[PREFIX_PEBL_EXTENSION + "firstCfi"];
+            this.lastCfi = extensions[PREFIX_PEBL_EXTENSION + "lastCfi"];
+            if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
+                this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
+        }
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "paged-next") || (verb == "paged-prev") || (verb == "paged-jump") || (verb == "interacted") ||
+            (verb == "completed");
+    }
+}
+// -------------------------------
+class Message extends XApiStatement {
+    constructor(raw) {
+        super(raw);
+        this.thread = this.object.id;
+        if (this.thread.indexOf(PREFIX_PEBL_THREAD) != -1)
+            this.thread = this.thread.substring(PREFIX_PEBL_THREAD.length);
+        this.prompt = this.object.definition.name["en-US"];
+        this.name = this.actor.name;
+        this.direct = this.thread == (NAMESPACE_USER_MESSAGES + this.getActorId());
+        this.text = this.result ? this.result.response : this.object.definition.description['en-US'];
+        let extensions = this.object.definition.extensions;
+        if (extensions) {
+            this.access = extensions[PREFIX_PEBL_EXTENSION + "access"];
+            this.type = extensions[PREFIX_PEBL_EXTENSION + "type"];
+            this.replyThread = extensions[PREFIX_PEBL_EXTENSION + "replyThread"];
+            this.groupId = extensions[PREFIX_PEBL_EXTENSION + "groupId"];
+            this.isPrivate = extensions[PREFIX_PEBL_EXTENSION + "isPrivate"];
+            this.book = extensions[PREFIX_PEBL_EXTENSION + "book"];
+            this.cfi = extensions[PREFIX_PEBL_EXTENSION + "cfi"];
+            this.idRef = extensions[PREFIX_PEBL_EXTENSION + "idRef"];
+            this.peblAction = extensions[PREFIX_PEBL_EXTENSION + "peblAction"];
+            if (extensions[PREFIX_PEBL_EXTENSION + "thread"])
+                this.thread = extensions[PREFIX_PEBL_EXTENSION + "thread"];
+        }
+        this.pinned = raw.pinned;
+        this.pinMessage = raw.pinMessage;
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "responded") || (verb == "noted");
+    }
+}
+// -------------------------------
+class Voided extends XApiStatement {
+    constructor(raw) {
+        super(raw);
+        this.thread = (this.context && this.context.contextActivities && this.context.contextActivities.parent) ? this.context.contextActivities.parent[0].id : "";
+        if (this.thread.indexOf(PREFIX_PEBL_THREAD) != -1)
+            this.thread = this.thread.substring(PREFIX_PEBL_THREAD.length);
+        this.target = this.object.id;
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "voided");
+    }
+}
+// -------------------------------
+class Question extends XApiStatement {
+    constructor(raw) {
+        super(raw);
+        this.book = this.object.id;
+        if (this.book.indexOf(PREFIX_PEBL) != -1)
+            this.book = this.book.substring(this.book.indexOf(PREFIX_PEBL) + PREFIX_PEBL.length);
+        else if (this.book.indexOf(PREFIX_PEBL_THREAD) != -1)
+            this.book = this.book.substring(this.book.indexOf(PREFIX_PEBL_THREAD) + PREFIX_PEBL_THREAD.length);
+        this.score = this.result.score.raw;
+        this.min = this.result.score.min;
+        this.max = this.result.score.max;
+        this.completion = this.result.completion;
+        this.success = this.result.success;
+        this.response = this.result.response;
+        this.prompt = this.object.definition.description["en-US"];
+        this.activityId = this.object.id;
+        let choices = this.object.definition.choices;
+        this.answers = [];
+        for (let key of Object.keys(choices))
+            this.answers.push(choices[key].description["en-US"]);
+        let extensions = this.object.definition.extensions;
+        if (extensions) {
+            if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
+                this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
+        }
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "attempted");
+    }
+}
+// -------------------------------
+class Quiz extends XApiStatement {
+    constructor(raw) {
+        super(raw);
+        this.book = this.object.id;
+        if (this.book.indexOf(PREFIX_PEBL) != -1)
+            this.book = this.book.substring(this.book.indexOf(PREFIX_PEBL) + PREFIX_PEBL.length);
+        else if (this.book.indexOf(PREFIX_PEBL_THREAD) != -1)
+            this.book = this.book.substring(this.book.indexOf(PREFIX_PEBL_THREAD) + PREFIX_PEBL_THREAD.length);
+        this.score = this.result.score.raw;
+        this.min = this.result.score.min;
+        this.max = this.result.score.max;
+        this.completion = this.result.completion;
+        this.success = this.result.success;
+        this.activityId = this.object.id;
+        let extensions = this.object.definition.extensions;
+        if (extensions) {
+            if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
+                this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
+        }
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "failed") || (verb == "passed");
+    }
+}
+// -------------------------------
+class Session extends XApiStatement {
+    constructor(raw) {
+        super(raw);
+        this.activityId = this.object.id;
+        if (this.object.definition) {
+            this.activityName = this.object.definition.name && this.object.definition.name["en-US"];
+            this.activityDescription = this.object.definition.description && this.object.definition.description["en-US"];
+        }
+        this.book = this.object.id;
+        if (this.book.indexOf(PREFIX_PEBL) != -1)
+            this.book = this.book.substring(this.book.indexOf(PREFIX_PEBL) + PREFIX_PEBL.length);
+        else if (this.book.indexOf(PREFIX_PEBL_THREAD) != -1)
+            this.book = this.book.substring(this.book.indexOf(PREFIX_PEBL_THREAD) + PREFIX_PEBL_THREAD.length);
+        this.type = this.verb.display["en-US"];
+        let extensions = this.object.definition.extensions;
+        if (extensions) {
+            if (extensions[PREFIX_PEBL_EXTENSION + "bookId"])
+                this.book = extensions[PREFIX_PEBL_EXTENSION + "bookId"];
+        }
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "entered") || (verb == "exited") || (verb == "logged-in") ||
+            (verb == "logged-out") || (verb == "terminated") || (verb == "initialized") || (verb == "launched");
+    }
+}
+// -------------------------------
+class Membership extends XApiStatement {
+    constructor(raw) {
+        super(raw);
+        this.thread = this.object.id;
+        if (this.thread.indexOf(PREFIX_PEBL_THREAD) != -1)
+            this.thread = this.thread.substring(PREFIX_PEBL_THREAD.length);
+        this.membershipId = this.object.definition.name["en-US"];
+        this.description = this.object.definition.description && this.object.definition.description["en-US"];
+        let extensions = this.object.definition.extensions;
+        this.role = extensions[PREFIX_PEBL_EXTENSION + "role"];
+        this.activityType = extensions[PREFIX_PEBL_EXTENSION + "activityType"];
+        this.organization = extensions[PREFIX_PEBL_EXTENSION + "organization"];
+        this.organizationName = extensions[PREFIX_PEBL_EXTENSION + "organizationName"];
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "joined");
+    }
+}
+// -------------------------------
+class Artifact extends XApiStatement {
+    constructor(raw) {
+        super(raw);
+        this.thread = this.object.id;
+        if (this.thread.indexOf(PREFIX_PEBL_THREAD) != -1)
+            this.thread = this.thread.substring(PREFIX_PEBL_THREAD.length);
+        this.artifactId = this.object.definition.name["en-US"];
+        this.artifactDescription = this.object.definition.description && this.object.definition.description["en-US"];
+        let extensions = this.object.definition.extensions;
+        this.body = extensions[PREFIX_PEBL_EXTENSION + "body"];
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "artifactCreated");
+    }
+}
+// -------------------------------
+class Invitation extends XApiStatement {
+    constructor(raw) {
+        super(raw);
+        let extensions = this.object.definition.extensions;
+        this.token = this.object.definition.name["en-US"];
+        this.programId = extensions[PREFIX_PEBL_EXTENSION + "programId"];
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "invited");
+    }
+}
+// -------------------------------
+class ProgramAction extends XApiStatement {
+    constructor(raw) {
+        super(raw);
+        this.thread = this.object.id;
+        let extensions = this.object.definition.extensions;
+        this.programId = this.object.definition.name["en-US"];
+        this.previousValue = extensions[PREFIX_PEBL_EXTENSION + "previousValue"];
+        this.newValue = extensions[PREFIX_PEBL_EXTENSION + "newValue"];
+        this.action = extensions[PREFIX_PEBL_EXTENSION + "action"];
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "programLevelUp") || (verb == "programLevelDown") || (verb == "programInvited") || (verb == "programUninvited")
+            || (verb == "programExpelled") || (verb == "programJoined") || (verb == "programActivityLaunched")
+            || (verb == "programActivityCompleted") || (verb == "programActivityTeamCompleted") || (verb == "programModified")
+            || (verb == "programDeleted") || (verb == "programCompleted") || (verb == "programCopied") || (verb == "programDiscussed");
+    }
+}
+// -------------------------------
+class CompatibilityTest extends XApiStatement {
+    constructor(raw) {
+        super(raw);
+        let extensions = this.object.definition.extensions;
+        this.readerName = extensions[PREFIX_PEBL_EXTENSION + "readerName"];
+        this.osName = extensions[PREFIX_PEBL_EXTENSION + "osName"];
+        this.osVersion = extensions[PREFIX_PEBL_EXTENSION + "osVersion"];
+        this.browserName = extensions[PREFIX_PEBL_EXTENSION + "browserName"];
+        this.browserVersion = extensions[PREFIX_PEBL_EXTENSION + "browserVersion"];
+        this.userAgent = extensions[PREFIX_PEBL_EXTENSION + "userAgent"];
+        this.appVersion = extensions[PREFIX_PEBL_EXTENSION + "appVersion"];
+        this.platform = extensions[PREFIX_PEBL_EXTENSION + "platform"];
+        this.vendor = extensions[PREFIX_PEBL_EXTENSION + "vendor"];
+        this.testResults = JSON.parse(extensions[PREFIX_PEBL_EXTENSION + "testResults"]);
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "compatibilityTested");
+    }
+}
+// -------------------------------
+class ModuleEvent extends XApiStatement {
+    constructor(raw) {
+        super(raw);
+    }
+}
+class ModuleRating extends ModuleEvent {
+    constructor(raw) {
+        super(raw);
+        let extensions = this.object.definition.extensions;
+        this.rating = this.object.definition.name["en-US"];
+        this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
+        this.programId = extensions[PREFIX_PEBL_EXTENSION + "programId"];
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "moduleRating");
+    }
+}
+class ModuleFeedback extends ModuleEvent {
+    constructor(raw) {
+        super(raw);
+        let extensions = this.object.definition.extensions;
+        this.feedback = this.object.definition.name["en-US"];
+        this.willingToDiscuss = extensions[PREFIX_PEBL_EXTENSION + "willingToDiscuss"];
+        this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
+        this.programId = extensions[PREFIX_PEBL_EXTENSION + "programId"];
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "moduleFeedback");
+    }
+}
+class ModuleExample extends ModuleEvent {
+    constructor(raw) {
+        super(raw);
+        let extensions = this.object.definition.extensions;
+        this.example = this.object.definition.name["en-US"];
+        this.description = this.object.definition.description["en-US"];
+        this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
+        this.youtubeUrl = extensions[PREFIX_PEBL_EXTENSION + "youtubeUrl"];
+        this.imageUrl = extensions[PREFIX_PEBL_EXTENSION + "imageUrl"];
+        this.websiteUrl = extensions[PREFIX_PEBL_EXTENSION + "websiteUrl"];
+        this.quotedPerson = extensions[PREFIX_PEBL_EXTENSION + "quotedPerson"];
+        this.quotedTeam = extensions[PREFIX_PEBL_EXTENSION + "quotedTeam"];
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "moduleExample");
+    }
+}
+class ModuleExampleRating extends ModuleEvent {
+    constructor(raw) {
+        super(raw);
+        let extensions = this.object.definition.extensions;
+        this.rating = this.object.definition.name["en-US"];
+        this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
+        this.programId = extensions[PREFIX_PEBL_EXTENSION + "programId"];
+        this.exampleId = extensions[PREFIX_PEBL_EXTENSION + "exampleId"];
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "moduleExampleRating");
+    }
+}
+class ModuleExampleFeedback extends ModuleEvent {
+    constructor(raw) {
+        super(raw);
+        let extensions = this.object.definition.extensions;
+        this.feedback = this.object.definition.name["en-US"];
+        this.willingToDiscuss = extensions[PREFIX_PEBL_EXTENSION + "willingToDiscuss"];
+        this.idref = extensions[PREFIX_PEBL_EXTENSION + "idref"];
+        this.programId = extensions[PREFIX_PEBL_EXTENSION + "programId"];
+        this.exampleId = extensions[PREFIX_PEBL_EXTENSION + "exampleId"];
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "moduleExampleFeedback");
+    }
+}
+class ModuleRemovedEvent extends ModuleEvent {
+    constructor(raw) {
+        super(raw);
+        let extensions = this.object.definition.extensions;
+        this.idref = this.object.definition.name["en-US"];
+        this.eventId = this.object.definition.description["en-US"];
+        this.type = extensions[PREFIX_PEBL_EXTENSION + "type"];
+    }
+    static is(x) {
+        let verb = x.verb.display["en-US"];
+        return (verb == "moduleRemovedEvent");
+    }
+}
+class Notification extends XApiStatement {
+}
+
+// CONCATENATED MODULE: ./src/models.ts
+// -------------------------------
+class UserProfile {
+    constructor(raw) {
+        this.identity = raw.identity;
+        this.name = raw.name;
+        this.homePage = raw.homePage;
+        this.preferredName = raw.preferredName;
+        if (raw.registryEndpoint)
+            this.registryEndpoint = new Endpoint(raw.registryEndpoint);
+        this.currentTeam = raw.currentTeam;
+        this.currentTeamName = raw.currentTeamName;
+        this.currentClass = raw.currentClass;
+        this.currentClassName = raw.currentClassName;
+        this.memberships = raw.memberships;
+        this.role = raw.role;
+        this.groups = raw.groups;
+        this.endpoints = [];
+        this.metadata = raw.metadata;
+        if (raw.endpoints)
+            for (let endpointObj of raw.endpoints)
+                this.endpoints.push(new Endpoint(endpointObj));
+        if (this.homePage == null)
+            this.homePage = "acct:keycloak-server";
+        if (raw.firstName)
+            this.firstName = raw.firstName;
+        if (raw.lastName)
+            this.lastName = raw.lastName;
+        if (raw.avatar)
+            this.avatar = raw.avatar;
+        if (raw.email)
+            this.email = raw.email;
+        if (raw.phoneNumber)
+            this.phoneNumber = raw.phoneNumber;
+        if (raw.streetAddress)
+            this.streetAddress = raw.streetAddress;
+        if (raw.city)
+            this.city = raw.city;
+        if (raw.state)
+            this.state = raw.state;
+        if (raw.zipCode)
+            this.zipCode = raw.zipCode;
+        if (raw.country)
+            this.country = raw.country;
+    }
+    toObject() {
+        let urls = {};
+        for (let e of this.endpoints)
+            urls[e.url] = e.toObject();
+        let obj = {
+            "identity": this.identity,
+            "name": this.name,
+            "homePage": this.homePage,
+            "preferredName": this.preferredName,
+            "lrsUrls": urls,
+            "metadata": {},
+            "registryEndpoint": this.registryEndpoint,
+            "currentTeam": this.currentTeam,
+            "currentTeamName": this.currentTeamName,
+            "currentClass": this.currentClass,
+            "currentClassName": this.currentClassName,
+            "memberships": this.memberships,
+            "firstName": this.firstName,
+            "lastName": this.lastName,
+            "avatar": this.avatar,
+            "email": this.email,
+            "phoneNumber": this.phoneNumber,
+            "streetAddress": this.streetAddress,
+            "city": this.city,
+            "state": this.state,
+            "zipCode": this.zipCode,
+            "country": this.country
+        };
+        if (this.metadata)
+            obj.metadata = this.metadata;
+        return obj;
+    }
+}
+// -------------------------------
+class Endpoint {
+    constructor(raw) {
+        this.url = raw.url;
+        this.username = raw.username;
+        this.password = raw.password;
+        this.token = raw.token;
+        if (!this.token) {
+            this.token = btoa(this.username + ":" + this.password);
+        }
+        this.lastSyncedBooksMine = {};
+        this.lastSyncedBooksShared = {};
+        this.lastSyncedThreads = {};
+        this.lastSyncedActivityEvents = {};
+        this.lastSyncedModules = {};
+    }
+    toObject(urlPrefix = "") {
+        return {
+            url: urlPrefix + this.url,
+            username: this.username,
+            password: this.password,
+            token: this.token,
+            lastSyncedThreads: this.lastSyncedThreads,
+            lastSyncedBooksMine: this.lastSyncedBooksMine,
+            lastSyncedBooksShared: this.lastSyncedBooksMine,
+            lastSyncedActivityEvents: this.lastSyncedActivityEvents,
+            lastSyncedModules: this.lastSyncedModules
+        };
+    }
+}
+// -------------------------------
+class TempMembership {
+    constructor(raw) {
+        this.id = raw.id;
+        this.identity = raw.identity;
+        this.actor = raw.actor;
+        this.inviteId = raw.inviteId;
+        this.inviteLink = raw.inviteLink;
+        this.status = raw.status;
+        this.role = raw.role;
+        this.inviteRole = raw.inviteRole;
+    }
+    static is(x) {
+        if (x.id && x.identity && x.actor && x.actor.name && x.inviteLink && x.status && x.role && x.inviteRole)
+            return true;
+        else
+            return false;
+    }
+}
+
+// CONCATENATED MODULE: ./src/activity.ts
+// import { PEBL } from "./pebl";
+
+
+
+class Activity {
+    constructor(raw) {
+        this.isNew = false;
+        this.dirtyEdits = {};
+        if (!raw.id) {
+            /*!
+              Excerpt from: Math.uuid.js (v1.4)
+              http://www.broofa.com
+              mailto:robert@broofa.com
+              Copyright (c) 2010 Robert Kieffer
+              Dual licensed under the MIT and GPL licenses.
+            */
+            this.id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+            this.isNew = true;
+        }
+        else {
+            this.id = raw.id;
+            this.isNew = false;
+        }
+        this.timestamp = (typeof (raw.timestamp) === "string") ? new Date(Date.parse(raw.timestamp)) : new Date();
+        this.etag = raw.etag;
+        this.type = raw.type;
+        this.delete = raw.delete;
+    }
+    static is(raw) {
+        return (raw.id && raw.type) != null;
+    }
+    clearDirtyEdits() {
+        this.dirtyEdits = {};
+    }
+    toTransportFormat() {
+        return {
+            type: this.type,
+            timestamp: this.timestamp ? this.timestamp.toISOString() : (new Date()).toISOString(),
+            id: this.id
+        };
+    }
+    ;
+    static merge(oldActivity, newActivity) {
+        let mergedActivity = {};
+        let oldKeys = Object.keys(oldActivity);
+        let newKeys = Object.keys(newActivity);
+        for (let key of oldKeys) {
+            mergedActivity[key] = oldActivity[key];
+        }
+        for (let key of newKeys) {
+            // Null properties were set for a reason and should not be changed.
+            if (mergedActivity[key] == null) {
+                // Leave it
+            }
+            else {
+                mergedActivity[key] = newActivity[key];
+            }
+        }
+        // If either is flagged for deletion, that should not be changed.
+        if ((oldActivity.delete && oldActivity.delete == true) || (newActivity.delete && newActivity.delete == true)) {
+            mergedActivity.delete = true;
+        }
+        // If either is flagged as completed, that should not be changed.
+        if ((oldActivity.completed && oldActivity.completed == true) || (newActivity.completed && newActivity.completed == true)) {
+            mergedActivity.completed = true;
+        }
+        return mergedActivity;
+    }
+}
+class Learnlet extends Activity {
+    constructor(raw) {
+        raw.type = "learnlet";
+        super(raw);
+        this._cfi = raw.cfi;
+        this._level = raw.level;
+        this.programTitle = raw.name;
+        this._description = raw.description;
+    }
+    get name() { return this.programTitle; }
+    get description() { return this._description; }
+    get level() { return this._level; }
+    get cfi() { return this._cfi; }
+    set name(arg) {
+        this.dirtyEdits["name"] = true;
+        this.programTitle = arg;
+    }
+    set description(arg) {
+        this.dirtyEdits["description"] = true;
+        this._description = arg;
+    }
+    set level(arg) {
+        this.dirtyEdits["level"] = true;
+        this._level = arg;
+    }
+    set cfi(arg) {
+        this.dirtyEdits["cfi"] = true;
+        this._cfi = arg;
+    }
+    static is(raw) {
+        return raw.type == "learnlet";
+    }
+    toTransportFormat() {
+        let sObj = super.toTransportFormat();
+        let obj = {};
+        if (this.dirtyEdits["name"] || this.isNew)
+            sObj.name = this.programTitle;
+        if (this.dirtyEdits["description"] || this.isNew)
+            sObj.description = this._description;
+        if (this.dirtyEdits["description"] || this.isNew)
+            sObj.description = this._description;
+        if (this.dirtyEdits["cfi"] || this.isNew)
+            sObj.cfi = this._cfi;
+        if (this.dirtyEdits["level"] || this.isNew)
+            sObj.level = this._level;
+        obj[this.id] = sObj;
+        return obj;
+    }
+}
+// -------------------------------
+class activity_Program extends Activity {
+    constructor(raw) {
+        raw.type = "program";
+        super(raw);
+        let self = this;
+        // Translate legacy member format to new format
+        let members = [];
+        if (raw.members)
+            members = typeof (raw.members) === "string" ? JSON.parse(decodeURIComponent(raw.members)) : (raw.members ? raw.members : []);
+        if (members.length > 0) {
+            for (let member of members) {
+                self.addMember(member);
+            }
+        }
+        let rawKeys = Object.keys(raw);
+        for (let key of rawKeys) {
+            if (key.indexOf('member-') !== -1) {
+                let member = typeof (raw[key]) === "string" ? JSON.parse(decodeURIComponent(raw[key])) : (raw[key] ? raw[key] : null);
+                if (member == null || (XApiStatement.is(member) && Membership.is(member)) || TempMembership.is(member)) {
+                    self[key] = member;
+                }
+            }
+        }
+        this.programLevelStepsComplete = raw.programLevelStepsComplete || 0;
+        this.programLevels = raw.programLevels || [];
+        this.programTitle = raw.programTitle || "";
+        this.programShortDescription = raw.programShortDescription || "";
+        this.programLongDescription = raw.programLongDescription || "";
+        this.programLevel = raw.programLevel || 0;
+        this.programIssues = raw.programIssues ? raw.programIssues : [];
+        this.programCommunities = raw.programCommunities ? raw.programCommunities : [];
+        this.programInstitutions = raw.programInstitutions ? raw.programInstitutions : [];
+        this.programAvatar = raw.programAvatar;
+        this.programTeamName = raw.programTeamName;
+        this.programFocus = raw.programFocus;
+        this.completed = raw.completed ? new Date(raw.completed) : undefined;
+        this.created = raw.created ? new Date(raw.created) : undefined;
+        // Estimate created time to backfill older programs, find oldest member and use their timestamp
+        if (!this.created) {
+            if (this.isNew) {
+                this.created = new Date();
+            }
+            else {
+                let oldestMember = null;
+                let keys = Object.keys(this);
+                for (let key of keys) {
+                    if (key.indexOf('member-') !== -1) {
+                        let member = typeof (this[key]) === "string" ? JSON.parse(decodeURIComponent(this[key])) : (this[key] ? this[key] : null);
+                        if (member && XApiStatement.is(member) && Membership.is(member)) {
+                            if (!oldestMember || (new Date(member.timestamp) < new Date(oldestMember.timestamp)))
+                                oldestMember = member;
+                        }
+                    }
+                }
+                if (oldestMember)
+                    this.created = new Date(oldestMember.timestamp);
+            }
+        }
+        this.members = typeof (raw.members) === "string" ? JSON.parse(decodeURIComponent(raw.members)) : (raw.members ? raw.members : []);
+    }
+    static is(raw) {
+        return raw.type == "program";
+    }
+    toTransportFormat() {
+        let obj = super.toTransportFormat();
+        let self = this;
+        let keys = Object.keys(this);
+        for (let key of keys) {
+            if (key.indexOf('member-') !== -1) {
+                if (self[key] == null) {
+                    obj[key] = self[key];
+                }
+                else if ((XApiStatement.is(self[key]) && Membership.is(self[key])) || TempMembership.is(self[key])) {
+                    obj[key] = encodeURIComponent(JSON.stringify(self[key]));
+                }
+            }
+        }
+        obj.programLevelStepsComplete = this.programLevelStepsComplete;
+        obj.programLevels = this.programLevels;
+        obj.programTitle = this.programTitle;
+        obj.programShortDescription = this.programShortDescription;
+        obj.programLongDescription = this.programLongDescription;
+        obj.programLevel = this.programLevel;
+        obj.programIssues = this.programIssues;
+        obj.programAvatar = this.programAvatar;
+        obj.programTeamName = this.programTeamName;
+        obj.programFocus = this.programFocus;
+        obj.programCommunities = this.programCommunities;
+        obj.programInstitutions = this.programInstitutions;
+        obj.completed = this.completed ? this.completed.toISOString() : undefined,
+            obj.created = this.created ? this.created.toISOString() : undefined,
+            obj.members = encodeURIComponent(JSON.stringify(this.members));
+        return obj;
+    }
+    addMember(membership) {
+        this['member-' + membership.id] = membership;
+    }
+    static iterateMembers(program, callback) {
+        let keys = Object.keys(program);
+        for (let key of keys) {
+            if (key.indexOf('member-') !== -1 && program[key]) {
+                if (XApiStatement.is(program[key]) && Membership.is(program[key])) {
+                    callback(key, program[key]);
+                }
+                else if (TempMembership.is(program[key])) {
+                    callback(key, program[key]);
+                }
+            }
+        }
+    }
+    static getMembers(program) {
+        let members = [];
+        let keys = Object.keys(program);
+        for (let key of keys) {
+            if (key.indexOf('member-') !== -1 && program[key]) {
+                if (XApiStatement.is(program[key]) && Membership.is(program[key])) {
+                    members.push(program[key]);
+                }
+            }
+        }
+        return members;
+    }
+    static isMember(program, userIdentity) {
+        let isMember = false;
+        let keys = Object.keys(program);
+        for (let key of keys) {
+            if (key.indexOf('member-') !== -1 && program[key]) {
+                if (program[key].identity === userIdentity) {
+                    isMember = true;
+                }
+            }
+        }
+        return isMember;
+    }
+    static isNew(program) {
+        let isNew = true;
+        let keys = Object.keys(program);
+        for (let key of keys) {
+            if (key.indexOf('member-') !== -1) {
+                isNew = false;
+            }
+        }
+        return isNew;
+    }
+}
+class activity_Institution extends Activity {
+    constructor(raw) {
+        raw.type = "institution";
+        super(raw);
+        let self = this;
+        let rawKeys = Object.keys(raw);
+        for (let key of rawKeys) {
+            if (key.indexOf('member-') !== -1) {
+                let member = typeof (raw[key]) === "string" ? JSON.parse(decodeURIComponent(raw[key])) : (raw[key] ? raw[key] : null);
+                if (member == null || (XApiStatement.is(member) && Membership.is(member)) || TempMembership.is(member)) {
+                    self[key] = member;
+                }
+            }
+            else if (key.indexOf('program-') !== -1) {
+                let program = typeof (raw[key]) === "string" ? JSON.parse(decodeURIComponent(raw[key])) : (raw[key] ? raw[key] : null);
+                if (program == null || (activity_Program.is(program))) {
+                    self[key] = program;
+                }
+            }
+        }
+        this.institutionName = raw.institutionName || "";
+        this.institutionDescription = raw.institutionDescription || "";
+        this.institutionAvatar = raw.institutionAvatar;
+    }
+    static is(raw) {
+        return raw.type == "institution";
+    }
+    toTransportFormat() {
+        let obj = super.toTransportFormat();
+        let self = this;
+        let keys = Object.keys(this);
+        for (let key of keys) {
+            if (key.indexOf('member-') !== -1) {
+                if (self[key] == null) {
+                    obj[key] = self[key];
+                }
+                else if ((XApiStatement.is(self[key]) && Membership.is(self[key])) || TempMembership.is(self[key])) {
+                    obj[key] = encodeURIComponent(JSON.stringify(self[key]));
+                }
+            }
+            else if (key.indexOf('program-') !== -1) {
+                if (self[key] == null) {
+                    obj[key] = self[key];
+                }
+                else if (activity_Program.is(self[key])) {
+                    obj[key] = encodeURIComponent(JSON.stringify(self[key]));
+                }
+            }
+        }
+        obj.institutionName = this.institutionName;
+        obj.institutionDescription = this.institutionDescription;
+        obj.institutionAvatar = this.institutionAvatar;
+        return obj;
+    }
+    addMember(membership) {
+        this['member-' + membership.id] = membership;
+    }
+    addProgram(program) {
+        this['program-' + program.id] = program;
+    }
+    static iterateMembers(institution, callback) {
+        let keys = Object.keys(institution);
+        for (let key of keys) {
+            if (key.indexOf('member-') !== -1 && institution[key]) {
+                if (XApiStatement.is(institution[key]) && Membership.is(institution[key])) {
+                    callback(key, institution[key]);
+                }
+                else if (TempMembership.is(institution[key])) {
+                    callback(key, institution[key]);
+                }
+            }
+        }
+    }
+    static isMember(institution, userIdentity) {
+        let isMember = false;
+        let keys = Object.keys(institution);
+        for (let key of keys) {
+            if (key.indexOf('member-') !== -1 && institution[key]) {
+                if (institution[key].identity === userIdentity) {
+                    isMember = true;
+                }
+            }
+        }
+        return isMember;
+    }
+    static iteratePrograms(institution, callback) {
+        let keys = Object.keys(institution);
+        for (let key of keys) {
+            if (key.indexOf('program-') !== -1 && institution[key]) {
+                if (activity_Program.is(institution[key])) {
+                    callback(key, institution[key]);
+                }
+            }
+        }
+    }
+    static isProgram(institution, programId) {
+        let isProgram = false;
+        let keys = Object.keys(institution);
+        for (let key of keys) {
+            if (key.indexOf('program-') !== -1 && institution[key]) {
+                if (institution[key].id === programId) {
+                    isProgram = true;
+                }
+            }
+        }
+        return isProgram;
+    }
+    static isNew(institution) {
+        let isNew = true;
+        let keys = Object.keys(institution);
+        for (let key of keys) {
+            if (key.indexOf('member-') !== -1) {
+                isNew = false;
+            }
+        }
+        return isNew;
+    }
+}
+class activity_System extends Activity {
+    constructor(raw) {
+        raw.type = "system";
+        super(raw);
+        let self = this;
+        let rawKeys = Object.keys(raw);
+        for (let key of rawKeys) {
+            if (key.indexOf('member-') !== -1) {
+                let member = typeof (raw[key]) === "string" ? JSON.parse(decodeURIComponent(raw[key])) : (raw[key] ? raw[key] : null);
+                if (member == null || (XApiStatement.is(member) && Membership.is(member)) || TempMembership.is(member)) {
+                    self[key] = member;
+                }
+            }
+        }
+        this.systemName = raw.systemName || "";
+        this.systemDescription = raw.systemDescription || "";
+    }
+    static is(raw) {
+        return raw.type == "system";
+    }
+    toTransportFormat() {
+        let obj = super.toTransportFormat();
+        let self = this;
+        let keys = Object.keys(this);
+        for (let key of keys) {
+            if (key.indexOf('member-') !== -1) {
+                if (self[key] == null) {
+                    obj[key] = self[key];
+                }
+                else if ((XApiStatement.is(self[key]) && Membership.is(self[key])) || TempMembership.is(self[key])) {
+                    obj[key] = encodeURIComponent(JSON.stringify(self[key]));
+                }
+            }
+        }
+        obj.systemName = this.systemName;
+        obj.systemDescription = this.systemDescription;
+        return obj;
+    }
+    addMember(membership) {
+        this['member-' + membership.id] = membership;
+    }
+    static iterateMembers(system, callback) {
+        let keys = Object.keys(system);
+        for (let key of keys) {
+            if (key.indexOf('member-') !== -1 && system[key]) {
+                if (XApiStatement.is(system[key]) && Membership.is(system[key])) {
+                    callback(key, system[key]);
+                }
+                else if (TempMembership.is(system[key])) {
+                    callback(key, system[key]);
+                }
+            }
+        }
+    }
+    static isMember(system, userIdentity) {
+        let isMember = false;
+        let keys = Object.keys(system);
+        for (let key of keys) {
+            if (key.indexOf('member-') !== -1 && system[key]) {
+                if (system[key].identity === userIdentity) {
+                    isMember = true;
+                }
+            }
+        }
+        return isMember;
+    }
+    static isNew(system) {
+        let isNew = true;
+        let keys = Object.keys(system);
+        for (let key of keys) {
+            if (key.indexOf('member-') !== -1) {
+                isNew = false;
+            }
+        }
+        return isNew;
+    }
+}
+// -------------------------------
+class Presence extends Activity {
+    static is(raw) {
+        return raw.type == "presence";
+    }
+}
+// -------------------------------
+function toActivity(obj) {
+    let act = null;
+    if (activity_Program.is(obj)) {
+        act = new activity_Program(obj);
+    }
+    else if (Learnlet.is(obj)) {
+        act = new Learnlet(obj);
+    }
+    else if (Learnlet.is(obj)) {
+        act = new Presence(obj);
+    }
+    else if (activity_Institution.is(obj)) {
+        act = new activity_Institution(obj);
+    }
+    else if (activity_System.is(obj)) {
+        act = new activity_System(obj);
+    }
+    else
+        new Error("Unknown activity type");
+    return act;
+}
+
+// CONCATENATED MODULE: ./src/build.ts
+const DEBUG_MODE = false;
+function consoleLog(...vars) {
+    if (DEBUG_MODE)
+        console.log(...vars);
+}
+function consoleError(...vars) {
+    if (DEBUG_MODE)
+        console.error(...vars);
+}
+
+// CONCATENATED MODULE: ./src/storage.ts
+
+
+
+const MASTER_INDEX = "master";
+const CURRENT_BOOK = "peblCurrentBook";
+const CURRENT_BOOK_TITLE = "peblCurrentBookTitle";
+const CURRENT_BOOK_ID = "peblCurrentBookId";
+const CURRENT_USER = "peblCurrentUser";
+// const VERB_INDEX = "verbs";
+class storage_IndexedDBStorageAdapter {
+    constructor(pebl, callback) {
+        this.invocationQueue = [];
+        let request = window.indexedDB.open("pebl", 28);
+        let self = this;
+        this.pebl = pebl;
+        request.onupgradeneeded = function () {
+            let db = request.result;
+            let objectStores = db.objectStoreNames;
+            for (let i = 0; i < objectStores.length; i++)
+                db.deleteObjectStore(objectStores[i]);
+            let eventStore = db.createObjectStore("events", { keyPath: ["identity", "id"] });
+            let annotationStore = db.createObjectStore("annotations", { keyPath: ["identity", "id"] });
+            let competencyStore = db.createObjectStore("competencies", { keyPath: ["url", "identity"] });
+            let generalAnnotationStore = db.createObjectStore("sharedAnnotations", { keyPath: ["identity", "id"] });
+            let outgoingXApiStore = db.createObjectStore("outgoingXApi", { keyPath: ["identity", "id"] });
+            let outgoingActivityStore = db.createObjectStore("outgoingActivity", { keyPath: ["identity", "id"] });
+            let messageStore = db.createObjectStore("messages", { keyPath: ["identity", "id"] });
+            let groupStore = db.createObjectStore("groups", { keyPath: ["identity", "id"] });
+            db.createObjectStore("user", { keyPath: "identity" });
+            db.createObjectStore("state", { keyPath: "id" });
+            db.createObjectStore("assets");
+            db.createObjectStore("variables");
+            let queuedReferences = db.createObjectStore("queuedReferences", { keyPath: ["identity", "id"] });
+            let notificationStore = db.createObjectStore("notifications", { keyPath: ["identity", "id"] });
+            let tocStore = db.createObjectStore("tocs", { keyPath: ["identity", "book", "section", "pageKey"] });
+            db.createObjectStore("lrsAuth", { keyPath: "id" });
+            let activityStore = db.createObjectStore("activity", { keyPath: ["identity", "type", "id"] });
+            let activityEventStore = db.createObjectStore("activityEvents", { keyPath: ["id", "programId"] });
+            let moduleEventStore = db.createObjectStore("moduleEvents", { keyPath: ["id", "idref"] });
+            activityStore.createIndex(MASTER_INDEX, ["identity", "type"]);
+            activityEventStore.createIndex(MASTER_INDEX, ["programId"]);
+            moduleEventStore.createIndex(MASTER_INDEX, ["idref"]);
+            eventStore.createIndex(MASTER_INDEX, ["identity", "book"]);
+            annotationStore.createIndex(MASTER_INDEX, ["identity", "book"]);
+            competencyStore.createIndex(MASTER_INDEX, "identity");
+            generalAnnotationStore.createIndex(MASTER_INDEX, "book");
+            outgoingActivityStore.createIndex(MASTER_INDEX, "identity");
+            outgoingXApiStore.createIndex(MASTER_INDEX, "identity");
+            groupStore.createIndex(MASTER_INDEX, "identity");
+            messageStore.createIndex(MASTER_INDEX, ["identity", "thread"]);
+            queuedReferences.createIndex(MASTER_INDEX, ["identity", "book"]);
+            notificationStore.createIndex(MASTER_INDEX, "identity");
+            tocStore.createIndex(MASTER_INDEX, ["identity", "book"]);
+        };
+        request.onsuccess = function () {
+            self.db = request.result;
+            callback();
+            for (let i = 0; i < self.invocationQueue.length; i++)
+                self.invocationQueue[i]();
+            self.invocationQueue = [];
+        };
+        request.onerror = function (event) {
+            consoleError("error opening indexeddb", event);
+        };
+    }
+    getAll(index, query, callback) {
+        let request = index.openCursor(query);
+        let result = [];
+        request.onerror = function (e) {
+            consoleError("Error", query, e);
+        };
+        request.onsuccess = function () {
+            let r = request.result;
+            if (result) {
+                if (r) {
+                    result.push(r.value);
+                    r.continue();
+                }
+                else if (callback != null)
+                    callback(result);
+            }
+            else {
+                if (callback != null) {
+                    if (r != null)
+                        callback(r.value);
+                    else
+                        callback([]);
+                }
+            }
+        };
+    }
+    cleanRecord(r) {
+        let recordType = typeof (r);
+        if (r && (recordType == "object")) {
+            let rec = r;
+            for (let p of Object.keys(r)) {
+                let v = rec[p];
+                let t = typeof (v);
+                if (t == "function")
+                    delete rec[p];
+                else if (t == "array")
+                    for (let i = 0; i < v.length; i++)
+                        this.cleanRecord(v[i]);
+                else if (t == "object")
+                    this.cleanRecord(v);
+            }
+        }
+        else if (recordType == "array") {
+            let rec = r;
+            for (let i = 0; i < rec.length; i++)
+                this.cleanRecord(rec[i]);
+        }
+        return r;
+    }
+    // -------------------------------
+    saveSharedAnnotations(userProfile, stmts, callback) {
+        if (this.db) {
+            if (stmts instanceof SharedAnnotation) {
+                let ga = stmts;
+                ga.identity = userProfile.identity;
+                let request = this.db.transaction(["sharedAnnotations"], "readwrite").objectStore("sharedAnnotations").put(ga);
+                request.onerror = function (e) {
+                    consoleError(e);
+                };
+                request.onsuccess = function () {
+                    if (callback)
+                        callback();
+                };
+            }
+            else {
+                let objectStore = this.db.transaction(["sharedAnnotations"], "readwrite").objectStore("sharedAnnotations");
+                let stmtsCopy = stmts.slice(0);
+                let processCallback = function () {
+                    let record = stmtsCopy.pop();
+                    if (record) {
+                        let ga = record;
+                        ga.identity = userProfile.identity;
+                        let request = objectStore.put(ga);
+                        request.onerror = processCallback;
+                        request.onsuccess = processCallback;
+                    }
+                    else {
+                        if (callback)
+                            callback();
+                    }
+                };
+                processCallback();
+            }
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveSharedAnnotations(userProfile, stmts, callback);
+            });
+        }
+    }
+    getSharedAnnotations(userProfile, book, callback) {
+        if (this.db) {
+            let index = this.db.transaction(["sharedAnnotations"], "readonly").objectStore("sharedAnnotations").index(MASTER_INDEX);
+            let param = book;
+            this.getAll(index, IDBKeyRange.only(param), callback);
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getSharedAnnotations(userProfile, book, callback);
+            });
+        }
+    }
+    removeSharedAnnotation(userProfile, id, callback) {
+        if (this.db) {
+            let request = this.db.transaction(["sharedAnnotations"], "readwrite").objectStore("sharedAnnotations").delete(IDBKeyRange.only([userProfile.identity, id]));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.removeSharedAnnotation(userProfile, id, callback);
+            });
+        }
+    }
+    // -------------------------------
+    getAnnotations(userProfile, book, callback) {
+        if (this.db) {
+            let index = this.db.transaction(["annotations"], "readonly").objectStore("annotations").index(MASTER_INDEX);
+            let param = [userProfile.identity, book];
+            this.getAll(index, IDBKeyRange.only(param), callback);
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getAnnotations(userProfile, book, callback);
+            });
+        }
+    }
+    saveAnnotations(userProfile, stmts, callback) {
+        if (this.db) {
+            if (stmts instanceof Annotation) {
+                let ga = stmts;
+                ga.identity = userProfile.identity;
+                let request = this.db.transaction(["annotations"], "readwrite").objectStore("annotations").put(ga);
+                request.onerror = function (e) {
+                    consoleError(e);
+                };
+                request.onsuccess = function () {
+                    if (callback)
+                        callback();
+                };
+            }
+            else {
+                let objectStore = this.db.transaction(["annotations"], "readwrite").objectStore("annotations");
+                let stmtsCopy = stmts.slice(0);
+                let self = this;
+                let processCallback = function () {
+                    let record = stmtsCopy.pop();
+                    if (record) {
+                        let clone = record;
+                        clone.identity = userProfile.identity;
+                        let request = objectStore.put(self.cleanRecord(clone));
+                        request.onerror = processCallback;
+                        request.onsuccess = processCallback;
+                    }
+                    else {
+                        if (callback)
+                            callback();
+                    }
+                };
+                processCallback();
+            }
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveAnnotations(userProfile, stmts, callback);
+            });
+        }
+    }
+    removeAnnotation(userProfile, id, callback) {
+        if (this.db) {
+            let request = this.db.transaction(["annotations"], "readwrite").objectStore("annotations").delete(IDBKeyRange.only([userProfile.identity, id]));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.removeAnnotation(userProfile, id, callback);
+            });
+        }
+    }
+    // -------------------------------
+    removeCurrentUser(callback) {
+        if (this.db) {
+            let request = this.db.transaction(["state"], "readwrite").objectStore("state").delete(IDBKeyRange.only(CURRENT_USER));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.removeCurrentUser(callback);
+            });
+        }
+    }
+    saveCurrentUser(userProfile, callback) {
+        let pack = {
+            id: CURRENT_USER,
+            value: userProfile.identity
+        };
+        if (this.db) {
+            let request = this.db.transaction(["state"], "readwrite").objectStore("state").put(this.cleanRecord(pack));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveCurrentUser(userProfile, callback);
+            });
+        }
+    }
+    getCurrentUser(callback) {
+        if (this.db) {
+            let request = this.db.transaction(["state"], "readonly").objectStore("state").get(CURRENT_USER);
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                let r = request.result;
+                if (r != null)
+                    callback(r.value);
+                else
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getCurrentUser(callback);
+            });
+        }
+    }
+    // -------------------------------
+    getUserProfile(userIdentity, callback) {
+        if (this.db) {
+            let request = this.db.transaction(["user"], "readonly").objectStore("user").get(userIdentity);
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                let r = request.result;
+                if (r != null)
+                    callback(r);
+                else
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getUserProfile(userIdentity, callback);
+            });
+        }
+    }
+    saveUserProfile(userProfile, callback) {
+        if (this.db) {
+            let request = this.db.transaction(["user"], "readwrite").objectStore("user").put(this.cleanRecord(userProfile));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveUserProfile(userProfile, callback);
+            });
+        }
+    }
+    // -------------------------------
+    saveCurrentActivity(book, callback) {
+        let pack = {
+            value: book,
+            id: CURRENT_BOOK
+        };
+        if (this.db) {
+            let request = this.db.transaction(["state"], "readwrite").objectStore("state").put(this.cleanRecord(pack));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveCurrentActivity(book, callback);
+            });
+        }
+    }
+    getCurrentActivity(callback) {
+        if (this.db) {
+            let request = this.db.transaction(["state"], "readonly").objectStore("state").get(CURRENT_BOOK);
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                let r = request.result;
+                if (callback != null) {
+                    if (r != null)
+                        callback(r.value);
+                    else
+                        callback();
+                }
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getCurrentActivity(callback);
+            });
+        }
+    }
+    removeCurrentActivity(callback) {
+        if (this.db) {
+            let request = this.db.transaction(["state"], "readwrite").objectStore("state").delete(IDBKeyRange.only(CURRENT_BOOK));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.removeCurrentActivity(callback);
+            });
+        }
+    }
+    // -------------------------------
+    saveCurrentBook(book, callback) {
+        let pack = {
+            value: book,
+            id: CURRENT_BOOK
+        };
+        if (this.db) {
+            let request = this.db.transaction(["state"], "readwrite").objectStore("state").put(this.cleanRecord(pack));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveCurrentBook(book, callback);
+            });
+        }
+    }
+    getCurrentBook(callback) {
+        if (this.db) {
+            let request = this.db.transaction(["state"], "readonly").objectStore("state").get(CURRENT_BOOK);
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                let r = request.result;
+                if (callback != null) {
+                    if (r != null)
+                        callback(r.value);
+                    else
+                        callback();
+                }
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getCurrentBook(callback);
+            });
+        }
+    }
+    // -------------------------------
+    saveCurrentBookTitle(book, callback) {
+        let pack = {
+            value: book,
+            id: CURRENT_BOOK_TITLE
+        };
+        if (this.db) {
+            let request = this.db.transaction(["state"], "readwrite").objectStore("state").put(this.cleanRecord(pack));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveCurrentBookTitle(book, callback);
+            });
+        }
+    }
+    getCurrentBookTitle(callback) {
+        if (this.db) {
+            let request = this.db.transaction(["state"], "readonly").objectStore("state").get(CURRENT_BOOK_TITLE);
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                let r = request.result;
+                if (callback != null) {
+                    if (r != null)
+                        callback(r.value);
+                    else
+                        callback();
+                }
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getCurrentBookTitle(callback);
+            });
+        }
+    }
+    // -------------------------------
+    saveCurrentBookId(book, callback) {
+        let pack = {
+            value: book,
+            id: CURRENT_BOOK_ID
+        };
+        if (this.db) {
+            let request = this.db.transaction(["state"], "readwrite").objectStore("state").put(this.cleanRecord(pack));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveCurrentBookId(book, callback);
+            });
+        }
+    }
+    getCurrentBookId(callback) {
+        if (this.db) {
+            let request = this.db.transaction(["state"], "readonly").objectStore("state").get(CURRENT_BOOK_ID);
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                let r = request.result;
+                if (callback != null) {
+                    if (r != null)
+                        callback(r.value);
+                    else
+                        callback();
+                }
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getCurrentBookId(callback);
+            });
+        }
+    }
+    // -------------------------------
+    saveSyncTimestamps(identity, key, data, callback) {
+        if (this.db) {
+            let request = this.db.transaction(["state"], "readwrite").objectStore("state").put({
+                id: identity + key,
+                data: data
+            });
+            request.onerror = function (e) {
+                consoleError(e);
+                callback(false);
+            };
+            request.onsuccess = function () {
+                callback(true);
+            };
+        }
+        else {
+            this.invocationQueue.push(() => {
+                this.saveSyncTimestamps(identity, key, data, callback);
+            });
+        }
+    }
+    getSyncTimestamps(identity, key, callback) {
+        if (this.db) {
+            let request = this.db.transaction(["state"], "readonly").objectStore("state").get(identity + key);
+            request.onerror = function (e) {
+                consoleError(e);
+                callback(-1);
+            };
+            request.onsuccess = function () {
+                if (request.result) {
+                    callback(request.result.data);
+                }
+                else {
+                    callback(-1);
+                }
+            };
+        }
+        else {
+            this.invocationQueue.push(() => {
+                this.getSyncTimestamps(identity, key, callback);
+            });
+        }
+    }
+    saveCompoundSyncTimestamps(identity, key, data, callback) {
+        if (this.db) {
+            let request = this.db.transaction(["state"], "readwrite").objectStore("state").put({
+                id: identity + key,
+                data: data
+            });
+            request.onerror = function (e) {
+                consoleError(e);
+                callback(false);
+            };
+            request.onsuccess = function () {
+                callback(true);
+            };
+        }
+        else {
+            this.invocationQueue.push(() => {
+                this.saveCompoundSyncTimestamps(identity, key, data, callback);
+            });
+        }
+    }
+    getCompoundSyncTimestamps(identity, key, callback) {
+        if (this.db) {
+            let request = this.db.transaction(["state"], "readonly").objectStore("state").get(identity + key);
+            request.onerror = function (e) {
+                consoleError(e);
+                callback({});
+            };
+            request.onsuccess = function () {
+                if (request.result)
+                    callback(request.result.data);
+                else
+                    callback({});
+            };
+        }
+        else {
+            this.invocationQueue.push(() => {
+                this.getCompoundSyncTimestamps(identity, key, callback);
+            });
+        }
+    }
+    // -------------------------------
+    saveEvent(userProfile, events, callback) {
+        if (this.db) {
+            if (events instanceof XApiStatement) {
+                let ga = events;
+                ga.identity = userProfile.identity;
+                let request = this.db.transaction(["events"], "readwrite").objectStore("events").put(ga);
+                request.onerror = function (e) {
+                    consoleError(e);
+                };
+                request.onsuccess = function () {
+                    if (callback)
+                        callback();
+                };
+            }
+            else {
+                let objectStore = this.db.transaction(["events"], "readwrite").objectStore("events");
+                let stmtsCopy = events.slice(0);
+                let self = this;
+                let processCallback = function () {
+                    let record = stmtsCopy.pop();
+                    if (record) {
+                        let clone = record;
+                        clone.identity = userProfile.identity;
+                        let request = objectStore.put(self.cleanRecord(clone));
+                        request.onerror = processCallback;
+                        request.onsuccess = processCallback;
+                    }
+                    else {
+                        if (callback)
+                            callback();
+                    }
+                };
+                processCallback();
+            }
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveEvent(userProfile, events, callback);
+            });
+        }
+    }
+    getEvents(userProfile, book, callback) {
+        if (this.db) {
+            let index = this.db.transaction(["events"], "readonly").objectStore("events").index(MASTER_INDEX);
+            let param = [userProfile.identity, book];
+            let self = this;
+            self.getAll(index, IDBKeyRange.only(param), callback);
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getEvents(userProfile, book, callback);
+            });
+        }
+    }
+    // -------------------------------
+    getCompetencies(userProfile, callback) {
+        if (this.db) {
+            let os = this.db.transaction(["competencies"], "readonly").objectStore("competencies");
+            let index = os.index(MASTER_INDEX);
+            let param = userProfile.identity;
+            let self = this;
+            this.getAll(index, IDBKeyRange.only(param), function (arr) {
+                if (arr.length == 0)
+                    self.getAll(index, IDBKeyRange.only([param]), callback);
+                else
+                    callback(arr);
+            });
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getCompetencies(userProfile, callback);
+            });
+        }
+    }
+    saveCompetencies(userProfile, competencies, callback) {
+        if (this.db) {
+            let os = this.db.transaction(["competencies"], "readwrite").objectStore("competencies");
+            for (let p of Object.keys(competencies)) {
+                let c = competencies[p];
+                c.url = p;
+                c.identity = userProfile.identity;
+                competencies.push(c);
+            }
+            let self = this;
+            let processCallback = function () {
+                if (competencies.length > 0) {
+                    let record = competencies.pop();
+                    let request = os.put(self.cleanRecord(record));
+                    request.onerror = processCallback;
+                    request.onsuccess = processCallback;
+                }
+                else {
+                    if (callback)
+                        callback();
+                }
+            };
+            processCallback();
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveCompetencies(userProfile, competencies, callback);
+            });
+        }
+    }
+    // -------------------------------
+    saveOutgoingXApi(userProfile, stmt, callback) {
+        if (this.db) {
+            let clone = stmt;
+            clone.identity = userProfile.identity;
+            let request = this.db.transaction(["outgoingXApi"], "readwrite").objectStore("outgoingXApi").put(this.cleanRecord(clone));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveOutgoingXApi(userProfile, stmt, callback);
+            });
+        }
+    }
+    getOutgoingXApi(userProfile, callback) {
+        if (this.db) {
+            let os = this.db.transaction(["outgoingXApi"], "readonly").objectStore("outgoingXApi");
+            let index = os.index(MASTER_INDEX);
+            let param = userProfile.identity;
+            let self = this;
+            this.getAll(index, IDBKeyRange.only(param), function (arr) {
+                if (arr.length == 0)
+                    self.getAll(index, IDBKeyRange.only([param]), callback);
+                else
+                    callback(arr);
+            });
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getOutgoingXApi(userProfile, callback);
+            });
+        }
+    }
+    removeOutgoingXApi(userProfile, toClear, callback) {
+        if (this.db) {
+            let objectStore = this.db.transaction(["outgoingXApi"], "readwrite").objectStore("outgoingXApi");
+            let toClearCopy = toClear.slice(0);
+            let processCallback = function () {
+                if (toClear.length > 0) {
+                    let record = toClearCopy.pop();
+                    if (record) {
+                        let request = objectStore.delete(IDBKeyRange.only([userProfile.identity, record.id]));
+                        request.onerror = processCallback;
+                        request.onsuccess = processCallback;
+                    }
+                    else {
+                        if (callback)
+                            callback();
+                    }
+                }
+            };
+            processCallback();
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.removeOutgoingXApi(userProfile, toClear, callback);
+            });
+        }
+    }
+    // -------------------------------
+    saveMessages(userProfile, stmts, callback) {
+        if (this.db) {
+            if (stmts instanceof Message) {
+                let clone = stmts;
+                clone.identity = userProfile.identity;
+                if (clone.isPrivate)
+                    clone.thread += '_user-' + userProfile.identity;
+                else if (clone.groupId)
+                    clone.thread += '_group-' + clone.groupId;
+                let request = this.db.transaction(["messages"], "readwrite").objectStore("messages").put(this.cleanRecord(clone));
+                request.onerror = function (e) {
+                    consoleError(e);
+                };
+                request.onsuccess = function () {
+                    if (callback)
+                        callback();
+                };
+            }
+            else {
+                let objectStore = this.db.transaction(["messages"], "readwrite").objectStore("messages");
+                let stmtsCopy = stmts.slice(0);
+                let self = this;
+                let processCallback = function () {
+                    let record = stmtsCopy.pop();
+                    if (record) {
+                        let clone = record;
+                        clone.identity = userProfile.identity;
+                        if (clone.isPrivate)
+                            clone.thread += '_user-' + userProfile.identity;
+                        else if (clone.groupId)
+                            clone.thread += '_group-' + clone.groupId;
+                        let request = objectStore.put(self.cleanRecord(clone));
+                        request.onerror = processCallback;
+                        request.onsuccess = processCallback;
+                    }
+                    else if (callback)
+                        callback();
+                };
+                processCallback();
+            }
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveMessages(userProfile, stmts, callback);
+            });
+        }
+    }
+    removeMessage(userProfile, id, callback) {
+        if (this.db) {
+            let request = this.db.transaction(["messages"], "readwrite").objectStore("messages").delete(IDBKeyRange.only([userProfile.identity, id]));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.removeMessage(userProfile, id, callback);
+            });
+        }
+    }
+    getMessages(userProfile, thread, callback) {
+        if (this.db) {
+            let index = this.db.transaction(["messages"], "readonly").objectStore("messages").index(MASTER_INDEX);
+            this.getAll(index, IDBKeyRange.only([userProfile.identity, thread]), callback);
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getMessages(userProfile, thread, callback);
+            });
+        }
+    }
+    // -------------------------------
+    saveAsset(id, data, callback) {
+        if (this.db) {
+            let request = this.db.transaction(["assets"], "readwrite").objectStore("assets").put(data, id);
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function (e) {
+                if (callback)
+                    callback(id);
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveAsset(id, data, callback);
+            });
+        }
+    }
+    getAsset(assetId) {
+        let self = this;
+        return new Promise((resolve, reject) => {
+            if (this.db) {
+                let request = this.db.transaction(["assets"], "readonly").objectStore("assets").get(assetId);
+                request.onerror = function (e) {
+                    consoleError(e);
+                    reject();
+                };
+                request.onsuccess = function () {
+                    if (request.result)
+                        resolve(request.result);
+                    else
+                        self.pebl.network.fetchAsset(assetId).then((file) => {
+                            resolve(file);
+                        }).catch(() => {
+                            reject();
+                        });
+                };
+            }
+            else {
+                let self = this;
+                this.invocationQueue.push(function () {
+                    resolve(self.getAsset(assetId));
+                });
+            }
+        });
+    }
+    // -------------------------------
+    saveVariable(id, data, callback) {
+        if (this.db) {
+            let request = this.db.transaction(["variables"], "readwrite").objectStore("variables").put(data, id);
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function (e) {
+                if (callback)
+                    callback(id);
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveAsset(id, data, callback);
+            });
+        }
+    }
+    getVariable(id) {
+        return new Promise((resolve, reject) => {
+            if (this.db) {
+                let request = this.db.transaction(["variables"], "readonly").objectStore("variables").get(id);
+                request.onerror = function (e) {
+                    consoleError(e);
+                    reject();
+                };
+                request.onsuccess = function () {
+                    if (request.result !== undefined)
+                        resolve(request.result);
+                    else
+                        reject();
+                };
+            }
+            else {
+                let self = this;
+                this.invocationQueue.push(function () {
+                    resolve(self.getVariable(id));
+                });
+            }
+        });
+    }
+    // -------------------------------
+    saveQueuedReference(userProfile, ref, callback) {
+        if (this.db) {
+            ref.identity = userProfile.identity;
+            let request = this.db.transaction(["queuedReferences"], "readwrite").objectStore("queuedReferences").put(this.cleanRecord(ref));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveQueuedReference(userProfile, ref, callback);
+            });
+        }
+    }
+    getQueuedReference(userProfile, currentBook, callback) {
+        if (this.db) {
+            let os = this.db.transaction(["queuedReferences"], "readonly").objectStore("queuedReferences");
+            let index = os.index(MASTER_INDEX);
+            let request = index.openCursor(IDBKeyRange.only([userProfile.identity, currentBook]));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (request.result == null) {
+                    let req = index.openCursor(IDBKeyRange.only([userProfile.identity, currentBook]));
+                    req.onerror = function (e) {
+                        consoleError(e);
+                    };
+                    req.onsuccess = function () {
+                        if (callback && request.result)
+                            callback(request.result.value);
+                        else
+                            callback();
+                    };
+                }
+                else if (callback && request.result)
+                    callback(request.result.value);
+                else
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getQueuedReference(userProfile, currentBook, callback);
+            });
+        }
+    }
+    removeQueuedReference(userProfile, refId, callback) {
+        if (this.db) {
+            let request = this.db.transaction(["queuedReferences"], "readwrite").objectStore("queuedReferences").delete(IDBKeyRange.only([userProfile.identity, refId]));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.removeQueuedReference(userProfile, refId, callback);
+            });
+        }
+    }
+    // -------------------------------
+    saveToc(userProfile, book, data, callback) {
+        if (this.db) {
+            data.identity = userProfile.identity;
+            data.book = book;
+            let request = this.db.transaction(["tocs"], "readwrite").objectStore("tocs").put(this.cleanRecord(data));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveToc(userProfile, book, data, callback);
+            });
+        }
+    }
+    getToc(userProfile, book, callback) {
+        //TODO Remove me
+        if (book == null) {
+            callback([]);
+            return;
+        }
+        if (this.db) {
+            let os = this.db.transaction(["tocs"], "readonly").objectStore("tocs");
+            let index = os.index(MASTER_INDEX);
+            this.getAll(index, IDBKeyRange.only([userProfile.identity, book]), callback);
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getToc(userProfile, book, callback);
+            });
+        }
+    }
+    removeToc(userProfile, book, section, id, callback) {
+        if (this.db) {
+            let request = this.db.transaction(["tocs"], "readwrite").objectStore("tocs").delete(IDBKeyRange.only([userProfile.identity, book, section, id]));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.removeToc(userProfile, book, section, id, callback);
+            });
+        }
+    }
+    // -------------------------------
+    saveNotification(userProfile, notification, callback) {
+        if (this.db) {
+            notification.identity = userProfile.identity;
+            let request = this.db.transaction(["notifications"], "readwrite").objectStore("notifications").put(this.cleanRecord(notification));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveNotification(userProfile, notification, callback);
+            });
+        }
+    }
+    getNotification(userProfile, notificationId, callback) {
+        if (this.db) {
+            let request = this.db.transaction(["notifications"], "readwrite").objectStore("notifications").get(IDBKeyRange.only([userProfile.identity, notificationId]));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                callback(request.result);
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getNotification(userProfile, notificationId, callback);
+            });
+        }
+    }
+    getNotifications(userProfile, callback) {
+        if (this.db) {
+            let os = this.db.transaction(["notifications"], "readonly").objectStore("notifications");
+            let index = os.index(MASTER_INDEX);
+            let param = userProfile.identity;
+            let self = this;
+            this.getAll(index, IDBKeyRange.only(param), function (arr) {
+                if (arr.length == 0)
+                    self.getAll(index, IDBKeyRange.only([param]), callback);
+                else
+                    callback(arr);
+            });
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getNotifications(userProfile, callback);
+            });
+        }
+    }
+    removeNotification(userProfile, notificationId, callback) {
+        if (this.db) {
+            let request = this.db.transaction(["notifications"], "readwrite").objectStore("notifications").delete(IDBKeyRange.only([userProfile.identity, notificationId]));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.removeNotification(userProfile, notificationId, callback);
+            });
+        }
+    }
+    // -------------------------------
+    saveGroupMembership(userProfile, stmts, callback) {
+        if (this.db) {
+            if (stmts instanceof Membership) {
+                let ga = stmts;
+                ga.identity = userProfile.identity;
+                let request = this.db.transaction(["groups"], "readwrite").objectStore("groups").put(ga);
+                request.onerror = function (e) {
+                    consoleError(e);
+                };
+                request.onsuccess = function () {
+                    if (callback)
+                        callback();
+                };
+            }
+            else {
+                let objectStore = this.db.transaction(["groups"], "readwrite").objectStore("groups");
+                let stmtsCopy = stmts.slice(0);
+                let self = this;
+                let processCallback = function () {
+                    let record = stmtsCopy.pop();
+                    if (record) {
+                        let clone = record;
+                        clone.identity = userProfile.identity;
+                        let request = objectStore.put(self.cleanRecord(clone));
+                        request.onerror = processCallback;
+                        request.onsuccess = processCallback;
+                    }
+                    else {
+                        if (callback)
+                            callback();
+                    }
+                };
+                processCallback();
+            }
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveGroupMembership(userProfile, stmts, callback);
+            });
+        }
+    }
+    getGroupMembership(userProfile, callback) {
+        if (this.db) {
+            let os = this.db.transaction(["groups"], "readonly").objectStore("groups");
+            let index = os.index(MASTER_INDEX);
+            let param = userProfile.identity;
+            let self = this;
+            this.getAll(index, IDBKeyRange.only(param), function (arr) {
+                if (arr.length == 0)
+                    self.getAll(index, IDBKeyRange.only([param]), callback);
+                else
+                    callback(arr);
+            });
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getGroupMembership(userProfile, callback);
+            });
+        }
+    }
+    removeGroupMembership(userProfile, xId, callback) {
+        if (this.db) {
+            let request = this.db.transaction(["groups"], "readwrite").objectStore("groups").delete(IDBKeyRange.only([userProfile.identity, xId]));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.removeGroupMembership(userProfile, xId, callback);
+            });
+        }
+    }
+    // -------------------------------
+    getActivityEvent(programId, callback) {
+        if (this.db) {
+            let os = this.db.transaction(["activityEvents"], "readonly").objectStore("activityEvents");
+            let index = os.index(MASTER_INDEX);
+            let param = programId;
+            let self = this;
+            this.getAll(index, IDBKeyRange.only(param), function (arr) {
+                if (arr.length == 0)
+                    self.getAll(index, IDBKeyRange.only([param]), callback);
+                else
+                    callback(arr);
+            });
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getActivityEvent(programId, callback);
+            });
+        }
+    }
+    saveActivityEvent(userProfile, stmts, callback) {
+        if (this.db) {
+            if (stmts instanceof ProgramAction) {
+                let ga = stmts;
+                ga.identity = ga.actor.account.name;
+                let request = this.db.transaction(["activityEvents"], "readwrite").objectStore("activityEvents").put(ga);
+                request.onerror = function (e) {
+                    consoleError(e);
+                };
+                request.onsuccess = function () {
+                    if (callback)
+                        callback();
+                };
+            }
+            else {
+                let objectStore = this.db.transaction(["activityEvents"], "readwrite").objectStore("activityEvents");
+                let stmtsCopy = stmts.slice(0);
+                let self = this;
+                let processCallback = function () {
+                    let record = stmtsCopy.pop();
+                    if (record) {
+                        let clone = record;
+                        clone.identity = clone.actor.account.name;
+                        let request = objectStore.put(self.cleanRecord(clone));
+                        request.onerror = processCallback;
+                        request.onsuccess = processCallback;
+                    }
+                    else {
+                        if (callback)
+                            callback();
+                    }
+                };
+                processCallback();
+            }
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveActivityEvent(userProfile, stmts, callback);
+            });
+        }
+    }
+    // -------------------------------
+    getModuleEvent(idref, callback) {
+        if (this.db) {
+            let os = this.db.transaction(["moduleEvents"], "readonly").objectStore("moduleEvents");
+            let index = os.index(MASTER_INDEX);
+            let param = idref;
+            let self = this;
+            this.getAll(index, IDBKeyRange.only(param), function (arr) {
+                if (arr.length == 0)
+                    self.getAll(index, IDBKeyRange.only([param]), callback);
+                else
+                    callback(arr);
+            });
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getModuleEvent(idref, callback);
+            });
+        }
+    }
+    saveModuleEvent(userProfile, stmts, callback) {
+        if (this.db) {
+            if (stmts instanceof ModuleEvent) {
+                let ga = stmts;
+                ga.identity = ga.actor.account.name;
+                let request = this.db.transaction(["moduleEvents"], "readwrite").objectStore("moduleEvents").put(ga);
+                request.onerror = function (e) {
+                    consoleError(e);
+                };
+                request.onsuccess = function () {
+                    if (callback)
+                        callback();
+                };
+            }
+            else {
+                let objectStore = this.db.transaction(["moduleEvents"], "readwrite").objectStore("moduleEvents");
+                let stmtsCopy = stmts.slice(0);
+                let self = this;
+                let processCallback = function () {
+                    let record = stmtsCopy.pop();
+                    if (record) {
+                        let clone = record;
+                        clone.identity = clone.actor.account.name;
+                        let request = objectStore.put(self.cleanRecord(clone));
+                        request.onerror = processCallback;
+                        request.onsuccess = processCallback;
+                    }
+                    else {
+                        if (callback)
+                            callback();
+                    }
+                };
+                processCallback();
+            }
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveModuleEvent(userProfile, stmts, callback);
+            });
+        }
+    }
+    removeModuleEvent(idref, xId, callback) {
+        if (this.db) {
+            let request = this.db.transaction(["moduleEvents"], "readwrite").objectStore("moduleEvents").delete(IDBKeyRange.only([xId, idref]));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.removeModuleEvent(idref, xId, callback);
+            });
+        }
+    }
+    // -------------------------------
+    saveActivity(userProfile, stmts, callback) {
+        if (this.db) {
+            if ((stmts instanceof Activity) || Activity.is(stmts)) {
+                let ga = (stmts instanceof Activity) ? stmts : toActivity(stmts);
+                if (ga) {
+                    ga.identity = userProfile.identity;
+                    let request = this.db.transaction(["activity"], "readwrite").objectStore("activity").put(ga);
+                    request.onerror = function (e) {
+                        consoleError(e);
+                    };
+                    request.onsuccess = function () {
+                        if (callback)
+                            callback();
+                    };
+                }
+            }
+            else {
+                let objectStore = this.db.transaction(["activity"], "readwrite").objectStore("activity");
+                let stmtsCopy = stmts.slice(0);
+                let self = this;
+                let processCallback = function () {
+                    let record = stmtsCopy.pop();
+                    if (record) {
+                        let clone = record;
+                        clone.identity = userProfile.identity;
+                        let request = objectStore.put(self.cleanRecord(clone));
+                        request.onerror = processCallback;
+                        request.onsuccess = processCallback;
+                    }
+                    else {
+                        if (callback)
+                            callback();
+                    }
+                };
+                processCallback();
+            }
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveActivity(userProfile, stmts, callback);
+            });
+        }
+    }
+    getActivity(userProfile, activityType, callback) {
+        if (this.db) {
+            let os = this.db.transaction(["activity"], "readonly").objectStore("activity");
+            let index = os.index(MASTER_INDEX);
+            let param = [userProfile.identity, activityType];
+            let self = this;
+            self.getAll(index, IDBKeyRange.only(param), callback);
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getActivity(userProfile, activityType, callback);
+            });
+        }
+    }
+    getActivityById(userProfile, activityType, activityId, callback) {
+        if (this.db) {
+            let param = [userProfile.identity, activityType, activityId];
+            let request = this.db.transaction(["activity"], "readonly").objectStore("activity").get(param);
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                let r = request.result;
+                if (r != null)
+                    callback(r);
+                else
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getActivityById(userProfile, activityType, activityId, callback);
+            });
+        }
+    }
+    removeActivity(userProfile, xId, activityType, callback) {
+        if (this.db) {
+            let request = this.db.transaction(["activity"], "readwrite").objectStore("activity").delete(IDBKeyRange.only([userProfile.identity, activityType, xId]));
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.removeActivity(userProfile, xId, activityType, callback);
+            });
+        }
+    }
+    // -------------------------------
+    saveOutgoingActivity(userProfile, stmt, callback) {
+        if (this.db) {
+            let clone = stmt;
+            clone.identity = userProfile.identity;
+            let request = this.db.transaction(["outgoingActivity"], "readwrite").objectStore("outgoingActivity").put(clone);
+            request.onerror = function (e) {
+                consoleError(e);
+            };
+            request.onsuccess = function () {
+                if (callback)
+                    callback();
+            };
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.saveOutgoingActivity(userProfile, stmt, callback);
+            });
+        }
+    }
+    getOutgoingActivity(userProfile, callback) {
+        if (this.db) {
+            let os = this.db.transaction(["outgoingActivity"], "readonly").objectStore("outgoingActivity");
+            let index = os.index(MASTER_INDEX);
+            let param = userProfile.identity;
+            let self = this;
+            this.getAll(index, IDBKeyRange.only(param), function (arr) {
+                if (arr.length == 0)
+                    self.getAll(index, IDBKeyRange.only([param]), callback);
+                else
+                    callback(arr);
+            });
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.getOutgoingActivity(userProfile, callback);
+            });
+        }
+    }
+    removeOutgoingActivity(userProfile, toClear, callback) {
+        if (this.db) {
+            let objectStore = this.db.transaction(["outgoingActivity"], "readwrite").objectStore("outgoingActivity");
+            let request = objectStore.delete(IDBKeyRange.only([userProfile.identity, toClear.id]));
+            if (callback) {
+                request.onerror = callback;
+                request.onsuccess = callback;
+            }
+        }
+        else {
+            let self = this;
+            this.invocationQueue.push(function () {
+                self.removeOutgoingActivity(userProfile, toClear, callback);
+            });
+        }
+    }
+}
+
+// CONCATENATED MODULE: ./src/user.ts
+class User {
+    constructor(pebl) {
+        this.pebl = pebl;
+    }
+    isLoggedIn(callback) {
+        this.pebl.storage.getCurrentUser(function (currentUser) {
+            callback(currentUser != null);
+        });
+    }
+    getUser(callback) {
+        let self = this;
+        this.pebl.storage.getCurrentUser(function (currentUser) {
+            if (currentUser) {
+                self.pebl.storage.getUserProfile(currentUser, function (userProfile) {
+                    if (userProfile)
+                        callback(userProfile);
+                    else
+                        callback();
+                });
+            }
+            else
+                callback();
+        });
+    }
+}
+
+// CONCATENATED MODULE: ./src/constants.ts
+const SYNC_ANNOTATIONS = "annotations";
+const SYNC_SHARED_ANNOTATIONS = "sharedAnnotations";
+const SYNC_THREAD = "threads";
+const SYNC_PRIVATE_THREAD = "privateThreads";
+const SYNC_GROUP_THREAD = "groupThreads";
+const SYNC_REFERENCES = "references";
+const SYNC_NOTIFICATIONS = "notifications";
+function generateGroupSharedAnnotationsSyncTimestampsKey(groupId) {
+    return SYNC_SHARED_ANNOTATIONS + '_' + groupId;
+}
+
+// CONCATENATED MODULE: ./src/syncing.ts
+const USER_PREFIX = "_user-";
+const GROUP_PREFIX = "_group-";
+
+
+
+class syncing_LLSyncAction {
+    constructor(pebl) {
+        this.DEFAULT_RECONNECTION_BACKOFF = 1000;
+        this.notificationTimestamps = {};
+        this.clearedNotifications = {};
+        var self = this;
+        this.serverReady = false;
+        this.pebl = pebl;
+        this.reconnectionBackoff = this.DEFAULT_RECONNECTION_BACKOFF;
+        this.active = false;
+        consoleLog(this.pebl.config && this.pebl.config.PeBLServicesWSURL);
+        this.messageHandlers = {};
+        this.messageHandlers.serverReady = (userProfile, payload) => {
+            this.serverReady = true;
+            // this.pullNotifications();
+            this.pullAnnotations();
+            this.pullSharedAnnotations();
+            this.pullReferences();
+            this.pullSubscribedThreads();
+        };
+        this.messageHandlers.setLastNotifiedDates = (userProfile, payload) => {
+            for (let k in payload.clearedTimestamps) {
+                this.notificationTimestamps[k] = parseInt(payload.clearedTimestamps[k]);
+            }
+            for (let key of payload.clearedNotifications) {
+                this.clearedNotifications[key] = true;
+            }
+        };
+        this.messageHandlers.removeClearedNotifications = (userProfile, payload) => {
+            for (let k of payload.clearedTimestamps) {
+                this.notificationTimestamps[k] = payload.clearedTimestamps[k];
+            }
+            for (let key of payload.clearedNotifications) {
+                delete this.clearedNotifications[key];
+            }
+        };
+        this.messageHandlers.getReferences = (userProfile, payload) => {
+            this.pebl.storage.getSyncTimestamps(userProfile.identity, SYNC_REFERENCES, (timestamp) => {
+                for (let stmt of payload.data) {
+                    if (Voided.is(stmt)) {
+                        //TODO
+                        consoleLog('TODO');
+                    }
+                    else {
+                        let ref = new Reference(stmt);
+                        self.pebl.storage.saveQueuedReference(userProfile, ref);
+                        let stored = new Date(ref.stored).getTime();
+                        if ((!this.clearedNotifications[ref.id]) &&
+                            (stored >= (this.notificationTimestamps["r" + ref.book] || 0))) {
+                            self.pebl.storage.saveNotification(userProfile, ref, () => { });
+                            this.pebl.emitEvent(this.pebl.events.incomingNotifications, [ref]);
+                        }
+                        if (stored > timestamp)
+                            timestamp = stored;
+                    }
+                }
+                this.pebl.storage.saveSyncTimestamps(userProfile.identity, SYNC_REFERENCES, timestamp, () => { });
+            });
+        };
+        this.messageHandlers.newReference = (userProfile, payload) => {
+            this.pebl.storage.getSyncTimestamps(userProfile.identity, SYNC_REFERENCES, (timestamp) => {
+                if (Voided.is(payload.data)) {
+                    //TODO
+                    consoleLog('TODO');
+                }
+                else {
+                    let ref = new Reference(payload.data);
+                    self.pebl.storage.saveQueuedReference(userProfile, ref);
+                    let stored = new Date(ref.stored).getTime();
+                    if ((!this.clearedNotifications[ref.id]) &&
+                        (stored >= (this.notificationTimestamps["r" + ref.book] || 0))) {
+                        self.pebl.storage.saveNotification(userProfile, ref, () => { });
+                        this.pebl.emitEvent(this.pebl.events.incomingNotifications, [ref]);
+                    }
+                    if (stored > timestamp)
+                        timestamp = stored;
+                    this.pebl.storage.saveSyncTimestamps(userProfile.identity, SYNC_REFERENCES, timestamp, () => { });
+                }
+            });
+        };
+        // this.messageHandlers.getNotifications = (userProfile, payload) => {
+        //     this.pebl.storage.getSyncTimestamps(userProfile.identity, SYNC_NOTIFICATIONS, (timestamp: number) => {
+        //         let stmts = payload.data.map((stmt: any) => {
+        //             if (Voided.is(stmt)) {
+        //                 let voided = new Voided(stmt);
+        //                 self.pebl.storage.removeNotification(userProfile, voided.target);
+        //                 let stored = new Date(voided.stored).getTime();
+        //                 if (stored > timestamp)
+        //                     timestamp = stored;
+        //                 return voided;
+        //             } else {
+        //                 let n;
+        //                 if (Reference.is(stmt))
+        //                     n = new Reference(stmt);
+        //                 else if (Message.is(stmt))
+        //                     n = new Message(stmt);
+        //                 else if (SharedAnnotation.is(stmt))
+        //                     n = new SharedAnnotation(stmt);
+        //                 else
+        //                     n = new Notification(stmt);
+        //                 self.pebl.storage.saveNotification(userProfile, n);
+        //                 let stored = new Date(n.stored).getTime();
+        //                 if (stored > timestamp)
+        //                     timestamp = stored;
+        //                 return n;
+        //             }
+        //         });
+        //         this.pebl.storage.saveSyncTimestamps(userProfile.identity, SYNC_NOTIFICATIONS, timestamp, () => {
+        //             this.pebl.emitEvent(self.pebl.events.incomingNotifications, stmts);
+        //         });
+        //     });
+        // }
+        this.messageHandlers.getThreadedMessages = (userProfile, payload) => {
+            let threads;
+            if (payload.data instanceof Array) {
+                threads = payload.data;
+            }
+            else {
+                threads = [payload.data];
+            }
+            this.pebl.utils.getThreadTimestamps(userProfile.identity, (threadSyncTimestamps, privateThreadSyncTimestamps, groupThreadSyncTimestamps) => {
+                threads.forEach((payload) => {
+                    let groupId = payload.options && payload.options.groupId;
+                    let isPrivate = payload.options && payload.options.isPrivate;
+                    let thread = payload.thread;
+                    for (let stmt of payload.data) {
+                        if (groupId) {
+                            this.handleGroupMessage(userProfile, stmt, thread, groupId, groupThreadSyncTimestamps);
+                        }
+                        else if (isPrivate) {
+                            this.handlePrivateMessage(userProfile, stmt, thread, privateThreadSyncTimestamps);
+                        }
+                        else {
+                            this.handleMessage(userProfile, stmt, thread, threadSyncTimestamps);
+                        }
+                    }
+                });
+                this.pebl.utils.saveThreadTimestamps(userProfile.identity, threadSyncTimestamps, privateThreadSyncTimestamps, groupThreadSyncTimestamps, () => { });
+            });
+        };
+        this.messageHandlers.newThreadedMessage = (userProfile, payload) => {
+            let groupId = payload.options && payload.options.groupId;
+            let isPrivate = payload.options && payload.options.isPrivate;
+            let thread = payload.thread;
+            this.pebl.utils.getThreadTimestamps(userProfile.identity, (threadSyncTimestamps, privateThreadSyncTimestamps, groupThreadSyncTimestamps) => {
+                if (groupId) {
+                    this.handleGroupMessage(userProfile, payload.data, thread, groupId, groupThreadSyncTimestamps);
+                }
+                else if (isPrivate) {
+                    this.handlePrivateMessage(userProfile, payload.data, thread, privateThreadSyncTimestamps);
+                }
+                else {
+                    this.handleMessage(userProfile, payload.data, thread, threadSyncTimestamps);
+                }
+                this.pebl.utils.saveThreadTimestamps(userProfile.identity, threadSyncTimestamps, privateThreadSyncTimestamps, groupThreadSyncTimestamps, () => { });
+            });
+        };
+        this.messageHandlers.getSubscribedThreads = (userProfile, payload) => {
+            if (self.websocket && self.websocket.readyState === 1) {
+                this.pebl.utils.getThreadTimestamps(userProfile.identity, (threadSyncTimestamps, privateThreadSyncTimestamps, groupThreadSyncTimestamps) => {
+                    let messageSet = [];
+                    for (let thread of payload.data.threads) {
+                        let message = {
+                            thread: thread,
+                            options: {},
+                            timestamp: threadSyncTimestamps[thread] ? threadSyncTimestamps[thread] : 1
+                        };
+                        messageSet.push(message);
+                    }
+                    for (let thread of payload.data.privateThreads) {
+                        let message = {
+                            thread: thread,
+                            options: { isPrivate: true },
+                            timestamp: privateThreadSyncTimestamps[thread] ? privateThreadSyncTimestamps[thread] : 1
+                        };
+                        messageSet.push(message);
+                    }
+                    for (let groupId in payload.data.groupThreads) {
+                        for (let thread of payload.data.groupThreads[groupId]) {
+                            let groupTime;
+                            if (groupThreadSyncTimestamps[groupId]) {
+                                groupTime = groupThreadSyncTimestamps[groupId][thread];
+                            }
+                            else {
+                                groupTime = 1;
+                            }
+                            let message = {
+                                thread: thread,
+                                options: { groupId: groupId },
+                                timestamp: groupTime
+                            };
+                            messageSet.push(message);
+                        }
+                    }
+                    if (this.websocket) {
+                        this.websocket.send(JSON.stringify({
+                            requestType: "getThreadedMessages",
+                            identity: userProfile.identity,
+                            requests: messageSet
+                        }));
+                    }
+                });
+            }
+        };
+        this.messageHandlers.getAnnotations = (userProfile, payload) => {
+            this.pebl.storage.getSyncTimestamps(userProfile.identity, SYNC_ANNOTATIONS, (timestamp) => {
+                let stmts = payload.data.map((stmt) => {
+                    if (Voided.is(stmt)) {
+                        let voided = new Voided(stmt);
+                        this.pebl.storage.removeAnnotation(userProfile, voided.target);
+                        let stored = new Date(voided.stored).getTime();
+                        if (stored > timestamp)
+                            timestamp = stored;
+                        return voided;
+                    }
+                    else {
+                        let a = new Annotation(stmt);
+                        this.pebl.storage.saveAnnotations(userProfile, [a]);
+                        let stored = new Date(a.stored).getTime();
+                        if (stored > timestamp)
+                            timestamp = stored;
+                        return a;
+                    }
+                });
+                this.pebl.storage.saveSyncTimestamps(userProfile.identity, SYNC_ANNOTATIONS, timestamp, () => {
+                    this.pebl.emitEvent(this.pebl.events.incomingAnnotations, stmts);
+                });
+            });
+        };
+        this.messageHandlers.getSharedAnnotations = (userProfile, payload) => {
+            for (let stmt of payload.data) {
+                this.pebl.storage.getSyncTimestamps(userProfile.identity, generateGroupSharedAnnotationsSyncTimestampsKey(stmt.groupId), (timestamp) => {
+                    let annotation;
+                    if (Voided.is(stmt)) {
+                        annotation = new Voided(stmt);
+                        self.pebl.storage.removeSharedAnnotation(userProfile, annotation.target);
+                        self.pebl.storage.removeNotification(userProfile, annotation.target);
+                        this.pebl.emitEvent(this.pebl.events.incomingNotifications, [annotation]);
+                        let stored = new Date(annotation.stored).getTime();
+                        if (stored > timestamp)
+                            timestamp = stored;
+                    }
+                    else {
+                        annotation = new SharedAnnotation(stmt);
+                        self.pebl.storage.saveSharedAnnotations(userProfile, [annotation]);
+                        let stored = new Date(annotation.stored).getTime();
+                        if ((stored >= (this.notificationTimestamps["sa" + annotation.book] || 0)) &&
+                            (!this.clearedNotifications[annotation.id])) {
+                            if (userProfile.identity !== annotation.getActorId()) {
+                                this.pebl.storage.saveNotification(userProfile, annotation);
+                                this.pebl.emitEvent(this.pebl.events.incomingNotifications, [annotation]);
+                            }
+                            else {
+                                this.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    id: annotation.id,
+                                    identity: userProfile.identity,
+                                    requestType: "deleteNotification",
+                                    records: [{
+                                            id: annotation.id,
+                                            type: "sharedAnnotation",
+                                            location: annotation.book,
+                                            stored: annotation.stored
+                                        }]
+                                });
+                            }
+                        }
+                        if (stored > timestamp)
+                            timestamp = stored;
+                    }
+                    this.pebl.storage.saveSyncTimestamps(userProfile.identity, generateGroupSharedAnnotationsSyncTimestampsKey(stmt.groupId), timestamp, () => {
+                        self.pebl.emitEvent(self.pebl.events.incomingSharedAnnotations, [annotation]);
+                    });
+                });
+            }
+        };
+        this.messageHandlers.newAnnotation = (userProfile, payload) => {
+            let allAnnotations;
+            if (payload.data instanceof Array) {
+                allAnnotations = payload.data;
+            }
+            else {
+                allAnnotations = [payload.data];
+            }
+            this.pebl.storage.getSyncTimestamps(userProfile.identity, SYNC_ANNOTATIONS, (timestamp) => {
+                let stmts = allAnnotations.map((a) => {
+                    if (Voided.is(a)) {
+                        a = new Voided(a);
+                        self.pebl.storage.removeAnnotation(userProfile, a.target);
+                    }
+                    else {
+                        a = new Annotation(a);
+                        self.pebl.storage.saveAnnotations(userProfile, [a]);
+                    }
+                    let stored = new Date(a.stored).getTime();
+                    if (stored > timestamp)
+                        timestamp = stored;
+                    return a;
+                });
+                this.pebl.storage.saveSyncTimestamps(userProfile.identity, SYNC_ANNOTATIONS, timestamp, () => {
+                    self.pebl.emitEvent(self.pebl.events.incomingAnnotations, stmts);
+                });
+            });
+        };
+        this.messageHandlers.newSharedAnnotation = (userProfile, payload) => {
+            let allSharedAnnotations;
+            if (payload.data instanceof Array) {
+                allSharedAnnotations = payload.data;
+            }
+            else {
+                allSharedAnnotations = [payload.data];
+            }
+            for (let sa of allSharedAnnotations) {
+                this.pebl.storage.getSyncTimestamps(userProfile.identity, generateGroupSharedAnnotationsSyncTimestampsKey(sa.groupId), (timestamp) => {
+                    if (Voided.is(sa)) {
+                        sa = new Voided(sa);
+                        this.pebl.storage.removeSharedAnnotation(userProfile, sa.target);
+                        this.pebl.storage.removeNotification(userProfile, sa.target);
+                        this.pebl.emitEvent(this.pebl.events.incomingNotifications, [sa]);
+                    }
+                    else {
+                        sa = new SharedAnnotation(sa);
+                        this.pebl.storage.saveSharedAnnotations(userProfile, [sa]);
+                    }
+                    let stored = new Date(sa.stored).getTime();
+                    if ((sa instanceof SharedAnnotation) &&
+                        (stored >= (this.notificationTimestamps["sa" + sa.book] || 0)) &&
+                        (!this.clearedNotifications[sa.id])) {
+                        if (userProfile.identity !== sa.getActorId()) {
+                            this.pebl.storage.saveNotification(userProfile, sa);
+                            this.pebl.emitEvent(this.pebl.events.incomingNotifications, [sa]);
+                        }
+                        else {
+                            this.pebl.storage.saveOutgoingXApi(userProfile, {
+                                id: sa.id,
+                                identity: userProfile.identity,
+                                requestType: "deleteNotification",
+                                records: [{
+                                        id: sa.id,
+                                        type: "sharedAnnotation",
+                                        location: sa.book,
+                                        stored: sa.stored
+                                    }]
+                            });
+                        }
+                    }
+                    if (stored > timestamp)
+                        timestamp = stored;
+                    this.pebl.storage.saveSyncTimestamps(userProfile.identity, generateGroupSharedAnnotationsSyncTimestampsKey(sa.groupId), timestamp, () => {
+                        this.pebl.emitEvent(this.pebl.events.incomingSharedAnnotations, [sa]);
+                    });
+                });
+            }
+        };
+        this.messageHandlers.loggedOut = (userProfile, payload) => {
+            if (window.PeBLConfig && window.PeBLConfig.guestLogin) {
+                if (userProfile.identity === 'guest')
+                    return;
+            }
+            self.pebl.storage.removeCurrentUser(() => {
+                this.notificationTimestamps = {};
+                this.clearedNotifications = {};
+                self.pebl.emitEvent(self.pebl.events.eventRefreshLogin, null);
+            });
+        };
+        this.messageHandlers.requestUpload = (userProfile, payload) => {
+            this.pebl.network.uploadAsset(payload.filename, payload.activityId);
+        };
+        this.messageHandlers.error = (userProfile, payload) => {
+            consoleLog("Message failed", payload);
+        };
+        this.messageHandlers.getChapterCompletionPercentages = (userProfile, payload) => {
+            this.pebl.emitEvent(this.pebl.events.getChapterCompletionPercentages, payload.data);
+        };
+        this.messageHandlers.getMostAnsweredQuestions = (userProfile, payload) => {
+            this.pebl.emitEvent(this.pebl.events.getMostAnsweredQuestions, payload.data);
+        };
+        this.messageHandlers.getLeastAnsweredQuestions = (userProfile, payload) => {
+            this.pebl.emitEvent(this.pebl.events.getLeastAnsweredQuestions, payload.data);
+        };
+        this.messageHandlers.getQuizAttempts = (userProfile, payload) => {
+            this.pebl.emitEvent(this.pebl.events.getQuizAttempts, payload.data);
+        };
+        this.messageHandlers.getReportedThreadedMessages = (userProfile, payload) => {
+            this.pebl.emitEvent(this.pebl.events.getReportedThreadedMessages, payload.data);
+        };
+    }
+    activate(callback) {
+        if (!this.active) {
+            this.active = true;
+            this.reconnectionBackoff = this.DEFAULT_RECONNECTION_BACKOFF;
+            let makeWebSocketConnection = () => {
+                if (this.pebl.config && this.pebl.config.PeBLServicesWSURL) {
+                    if (this.websocket) {
+                        this.websocket.close();
+                        this.websocket = undefined;
+                    }
+                    this.websocket = new WebSocket(this.pebl.config.PeBLServicesWSURL);
+                    this.websocket.onopen = () => {
+                        consoleLog('websocket opened');
+                        this.reconnectionBackoffResetHandler = setTimeout(() => {
+                            this.reconnectionBackoff = this.DEFAULT_RECONNECTION_BACKOFF;
+                        }, this.DEFAULT_RECONNECTION_BACKOFF);
+                    };
+                    this.websocket.onclose = () => {
+                        consoleLog("Web socket closed retrying in " + this.reconnectionBackoff, event);
+                        this.serverReady = false;
+                        if (this.active) {
+                            if (this.reconnectionBackoffResetHandler) {
+                                clearTimeout(this.reconnectionBackoffResetHandler);
+                                this.reconnectionBackoffResetHandler = undefined;
+                            }
+                            if (this.reconnectionTimeoutHandler) {
+                                clearTimeout(this.reconnectionTimeoutHandler);
+                            }
+                            this.reconnectionTimeoutHandler = setTimeout(() => {
+                                makeWebSocketConnection();
+                                this.reconnectionBackoff *= 2;
+                                if (this.reconnectionBackoff > 60000) {
+                                    this.reconnectionBackoff = 60000;
+                                }
+                            }, this.reconnectionBackoff);
+                        }
+                    };
+                    this.websocket.onerror = (event) => {
+                        consoleLog("Web socket error retrying in " + this.reconnectionBackoff, event);
+                        this.serverReady = false;
+                        if (this.active) {
+                            if (this.reconnectionBackoffResetHandler) {
+                                clearTimeout(this.reconnectionBackoffResetHandler);
+                                this.reconnectionBackoffResetHandler = undefined;
+                            }
+                            if (this.reconnectionTimeoutHandler) {
+                                clearTimeout(this.reconnectionTimeoutHandler);
+                            }
+                            this.reconnectionTimeoutHandler = setTimeout(() => {
+                                makeWebSocketConnection();
+                                this.reconnectionBackoff *= 2;
+                                if (this.reconnectionBackoff > 60000) {
+                                    this.reconnectionBackoff = 60000;
+                                }
+                            }, this.reconnectionBackoff);
+                        }
+                    };
+                    this.websocket.onmessage = (message) => {
+                        this.pebl.user.getUser((userProfile) => {
+                            if (userProfile) {
+                                consoleLog('message recieved');
+                                var parsedMessage = JSON.parse(message.data);
+                                if (this.messageHandlers[parsedMessage.requestType]) {
+                                    this.messageHandlers[parsedMessage.requestType](userProfile, parsedMessage);
+                                }
+                                else {
+                                    consoleLog("Unknown request type", parsedMessage.requestType, parsedMessage);
+                                }
+                            }
+                        });
+                    };
+                }
+            };
+            makeWebSocketConnection();
+        }
+        if (callback) {
+            callback();
+        }
+    }
+    disable(callback) {
+        if (this.active) {
+            this.active = false;
+            if (this.reconnectionTimeoutHandler) {
+                clearTimeout(this.reconnectionTimeoutHandler);
+                this.reconnectionTimeoutHandler = undefined;
+            }
+            if (this.websocket) {
+                let processDisable = () => {
+                    if (this.websocket) {
+                        if (this.websocket.bufferedAmount > 0) {
+                            setTimeout(processDisable, 50);
+                        }
+                        else {
+                            this.websocket.close();
+                            if (callback) {
+                                callback();
+                            }
+                        }
+                    }
+                };
+                processDisable();
+            }
+            else {
+                if (callback)
+                    callback();
+            }
+        }
+        else {
+            if (callback) {
+                callback();
+            }
+        }
+    }
+    mergeRequests(outgoing) {
+        let compressedOutgoing = [];
+        let userRequestTypes = {};
+        for (let i = 0; i < outgoing.length; i++) {
+            let packet = outgoing[i];
+            let requestTypes = userRequestTypes[packet.identity];
+            if (!requestTypes) {
+                requestTypes = {};
+                userRequestTypes[packet.identity] = requestTypes;
+            }
+            if (!requestTypes[packet.requestType]) {
+                requestTypes[packet.requestType] = [];
+            }
+            requestTypes[packet.requestType].push(packet);
+        }
+        for (let user in userRequestTypes) {
+            let requestTypes = userRequestTypes[user];
+            for (let requestType in requestTypes) {
+                let objs = requestTypes[requestType];
+                let mergedRequestType = {
+                    requestType: requestType,
+                    identity: user
+                };
+                for (let obj of objs) {
+                    for (let key of Object.keys(obj)) {
+                        if ((key !== "id") && (key !== "requestType") && (key !== "identity")) {
+                            let val = obj[key];
+                            if (!mergedRequestType[key])
+                                mergedRequestType[key] = [];
+                            if (val instanceof Array) {
+                                mergedRequestType[key].push(...val);
+                            }
+                            else if ((typeof val === "string") || (typeof val === "number") || (val instanceof Object)) {
+                                mergedRequestType[key].push(val);
+                            }
+                            else {
+                                throw new Error("unknown merge type");
+                            }
+                        }
+                    }
+                }
+                compressedOutgoing.push(mergedRequestType);
+            }
+        }
+        return compressedOutgoing;
+    }
+    push(outgoing, callback) {
+        this.pebl.user.getUser((userProfile) => {
+            if (userProfile && this.serverReady && this.websocket && this.websocket.readyState === 1) {
+                this.websocket.send(JSON.stringify({
+                    requestType: "bulkPush",
+                    identity: userProfile.identity,
+                    data: this.mergeRequests(outgoing)
+                }));
+                callback(true);
+            }
+            else {
+                callback(false);
+            }
+        });
+    }
+    pushActivity(outgoing, callback) {
+        this.pebl.user.getUser((userProfile) => {
+            if (userProfile && this.serverReady && this.websocket && this.websocket.readyState === 1) {
+                for (let message of outgoing) {
+                    consoleLog(message);
+                    this.websocket.send(JSON.stringify(message));
+                }
+                callback(true);
+            }
+            else {
+                callback(false);
+            }
+        });
+    }
+    // pullNotifications(): void {
+    //     this.pebl.user.getUser((userProfile) => {
+    //         if (userProfile && this.websocket && this.websocket.readyState === 1) {
+    //             this.pebl.storage.getSyncTimestamps(userProfile.identity, SYNC_NOTIFICATIONS, (timestamp: number) => {
+    //                 let message = {
+    //                     identity: userProfile.identity,
+    //                     requestType: "getNotifications",
+    //                     timestamp: timestamp + 1
+    //                 }
+    //                 if (this.websocket) {
+    //                     this.websocket.send(JSON.stringify(message));
+    //                 }
+    //             });
+    //         }
+    //     });
+    // }
+    pullAnnotations() {
+        this.pebl.user.getUser((userProfile) => {
+            if (userProfile && this.websocket && this.websocket.readyState === 1) {
+                this.pebl.storage.getSyncTimestamps(userProfile.identity, SYNC_ANNOTATIONS, (timestamp) => {
+                    let message = {
+                        identity: userProfile.identity,
+                        requestType: "getAnnotations",
+                        timestamp: timestamp + 1
+                    };
+                    if (this.websocket) {
+                        this.websocket.send(JSON.stringify(message));
+                    }
+                });
+            }
+        });
+    }
+    pullSharedAnnotations() {
+        this.pebl.user.getUser((userProfile) => {
+            if (userProfile && this.websocket && this.websocket.readyState === 1) {
+                if (userProfile.groups) {
+                    for (let groupId of userProfile.groups) {
+                        ((groupId) => {
+                            this.pebl.storage.getSyncTimestamps(userProfile.identity, generateGroupSharedAnnotationsSyncTimestampsKey(groupId), (timestamp) => {
+                                let message = {
+                                    identity: userProfile.identity,
+                                    requestType: "getSharedAnnotations",
+                                    timestamp: timestamp + 1,
+                                    groupId: groupId
+                                };
+                                if (this.websocket) {
+                                    this.websocket.send(JSON.stringify(message));
+                                }
+                            });
+                            this.pebl.storage.saveOutgoingXApi(userProfile, {
+                                id: this.pebl.utils.getUuid(),
+                                identity: userProfile.identity,
+                                requestType: "subscribeSharedAnnotations",
+                                groupId: groupId
+                            });
+                        })(groupId);
+                    }
+                }
+            }
+        });
+    }
+    pullReferences() {
+        this.pebl.user.getUser((userProfile) => {
+            if (userProfile && this.websocket && this.websocket.readyState === 1) {
+                this.pebl.storage.getSyncTimestamps(userProfile.identity, SYNC_REFERENCES, (timestamp) => {
+                    let message = {
+                        identity: userProfile.identity,
+                        requestType: "getReferences",
+                        timestamp: timestamp + 1
+                    };
+                    if (this.websocket) {
+                        this.websocket.send(JSON.stringify(message));
+                    }
+                });
+            }
+        });
+    }
+    pullSubscribedThreads() {
+        this.pebl.user.getUser((userProfile) => {
+            if (userProfile && this.websocket && this.websocket.readyState === 1) {
+                let message = {
+                    identity: userProfile.identity,
+                    requestType: "getSubscribedThreads"
+                };
+                this.websocket.send(JSON.stringify(message));
+            }
+        });
+    }
+    handlePrivateMessage(userProfile, message, thread, privateThreadSyncTimestamps) {
+        let m;
+        if (Voided.is(message)) {
+            m = new Voided(message);
+            this.pebl.storage.removeMessage(userProfile, m.target);
+        }
+        else {
+            m = new Message(message);
+            this.pebl.storage.saveMessages(userProfile, [m]);
+        }
+        let stored = new Date(m.stored).getTime();
+        if (!privateThreadSyncTimestamps[thread])
+            privateThreadSyncTimestamps[thread] = 1;
+        if (stored > privateThreadSyncTimestamps[thread])
+            privateThreadSyncTimestamps[thread] = stored;
+        this.pebl.emitEvent(thread + USER_PREFIX + userProfile.identity, [m]);
+    }
+    handleGroupMessage(userProfile, message, thread, groupId, groupThreadSyncTimestamps) {
+        let m;
+        if (Voided.is(message)) {
+            m = new Voided(message);
+            this.pebl.storage.removeMessage(userProfile, m.target);
+            this.pebl.storage.removeNotification(userProfile, m.target);
+            this.pebl.emitEvent(this.pebl.events.incomingNotifications, [m]);
+        }
+        else {
+            m = new Message(message);
+            this.pebl.storage.saveMessages(userProfile, [m]);
+        }
+        let stored = new Date(m.stored).getTime();
+        if ((m instanceof Message) &&
+            (stored >= (this.notificationTimestamps[m.thread] || 0)) &&
+            (!this.clearedNotifications[m.id])) {
+            if (userProfile.identity !== m.getActorId()) {
+                this.pebl.storage.saveNotification(userProfile, m);
+                this.pebl.emitEvent(this.pebl.events.incomingNotifications, [m]);
+            }
+            else {
+                this.pebl.storage.saveOutgoingXApi(userProfile, {
+                    id: m.id,
+                    identity: userProfile.identity,
+                    requestType: "deleteNotification",
+                    records: [{
+                            id: m.id,
+                            type: "message",
+                            location: m.thread,
+                            stored: m.stored
+                        }]
+                });
+            }
+        }
+        if (!groupThreadSyncTimestamps[groupId])
+            groupThreadSyncTimestamps[groupId] = {};
+        if (!groupThreadSyncTimestamps[groupId][thread])
+            groupThreadSyncTimestamps[groupId][thread] = 1;
+        if (stored > groupThreadSyncTimestamps[groupId][thread])
+            groupThreadSyncTimestamps[groupId][thread] = stored;
+        this.pebl.emitEvent(thread + GROUP_PREFIX + groupId, [m]);
+    }
+    handleMessage(userProfile, message, thread, threadSyncTimestamps) {
+        let m;
+        if (Voided.is(message)) {
+            m = new Voided(message);
+            this.pebl.storage.removeMessage(userProfile, m.target);
+            this.pebl.storage.removeNotification(userProfile, m.target);
+        }
+        else {
+            m = new Message(message);
+            this.pebl.storage.saveMessages(userProfile, [m]);
+        }
+        let stored = new Date(m.stored).getTime();
+        //No notifications for general messages
+        // if ((m instanceof Message) &&
+        //     (stored >= (this.notificationTimestamps[m.thread] || 0)) &&
+        //     (!this.clearedNotifications[m.id])) {
+        //     if (userProfile.identity !== m.getActorId()) {
+        //         this.pebl.storage.saveNotification(userProfile, m);
+        //         this.pebl.emitEvent(this.pebl.events.incomingNotifications, [m]);
+        //     } else {
+        //         this.pebl.storage.saveOutgoingXApi(userProfile, {
+        //             id: m.id,
+        //             identity: userProfile.identity,
+        //             requestType: "deleteNotification",
+        //             records: [{
+        //                 id: m.id,
+        //                 type: "message",
+        //                 location: m.thread,
+        //                 stored: m.stored
+        //             }]
+        //         });
+        //     }
+        // }
+        if (!threadSyncTimestamps[thread])
+            threadSyncTimestamps[thread] = 1;
+        if (stored > threadSyncTimestamps[thread])
+            threadSyncTimestamps[thread] = stored;
+        this.pebl.emitEvent(thread, [m]);
+    }
+}
+
+// CONCATENATED MODULE: ./src/network.ts
+
+// import { Activity } from "./activity";
+class network_Network {
+    constructor(pebl) {
+        this.pushTimeout = undefined;
+        this.pushActivityTimeout = undefined;
+        this.pullAssetTimeout = undefined;
+        this.pebl = pebl;
+        this.running = false;
+        this.syncingProcess = new syncing_LLSyncAction(pebl);
+    }
+    activate(callback) {
+        if (!this.running) {
+            this.running = true;
+            this.syncingProcess.activate(() => {
+                this.push();
+                this.pushActivity();
+                this.pullAsset();
+                if (callback)
+                    callback();
+            });
+        }
+        else {
+            if (callback)
+                callback();
+        }
+    }
+    queueReference(ref) {
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile)
+                self.pebl.storage.saveQueuedReference(userProfile, ref, self.pullAsset.bind(self));
+        });
+    }
+    retrievePresence() {
+        // for (let sync of this.syncingProcess)
+        //     sync.retrievePresence();
+    }
+    uploadAsset(assetId, activityId) {
+        return new Promise((resolve, reject) => {
+            this.pebl.storage.getAsset(assetId).then((file) => {
+                if (this.pebl.config && this.pebl.config.PeBLServicesURL) {
+                    let fd = new FormData();
+                    fd.append('activityId', activityId);
+                    fd.append('mediaId', assetId);
+                    fd.append('media', file);
+                    fetch(this.pebl.config.PeBLServicesURL + '/user/media', {
+                        credentials: 'include',
+                        method: 'POST',
+                        body: fd
+                    }).then((res) => {
+                        console.log(res);
+                        resolve(res.statusText);
+                    }).catch((e) => {
+                        console.error(e);
+                        reject();
+                    });
+                }
+            }).catch(() => {
+                reject();
+            });
+        });
+    }
+    fetchAsset(assetId) {
+        return new Promise((resolve, reject) => {
+            if (this.pebl.config && this.pebl.config.PeBLServicesURL) {
+                fetch(this.pebl.config.PeBLServicesURL + '/user/media?mediaId=' + assetId, {
+                    credentials: 'include',
+                    method: 'GET'
+                }).then(res => res.blob()).then(blob => {
+                    console.log(blob);
+                    resolve(new File([blob], assetId));
+                }).catch((e) => {
+                    console.error(e);
+                    reject();
+                });
+            }
+        });
+    }
+    pullAsset() {
+        this.pebl.user.getUser((userProfile) => {
+            if (userProfile && userProfile.registryEndpoint) {
+                this.pebl.storage.getCurrentBook((currentBook) => {
+                    if (currentBook) {
+                        this.pebl.storage.getQueuedReference(userProfile, currentBook, (ref) => {
+                            if (ref) {
+                                this.pebl.storage.getToc(userProfile, ref.book, (toc) => {
+                                    //Wait to add resources until the static TOC has been initialized, otherwise it never gets intialized
+                                    if (toc.length > 0) {
+                                        // this.pebl.storage.saveNotification(userProfile, ref);
+                                        let tocEntry = {
+                                            "url": ref.url,
+                                            "documentName": ref.name,
+                                            "section": ref.location,
+                                            "pageKey": ref.id,
+                                            "docType": ref.docType,
+                                            "card": ref.card,
+                                            "externalURL": ref.externalURL
+                                        };
+                                        this.pebl.storage.saveToc(userProfile, ref.book, tocEntry);
+                                        this.pebl.emitEvent(this.pebl.events.incomingNotification, ref);
+                                        this.pebl.emitEvent(this.pebl.events.updatedToc, ref.book);
+                                        this.pebl.storage.removeQueuedReference(userProfile, ref.id);
+                                        if (this.running)
+                                            this.pullAssetTimeout = setTimeout(this.pullAsset.bind(this), 5000);
+                                        // The below requires an API that is currently unavailable and also not needed at this time
+                                        // let xhr = new XMLHttpRequest();
+                                        // xhr.addEventListener("load", function() {
+                                        //     this.pebl.storage.saveNotification(userProfile, ref);
+                                        //     let tocEntry: { [key: string]: any } = {
+                                        //         "url": ref.url,
+                                        //         "documentName": ref.name,
+                                        //         "section": ref.location,
+                                        //         "pageKey": ref.id,
+                                        //         "docType": ref.docType,
+                                        //         "card": ref.card,
+                                        //         "externalURL": ref.externalURL
+                                        //     };
+                                        //     this.pebl.storage.saveToc(userProfile, ref.book, tocEntry);
+                                        //     this.pebl.emitEvent(this.pebl.events.incomingNotification, ref);
+                                        //     this.pebl.storage.removeQueuedReference(userProfile, ref.id);
+                                        //     if (this.running)
+                                        //         this.pullAssetTimeout = setTimeout(this.pullAsset.bind(this), 5000);
+                                        // });
+                                        // xhr.addEventListener("error", function() {
+                                        //     this.pebl.storage.saveNotification(userProfile, ref);
+                                        //     this.pebl.emitEvent(this.pebl.events.incomingNotification, ref);
+                                        //     this.pebl.storage.removeQueuedReference(userProfile, ref.id);
+                                        //     if (this.running)
+                                        //         this.pullAssetTimeout = setTimeout(this.pullAsset.bind(this), 5000);
+                                        // });
+                                        // let url = userProfile.registryEndpoint && userProfile.registryEndpoint.url;
+                                        // if (url) {
+                                        //     xhr.open("GET", url + ref.url);
+                                        //     xhr.send();
+                                        // } else if (this.running)
+                                        //     this.pullAssetTimeout = setTimeout(this.pullAsset.bind(this), 5000);
+                                    }
+                                    else {
+                                        this.pullAssetTimeout = setTimeout(this.pullAsset.bind(this), 5000);
+                                    }
+                                });
+                            }
+                            else {
+                                if (this.running)
+                                    this.pullAssetTimeout = setTimeout(this.pullAsset.bind(this), 5000);
+                            }
+                        });
+                    }
+                    else if (this.running) {
+                        this.pullAssetTimeout = setTimeout(this.pullAsset.bind(this), 5000);
+                    }
+                });
+            }
+            else if (this.running)
+                this.pullAssetTimeout = setTimeout(this.pullAsset.bind(this), 5000);
+        });
+    }
+    disable(callback) {
+        if (this.running) {
+            this.running = false;
+            if (this.pushTimeout)
+                clearTimeout(this.pushTimeout);
+            this.pushTimeout = undefined;
+            if (this.pullAssetTimeout)
+                clearTimeout(this.pullAssetTimeout);
+            this.pullAssetTimeout = undefined;
+            this.syncingProcess.disable(() => {
+                if (callback)
+                    callback();
+            });
+        }
+        else {
+            if (callback) {
+                callback();
+            }
+        }
+    }
+    pushActivity(finished) {
+        if (this.pushActivityTimeout) {
+            clearTimeout(this.pushActivityTimeout);
+            this.pushActivityTimeout = undefined;
+        }
+        this.pebl.user.getUser((userProfile) => {
+            if (userProfile) {
+                this.pebl.storage.getOutgoingActivity(userProfile, (stmts) => {
+                    if (stmts.length > 0) {
+                        this.syncingProcess.pushActivity(stmts, (success) => {
+                            if (success)
+                                this.pebl.storage.removeOutgoingActivity(userProfile, stmts);
+                            if (this.running)
+                                this.pushActivityTimeout = setTimeout(this.pushActivity.bind(this), 5000);
+                            if (finished)
+                                finished();
+                        });
+                    }
+                    else {
+                        if (this.running)
+                            this.pushActivityTimeout = setTimeout(this.pushActivity.bind(this), 5000);
+                        if (finished)
+                            finished();
+                    }
+                });
+            }
+            else if (this.running)
+                this.pushActivityTimeout = setTimeout(this.pushActivity.bind(this), 5000);
+        });
+    }
+    push(finished) {
+        if (this.pushTimeout) {
+            clearTimeout(this.pushTimeout);
+            this.pushTimeout = undefined;
+        }
+        this.pebl.user.getUser((userProfile) => {
+            if (userProfile) {
+                this.pebl.storage.getOutgoingXApi(userProfile, (stmts) => {
+                    if (stmts.length > 0) {
+                        this.syncingProcess.push(stmts, (success) => {
+                            if (success)
+                                this.pebl.storage.removeOutgoingXApi(userProfile, stmts);
+                            if (this.running)
+                                this.pushTimeout = setTimeout(this.push.bind(this), 2000);
+                            if (finished)
+                                finished();
+                        });
+                    }
+                    else {
+                        if (this.running)
+                            this.pushTimeout = setTimeout(this.push.bind(this), 2000);
+                        if (finished)
+                            finished();
+                    }
+                });
+            }
+            else {
+                if (this.running)
+                    this.pushTimeout = setTimeout(this.push.bind(this), 2000);
+                if (finished)
+                    finished();
+            }
+        });
+    }
+}
+
+// CONCATENATED MODULE: ./src/eventSet.ts
+class EventSet {
+    constructor() {
+        this.incomingAnnotations = "incomingAnnotations";
+        this.incomingSharedAnnotations = "incomingSharedAnnotations";
+        this.incomingNotifications = "incomingNotifications";
+        this.incomingAssets = "incomingAssets";
+        this.incomingEvents = "incomingEvents";
+        this.incomingPresence = "incomingPresence";
+        this.incomingLearnlet = "incomingLearnlet";
+        this.incomingProgram = "incomingProgram";
+        this.incomingInstitution = "incomingInstitution";
+        this.incomingSystem = "incomingSystem";
+        this.incomingArtifact = "incomingArtifact";
+        this.incomingMembership = "incomingMembership";
+        this.incomingActivityEvents = "incomingActivityEvents";
+        this.incomingModuleEvents = "incomingModuleEvents";
+        this.incomingErrors = "incomingErrors";
+        this.updatedToc = "updatedToc";
+        this.saveProgram = "saveProgram";
+        this.saveProgramConflict = "saveProgramConflict";
+        this.saveProgramSuccess = "saveProgramSuccess";
+        this.saveProgramError = "saveProgramError";
+        this.saveInstitution = "saveInstitution";
+        this.saveSystem = "saveSystem";
+        this.newBookNoReset = "newBookNoReset";
+        this.newLearnlet = "newLearnlet";
+        this.newBook = "newBook";
+        this.newMessage = "newMessage";
+        this.newActivity = "newActivity";
+        this.newAnnotation = "newAnnotation";
+        this.newReference = "newReference";
+        this.newPresence = "newPresence";
+        this.newMembership = "newMembership";
+        this.newSharedAnnotation = "newSharedAnnotation";
+        this.newArtifact = "newArtifact";
+        this.modifiedMembership = "modifiedMembership";
+        this.pinnedMessage = "pinnedMessage";
+        this.unpinnedMessage = "unpinnedMessage";
+        this.pinnedAnnotation = "pinnedAnnotation";
+        this.unpinnedAnnotation = "unpinnedAnnotation";
+        this.reportedMessage = "reportedMessage";
+        this.removedPresence = "removedPresence";
+        this.removedMembership = "removedMembership";
+        this.removedAnnotation = "removedAnnotation";
+        this.removedSharedAnnotation = "removedSharedAnnotation";
+        this.removedLearnlet = "removedLearnlet";
+        this.removedProgram = "removedProgram";
+        this.removedMessage = "removedMessage";
+        this.eventRefreshLogin = "eventRefreshLogin";
+        this.eventLoggedIn = "eventLoggedIn";
+        this.eventLoggedOut = "eventLoggedOut";
+        this.eventLogin = "eventLogin";
+        this.eventLogout = "eventLogout";
+        this.eventFinishedLogin = "eventFinishedLogin";
+        this.eventSessionStart = "eventSessionStart";
+        this.eventSessionStop = "eventSessionStop";
+        this.eventNextPage = "eventNextPage";
+        this.eventPrevPage = "eventPrevPage";
+        this.eventJumpPage = "eventJumpPage";
+        this.eventInitialized = "eventInitialized";
+        this.eventTerminated = "eventTerminated";
+        this.eventInteracted = "eventInteracted";
+        this.eventAttempted = "eventAttempted";
+        this.eventPassed = "eventPassed";
+        this.eventFailed = "eventFailed";
+        this.eventPreferred = "eventPreferred";
+        this.eventContentMorphed = "eventContentMorphed";
+        this.eventExperienced = "eventExperienced";
+        this.eventDisliked = "eventDisliked";
+        this.eventLiked = "eventLiked";
+        this.eventAccessed = "eventAccessed";
+        this.eventHid = "eventHid";
+        this.eventShowed = "eventShowed";
+        this.eventDisplayed = "eventDisplayed";
+        this.eventUndisplayed = "eventUndisplayed";
+        this.eventSelected = "eventSelected";
+        this.eventDiscarded = "eventDiscarded";
+        this.eventBookmarked = "eventBookmarked";
+        this.eventUnbookmarked = "eventUnbookmarked";
+        this.eventUnsharedAnnotation = "eventUnsharedAnnotation";
+        this.eventAnnotated = "eventAnnotated";
+        this.eventUnannotated = "eventUnannotated";
+        this.eventNoted = "eventNoted";
+        this.eventSearched = "eventSearched";
+        this.eventCompleted = "eventCompleted";
+        this.eventLaunched = "eventLaunched";
+        this.eventCompatibilityTested = "eventCompatibilityTested";
+        this.eventChecklisted = "eventChecklisted";
+        this.eventHelped = "eventHelped";
+        this.eventInvited = "eventInvited";
+        this.eventUninvited = "eventUninvited";
+        this.eventSubmitted = "eventSubmitted";
+        this.eventUploadedMedia = "eventUploadedMedia";
+        this.eventProgramLevelUp = "eventProgramLevelUp";
+        this.eventProgramLevelDown = "eventProgramLevelDown";
+        this.eventProgramInvited = "eventProgramInvited";
+        this.eventProgramUninvited = "eventProgramUninvited";
+        this.eventProgramJoined = "eventProgramJoined";
+        this.eventProgramExpelled = "eventProgramExpelled";
+        this.eventProgramActivityLaunched = "eventProgramActivityLaunched";
+        this.eventProgramActivityCompleted = "eventProgramActivityCompleted";
+        this.eventProgramActivityTeamCompleted = "eventProgramActivityTeamCompleted";
+        this.eventProgramModified = "eventProgramModified";
+        this.eventProgramDeleted = "eventProgramDeleted";
+        this.eventProgramCompleted = "eventProgramCompleted";
+        this.eventProgramCopied = "eventProgramCopied";
+        this.eventProgramDiscussed = "eventProgramDiscussed";
+        this.eventModuleRating = "eventModuleRating";
+        this.eventModuleFeedback = "eventModuleFeedback";
+        this.eventModuleExample = "eventModuleExample";
+        this.eventModuleExampleRating = "eventModuleExampleRating";
+        this.eventModuleExampleFeedback = "eventModuleExampleFeedback";
+        this.moduleRemovedEvent = "moduleRemovedEvent";
+        this.totalInstitutionActivities = "totalInstitutionActivities";
+        this.getChapterCompletionPercentages = "getChapterCompletionPercentages";
+        this.getMostAnsweredQuestions = "getMostAnsweredQuestions";
+        this.getLeastAnsweredQuestions = "getLeastAnsweredQuestions";
+        this.getQuizAttempts = "getQuizAttempts";
+        this.getReportedThreadedMessages = "getReportedThreadedMessages";
+    }
+}
+
+// CONCATENATED MODULE: ./src/utils.ts
+
+
+
+
+let pako = __webpack_require__(7);
+var utils_platform = __webpack_require__(16); //https://github.com/bestiejs/platform.
+const stringObj = { "to": "string" };
+class utils_Utils {
+    constructor(pebl) {
+        this.pebl = pebl;
+    }
+    getAnnotations(callback) {
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentBookId(function (book) {
+                    if (book)
+                        self.pebl.storage.getAnnotations(userProfile, book, callback);
+                    else
+                        callback([]);
+                });
+            }
+            else
+                callback([]);
+        });
+    }
+    getSharedAnnotations(callback) {
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentBookId(function (book) {
+                    if (book)
+                        self.pebl.storage.getSharedAnnotations(userProfile, book, callback);
+                    else
+                        callback([]);
+                });
+            }
+            else
+                callback([]);
+        });
+    }
+    initializeToc(data) {
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentBook(function (book) {
+                    if (book) {
+                        self.pebl.storage.getToc(userProfile, book, function (toc) {
+                            if (toc.length == 0) {
+                                for (let section in data) {
+                                    let pages = data[section];
+                                    for (let pageKey in pages) {
+                                        let pageMetadata = pages[pageKey];
+                                        if (pageKey == "DynamicContent") {
+                                            let documents = pageMetadata["documents"];
+                                            for (let dynamicPageKey in documents) {
+                                                let documentMetadata = documents[dynamicPageKey];
+                                                documentMetadata["pageKey"] = dynamicPageKey;
+                                                self.pebl.storage.saveToc(userProfile, book, documentMetadata);
+                                            }
+                                        }
+                                        else {
+                                            pageMetadata["pageKey"] = pageKey;
+                                            pageMetadata["section"] = section;
+                                            self.pebl.storage.saveToc(userProfile, book, pageMetadata);
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+    getToc(callback) {
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentBook(function (book) {
+                    if (book)
+                        self.pebl.storage.getToc(userProfile, book, function (entries) {
+                            let toc = {};
+                            for (let i = 0; i < entries.length; i++) {
+                                let entry = entries[i];
+                                let sectionKey = entry["section"];
+                                if (toc[sectionKey] == null) {
+                                    toc[sectionKey] = {};
+                                }
+                                let section = toc[sectionKey];
+                                if (sectionKey == "DynamicContent") {
+                                    if (section["documents"] == null) {
+                                        section["location"] = entry["location"];
+                                        section["documents"] = {};
+                                    }
+                                    let dynamicSection = section["documents"];
+                                    dynamicSection[entry["pageKey"]] = entry;
+                                }
+                                else
+                                    section[entry["pageKey"]] = entry;
+                            }
+                            callback(toc);
+                        });
+                    else
+                        callback({});
+                });
+            }
+            else
+                callback({});
+        });
+    }
+    removeToc(id, section) {
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile)
+                self.pebl.storage.getCurrentBook(function (book) {
+                    if (book)
+                        self.pebl.storage.removeToc(userProfile, book, section, id);
+                });
+        });
+    }
+    pullProgram(programId, callback) {
+        let self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                let network = self.pebl.network;
+                if (network && network.syncingProcess && network.syncingProcess.length > 0) {
+                    network.syncingProcess[0].pullActivity('program', programId, function (activity) {
+                        if (activity) {
+                            callback(activity);
+                        }
+                        else {
+                            callback();
+                        }
+                    });
+                }
+            }
+        });
+    }
+    mergePrograms(oldProgram, newProgram) {
+        let mergedProgram = activity_Program.merge(oldProgram, newProgram);
+        return mergedProgram;
+    }
+    mergeInstitutions(oldInstitution, newInstitution) {
+        let mergedInstitution = activity_Institution.merge(oldInstitution, newInstitution);
+        return mergedInstitution;
+    }
+    mergeSystems(oldSystem, newSystem) {
+        let mergedSystem = activity_System.merge(oldSystem, newSystem);
+        return mergedSystem;
+    }
+    getProgram(programId, callback) {
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getActivityById(userProfile, "program", programId, function (activity) {
+                    if (activity)
+                        callback(activity);
+                    else
+                        callback();
+                });
+            }
+        });
+    }
+    getInstitution(institutionId, callback) {
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getActivityById(userProfile, "institution", institutionId, function (activity) {
+                    if (activity)
+                        callback(activity);
+                    else
+                        callback();
+                });
+            }
+        });
+    }
+    getSystem(systemId, callback) {
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getActivityById(userProfile, "system", systemId, function (activity) {
+                    if (activity)
+                        callback(activity);
+                    else
+                        callback();
+                });
+            }
+        });
+    }
+    isProgramMember(program, userIdentity) {
+        return activity_Program.isMember(program, userIdentity);
+    }
+    isInstitutionMember(institution, userIdentity) {
+        return activity_Institution.isMember(institution, userIdentity);
+    }
+    isProgramMemberOfInstitution(institution, programId) {
+        return activity_Institution.isProgram(institution, programId);
+    }
+    isSystemMember(system, userIdentity) {
+        return activity_System.isMember(system, userIdentity);
+    }
+    removeProgram(programId, callback) {
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.removeActivity(userProfile, programId, 'program', callback);
+            }
+        });
+    }
+    removeInstitution(institutionId, callback) {
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.removeActivity(userProfile, institutionId, 'institution', callback);
+            }
+        });
+    }
+    newEmptyProgram(callback) {
+        callback(new activity_Program({}));
+    }
+    newEmptyInstitution(callback) {
+        callback(new activity_Institution({}));
+    }
+    newEmptySystem(callback) {
+        callback(new activity_System({}));
+    }
+    getGroupMemberships(callback) {
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getGroupMembership(userProfile, callback);
+            }
+            else
+                callback([]);
+        });
+    }
+    getSpecificGroupMembership(groupId, callback) {
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getGroupMembership(userProfile, function (memberships) {
+                    let result = null;
+                    for (let membership of memberships) {
+                        if (membership.membershipId === groupId)
+                            result = membership;
+                    }
+                    callback(result);
+                });
+            }
+            else
+                callback(null);
+        });
+    }
+    removeGroupMembership(groupId, callback) {
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.removeGroupMembership(userProfile, groupId, callback);
+            }
+        });
+    }
+    getPrograms(callback) {
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getActivity(userProfile, "program", function (activities) {
+                    callback(activities);
+                });
+            }
+            else
+                callback([]);
+        });
+    }
+    getInstitutions(callback) {
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getActivity(userProfile, "institution", function (activities) {
+                    callback(activities);
+                });
+            }
+            else
+                callback([]);
+        });
+    }
+    getSystems(callback) {
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getActivity(userProfile, "system", function (activities) {
+                    callback(activities);
+                });
+            }
+            else
+                callback([]);
+        });
+    }
+    getUuid() {
+        /*!
+          Excerpt from: Math.uuid.js (v1.4)
+          http://www.broofa.com
+          mailto:robert@broofa.com
+          Copyright (c) 2010 Robert Kieffer
+          Dual licensed under the MIT and GPL licenses.
+        */
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+        return uuid;
+    }
+    getInviteToken(token, callback) {
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                let xhr = new XMLHttpRequest();
+                //TODO: multiple endpoints?
+                var endpoint = userProfile.endpoints[0];
+                var pipeline = [{
+                        "$match": {
+                            "$and": [{
+                                    "statement.verb.id": {
+                                        "$in": [
+                                            "http://www.peblproject.com/definitions.html#invited"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "statement.object.definition.name.en-US": {
+                                        "$in": [
+                                            token
+                                        ]
+                                    }
+                                }]
+                        }
+                    }];
+                xhr.addEventListener("load", function () {
+                    let result = JSON.parse(xhr.responseText);
+                    for (let i = 0; i < result.length; i++) {
+                        let rec = result[i];
+                        if (!rec.voided)
+                            result[i] = rec.statement;
+                        else
+                            result.splice(i, 1);
+                    }
+                    if (callback != null) {
+                        callback(result);
+                    }
+                });
+                xhr.addEventListener("error", function () {
+                    callback([]);
+                });
+                xhr.open("GET", endpoint.url + "api/statements/aggregate?pipeline=" + encodeURIComponent(JSON.stringify(pipeline)), true);
+                xhr.setRequestHeader("Authorization", "Basic " + endpoint.token);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.send();
+            }
+        });
+    }
+    getProgramActivityEvents(programId, callback) {
+        let self = this;
+        this.pebl.storage.getActivityEvent(programId, function (events) {
+            callback(events.sort(self.sortByTimestamp));
+        });
+    }
+    sortByTimestamp(a, b) {
+        return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+    }
+    iterateProgramMembers(program, callback) {
+        activity_Program.iterateMembers(program, callback);
+    }
+    getProgramMembers(program) {
+        return activity_Program.getMembers(program);
+    }
+    iterateInstitutionMembers(institution, callback) {
+        activity_Institution.iterateMembers(institution, callback);
+    }
+    iterateInstitutionPrograms(institution, callback) {
+        activity_Institution.iteratePrograms(institution, callback);
+    }
+    iterateSystemMembers(system, callback) {
+        activity_System.iterateMembers(system, callback);
+    }
+    newTempMember(obj, callback) {
+        let tm = new TempMembership(obj);
+        callback(tm);
+    }
+    getNotifications(callback) {
+        let self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getNotifications(userProfile, function (notifications) {
+                    callback(notifications);
+                });
+            }
+            else {
+                callback([]);
+            }
+        });
+    }
+    removeNotification(notificationId) {
+        let self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getNotification(userProfile, notificationId, (stmt) => {
+                    if (stmt) {
+                        self.pebl.storage.removeNotification(userProfile, notificationId);
+                        let xType;
+                        let xLocation;
+                        if (SharedAnnotation.is(stmt)) {
+                            xType = "sharedAnnotation";
+                            xLocation = stmt.book;
+                        }
+                        else if (Message.is(stmt)) {
+                            xType = "message";
+                            xLocation = stmt.thread;
+                        }
+                        else if (Reference.is(stmt)) {
+                            xType = "reference";
+                            xLocation = stmt.book;
+                        }
+                        self.pebl.storage.saveOutgoingXApi(userProfile, {
+                            id: self.pebl.utils.getUuid(),
+                            identity: userProfile.identity,
+                            requestType: "deleteNotification",
+                            records: [{
+                                    id: stmt.id,
+                                    type: xType,
+                                    location: xLocation,
+                                    stored: stmt.stored
+                                }]
+                        });
+                    }
+                });
+            }
+        });
+    }
+    getMessages(thread, callback) {
+        let self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getMessages(userProfile, thread, function (messages) {
+                    callback(messages);
+                });
+            }
+            else {
+                callback([]);
+            }
+        });
+    }
+    getModuleEvents(idref, callback, type) {
+        let self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getModuleEvent(idref, function (moduleEvents) {
+                    if (type) {
+                        callback(moduleEvents.filter(event => event.verb.display['en-US'] === type));
+                    }
+                    else {
+                        callback(moduleEvents);
+                    }
+                });
+            }
+            else {
+                callback([]);
+            }
+        });
+    }
+    removeModuleEvent(idref, id) {
+        let self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.removeModuleEvent(idref, id);
+            }
+        });
+    }
+    getEvents(callback) {
+        let self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentBook(function (book) {
+                    if (book) {
+                        self.pebl.storage.getEvents(userProfile, book, callback);
+                    }
+                    else {
+                        callback([]);
+                    }
+                });
+            }
+            else {
+                callback([]);
+            }
+        });
+    }
+    getThreadTimestamps(identity, callback) {
+        this.pebl.storage.getCompoundSyncTimestamps(identity, SYNC_THREAD, (threadSyncTimestamps) => {
+            this.pebl.storage.getCompoundSyncTimestamps(identity, SYNC_PRIVATE_THREAD, (privateThreadSyncTimestamps) => {
+                this.pebl.storage.getCompoundSyncTimestamps(identity, SYNC_GROUP_THREAD, (groupThreadSyncTimestamps) => {
+                    callback(threadSyncTimestamps, privateThreadSyncTimestamps, groupThreadSyncTimestamps);
+                });
+            });
+        });
+    }
+    saveThreadTimestamps(identity, threads, privateThreads, groupThreads, callback) {
+        this.pebl.storage.saveCompoundSyncTimestamps(identity, SYNC_THREAD, threads, () => {
+            this.pebl.storage.saveCompoundSyncTimestamps(identity, SYNC_PRIVATE_THREAD, privateThreads, () => {
+                this.pebl.storage.saveCompoundSyncTimestamps(identity, SYNC_GROUP_THREAD, groupThreads, () => {
+                    callback();
+                });
+            });
+        });
+    }
+}
+function pakoInflate(data) {
+    return pako.inflate(data, stringObj);
+}
+function pakoDeflate(data) {
+    return pako.deflate(data, stringObj);
+}
+function getBrowserMetadata() {
+    return utils_platform;
+}
+
+// CONCATENATED MODULE: ./src/xapiGenerator.ts
+const xapiGenerator_PREFIX_PEBL_EXTENSION = "https://www.peblproject.com/definitions.html#";
+const PEBL_ACTIVITY_PREFIX = "http://www.peblproject.com/activities/";
+
+class xapiGenerator_XApiGenerator {
+    addExtensions(extensions) {
+        let result = {};
+        for (let key of Object.keys(extensions)) {
+            result[xapiGenerator_PREFIX_PEBL_EXTENSION + key] = extensions[key];
+        }
+        return result;
+    }
+    addResult(stmt, score, minScore, maxScore, complete, success, answered, duration, extensions) {
+        if (!stmt.result)
+            stmt.result = {};
+        stmt.result.success = success;
+        stmt.result.completion = complete;
+        stmt.result.response = answered;
+        if (!stmt.result.score)
+            stmt.result.score = {};
+        stmt.result.score.raw = score;
+        stmt.result.score.duration = duration;
+        stmt.result.score.scaled = (score - minScore) / (maxScore - minScore);
+        stmt.result.score.min = minScore;
+        stmt.result.score.max = maxScore;
+        if (extensions) {
+            if (!stmt.result.extensions)
+                stmt.result.extensions = {};
+            for (let key of Object.keys(extensions)) {
+                stmt.result.extensions[key] = extensions[key];
+            }
+        }
+        return stmt;
+    }
+    addResultResponse(stmt, response, complete, duration, extensions) {
+        if (!stmt.result)
+            stmt.result = {};
+        stmt.result.response = response;
+        stmt.result.completion = complete;
+        if (duration)
+            stmt.result.duration = duration;
+        if (extensions) {
+            if (!stmt.result.extensions)
+                stmt.result.extensions = {};
+            for (let key of Object.keys(extensions)) {
+                stmt.result.extensions[key] = extensions[key];
+            }
+        }
+        return stmt;
+    }
+    addObject(stmt, activityId, name, description, activityType, extensions) {
+        if (!stmt.object)
+            stmt.object = {};
+        stmt.object.id = activityId;
+        stmt.object.objectType = "Activity";
+        if (!stmt.object.definition)
+            stmt.object.definition = {};
+        if (name) {
+            if (!stmt.object.definition.name)
+                stmt.object.definition.name = {};
+            stmt.object.definition.name["en-US"] = name;
+        }
+        if (description) {
+            if (!stmt.object.definition.description)
+                stmt.object.definition.description = {};
+            stmt.object.definition.description["en-US"] = description;
+        }
+        if (activityType)
+            stmt.object.definition.type = activityType;
+        if (extensions)
+            stmt.object.definition.extensions = extensions;
+        return stmt;
+    }
+    memberToIndex(x, arr) {
+        for (let i = 0; i < arr.length; i++)
+            if (x == arr[i])
+                return i;
+        return -1;
+    }
+    arrayToIndexes(arr, indexArr) {
+        let clone = arr.slice(0);
+        for (let i = 0; i < arr.length; i++) {
+            clone[i] = this.memberToIndex(arr[i], indexArr).toString();
+        }
+        return clone;
+    }
+    addObjectInteraction(stmt, activityId, name, prompt, interaction, answers, correctAnswers, extensions) {
+        if (!stmt.object)
+            stmt.object = {};
+        stmt.object.id = activityId;
+        stmt.object.objectType = "Activity";
+        if (!stmt.object.definition)
+            stmt.object.definition = {};
+        if (!stmt.object.definition.name)
+            stmt.object.definition.name = {};
+        stmt.object.definition.type = "http://adlnet.gov/expapi/activities/cmi.interaction";
+        stmt.object.definition.interactionType = interaction;
+        let answerArr = [];
+        for (let corrrectAnswer of correctAnswers)
+            answerArr.push(this.arrayToIndexes(corrrectAnswer, answers).join("[,]"));
+        stmt.object.definition.correctResponsesPattern = answerArr;
+        if (interaction == "choice") {
+            stmt.object.definition.choices = [];
+            let i = 0;
+            for (let answer of answers) {
+                stmt.object.definition.choices.push({
+                    id: i.toString(),
+                    description: {
+                        "en-US": answer
+                    }
+                });
+                i++;
+            }
+        }
+        stmt.object.definition.name["en-US"] = name;
+        if (!stmt.object.definition.description)
+            stmt.object.definition.description = {};
+        stmt.object.definition.description["en-US"] = prompt;
+        if (extensions)
+            stmt.object.definition.extensions = extensions;
+        return stmt;
+    }
+    addVerb(stmt, url, name) {
+        stmt.verb = {
+            id: url,
+            display: {
+                "en-US": name
+            }
+        };
+        return stmt;
+    }
+    addActorAccount(stmt, userProfile) {
+        if (!stmt.actor)
+            stmt.actor = {};
+        stmt.actor.objectType = "Agent";
+        stmt.actor.name = userProfile.name || userProfile.identity;
+        stmt.actor.account = {
+            homePage: userProfile.homePage,
+            name: userProfile.identity
+        };
+        return stmt;
+    }
+    addActorMBox(stmt, userProfile) {
+        if (!stmt.actor)
+            stmt.actor = {};
+        stmt.actor.objectType = "Agent";
+        stmt.actor.name = userProfile.name;
+        stmt.actor.mbox = userProfile.identity;
+        return stmt;
+    }
+    addTimestamp(stmt) {
+        if (!stmt.timestamp)
+            stmt.timestamp = new Date().toISOString();
+        return stmt;
+    }
+    addStatementRef(stmt, id) {
+        if (!stmt.object)
+            stmt.object = {};
+        stmt.object.objectType = "StatementRef";
+        stmt.object.id = id;
+        return stmt;
+    }
+    addId(stmt) {
+        /*!
+          Excerpt from: Math.uuid.js (v1.4)
+          http://www.broofa.com
+          mailto:robert@broofa.com
+          Copyright (c) 2010 Robert Kieffer
+          Dual licensed under the MIT and GPL licenses.
+        */
+        stmt.id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+        return stmt;
+    }
+    addContext(stmt, options) {
+        stmt.context = options;
+        return stmt;
+    }
+    addParentActivity(stmt, parentId) {
+        if (!stmt.context)
+            stmt.context = {};
+        if (!stmt.context.contextActivities)
+            stmt.context.contextActivities = {};
+        if (!stmt.context.contextActivities.parent)
+            stmt.context.contextActivities.parent = [];
+        stmt.context.contextActivities.parent.push({
+            objectType: "Activity",
+            id: parentId
+        });
+        return stmt;
+    }
+    addPeblContextExtensions(obj, userProfile, bookTitle, bookId) {
+        let platform = getBrowserMetadata();
+        obj.browserName = platform.name;
+        obj.browserVersion = platform.version;
+        obj.osName = platform.os.family;
+        obj.osVersion = platform.os.version;
+        obj.contextOrigin = window.location.origin;
+        obj.contextUrl = window.location.href;
+        if (userProfile.currentTeam)
+            obj.currentTeam = userProfile.currentTeam;
+        if (userProfile.currentClass)
+            obj.currentClass = userProfile.currentClass;
+        if (bookTitle)
+            obj.bookTitle = bookTitle;
+        if (bookId)
+            obj.bookId = bookId;
+        return obj;
+    }
+    addPeblActivity(activityURI, activityType, activityId) {
+        if (activityURI)
+            return activityURI;
+        if (activityType) {
+            var peblActivity = PEBL_ACTIVITY_PREFIX + activityType;
+            if (activityId)
+                peblActivity += ('?id=' + activityId);
+            return peblActivity;
+        }
+        return 'pebl://deprecated';
+    }
+    addAttachments(stmt, attachments) {
+        if (!stmt.attachments)
+            stmt.attachments = attachments;
+        return stmt;
+    }
+}
+
+// CONCATENATED MODULE: ./src/eventHandlers.ts
+const PEBL_PREFIX = "";
+// const PEBL_THREAD_PREFIX = "peblThread://";
+const PEBL_THREAD_USER_PREFIX = "peblThread://user-";
+// const PEBL_THREAD_ARTIFACT_PREFIX = "peblThread://artifact-";
+const PEBL_THREAD_GROUP_PREFIX = "peblThread://group-";
+
+
+
+
+class eventHandlers_PEBLEventHandlers {
+    constructor(pebl) {
+        this.pebl = pebl;
+        this.xapiGen = new xapiGenerator_XApiGenerator();
+    }
+    // -------------------------------
+    newBook(event) {
+        let payload = event.detail;
+        let book = payload.book;
+        let bookTitle = payload.bookTitle;
+        let bookId = payload.bookId;
+        let self = this;
+        // if (book.indexOf("/") != -1)
+        //     book = book.substring(book.lastIndexOf("/") + 1);
+        this.pebl.storage.getCurrentBook(function (currentBook) {
+            if (currentBook != book) {
+                if (currentBook)
+                    self.pebl.emitEvent(self.pebl.events.eventTerminated, {
+                        activityURI: currentBook,
+                        activityType: 'book'
+                    });
+                self.pebl.storage.removeCurrentActivity();
+                // self.pebl.emitEvent(self.pebl.events.eventInteracted, {
+                //     activity: book
+                // });
+                self.pebl.unsubscribeAllEvents();
+                self.pebl.unsubscribeAllThreads();
+                self.pebl.storage.saveCurrentBook(book);
+                self.pebl.storage.saveCurrentBookTitle(bookTitle);
+                self.pebl.storage.saveCurrentBookId(bookId);
+            }
+            else {
+                self.pebl.emitEvent(self.pebl.events.eventJumpPage, {});
+            }
+            self.pebl.emitEvent(self.pebl.events.eventLaunched, {
+                activityType: 'book'
+            });
+        });
+    }
+    newBookNoReset(event) {
+        let payload = event.detail;
+        let book = payload.book;
+        let bookTitle = payload.bookTitle;
+        let bookId = payload.bookId;
+        let self = this;
+        // if (book.indexOf("/") != -1)
+        //     book = book.substring(book.lastIndexOf("/") + 1);
+        this.pebl.storage.getCurrentBook(function (currentBook) {
+            if (currentBook != book) {
+                if (currentBook)
+                    self.pebl.emitEvent(self.pebl.events.eventTerminated, currentBook);
+                self.pebl.storage.removeCurrentActivity();
+                self.pebl.emitEvent(self.pebl.events.eventInteracted, {
+                    activity: book,
+                    target: book
+                });
+                self.pebl.storage.saveCurrentBook(book);
+                self.pebl.storage.saveCurrentBookTitle(bookTitle);
+                self.pebl.storage.saveCurrentBookId(bookId);
+            }
+            else {
+                self.pebl.emitEvent(self.pebl.events.eventJumpPage, {});
+            }
+        });
+    }
+    newActivity(event) {
+        let payload = event.detail;
+        let self = this;
+        this.pebl.storage.getCurrentActivity(function (currentActivity) {
+            if (payload.activity != currentActivity) {
+                if (currentActivity)
+                    self.pebl.emitEvent(self.pebl.events.eventTerminated, currentActivity);
+                self.pebl.emitEvent(self.pebl.events.eventInitialized, {
+                    name: payload.name,
+                    description: payload.description
+                });
+            }
+            self.pebl.storage.saveCurrentActivity(payload.activity);
+        });
+    }
+    newReference(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            docType: payload.docType,
+            location: payload.location,
+            card: payload.card,
+            url: payload.url,
+            book: payload.book,
+            externalURL: payload.externalURL,
+            target: payload.target
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                var pulled = userProfile.identity == payload.target;
+                                if (pulled)
+                                    self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#pulled", "pulled");
+                                else
+                                    self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#pushed", "pushed");
+                                if (activity || book)
+                                    self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
+                                let s = new Reference(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveReferences",
+                                    references: [s]
+                                });
+                                self.pebl.storage.saveQueuedReference(userProfile, s);
+                                if (pulled)
+                                    self.pebl.emitEvent(PEBL_THREAD_USER_PREFIX + payload.target, [s]);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    newMessage(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            access: payload.access,
+            type: payload.type,
+            replyThread: payload.replyThread,
+            groupId: payload.groupId,
+            isPrivate: payload.isPrivate,
+            book: payload.book,
+            idRef: payload.idRef,
+            cfi: payload.cfi,
+            peblAction: payload.peblAction,
+            thread: payload.thread
+        };
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                            self.pebl.storage.getCurrentBookId(function (bookId) {
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/responded", "responded");
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.prompt, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addResultResponse(xapi, payload.text, true, payload.duration, payload.additionalResultData ? self.xapiGen.addExtensions(payload.additionalResultData) : undefined);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                let message = new Message(xapi);
+                                let clone = JSON.parse(JSON.stringify(message));
+                                self.pebl.storage.saveMessages(userProfile, message);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: message.id,
+                                    requestType: "saveThreadedMessage",
+                                    message: clone
+                                });
+                                self.pebl.emitEvent(message.thread, [message]);
+                            });
+                        });
+                    });
+                });
+            }
+        });
+    }
+    reportedMessage(event) {
+        let payload = event.detail;
+        payload.message = new Message(payload.message);
+        this.pebl.user.getUser((userProfile) => {
+            if (userProfile) {
+                let clone = JSON.parse(JSON.stringify(payload.message));
+                this.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: payload.message.id,
+                    requestType: "reportThreadedMessage",
+                    message: clone
+                });
+            }
+        });
+    }
+    pinnedMessage(event) {
+        let payload = event.detail;
+        payload.message.pinned = true;
+        payload.message = new Message(payload.message);
+        let self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                let clone = JSON.parse(JSON.stringify(payload.message));
+                self.pebl.storage.saveMessages(userProfile, [payload.message]);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: payload.message.id,
+                    requestType: "pinThreadedMessage",
+                    message: clone
+                });
+            }
+        });
+    }
+    unpinnedMessage(event) {
+        let payload = event.detail;
+        payload.message.pinned = false;
+        payload.message = new Message(payload.message);
+        let self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                let clone = JSON.parse(JSON.stringify(payload.message));
+                self.pebl.storage.saveMessages(userProfile, [payload.message]);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: payload.message.id,
+                    requestType: "unpinThreadedMessage",
+                    message: clone
+                });
+            }
+        });
+    }
+    eventNoted(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            access: payload.access,
+            type: payload.type,
+            isPrivate: payload.isPrivate,
+            book: payload.book,
+            idRef: payload.idRef,
+            cfi: payload.cfi,
+            peblAction: payload.peblAction,
+            thread: payload.thread
+        };
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                            self.pebl.storage.getCurrentBookId(function (bookId) {
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/noted", "noted");
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.prompt, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addResultResponse(xapi, payload.text, true, payload.duration, payload.additionalResultData ? self.xapiGen.addExtensions(payload.additionalResultData) : undefined);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                let message = new Message(xapi);
+                                let clone = JSON.parse(JSON.stringify(message));
+                                self.pebl.storage.saveMessages(userProfile, message);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: message.id,
+                                    requestType: "saveThreadedMessage",
+                                    message: clone
+                                });
+                                self.pebl.emitEvent(message.thread, [message]);
+                            });
+                        });
+                    });
+                });
+            }
+        });
+    }
+    removedMessage(event) {
+        let payload = event.detail;
+        payload.message = new Message(payload.message);
+        let xapi = {};
+        let self = this;
+        let exts = {
+            groupId: payload.message.groupId,
+            isPrivate: payload.message.isPrivate,
+            thread: payload.message.thread,
+            messageId: payload.message.id
+        };
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                            self.pebl.storage.getCurrentBookId(function (bookId) {
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#removed", "removed");
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.message.prompt, payload.message.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                let clone = JSON.parse(JSON.stringify(payload.message));
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: payload.message.id,
+                                    requestType: "deleteThreadedMessage",
+                                    message: clone
+                                });
+                                self.pebl.storage.removeMessage(userProfile, payload.message.id);
+                            });
+                        });
+                    });
+                });
+            }
+        });
+    }
+    newLearnlet(event) {
+        // let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                // let exts = {
+                //     cfi: payload.cfi
+                // };
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        // self.xapiGen.addId(xapi);
+                        // self.xapiGen.addTimestamp(xapi);
+                        // self.xapiGen.addActorAccount(xapi, userProfile);
+                        // self.xapiGen.addObject(xapi, PEBL_THREAD_USER_PREFIX + payload.thread, payload.learnletId, payload.learnletDescription, exts);
+                        // self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#learnletCreated", "learnletCreated");
+                        // if (book || activity)
+                        //     self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
+                        let m = new Learnlet(xapi);
+                        self.pebl.storage.saveOutgoingActivity(userProfile, {
+                            identity: userProfile.identity,
+                            id: m.id,
+                            requestType: "saveActivities",
+                            activities: [m]
+                        });
+                        // self.pebl.storage.saveEvent(userProfile, m);
+                    });
+                });
+            }
+        });
+    }
+    saveProgram(event) {
+        let payload = event.detail;
+        let prog = event.detail;
+        let xapi = {};
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                let exts = {
+                    role: "owner",
+                    activityType: "program"
+                };
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        if (activity_Program.isNew(prog)) {
+                            self.xapiGen.addId(xapi);
+                            self.xapiGen.addTimestamp(xapi);
+                            self.xapiGen.addActorAccount(xapi, userProfile);
+                            self.xapiGen.addObject(xapi, PEBL_THREAD_USER_PREFIX + userProfile.identity, prog.id, prog.programShortDescription, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                            self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#joined", "joined");
+                            if (book || activity)
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
+                            let m = new Membership(xapi);
+                            prog.addMember(m);
+                            self.pebl.storage.saveGroupMembership(userProfile, m);
+                            self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                identity: userProfile.identity,
+                                id: m.id,
+                                requestType: "saveMemberships",
+                                memberships: [m]
+                            });
+                        }
+                        self.pebl.storage.saveOutgoingActivity(userProfile, {
+                            identity: userProfile.identity,
+                            id: prog.id,
+                            requestType: "saveActivities",
+                            activities: [prog]
+                        });
+                        self.pebl.storage.saveActivity(userProfile, prog);
+                        self.pebl.emitEvent(self.pebl.events.incomingProgram, [prog]);
+                    });
+                });
+            }
+        });
+    }
+    saveInstitution(event) {
+        let payload = event.detail;
+        let inst = new activity_Institution(event.detail);
+        let xapi = {};
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                let exts = {
+                    role: "owner",
+                    activityType: "institution"
+                };
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        if (activity_Institution.isNew(inst)) {
+                            self.xapiGen.addId(xapi);
+                            self.xapiGen.addTimestamp(xapi);
+                            self.xapiGen.addActorAccount(xapi, userProfile);
+                            self.xapiGen.addObject(xapi, PEBL_THREAD_USER_PREFIX + userProfile.identity, inst.id, inst.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                            self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#joined", "joined");
+                            if (book || activity)
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
+                            let m = new Membership(xapi);
+                            inst.addMember(m);
+                            self.pebl.storage.saveGroupMembership(userProfile, m);
+                            self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                identity: userProfile.identity,
+                                id: m.id,
+                                requestType: "saveMemberships",
+                                memberships: [m]
+                            });
+                        }
+                        self.pebl.storage.saveOutgoingActivity(userProfile, {
+                            identity: userProfile.identity,
+                            id: inst.id,
+                            requestType: "saveActivities",
+                            activities: [inst]
+                        });
+                        self.pebl.storage.saveActivity(userProfile, inst);
+                        self.pebl.emitEvent(self.pebl.events.incomingInstitition, [inst]);
+                    });
+                });
+            }
+        });
+    }
+    saveSystem(event) {
+        let payload = event.detail;
+        let system = new activity_System(event.detail);
+        let xapi = {};
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                let exts = {
+                    role: "owner",
+                    activityType: "system"
+                };
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        if (activity_System.isNew(system)) {
+                            self.xapiGen.addId(xapi);
+                            self.xapiGen.addTimestamp(xapi);
+                            self.xapiGen.addActorAccount(xapi, userProfile);
+                            self.xapiGen.addObject(xapi, PEBL_THREAD_USER_PREFIX + userProfile.identity, system.id, system.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                            self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#joined", "joined");
+                            if (book || activity)
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
+                            let m = new Membership(xapi);
+                            system.addMember(m);
+                            self.pebl.storage.saveGroupMembership(userProfile, m);
+                            self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                identity: userProfile.identity,
+                                id: m.id,
+                                requestType: "saveMemberships",
+                                memberships: [m]
+                            });
+                        }
+                        self.pebl.storage.saveOutgoingActivity(userProfile, {
+                            identity: userProfile.identity,
+                            id: system.id,
+                            requestType: "saveActivities",
+                            activities: [system]
+                        });
+                        self.pebl.storage.saveActivity(userProfile, system);
+                        self.pebl.emitEvent(self.pebl.events.incomingSystem, [system]);
+                    });
+                });
+            }
+        });
+    }
+    // newArtifact(event: CustomEvent) {
+    //     let payload = event.detail;
+    //     let xapi = {};
+    //     let self = this;
+    //     this.pebl.user.getUser(function(userProfile) {
+    //         if (userProfile) {
+    //             let exts = {
+    //                 role: payload.role
+    //             };
+    //             self.pebl.storage.getCurrentActivity(function(activity) {
+    //                 self.pebl.storage.getCurrentBook(function(book) {
+    //                     self.xapiGen.addId(xapi);
+    //                     self.xapiGen.addTimestamp(xapi);
+    //                     self.xapiGen.addActorAccount(xapi, userProfile);
+    //                     self.xapiGen.addObject(xapi, PEBL_THREAD_ARTIFACT_PREFIX + payload.thread, payload.artifactId, payload.artifactDescription, self.xapiGen.addExtensions(exts));
+    //                     self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#artifactCreated", "artifactCreated");
+    //                     if (book || activity)
+    //                         self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
+    //                     let m = new Artifact(xapi);
+    //                     self.pebl.storage.saveOutgoingXApi(userProfile, m);
+    //                     self.pebl.storage.saveEvent(userProfile, m);
+    //                 });
+    //             });
+    //         }
+    //     });
+    // }
+    newMembership(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                let exts = {
+                    role: payload.role,
+                    activityType: payload.activityType,
+                    organization: payload.organization,
+                    organizationName: payload.organizationName
+                };
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_THREAD_USER_PREFIX + payload.thread, payload.groupId, payload.groupDescription, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#joined", "joined");
+                        if (book || activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
+                        let m = new Membership(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, {
+                            identity: userProfile.identity,
+                            id: m.id,
+                            requestType: "saveMemberships",
+                            memberships: [m]
+                        });
+                        self.pebl.emitEvent(self.pebl.events.incomingMembership, [m]);
+                        if (payload.thread == userProfile.identity)
+                            self.pebl.storage.saveGroupMembership(userProfile, m);
+                    });
+                });
+            }
+        });
+    }
+    modifiedMembership(event) {
+        let payload = event.detail;
+        let oldMembership = payload.oldMembership;
+        let newMembership = payload.newMembership;
+        let xapiVoided = {};
+        let xapiNew = {
+            id: ''
+        };
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                let newUserProfile = new UserProfile({
+                    identity: oldMembership.actor.account.name,
+                    name: oldMembership.actor.name,
+                    homePage: oldMembership.actor.account.homePage,
+                    preferredName: oldMembership.actor.name
+                });
+                // First void the old membership
+                self.xapiGen.addId(xapiVoided);
+                self.xapiGen.addVerb(xapiVoided, "http://adlnet.gov/expapi/verbs/voided", "voided");
+                self.xapiGen.addTimestamp(xapiVoided);
+                self.xapiGen.addStatementRef(xapiVoided, oldMembership.id);
+                self.xapiGen.addActorAccount(xapiVoided, newUserProfile);
+                self.xapiGen.addParentActivity(xapiVoided, PEBL_PREFIX + oldMembership.id);
+                let m = new Voided(xapiVoided);
+                // If modifying my own membership
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: m.id,
+                    xId: oldMembership.id,
+                    requestType: "deleteMembership"
+                });
+                if (newUserProfile.identity === userProfile.identity)
+                    self.pebl.storage.removeGroupMembership(newUserProfile, oldMembership.id);
+                self.pebl.emitEvent(self.pebl.events.incomingMembership, [m]);
+                // Then send out a new one
+                if (newMembership) {
+                    let exts = {
+                        role: newMembership.role,
+                        activityType: newMembership.activityType,
+                        organization: newMembership.organization,
+                        organizationName: newMembership.organizationName
+                    };
+                    self.pebl.storage.getCurrentActivity(function (activity) {
+                        self.pebl.storage.getCurrentBook(function (book) {
+                            xapiNew.id = newMembership.id;
+                            self.xapiGen.addTimestamp(xapiNew);
+                            self.xapiGen.addActorAccount(xapiNew, newUserProfile);
+                            self.xapiGen.addObject(xapiNew, PEBL_THREAD_USER_PREFIX + newUserProfile.identity, newMembership.membershipId, newMembership.groupDescription, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                            self.xapiGen.addVerb(xapiNew, "http://www.peblproject.com/definitions.html#joined", "joined");
+                            if (book || activity)
+                                self.xapiGen.addParentActivity(xapiNew, PEBL_PREFIX + (book || activity));
+                            let n = new Membership(xapiNew);
+                            self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                identity: userProfile.identity,
+                                id: n.id,
+                                requestType: "saveMemberships",
+                                memberships: [n]
+                            });
+                            self.pebl.emitEvent(self.pebl.events.incomingMembership, [n]);
+                            if (newUserProfile.identity === userProfile.identity)
+                                self.pebl.storage.saveGroupMembership(userProfile, n);
+                        });
+                    });
+                }
+            }
+        });
+    }
+    removedMembership(event) {
+        let xId = event.detail;
+        let xapi = {};
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/voided", "voided");
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addStatementRef(xapi, xId);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + xId);
+                        let m = new Voided(xapi);
+                        self.pebl.storage.removeGroupMembership(userProfile, xId);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, {
+                            identity: userProfile.identity,
+                            id: m.id,
+                            xId: xId,
+                            requestType: "deleteMembership"
+                        });
+                        self.pebl.emitEvent(self.pebl.events.incomingMembership, [m]);
+                    });
+                });
+            }
+        });
+    }
+    newAnnotation(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                let exts = {
+                    type: payload.type,
+                    cfi: payload.cfi,
+                    idRef: payload.idRef,
+                    style: payload.style
+                };
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                            self.pebl.storage.getCurrentBookId(function (bookId) {
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/commented", "commented");
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.title, payload.text, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                let annotation = new Annotation(xapi);
+                                self.pebl.storage.saveAnnotations(userProfile, annotation);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: annotation.id,
+                                    requestType: "saveAnnotations",
+                                    stmts: [annotation]
+                                });
+                                self.pebl.emitEvent(self.pebl.events.incomingAnnotations, [annotation]);
+                            });
+                        });
+                    });
+                });
+            }
+        });
+    }
+    eventBookmarked(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                let exts = {
+                    type: payload.type,
+                    cfi: payload.cfi,
+                    idRef: payload.idRef,
+                    style: payload.style
+                };
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                            self.pebl.storage.getCurrentBookId(function (bookId) {
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#bookmarked", "bookmarked");
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.title, payload.text, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                let annotation = new Annotation(xapi);
+                                self.pebl.storage.saveAnnotations(userProfile, annotation);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: annotation.id,
+                                    requestType: "saveAnnotations",
+                                    stmts: [annotation]
+                                });
+                                self.pebl.emitEvent(self.pebl.events.incomingAnnotations, [annotation]);
+                            });
+                        });
+                    });
+                });
+            }
+        });
+    }
+    eventUnbookmarked(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            idref: payload.idref,
+            cfi: payload.cfi
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#unbookmarked", "unbookmarked");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Action(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveActions",
+                                    actions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventAnnotated(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                let exts = {
+                    type: payload.type,
+                    cfi: payload.cfi,
+                    idRef: payload.idRef,
+                    style: payload.style
+                };
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                            self.pebl.storage.getCurrentBookId(function (bookId) {
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#annotated", "annotated");
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.title, payload.text, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                let annotation = new Annotation(xapi);
+                                self.pebl.storage.saveAnnotations(userProfile, annotation);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: annotation.id,
+                                    requestType: "saveAnnotations",
+                                    stmts: [annotation]
+                                });
+                                self.pebl.emitEvent(self.pebl.events.incomingAnnotations, [annotation]);
+                            });
+                        });
+                    });
+                });
+            }
+        });
+    }
+    newSharedAnnotation(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                let exts = {
+                    type: payload.type,
+                    cfi: payload.cfi,
+                    idRef: payload.idRef,
+                    style: payload.style,
+                    groupId: payload.groupId
+                };
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                            self.pebl.storage.getCurrentBookId(function (bookId) {
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/shared", "shared");
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.title, payload.text, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                let annotation = new SharedAnnotation(xapi);
+                                self.pebl.storage.saveSharedAnnotations(userProfile, annotation);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: annotation.id,
+                                    requestType: "saveSharedAnnotations",
+                                    stmts: [annotation]
+                                });
+                                self.pebl.emitEvent(self.pebl.events.incomingSharedAnnotations, [annotation]);
+                            });
+                        });
+                    });
+                });
+            }
+        });
+    }
+    pinnedAnnotation(event) {
+        let payload = event.detail;
+        payload.pinned = true;
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                let clone = JSON.parse(JSON.stringify(payload));
+                self.pebl.storage.saveSharedAnnotations(userProfile, [payload]);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: clone.id,
+                    requestType: "pinSharedAnnotation",
+                    annotation: clone
+                });
+            }
+        });
+    }
+    unpinnedAnnotation(event) {
+        let payload = event.detail;
+        payload.pinned = false;
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                let clone = JSON.parse(JSON.stringify(payload));
+                self.pebl.storage.saveSharedAnnotations(userProfile, [payload]);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: clone.id,
+                    requestType: "unpinSharedAnnotation",
+                    annotation: clone
+                });
+            }
+        });
+    }
+    eventUnsharedAnnotation(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                let exts = {
+                    cfi: payload.cfi,
+                    idRef: payload.idRef
+                };
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                            self.pebl.storage.getCurrentBookId(function (bookId) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#unshared", "unshared");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Action(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveActions",
+                                    actions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            });
+                        });
+                    });
+                });
+            }
+        });
+    }
+    eventUnannotated(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                let exts = {
+                    cfi: payload.cfi,
+                    idRef: payload.idRef
+                };
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                            self.pebl.storage.getCurrentBookId(function (bookId) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#unannotated", "unannotated");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Action(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveActions",
+                                    actions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            });
+                        });
+                    });
+                });
+            }
+        });
+    }
+    removedAnnotation(event) {
+        let xId = event.detail;
+        let xapi = {};
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                            self.pebl.storage.getCurrentBookId(function (bookId) {
+                                if (activity)
+                                    self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                else
+                                    self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + book);
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/voided", "voided");
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addStatementRef(xapi, xId);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                let annotation = new Voided(xapi);
+                                self.pebl.storage.removeAnnotation(userProfile, xId);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: annotation.id,
+                                    xId: xId,
+                                    requestType: "deleteAnnotation"
+                                });
+                                self.pebl.emitEvent(self.pebl.events.incomingAnnotations, [annotation]);
+                            });
+                        });
+                    });
+                });
+            }
+        });
+    }
+    removedSharedAnnotation(event) {
+        let sharedAnnotation = event.detail;
+        let xapi = {};
+        let self = this;
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/voided", "voided");
+                self.xapiGen.addTimestamp(xapi);
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                            self.pebl.storage.getCurrentBookId(function (bookId) {
+                                if (activity)
+                                    self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                else
+                                    self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + book);
+                                self.xapiGen.addStatementRef(xapi, sharedAnnotation.id);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                let voided = new Voided(xapi);
+                                self.pebl.storage.removeSharedAnnotation(userProfile, sharedAnnotation.id);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: sharedAnnotation.id,
+                                    annotation: sharedAnnotation,
+                                    requestType: "deleteSharedAnnotation"
+                                });
+                                self.pebl.emitEvent(self.pebl.events.incomingSharedAnnotations, [voided]);
+                            });
+                        });
+                    });
+                });
+            }
+        });
+    }
+    // -------------------------------
+    eventLoggedIn(event) {
+        let userP = new UserProfile(event.detail);
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            self.pebl.storage.saveUserProfile(userP, function () {
+                self.pebl.network.activate(() => {
+                    if (!userProfile || (userProfile.identity !== userP.identity || userProfile.currentTeam !== userP.currentTeam || userProfile.currentClass !== userP.currentClass)) {
+                        self.pebl.emitEvent(self.pebl.events.eventLogin, {
+                            userProfile: userP,
+                            activityType: 'login'
+                        });
+                    }
+                });
+            });
+        });
+    }
+    eventLoggedOut(event) {
+        let self = this;
+        this.pebl.user.getUser(function (currentUser) {
+            self.pebl.network.disable(function () {
+                self.pebl.storage.removeCurrentUser(() => {
+                    self.pebl.emitEvent(self.pebl.events.eventLogout, {
+                        userProfile: currentUser,
+                        activityType: 'login'
+                    });
+                });
+            });
+        });
+    }
+    // -------------------------------
+    eventSessionStart(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {};
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                            self.pebl.storage.getCurrentBookId(function (bookId) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#entered", "entered");
+                                if (book || activity)
+                                    self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
+                                let s = new Session(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveSessions",
+                                    sessions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            });
+                        });
+                    });
+                });
+            }
+        });
+    }
+    eventSessionStop(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {};
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                            self.pebl.storage.getCurrentBookId(function (bookId) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#exited", "exited");
+                                if (book || activity)
+                                    self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
+                                let s = new Session(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveSessions",
+                                    sessions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            });
+                        });
+                    });
+                });
+            }
+        });
+    }
+    eventLaunched(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {};
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                            self.pebl.storage.getCurrentBookId(function (bookId) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#launched", "launched");
+                                if (book || activity)
+                                    self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (book || activity));
+                                let s = new Session(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveSessions",
+                                    sessions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            });
+                        });
+                    });
+                });
+            }
+        });
+    }
+    // -------------------------------
+    eventTerminated(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {};
+        this.pebl.user.getUser(function (userProfile) {
+            self.pebl.storage.getCurrentActivity(function (activity) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        if (userProfile) {
+                            self.xapiGen.addId(xapi);
+                            self.xapiGen.addTimestamp(xapi);
+                            self.xapiGen.addActorAccount(xapi, userProfile);
+                            self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                            self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/terminated", "terminated");
+                            if (activity)
+                                self.xapiGen.addParentActivity(xapi, activity);
+                            let s = new Session(xapi);
+                            self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                identity: userProfile.identity,
+                                id: s.id,
+                                requestType: "saveSessions",
+                                sessions: [s]
+                            });
+                            self.pebl.storage.saveEvent(userProfile, s);
+                        }
+                    });
+                });
+            });
+        });
+    }
+    eventInitialized(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {};
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                self.pebl.storage.getCurrentBookId(function (bookId) {
+                    self.pebl.user.getUser(function (userProfile) {
+                        if (userProfile && book) {
+                            self.xapiGen.addId(xapi);
+                            self.xapiGen.addTimestamp(xapi);
+                            self.xapiGen.addActorAccount(xapi, userProfile);
+                            self.xapiGen.addObject(xapi, book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                            self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/initialized", "initialized");
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + payload.activity);
+                            let s = new Session(xapi);
+                            self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                identity: userProfile.identity,
+                                id: s.id,
+                                requestType: "saveSessions",
+                                sessions: [s]
+                            });
+                            self.pebl.storage.saveEvent(userProfile, s);
+                        }
+                    });
+                });
+            });
+        });
+    }
+    eventInteracted(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            target: payload.target,
+            type: payload.type
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                self.pebl.storage.getCurrentBookId(function (bookId) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                        self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/interacted", "interacted");
+                        self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + payload.activity);
+                        let s = new Action(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, {
+                            identity: userProfile.identity,
+                            id: s.id,
+                            requestType: "saveActions",
+                            actions: [s]
+                        });
+                        self.pebl.storage.saveEvent(userProfile, s);
+                    }
+                });
+            });
+        });
+    }
+    eventJumpPage(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {};
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                self.pebl.storage.getCurrentBookId(function (bookId) {
+                    self.pebl.storage.getCurrentActivity(function (activity) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#paged-jump", "paged-jump");
+                                if (activity)
+                                    self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Navigation(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveNavigations",
+                                    navigations: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    // -------------------------------
+    eventAttempted(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {};
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObjectInteraction(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.prompt, "choice", payload.answers, payload.correctAnswers, self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addResult(xapi, payload.score, payload.minScore, payload.maxScore, payload.complete, payload.success, payload.answered);
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#attempted", "attempted");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
+                                let s = new Question(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveQuestions",
+                                    questions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventPassed(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {};
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addResult(xapi, payload.score, payload.minScore, payload.maxScore, payload.complete, payload.success);
+                                self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/passed", "passed");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
+                                let s = new Quiz(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveQuizes",
+                                    quizes: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventFailed(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {};
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addResult(xapi, payload.score, payload.minScore, payload.maxScore, payload.complete, payload.success);
+                                self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/failed", "failed");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
+                                let s = new Quiz(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveQuizes",
+                                    quizes: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    // -------------------------------
+    eventPreferred(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            target: payload.target,
+            type: payload.type
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/preferred", "preferred");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
+                                let s = new Action(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveActions",
+                                    actions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventUploadedMedia(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            target: payload.mediaId
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#uploaded", "uploaded");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + (activity || book));
+                                self.xapiGen.addAttachments(xapi, payload.attachments);
+                                let s = new Action(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveActions",
+                                    actions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventContentMorphed(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            target: payload.target,
+            type: payload.type
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#morphed", "morphed");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Action(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveActions",
+                                    actions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventExperienced(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            idref: payload.idref,
+            cfi: payload.cfi,
+            type: payload.type
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#experienced", "experienced");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Action(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveActions",
+                                    actions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventDisliked(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            target: payload.target,
+            type: payload.type
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#disliked", "disliked");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Action(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveActions",
+                                    actions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventLiked(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            target: payload.target,
+            type: payload.type
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#liked", "liked");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Action(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveActions",
+                                    actions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventAccessed(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            idref: payload.idref,
+            cfi: payload.cfi,
+            type: payload.type
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#accessed", "accessed");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Action(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveActions",
+                                    actions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventSubmitted(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            idref: payload.idref,
+            cfi: payload.cfi,
+            target: payload.target,
+            type: payload.type
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#submitted", "submitted");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Action(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveActions",
+                                    actions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventHid(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            target: payload.target,
+            type: payload.type
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#hid", "hid");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Action(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveActions",
+                                    actions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventShowed(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            target: payload.target,
+            type: payload.type
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#showed", "showed");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Action(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveActions",
+                                    actions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventDisplayed(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            target: payload.target,
+            type: payload.type
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#displayed", "displayed");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Action(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveActions",
+                                    actions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventUndisplayed(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            target: payload.target,
+            type: payload.type
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#undisplayed", "undisplayed");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Action(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveActions",
+                                    actions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventSearched(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            target: payload.target,
+            type: payload.type
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#searched", "searched");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Action(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveActions",
+                                    actions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventSelected(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            target: payload.target,
+            type: payload.type
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#selected", "selected");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Action(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveActions",
+                                    actions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventDiscarded(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            target: payload.target,
+            type: payload.type
+        };
+        this.pebl.storage.getCurrentActivity(function (activity) {
+            self.pebl.storage.getCurrentBook(function (book) {
+                self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                    self.pebl.storage.getCurrentBookId(function (bookId) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#discarded", "discarded");
+                                self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Action(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveActions",
+                                    actions: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventNextPage(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            firstCfi: payload.firstCfi,
+            lastCfi: payload.lastCfi
+        };
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                self.pebl.storage.getCurrentBookId(function (bookId) {
+                    self.pebl.storage.getCurrentActivity(function (activity) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#paged-next", "paged-next");
+                                if (activity)
+                                    self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Navigation(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveNavigations",
+                                    navigations: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventPrevPage(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            firstCfi: payload.firstCfi,
+            lastCfi: payload.lastCfi
+        };
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                self.pebl.storage.getCurrentBookId(function (bookId) {
+                    self.pebl.storage.getCurrentActivity(function (activity) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#paged-prev", "paged-prev");
+                                if (activity)
+                                    self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Navigation(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveNavigations",
+                                    navigations: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventCompleted(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {};
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                self.pebl.storage.getCurrentBookId(function (bookId) {
+                    self.pebl.storage.getCurrentActivity(function (activity) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/completed", "completed");
+                                if (activity)
+                                    self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let s = new Navigation(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: s.id,
+                                    requestType: "saveNavigations",
+                                    navigations: [s]
+                                });
+                                self.pebl.storage.saveEvent(userProfile, s);
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventCompatibilityTested(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            readerName: payload.readerName,
+            osName: payload.osName,
+            osVersion: payload.osVersion,
+            browserName: payload.browserName,
+            browserVersion: payload.browserVersion,
+            userAgent: payload.userAgent,
+            appVersion: payload.appVersion,
+            platform: payload.platform,
+            vendor: payload.vendor,
+            testResults: payload.testResults
+        };
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                self.pebl.storage.getCurrentBookId(function (bookId) {
+                    self.pebl.storage.getCurrentActivity(function (activity) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#compatibilityTested", "compatibilityTested");
+                                if (activity)
+                                    self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let test = new CompatibilityTest(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: test.id,
+                                    requestType: "saveCompatibilityTests",
+                                    tests: [test]
+                                });
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventChecklisted(event) {
+    }
+    eventHelped(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {};
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentActivity(function (activity) {
+                self.pebl.user.getUser(function (userProfile) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.name, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#helped", "helped");
+                        if (activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        let s = new Navigation(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, {
+                            identity: userProfile.identity,
+                            id: s.id,
+                            requestType: "saveNavigations",
+                            navigations: [s]
+                        });
+                        self.pebl.storage.saveEvent(userProfile, s);
+                    }
+                });
+            });
+        });
+    }
+    eventInvited(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            programId: payload.programId,
+            programRole: payload.programRole
+        };
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentActivity(function (activity) {
+                self.pebl.user.getUser(function (userProfile) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + 'Harness', payload.token, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#invited", "invited");
+                        if (activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        let invite = new Invitation(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, {
+                            identity: userProfile.identity,
+                            id: invite.id,
+                            requestType: "saveInvites",
+                            invites: [invite]
+                        }); //TODO
+                    }
+                });
+            });
+        });
+    }
+    eventUninvited(event) {
+        let xId = event.detail;
+        let xapi = {};
+        let self = this;
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/voided", "voided");
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addStatementRef(xapi, xId);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + 'Harness');
+                        let uninvite = new Voided(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, {
+                            identity: userProfile.identity,
+                            id: uninvite.id,
+                            xId: xId,
+                            requestType: "deleteInvite"
+                        });
+                    });
+                });
+            }
+        });
+    }
+    eventProgramLevelUp(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            previousValue: payload.previousValue,
+            newValue: payload.newValue,
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programLevelUp", "programLevelUp");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                let pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: pa.id,
+                    requestType: "saveActivityEvents",
+                    events: [pa]
+                });
+            }
+        });
+    }
+    eventProgramLevelDown(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            previousValue: payload.previousValue,
+            newValue: payload.newValue,
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programLevelDown", "programLevelDown");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                let pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: pa.id,
+                    requestType: "saveActivityEvents",
+                    events: [pa]
+                });
+            }
+        });
+    }
+    eventProgramInvited(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            previousValue: payload.previousValue,
+            newValue: payload.newValue,
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programInvited", "programInvited");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                let pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: pa.id,
+                    requestType: "saveActivityEvents",
+                    events: [pa]
+                });
+            }
+        });
+    }
+    eventProgramUninvited(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            previousValue: payload.previousValue,
+            newValue: payload.newValue,
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programUninvited", "programUninvited");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                let pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: pa.id,
+                    requestType: "saveActivityEvents",
+                    events: [pa]
+                });
+            }
+        });
+    }
+    eventProgramJoined(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            previousValue: payload.previousValue,
+            newValue: payload.newValue,
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programJoined", "programJoined");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                let pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: pa.id,
+                    requestType: "saveActivityEvents",
+                    events: [pa]
+                });
+            }
+        });
+    }
+    eventProgramExpelled(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            previousValue: payload.previousValue,
+            newValue: payload.newValue,
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programExpelled", "programExpelled");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                let pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: pa.id,
+                    requestType: "saveActivityEvents",
+                    events: [pa]
+                });
+            }
+        });
+    }
+    eventProgramActivityLaunched(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            newValue: payload.newValue,
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programActivityLaunched", "programActivityLaunched");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                let pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: pa.id,
+                    requestType: "saveActivityEvents",
+                    events: [pa]
+                });
+            }
+        });
+    }
+    eventProgramActivityCompleted(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            newValue: payload.newValue,
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programActivityCompleted", "programActivityCompleted");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                let pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: pa.id,
+                    requestType: "saveActivityEvents",
+                    events: [pa]
+                });
+            }
+        });
+    }
+    eventProgramActivityTeamCompleted(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            newValue: payload.newValue,
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programActivityTeamCompleted", "programActivityTeamCompleted");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                let pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: pa.id,
+                    requestType: "saveActivityEvents",
+                    events: [pa]
+                });
+            }
+        });
+    }
+    eventProgramModified(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            previousValue: payload.previousValue,
+            newValue: payload.newValue,
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programModified", "programModified");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                let pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: pa.id,
+                    requestType: "saveActivityEvents",
+                    events: [pa]
+                });
+            }
+        });
+    }
+    eventProgramDeleted(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            previousValue: payload.previousValue,
+            newValue: payload.newValue,
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programDeleted", "programDeleted");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                let pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: pa.id,
+                    requestType: "saveActivityEvents",
+                    events: [pa]
+                });
+            }
+        });
+    }
+    eventProgramCompleted(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programCompleted", "programCompleted");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                let pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: pa.id,
+                    requestType: "saveActivityEvents",
+                    events: [pa]
+                });
+            }
+        });
+    }
+    eventProgramCopied(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            previousValue: payload.previousValue,
+            newValue: payload.newValue,
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programCopied", "programCopied");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                let pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: pa.id,
+                    requestType: "saveActivityEvents",
+                    events: [pa]
+                });
+            }
+        });
+    }
+    eventProgramDiscussed(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            previousValue: payload.previousValue,
+            newValue: payload.newValue,
+            action: payload.action
+        };
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#programDiscussed", "programDiscussed");
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addActorAccount(xapi, userProfile);
+                self.xapiGen.addObject(xapi, PEBL_THREAD_GROUP_PREFIX + payload.programId, payload.programId, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                let pa = new ProgramAction(xapi);
+                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                    identity: userProfile.identity,
+                    id: pa.id,
+                    requestType: "saveActivityEvents",
+                    events: [pa]
+                });
+            }
+        });
+    }
+    // -------------------------------
+    eventLogin(event) {
+        let payload = event.detail;
+        let userProfile = payload.userProfile;
+        let xapi = {};
+        let self = this;
+        let exts = {};
+        this.pebl.storage.saveCurrentUser(userProfile, function () {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/logged-in", "logged-in");
+                self.pebl.storage.getCurrentBook(function (book) {
+                    self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                        self.pebl.storage.getCurrentBookId(function (bookId) {
+                            if (book)
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                            else
+                                self.xapiGen.addObject(xapi, window.location.origin, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                            self.xapiGen.addActorAccount(xapi, userProfile);
+                            let session = new Session(xapi);
+                            self.pebl.storage.saveEvent(userProfile, session);
+                            self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                identity: userProfile.identity,
+                                id: session.id,
+                                requestType: "saveSessions",
+                                sessions: [session]
+                            });
+                        });
+                    });
+                });
+            }
+        });
+    }
+    eventLogout(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {};
+        self.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.xapiGen.addId(xapi);
+                self.xapiGen.addTimestamp(xapi);
+                self.xapiGen.addVerb(xapi, "http://adlnet.gov/expapi/verbs/logged-out", "logged-out");
+                self.pebl.storage.getCurrentBook(function (book) {
+                    self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                        self.pebl.storage.getCurrentBookId(function (bookId) {
+                            if (book)
+                                self.xapiGen.addObject(xapi, PEBL_PREFIX + book, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                            else
+                                self.xapiGen.addObject(xapi, window.location.origin, undefined, undefined, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                            self.xapiGen.addActorAccount(xapi, userProfile);
+                            let session = new Session(xapi);
+                            self.pebl.storage.saveEvent(userProfile, session);
+                            self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                identity: userProfile.identity,
+                                id: session.id,
+                                requestType: "saveSessions",
+                                sessions: [session]
+                            });
+                        });
+                    });
+                });
+            }
+        });
+    }
+    // -------------------------------
+    eventModuleRating(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            idref: payload.idref,
+            programId: payload.programId
+        };
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentActivity(function (activity) {
+                self.pebl.user.getUser(function (userProfile) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#moduleRating", "moduleRating");
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.rating, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        if (activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        let mr = new ModuleRating(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, {
+                            identity: userProfile.identity,
+                            id: mr.id,
+                            requestType: "saveModuleEvents",
+                            events: [mr]
+                        });
+                    }
+                });
+            });
+        });
+    }
+    eventModuleFeedback(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            willingToDiscuss: payload.willingToDiscuss,
+            idref: payload.idref,
+            programId: payload.programId
+        };
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentBookTitle(function (bookTitle) {
+                self.pebl.storage.getCurrentBookId(function (bookId) {
+                    self.pebl.storage.getCurrentActivity(function (activity) {
+                        self.pebl.user.getUser(function (userProfile) {
+                            if (userProfile) {
+                                self.xapiGen.addId(xapi);
+                                self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#moduleFeedback", "moduleFeedback");
+                                self.xapiGen.addTimestamp(xapi);
+                                self.xapiGen.addActorAccount(xapi, userProfile);
+                                self.xapiGen.addObject(xapi, self.xapiGen.addPeblActivity(payload.activityURI, payload.activityType, payload.activityId), payload.feedback, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile, bookTitle, bookId)));
+                                if (activity)
+                                    self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                                let mf = new ModuleFeedback(xapi);
+                                self.pebl.storage.saveOutgoingXApi(userProfile, {
+                                    identity: userProfile.identity,
+                                    id: mf.id,
+                                    requestType: "saveModuleEvents",
+                                    events: [mf]
+                                });
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    }
+    eventModuleExample(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            idref: payload.idref,
+            youtubeUrl: payload.youtubeUrl,
+            imageUrl: payload.imageUrl,
+            websiteUrl: payload.websiteUrl,
+            quotedPerson: payload.quotedPerson,
+            quotedTeam: payload.quotedTeam
+        };
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentActivity(function (activity) {
+                self.pebl.user.getUser(function (userProfile) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#moduleExample", "moduleExample");
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.example, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(self.xapiGen.addPeblContextExtensions(exts, userProfile)));
+                        if (activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        let me = new ModuleExample(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, {
+                            identity: userProfile.identity,
+                            id: me.id,
+                            requestType: "saveModuleEvents",
+                            events: [me]
+                        });
+                        self.pebl.emitEvent(self.pebl.events.incomingModuleEvents, [me]);
+                    }
+                });
+            });
+        });
+    }
+    eventModuleExampleRating(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            idref: payload.idref,
+            programId: payload.programId,
+            exampleId: payload.exampleId
+        };
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentActivity(function (activity) {
+                self.pebl.user.getUser(function (userProfile) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#moduleExampleRating", "moduleExampleRating");
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.rating, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                        if (activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        let mer = new ModuleExampleRating(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, {
+                            identity: userProfile.identity,
+                            id: mer.id,
+                            requestType: "saveModuleEvents",
+                            events: [mer]
+                        });
+                    }
+                });
+            });
+        });
+    }
+    eventModuleExampleFeedback(event) {
+        let payload = event.detail;
+        let xapi = {};
+        let self = this;
+        let exts = {
+            willingToDiscuss: payload.willingToDiscuss,
+            idref: payload.idref,
+            programId: payload.programId,
+            exampleId: payload.exampleId
+        };
+        this.pebl.storage.getCurrentBook(function (book) {
+            self.pebl.storage.getCurrentActivity(function (activity) {
+                self.pebl.user.getUser(function (userProfile) {
+                    if (userProfile) {
+                        self.xapiGen.addId(xapi);
+                        self.xapiGen.addVerb(xapi, "http://www.peblproject.com/definitions.html#moduleExampleFeedback", "moduleExampleFeedback");
+                        self.xapiGen.addTimestamp(xapi);
+                        self.xapiGen.addActorAccount(xapi, userProfile);
+                        self.xapiGen.addObject(xapi, PEBL_PREFIX + book, payload.feedback, payload.description, self.xapiGen.addPeblActivity(undefined, payload.activityType, undefined), self.xapiGen.addExtensions(exts));
+                        if (activity)
+                            self.xapiGen.addParentActivity(xapi, PEBL_PREFIX + activity);
+                        let mef = new ModuleExampleFeedback(xapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, {
+                            identity: userProfile.identity,
+                            id: mef.id,
+                            requestType: "saveModuleEvents",
+                            events: [mef]
+                        });
+                    }
+                });
+            });
+        });
+    }
+    moduleRemovedEvent(event) {
+        let payload = event.detail;
+        let voidXapi = {};
+        // let eventXapi = {};
+        let self = this;
+        // let exts = {
+        //     type: payload.type
+        // }
+        this.pebl.user.getUser(function (userProfile) {
+            if (userProfile) {
+                self.pebl.storage.getCurrentActivity(function (activity) {
+                    self.pebl.storage.getCurrentBook(function (book) {
+                        self.xapiGen.addId(voidXapi);
+                        self.xapiGen.addVerb(voidXapi, "http://adlnet.gov/expapi/verbs/voided", "voided");
+                        self.xapiGen.addTimestamp(voidXapi);
+                        self.xapiGen.addStatementRef(voidXapi, payload.eventId);
+                        self.xapiGen.addActorAccount(voidXapi, userProfile);
+                        if (activity)
+                            self.xapiGen.addParentActivity(voidXapi, PEBL_PREFIX + activity);
+                        let voided = new Voided(voidXapi);
+                        self.pebl.storage.saveOutgoingXApi(userProfile, {
+                            identity: userProfile.identity,
+                            id: voided.id,
+                            xId: payload.eventId,
+                            requestType: "deleteModuleEvent"
+                        });
+                        // Send event to everyone to remove that module event from their local storage
+                        // self.xapiGen.addId(eventXapi);
+                        // self.xapiGen.addVerb(eventXapi, "http://www.peblproject.com/definitions.html#moduleRemovedEvent", "moduleRemovedEvent");
+                        // self.xapiGen.addTimestamp(eventXapi);
+                        // self.xapiGen.addActorAccount(eventXapi, userProfile);
+                        // self.xapiGen.addObject(eventXapi, PEBL_PREFIX + book, payload.idref, payload.eventId, self.xapiGen.addExtensions(exts));
+                        // if (activity)
+                        //     self.xapiGen.addParentActivity(eventXapi, PEBL_PREFIX + activity);
+                        // let mre = new ModuleRemovedEvent(eventXapi);
+                        // self.pebl.storage.saveOutgoingXApi(userProfile, mre);
+                        // self.pebl.emitEvent(self.pebl.events.incomingModuleEvents, [mre]); //TODO
+                    });
+                });
+            }
+        });
+    }
+    incomingModuleEvents(event) {
+        let self = this;
+        let events = event.detail;
+        for (let event of events) {
+            if (event.verb.display['en-US'] === 'moduleRemovedEvent') {
+                self.pebl.storage.removeModuleEvent(event.idref, event.eventId);
+            }
+        }
+    }
+}
+
+// CONCATENATED MODULE: ./src/pebl.ts
+const pebl_USER_PREFIX = "_user-";
+const pebl_GROUP_PREFIX = "_group-";
+
+// import { Activity } from "./activity";
+
+
+// import { Messenger } from "./messenger";
+
+
+
+class pebl_PEBL {
+    // readonly launcher: LauncherAdapter;
+    constructor(config, callback) {
+        this.firedEvents = [];
+        this.subscribedEventHandlers = {};
+        this.subscribedSingularEventHandlers = {};
+        this.subscribedThreadHandlers = {};
+        this.loaded = false;
+        this.extension = {};
+        // this.extension.shared = {};
+        this.config = config;
+        if (config) {
+            this.teacher = config.teacher;
+            this.enableDirectMessages = config.enableDirectMessages;
+            this.useIndexedDB = config.useIndexedDB;
+        }
+        else {
+            this.teacher = false;
+            this.enableDirectMessages = true;
+            this.useIndexedDB = true;
+        }
+        this.utils = new utils_Utils(this);
+        this.eventHandlers = new eventHandlers_PEBLEventHandlers(this);
+        this.events = new EventSet();
+        this.user = new User(this);
+        this.network = new network_Network(this);
+        let self = this;
+        // if (this.useIndexedDB) {
+        this.storage = new storage_IndexedDBStorageAdapter(this, function () {
+            self.loaded = true;
+            self.addSystemEventListeners();
+            if (callback)
+                callback(self);
+            self.processQueuedEvents();
+        });
+        // } else {
+        //     this.storage = new IndexedDBStorageAdapter(function() { });
+        //     // if (localStorage != null) {
+        //     //     this.storage;
+        //     // } else if (sessionStorage != null) {
+        //     //     this.storage;
+        //     // } else {
+        //     //     this.storage;
+        //     // }
+        //     this.loaded = true;
+        //     this.addSystemEventListeners();
+        //     if (callback)
+        //         callback(this);
+        //     self.processQueuedEvents();
+        // }
+    }
+    addListener(event, callback) {
+        document.removeEventListener(event, callback);
+        document.addEventListener(event, callback);
+    }
+    addSystemEventListeners() {
+        let events = Object.keys(this.events);
+        for (let event of events) {
+            let listener = this.eventHandlers[event];
+            if (listener) {
+                let call = listener.bind(this.eventHandlers);
+                this.addListener(event, call);
+            }
+        }
+    }
+    processQueuedEvents() {
+        for (let e of this.firedEvents) {
+            document.dispatchEvent(e);
+        }
+        this.firedEvents = [];
+    }
+    unsubscribeAllEvents() {
+        for (let key of Object.keys(this.subscribedEventHandlers)) {
+            for (let pack of this.subscribedEventHandlers[key])
+                document.removeEventListener(key, pack.modifiedFn);
+            delete this.subscribedEventHandlers[key];
+        }
+        for (let key of Object.keys(this.subscribedSingularEventHandlers)) {
+            for (let pack of Object.keys(this.subscribedSingularEventHandlers[key])) {
+                document.removeEventListener(key, this.subscribedSingularEventHandlers[key][pack].modifiedFn);
+            }
+            delete this.subscribedSingularEventHandlers[key];
+        }
+    }
+    unsubscribeAllThreads() {
+        for (let key of Object.keys(this.subscribedEventHandlers)) {
+            for (let pack of this.subscribedEventHandlers[key])
+                document.removeEventListener(key, pack.modifiedFn);
+            delete this.subscribedEventHandlers[key];
+        }
+    }
+    unsubscribeEvent(eventName, once, callback) {
+        let i = 0;
+        if (this.subscribedEventHandlers[eventName]) {
+            for (let pack of this.subscribedEventHandlers[eventName]) {
+                if ((pack.once == once) && (pack.fn == callback)) {
+                    document.removeEventListener(eventName, pack.modifiedFn);
+                    this.subscribedEventHandlers[eventName].splice(i, 1);
+                    return;
+                }
+                i++;
+            }
+        }
+    }
+    unsubscribeSingularEvent(eventName, id) {
+        if (this.subscribedSingularEventHandlers[eventName] && this.subscribedSingularEventHandlers[eventName][id]) {
+            document.removeEventListener(eventName, this.subscribedSingularEventHandlers[eventName][id].modifiedFn);
+            delete this.subscribedSingularEventHandlers[eventName][id];
+        }
+    }
+    unsubscribeThread(baseThread, once, callback, options) {
+        this.user.getUser((userProfile) => {
+            if (userProfile) {
+                let thread = baseThread;
+                if (options && options.groupId) {
+                    thread = baseThread + pebl_GROUP_PREFIX + options.groupId;
+                }
+                else if (options && options.isPrivate) {
+                    thread = baseThread + pebl_USER_PREFIX + userProfile.identity;
+                }
+                let message = {
+                    id: this.utils.getUuid(),
+                    identity: userProfile.identity,
+                    requestType: "unsubscribeThread",
+                    thread: baseThread,
+                    options: options
+                };
+                this.storage.saveOutgoingXApi(userProfile, message);
+                let i = 0;
+                if (this.subscribedThreadHandlers[thread]) {
+                    for (let pack of this.subscribedThreadHandlers[thread]) {
+                        if ((pack.once == once) && (pack.fn == callback)) {
+                            document.removeEventListener(thread, pack.modifiedFn);
+                            this.subscribedThreadHandlers[thread].splice(i, 1);
+                            return;
+                        }
+                        i++;
+                    }
+                }
+            }
+        });
+    }
+    subscribeEvent(eventName, once, callback) {
+        if (!this.subscribedEventHandlers[eventName])
+            this.subscribedEventHandlers[eventName] = [];
+        let self = this;
+        //fix once for return of annotations
+        if (once) {
+            var modifiedHandler = function (e) {
+                self.unsubscribeEvent(eventName, once, callback);
+                callback(e.detail);
+            };
+            document.addEventListener(eventName, modifiedHandler, { once: once });
+            this.subscribedEventHandlers[eventName].push({ once: once, fn: callback, modifiedFn: modifiedHandler });
+        }
+        else {
+            var modifiedHandler = function (e) { callback(e.detail); };
+            document.addEventListener(eventName, modifiedHandler);
+            this.subscribedEventHandlers[eventName].push({ once: once, fn: callback, modifiedFn: modifiedHandler });
+        }
+        if (eventName == self.events.incomingAnnotations) {
+            self.utils.getAnnotations(function (annotations) {
+                callback(annotations);
+            });
+        }
+        else if (eventName == self.events.incomingSharedAnnotations) {
+            self.utils.getSharedAnnotations(function (annotations) {
+                callback(annotations);
+            });
+        }
+        else if (eventName == self.events.incomingPresence) {
+            self.network.retrievePresence();
+        }
+        else if (eventName == self.events.incomingProgram) {
+            self.utils.getPrograms(function (programs) {
+                callback(programs);
+            });
+        }
+        else if (eventName == self.events.incomingMembership) {
+            self.utils.getGroupMemberships(function (groups) {
+                callback(groups);
+            });
+        }
+    }
+    subscribeSingularEvent(eventName, id, once, callback) {
+        this.unsubscribeSingularEvent(eventName, id);
+        if (!this.subscribedSingularEventHandlers[eventName])
+            this.subscribedSingularEventHandlers[eventName] = {};
+        let self = this;
+        if (once) {
+            var modifiedHandler = function (e) {
+                self.unsubscribeSingularEvent(eventName, id);
+                callback(e.detail);
+            };
+            document.addEventListener(eventName, modifiedHandler, { once: once });
+            this.subscribedSingularEventHandlers[eventName][id] = { once: once, fn: callback, modifiedFn: modifiedHandler };
+        }
+        else {
+            var modifiedHandler = function (e) { callback(e.detail); };
+            document.addEventListener(eventName, modifiedHandler);
+            this.subscribedSingularEventHandlers[eventName][id] = { once: once, fn: callback, modifiedFn: modifiedHandler };
+        }
+        if (eventName == self.events.incomingAnnotations) {
+            self.utils.getAnnotations(function (annotations) {
+                callback(annotations);
+            });
+        }
+        else if (eventName == self.events.incomingSharedAnnotations) {
+            self.utils.getSharedAnnotations(function (annotations) {
+                callback(annotations);
+            });
+        }
+        else if (eventName == self.events.incomingPresence) {
+            self.network.retrievePresence();
+        }
+        else if (eventName == self.events.incomingProgram) {
+            self.utils.getPrograms(function (programs) {
+                callback(programs);
+            });
+        }
+        else if (eventName == self.events.incomingMembership) {
+            self.utils.getGroupMemberships(function (groups) {
+                callback(groups);
+            });
+        }
+    }
+    //fix once for return of getMessages
+    subscribeThread(baseThread, once, callback, options) {
+        this.user.getUser((userProfile) => {
+            if (userProfile) {
+                let thread = baseThread;
+                if (options && options.groupId) {
+                    thread = thread + pebl_GROUP_PREFIX + options.groupId;
+                }
+                else if (options && options.isPrivate) {
+                    thread = thread + pebl_USER_PREFIX + userProfile.identity;
+                }
+                let firstRegistration = true;
+                let threadCallbacks = this.subscribedThreadHandlers[thread];
+                if (!threadCallbacks) {
+                    threadCallbacks = [];
+                    this.subscribedThreadHandlers[thread] = threadCallbacks;
+                }
+                else {
+                    firstRegistration = false;
+                }
+                if (once) {
+                    var modifiedHandler = ((e) => {
+                        this.unsubscribeEvent(thread, once, callback);
+                        callback(e.detail);
+                    });
+                    document.addEventListener(thread, modifiedHandler, { once: once });
+                    threadCallbacks.push({ once: once, fn: callback, modifiedFn: modifiedHandler });
+                }
+                else {
+                    var modifiedHandler = ((e) => { callback(e.detail); });
+                    document.addEventListener(thread, modifiedHandler);
+                    threadCallbacks.push({ once: once, fn: callback, modifiedFn: modifiedHandler });
+                }
+                if (firstRegistration) {
+                    this.storage.saveOutgoingXApi(userProfile, {
+                        id: this.utils.getUuid(),
+                        identity: userProfile.identity,
+                        requestType: "getThreadedMessages",
+                        requests: [{
+                                thread: baseThread,
+                                options: options || {},
+                                timestamp: 1
+                            }]
+                    });
+                    this.storage.saveOutgoingXApi(userProfile, {
+                        id: this.utils.getUuid(),
+                        identity: userProfile.identity,
+                        requestType: "subscribeThread",
+                        thread: baseThread,
+                        options: options || {}
+                    });
+                }
+                this.storage.getMessages(userProfile, thread, callback);
+            }
+            else {
+                callback([]);
+            }
+        });
+    }
+    emitEvent(eventName, data) {
+        let e = document.createEvent("CustomEvent");
+        e.initCustomEvent(eventName, true, true, data);
+        if (this.loaded)
+            document.dispatchEvent(e);
+        else
+            this.firedEvents.push(e);
+    }
+}
+
+// CONCATENATED MODULE: ./src/api.ts
+
+let core = new pebl_PEBL(window.PeBLConfig, window.PeBLLoaded);
+const install = function (vue, options) {
+    vue.prototype.$PeBL = core;
+    vue.prototype.$PeBLEvents = core.events;
+    vue.prototype.$PeBLUtils = core.utils;
+    vue.prototype.$PeBLUser = core.user;
+};
+if (typeof window !== 'undefined') {
+    window.PeBL = core;
+    if (window.Vue) {
+        window.Vue.use({ install: install });
+    }
+}
+
+
+/***/ })
+/******/ ]);/*
   Copyright 2020 Eduworks Corporation
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
