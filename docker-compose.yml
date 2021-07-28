@@ -28,8 +28,7 @@ services:
       READER_HIDE_INSTALL_INSTRUCTIONS: "true"
     volumes:
       - ./epub_content/:/usr/share/nginx/html/epub_content
-      - "./certbot/etc/live/${SERVER_NAME}/privkey.pem:/ssl/privkey.pem:ro"
-      - "./certbot/etc/live/${SERVER_NAME}/fullchain.pem:/ssl/fullchain.pem:ro"
+      - "./certbot/etc/live/${SERVER_NAME}:/ssl"
       - ./data/letsencrypt:/usr/share/letsencrypt
     ports:
       - "80:80"

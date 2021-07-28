@@ -12,4 +12,4 @@ docker-compose run certbot \
 	-d $1
 
 ## Bring the PeBL Services stuff back up
-docker-compose restart nginx
+docker-compose restart pebl-reader-nginx

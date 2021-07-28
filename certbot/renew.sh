@@ -8,4 +8,4 @@ docker-compose run certbot \
 	--webroot-path=/data/letsencrypt
 
 ## Bring the PeBL Services stuff back up
-docker-compose restart nginx
+docker-compose restart pebl-reader-nginx
