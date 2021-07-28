@@ -4,7 +4,7 @@ ARG HOSTNAME
 
 # Move our configuration into place
 #
-COPY startNginx.conf /etc/nginx/nginx.conf
+COPY nginx/startNginx.conf /etc/nginx/nginx.conf
 COPY proxy_headers.conf /etc/nginx/proxy_headers.conf
 
 # Swap our environment variables
