@@ -4,9 +4,9 @@ ARG HOSTNAME
 
 # Move our configuration into place
 #
-COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
-COPY nginx/startNginx.sh /etc/nginx/startNginx.sh
+COPY startNginx.sh /etc/nginx/startNginx.sh
 RUN chmod 755 /etc/nginx/startNginx.sh
 
 # Swap our environment variables
