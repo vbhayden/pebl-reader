@@ -30,7 +30,7 @@ services:
       READER_HIDE_INSTALL_INSTRUCTIONS: "true"
     volumes:
       #- ./epub_content:/usr/share/nginx/html/epub_content
-      - ./nginx/letsencrypt:/usr/share/nginx/html
+      - ./nginx/letsencrypt:/usr/share/letsencrypt
       - ./certbot/etc:/usr/share/keys
     ports:
       - "80:80"
