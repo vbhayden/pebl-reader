@@ -13,7 +13,7 @@ services:
       - net.core.somaxconn=4096
     restart: always
     environment:
-      READER_SERVER_NAME: $SERVER_NAME
+      READER_SERVER_NAME: $HOSTNAME
       WS_SERVICES_ENDPOINT: "wss://${PEBL_SERVICES_HOST}"
       HTTP_SERVICES_ENDPOINT: "https://${PEBL_SERVICES_HOST}"
       USE_OPEN_ID: "true"
