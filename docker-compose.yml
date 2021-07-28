@@ -49,3 +49,7 @@ services:
       - pebl-reader-nginx
     networks:
       - public
+      
+networks:
+  public: 
+    driver: bridge
