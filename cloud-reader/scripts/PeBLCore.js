@@ -8237,7 +8237,7 @@ g = (function() {
 
 try {
 	// This works if eval is allowed (see CSP)
-	g = g || new Function("return this")();
+	g = g || Function("return this")() || (1, eval)("this");
 } catch (e) {
 	// This works if the window reference is available
 	if (typeof window === "object") g = window;
@@ -8255,11 +8255,7 @@ module.exports = g;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-// ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, "install", function() { return /* binding */ install; });
 
 // CONCATENATED MODULE: ./src/xapi.ts
 const NAMESPACE_USER_MESSAGES = "user-";
@@ -15959,6 +15955,7 @@ class pebl_PEBL {
 }
 
 // CONCATENATED MODULE: ./src/api.ts
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "install", function() { return install; });
 
 let core = new pebl_PEBL(window.PeBLConfig, window.PeBLLoaded);
 const install = function (vue, options) {
