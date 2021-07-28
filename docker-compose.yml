@@ -5,8 +5,7 @@ services:
   pebl-reader-nginx:
     restart: always
     build:
-      context: .
-      dockerfile: pebl.reader.Dockerfile
+      context: nginx
       args:
         - HOSTNAME=${HOSTNAME}
     container_name: docker_reader
