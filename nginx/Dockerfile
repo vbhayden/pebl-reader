@@ -4,8 +4,10 @@ ARG HOSTNAME
 
 # Move our configuration into place
 #
-COPY nginx/startNginx.conf /etc/nginx/nginx.conf
-COPY proxy_headers.conf /etc/nginx/proxy_headers.conf
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+
+COPY nginx/startNginx.sh /etc/nginx/startNginx.sh
+RUN chmod 755 /etc/nginx/startNginx.sh
 
 # Swap our environment variables
 #
@@ -14,6 +16,5 @@ RUN mv /tmp/nginx.conf /etc/nginx/nginx.conf
 
 COPY --chown=www-data:www-data cloud-reader/ /usr/share/nginx/html/
 
-RUN chmod 755 /etc/nginx/startNginx.sh
 
 ENTRYPOINT [ "/etc/nginx/startNginx.sh" ]
