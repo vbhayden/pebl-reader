@@ -12,5 +12,12 @@
         "coverHref":"bookshelf/PeBL_Test_Book-cover.png",
         "rootUrl":"bookshelf/PeBL_Test_Book.epub",
         "version":1
+    },
+    {
+        "title":"Geography of Bliss",
+        "author":"Eric Weiner",
+        "coverHref":"bookshelf/GeographyOfBliss.cover.jpg",
+        "rootUrl":"bookshelf/GeographyOfBliss",
+        "version":1
     }
 ]
