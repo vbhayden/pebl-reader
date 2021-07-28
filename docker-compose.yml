@@ -29,7 +29,7 @@ services:
       PEBL_WEBREADER_LOGO: "images/PEBL-Logo-Color-small.png"
       READER_HIDE_INSTALL_INSTRUCTIONS: "true"
     volumes:
-      - ./epub_content/:/usr/share/nginx/html/epub_content
+      #- ./epub_content:/usr/share/nginx/html/epub_content
       - ./nginx/letsencrypt:/usr/share/nginx/html
       - ./certbot/etc:/usr/share/keys
     ports:
