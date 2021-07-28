@@ -27,7 +27,7 @@ services:
       PEBL_WEBREADER_LOGO: "images/PEBL-Logo-Color-small.png"
       READER_HIDE_INSTALL_INSTRUCTIONS: "true"
     volumes:
-      - ./pebl-reader/epub_content/:/usr/share/nginx/html/epub_content
+      - ./epub_content/:/usr/share/nginx/html/epub_content
       - "./certbot/etc/live/${SERVER_NAME}/privkey.pem:/ssl/privkey.pem:ro"
       - "./certbot/etc/live/${SERVER_NAME}/fullchain.pem:/ssl/fullchain.pem:ro"
       - ./data/letsencrypt:/usr/share/letsencrypt
