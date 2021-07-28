@@ -1,6 +1,6 @@
 FROM nginx:1.19.1
 
-COPY nginx/*.pem /ssl/
+#COPY nginx/*.pem /ssl/
 COPY nginx/startNginx.sh /etc/nginx/
 
 RUN chmod 755 /etc/nginx/startNginx.sh
