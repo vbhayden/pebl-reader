@@ -46,8 +46,6 @@ services:
       - ./data/letsencrypt:/data/letsencrypt
       - ./certbot/etc:/etc/letsencrypt
       - ./certbot/log:/var/log/letsencrypt
-    depends_on:
-      - pebl-reader-nginx
     networks:
       - public
       
