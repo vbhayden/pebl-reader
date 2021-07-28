@@ -1,4 +1,4 @@
-FROM nginx:1.19.1
+FROM nginx:alpine
 
 ARG HOSTNAME
 
@@ -12,7 +12,7 @@ COPY nginx/startNginx.sh /etc/nginx/startNginx.sh
 RUN cat /etc/nginx/nginx.conf | envsubst '$HOSTNAME' | tee /tmp/nginx.conf
 RUN mv /tmp/nginx.conf /etc/nginx/nginx.conf
 
-COPY --chown=www-data:www-data cloud-reader/ /usr/share/nginx/html/
+COPY --chown=nginx:nginx cloud-reader/ /usr/share/nginx/html/
 
 RUN chmod 755 /etc/nginx/startNginx.sh
 
