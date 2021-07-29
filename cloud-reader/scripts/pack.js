@@ -9679,7 +9679,7 @@ g = (function() {
 
 try {
 	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1, eval)("this");
+	g = g || new Function("return this")();
 } catch (e) {
 	// This works if the window reference is available
 	if (typeof window === "object") g = window;
@@ -9697,7 +9697,11 @@ module.exports = g;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+// ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, "install", function() { return /* binding */ install; });
 
 // CONCATENATED MODULE: ./src/xapi.ts
 const NAMESPACE_USER_MESSAGES = "user-";
@@ -17397,7 +17401,6 @@ class pebl_PEBL {
 }
 
 // CONCATENATED MODULE: ./src/api.ts
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "install", function() { return install; });
 
 let core = new pebl_PEBL(window.PeBLConfig, window.PeBLLoaded);
 const install = function (vue, options) {
@@ -72175,7 +72178,7 @@ define('text',['module'], function (module) {
 });
 
 
-define('text!version.json',[],function () { return '{"readiumJsViewer":{"sha":"28cb3191c1c50078178c7a9e344a47f51d286411","clean":false,"version":"0.31.1","chromeVersion":"2.31.1","tag":"1.6.25-226-g28cb319","branch":"master","release":false,"timestamp":1627502011762},"readiumJs":{"sha":"999d7c32bcdd1184bcc248312267c6e744d737b9","clean":false,"version":"0.31.1","tag":"0.31.1-0-g999d7c3","branch":"999d7c32bcdd1184bcc248312267c6e744d737b9","release":false,"timestamp":1627502011872},"readiumSharedJs":{"sha":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","clean":false,"version":"0.31.1","tag":"0.31.1-0-g7f245be","branch":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","release":false,"timestamp":1627502011960}}';});
+define('text!version.json',[],function () { return '{"readiumJsViewer":{"sha":"fc84f233275674eb74c139df4dae73e3cc08c329","clean":false,"version":"0.31.1","chromeVersion":"2.31.1","tag":"1.6.25-229-gfc84f233","branch":"master","release":false,"timestamp":1627586096307},"readiumJs":{"sha":"999d7c32bcdd1184bcc248312267c6e744d737b9","clean":true,"version":"0.31.1","tag":"0.31.1-0-g999d7c3","branch":"999d7c32bcdd1184bcc248312267c6e744d737b9","release":false,"timestamp":1627586096573},"readiumSharedJs":{"sha":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","clean":true,"version":"0.31.1","tag":"0.31.1-0-g7f245be","branch":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","release":false,"timestamp":1627586096758}}';});
 
 //  Copyright (c) 2014 Readium Foundation and/or its licensees. All rights reserved.
 //  
@@ -81567,6 +81570,8 @@ define('readium_js_viewer/EpubLibraryManager',['./ModuleConfig', './PackageParse
                     for (var i = 0; i < data.length; i++) {
                         data[i].coverHref = adjustEpubLibraryPath(data[i].coverHref);
                         data[i].rootUrl = adjustEpubLibraryPath(data[i].rootUrl);
+                        data[i].contentPath = adjustEpubLibraryPath(data[i].contentPath);
+                        data[i].packageFile = adjustEpubLibraryPath(data[i].packageFile);
                     }
                 }
 
@@ -85139,7 +85144,7 @@ define('readium_js_viewer/EpubLibrary',[
                        if (epubs.length < 1)
                            callback();
                        else {
-                           for (var epub of epubs) {
+                           for (let epub of epubs) {
                                if (epub.rootUrl === rootUrl) {
                                    if (rootUrl.endsWith(".epub")) {
                                        var request = new XMLHttpRequest();
@@ -85156,7 +85161,8 @@ define('readium_js_viewer/EpubLibrary',[
                                    } else {
                                        var request = new XMLHttpRequest();
                                        let root = location.origin + "/" + rootUrl + (rootUrl.endsWith("/")?"":"/")
-                                       let adjRoot = root + "OEBPS/";
+                                    // let adjRoot = root + "OEBPS/";
+                                       let adjRoot = root + epub.contentPath + "/";
                                        request.onload = function() {
                                            let xml = new DOMParser().parseFromString(this.response, "text/xml");
                                            let package = PackageParser.parsePackageDom(xml);
@@ -85169,7 +85175,8 @@ define('readium_js_viewer/EpubLibrary',[
                                            }
                                            StorageManager.saveTemporaryBookshelf({
                                                id: package.id,
-                                               packagePath: "OEBPS/content.opf",
+                                            // packagePath: "OEBPS/content.opf",
+                                               packagePath: epub.contentPath + "/" + epub.packageFile,
                                                title: package.title,
                                                author: package.author,
                                                isLocal: true,
