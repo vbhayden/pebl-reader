@@ -9,24 +9,6 @@
         "packageFile" : "package.opf"
     },
     {
-        "title" : "Page Blanche",
-        "author" : "Boulet and Penelope Bagieu",
-        "coverHref" : "epub_content/page-blanche/EPUB/Image/cover.jpg",
-        
-        "rootUrl" : "epub_content/page-blanche",
-        "contentPath" : "EPUB",
-        "packageFile" : "package.opf"
-    },
-    {
-        "title" : "Moby Dick",
-        "author" : "Herman Melville",
-        "coverHref" : "epub_content/moby_dick/OPS/images/9780316000000.jpg",
-        
-        "rootUrl" : "epub_content/moby_dick",
-        "contentPath" : "OPS",
-        "packageFile" : "package.opf"
-    },
-    {
         "title" : "Alice in Wonderland",
         "author" : "Lewis Carroll",
         "coverHref" : "epub_content/alice3/images/alice02a.gif",
@@ -45,12 +27,21 @@
         "packageFile" : "package.opf"
     },
     {
-        "title" : "Producing Open Source Software",
-        "author" : "Karl Fogel",
-        "coverHref" : "epub_content/producing-oss/OEBPS/producing-oss.jpg",
+        "title" : "The Emerald City of Oz",
+        "author" : "Lyman Frank Baum",
+        "coverHref" : "epub_content/emerald-city-oz/OPS/images/cover.png",
 
-        "rootUrl" : "epub_content/producing-oss",
-        "contentPath" : "OEBPS",
+        "rootUrl" : "epub_content/emerald-city-oz",
+        "contentPath" : "OPS",
+        "packageFile" : "fb.opf"
+    },
+    {
+        "title" : "Cyclones",
+        "author" : "Wikipedia contributors",
+        "coverHref" : "epub_content/cyclones/Thumbnails/thumbnail.png",
+
+        "rootUrl" : "epub_content/cyclones",
+        "contentPath" : "",
         "packageFile" : "content.opf"
     }
 ]

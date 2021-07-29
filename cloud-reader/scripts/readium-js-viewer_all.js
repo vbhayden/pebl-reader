@@ -53679,7 +53679,7 @@ define('text',['module'], function (module) {
 });
 
 
-define('text!version.json',[],function () { return '{"readiumJsViewer":{"sha":"f3e53722cb127225b79708d45e0b532a2ed6545c","clean":false,"version":"0.31.1","chromeVersion":"2.31.1","tag":"1.6.25-231-gf3e53722","branch":"master","release":false,"timestamp":1627590435892},"readiumJs":{"sha":"999d7c32bcdd1184bcc248312267c6e744d737b9","clean":true,"version":"0.31.1","tag":"0.31.1-0-g999d7c3","branch":"999d7c32bcdd1184bcc248312267c6e744d737b9","release":false,"timestamp":1627590436163},"readiumSharedJs":{"sha":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","clean":true,"version":"0.31.1","tag":"0.31.1-0-g7f245be","branch":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","release":false,"timestamp":1627590436350}}';});
+define('text!version.json',[],function () { return '{"readiumJsViewer":{"sha":"06278c70650cdf40089f4307c151d58d13d24098","clean":false,"version":"0.31.1","chromeVersion":"2.31.1","tag":"1.6.25-233-g06278c70","branch":"master","release":false,"timestamp":1627591952472},"readiumJs":{"sha":"999d7c32bcdd1184bcc248312267c6e744d737b9","clean":true,"version":"0.31.1","tag":"0.31.1-0-g999d7c3","branch":"999d7c32bcdd1184bcc248312267c6e744d737b9","release":false,"timestamp":1627591952747},"readiumSharedJs":{"sha":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","clean":true,"version":"0.31.1","tag":"0.31.1-0-g7f245be","branch":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","release":false,"timestamp":1627591953000}}';});
 
 //  Copyright (c) 2014 Readium Foundation and/or its licensees. All rights reserved.
 //  
@@ -74138,12 +74138,14 @@ define('readium_js_viewer/EpubReader',[
                    updateUI(pageChangeData);
 
                    spin(false);
-
-                   readium.reader.plugins.highlights.redrawAnnotations();
-
-                   readium.reader.plugins.highlights.removeHighlightsByType('user-highlight');
-                   readium.reader.plugins.highlights.removeHighlightsByType('shared-highlight');
-                   readium.reader.plugins.highlights.removeHighlightsByType('shared-my-highlight');
+                   
+                   if (readium.reader.plugins.highlights) {
+                        readium.reader.plugins.highlights.redrawAnnotations();
+    
+                        readium.reader.plugins.highlights.removeHighlightsByType('user-highlight');
+                        readium.reader.plugins.highlights.removeHighlightsByType('shared-highlight');
+                        readium.reader.plugins.highlights.removeHighlightsByType('shared-my-highlight');
+                   }
 
                    createNavigationSlider();
 

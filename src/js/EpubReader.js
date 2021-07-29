@@ -1844,12 +1844,14 @@ define([
                    updateUI(pageChangeData);
 
                    spin(false);
-
-                   readium.reader.plugins.highlights.redrawAnnotations();
-
-                   readium.reader.plugins.highlights.removeHighlightsByType('user-highlight');
-                   readium.reader.plugins.highlights.removeHighlightsByType('shared-highlight');
-                   readium.reader.plugins.highlights.removeHighlightsByType('shared-my-highlight');
+                   
+                   if (readium.reader.plugins.highlights) {
+                        readium.reader.plugins.highlights.redrawAnnotations();
+    
+                        readium.reader.plugins.highlights.removeHighlightsByType('user-highlight');
+                        readium.reader.plugins.highlights.removeHighlightsByType('shared-highlight');
+                        readium.reader.plugins.highlights.removeHighlightsByType('shared-my-highlight');
+                   }
 
                    createNavigationSlider();
 
