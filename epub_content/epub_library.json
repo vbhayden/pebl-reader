@@ -1,0 +1,56 @@
+[
+    {
+        "title" : "Accessible EPUB 3",
+        "author" : "Matt Garrish",
+        "coverHref" : "epub_content/accessible_epub_3/EPUB/covers/9781449328030_lrg.jpg",
+        
+        "rootUrl" : "epub_content/accessible_epub_3",
+        "contentPath" : "EPUB",
+        "packageFile" : "package.opf"
+    },
+    {
+        "title" : "Page Blanche",
+        "author" : "Boulet and Penelope Bagieu",
+        "coverHref" : "epub_content/page-blanche/EPUB/Image/cover.jpg",
+        
+        "rootUrl" : "epub_content/page-blanche",
+        "contentPath" : "EPUB",
+        "packageFile" : "package.opf"
+    },
+    {
+        "title" : "Moby Dick",
+        "author" : "Herman Melville",
+        "coverHref" : "epub_content/moby_dick/OPS/images/9780316000000.jpg",
+        
+        "rootUrl" : "epub_content/moby_dick",
+        "contentPath" : "OPS",
+        "packageFile" : "package.opf"
+    },
+    {
+        "title" : "Alice in Wonderland",
+        "author" : "Lewis Carroll",
+        "coverHref" : "epub_content/alice3/images/alice02a.gif",
+        
+        "rootUrl" : "epub_content/alice3",
+        "contentPath" : "OPS",
+        "packageFile" : "content.opf"
+    },
+    {
+        "title" : "What is Motivic Measure?",
+        "author" : "Thomas C. Hales",
+        "coverHref" : "epub_content/Hales-Motivic-Measure/EPUB/img/cover.png",
+
+        "rootUrl" : "epub_content/Hales-Motivic-Measure",
+        "contentPath" : "EPUB",
+        "packageFile" : "package.opf"
+    },
+    {
+        "title" : "Producing Open Source Software",
+        "author" : "Karl Fogel",
+        "coverHref" : "epub_content/producing-oss/OEBPS/producing-oss.jpg",
+
+        "rootUrl" : "epub_content/producing-oss",
+        "contentPath" : "OEBPS",
+        "packageFile" : "content.opf"
+    }
+]
