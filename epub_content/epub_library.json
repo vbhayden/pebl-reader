@@ -32,7 +32,7 @@
         "coverHref" : "epub_content/alice3/images/alice02a.gif",
         
         "rootUrl" : "epub_content/alice3",
-        "contentPath" : "OPS",
+        "contentPath" : "",
         "packageFile" : "content.opf"
     },
     {
