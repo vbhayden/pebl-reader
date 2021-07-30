@@ -1,14 +1,50 @@
 _Note: Please don't use the zip download feature on this repo as this repo uses submodules and this is not supported at present by github and will result in an incomplete copy of the repo._
 
-# readium-js-viewer
+# Pre-Built PeBL Reader
 
-**EPUB reader written in HTML, CSS and Javascript.**
+**Note:** This is a modified, pre-built version of the PeBL EPUB reader developed by the PeBL Project team.  This version is build-simplified fork of their work, with a few differences:
 
-This Readium software component implements the Readium Chrome extension / app for offline reading ( https://chrome.google.com/webstore/detail/readium/fepbnnnkkadjhjahcafoaglimekefifl ),
-and the "cloud reader" for online e-books ( https://readium.firebaseapp.com is the deployment URL for automated builds from the develop branch, https://readium-master.surge.sh links to the latest app release from the master branch).
+**Pre-Build Cloud Reader Included** ✔
 
-Please see https://github.com/readium/readium-shared-js for more information about the underlying rendering engine.
+A pre-built version of the cloud-reader site has been included in the repository directly.  This includes all required PeBL files, removing the need for manual git submodule alignment and PeBL Library placement.
 
+**Configurable EPUB File Structures** ✔ 
+
+EPUBs can now be included in the library folder and configured based on their layout.  The original PeBL project has a strict expectation of how the EPUB library is arranged, namely that the `OEDPS` folder be the actual EPUB contents and a `package.opf` file contained therein defining the structure.  
+
+These are handled through the `contentPath` and `packageFile` properties:
+```
+{
+    "title" : "Alice in Wonderland",
+    "author" : "Lewis Carroll",
+    "coverHref" : "epub_content/alice3/images/alice02a.gif",
+    
+    "rootUrl" : "epub_content/alice3",
+    "contentPath" : "",
+    "packageFile" : "content.opf"
+},
+```
+
+**Streamlined SSL Support** ✔
+
+A certbot container has been included to remove the LetsEncrypt OS dependency.  You can use this container by running
+```
+# Getting an initial SSL cert
+sudo certbot/generate.sh <domain-name>
+
+# Renewing an SSL cert
+sudo certbot/renew.sh
+```
+
+## TL;DR
+To run the PeBL Reader, you will need the PeBL Services running somewhere.  Assuming you already have that:
+
+1. `sudo ./install-reqs.sh`
+1. `sudo ./init-ssl.sh <domain-name>`
+1. `cp .env.example .env`
+1. Populate the `.env` file
+1. `sudo docker-compose up -d --build`
+1. (Optional) `sudo ./certbot/generate.sh <domain-name>`
 
 ## License
 
