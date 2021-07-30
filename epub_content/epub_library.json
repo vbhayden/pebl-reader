@@ -18,15 +18,6 @@
         "packageFile" : "content.opf"
     },
     {
-        "title" : "What is Motivic Measure?",
-        "author" : "Thomas C. Hales",
-        "coverHref" : "epub_content/Hales-Motivic-Measure/EPUB/img/cover.png",
-
-        "rootUrl" : "epub_content/Hales-Motivic-Measure",
-        "contentPath" : "EPUB",
-        "packageFile" : "package.opf"
-    },
-    {
         "title" : "The Emerald City of Oz",
         "author" : "Lyman Frank Baum",
         "coverHref" : "epub_content/emerald-city-oz/OPS/images/cover.png",
