@@ -23,4 +23,7 @@ npm run prepare:all
 echo "Building Cloud Reader ... "
 npm run dist
 
+rm -rf ./cloud-reader 
+cp -r ./dist/cloud-reader ./cloud-reader
+
 echo "Complete!  Cloud Reader should now be available in dist/cloud-reader"

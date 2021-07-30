@@ -504,7 +504,7 @@ define([
                slider.oninput = function() {
                    var val = Math.round(this.value);
                    //Show either the page or the chapter while dragging the slider
-                   if (typeof newChapters[val] == 'undefined' || typeof newChapters[val].pageNumber == 'undefined') {
+                   if (typeof newChapters[val].pageNumber !== 'undefined') {
                        //$(sliderPageNumber).text('Page ' + newChapters[val].pageNumber);
                        //$(sliderPageNumber).show();
                    } else {
@@ -529,7 +529,7 @@ define([
                    var val = Math.round(this.value || value);
                    var tocUrl = currentPackageDocument.getToc();
                    $(sliderInfoContainer).removeClass('visible');
-                   if (typeof newChapters[val] == 'undefined' || typeof newChapters[val].pageNumber == 'undefined') {
+                   if (typeof newChapters[val].pageNumber == 'undefined') {
                        try {
                            spin(true);
 
