@@ -53679,7 +53679,7 @@ define('text',['module'], function (module) {
 });
 
 
-define('text!version.json',[],function () { return '{"readiumJsViewer":{"sha":"06278c70650cdf40089f4307c151d58d13d24098","clean":false,"version":"0.31.1","chromeVersion":"2.31.1","tag":"1.6.25-233-g06278c70","branch":"master","release":false,"timestamp":1627591952472},"readiumJs":{"sha":"999d7c32bcdd1184bcc248312267c6e744d737b9","clean":true,"version":"0.31.1","tag":"0.31.1-0-g999d7c3","branch":"999d7c32bcdd1184bcc248312267c6e744d737b9","release":false,"timestamp":1627591952747},"readiumSharedJs":{"sha":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","clean":true,"version":"0.31.1","tag":"0.31.1-0-g7f245be","branch":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","release":false,"timestamp":1627591953000}}';});
+define('text!version.json',[],function () { return '{"readiumJsViewer":{"sha":"5e7b70e377c07ad057799140bab3421513bf1b37","clean":false,"version":"0.31.1","chromeVersion":"2.31.1","tag":"1.6.25-234-g5e7b70e3","branch":"master","release":false,"timestamp":1627658248436},"readiumJs":{"sha":"999d7c32bcdd1184bcc248312267c6e744d737b9","clean":false,"version":"0.31.1","tag":"0.31.1-0-g999d7c3","branch":"999d7c32bcdd1184bcc248312267c6e744d737b9","release":false,"timestamp":1627658248543},"readiumSharedJs":{"sha":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","clean":false,"version":"0.31.1","tag":"0.31.1-0-g7f245be","branch":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","release":false,"timestamp":1627658248632}}';});
 
 //  Copyright (c) 2014 Readium Foundation and/or its licensees. All rights reserved.
 //  
@@ -63071,8 +63071,8 @@ define('readium_js_viewer/EpubLibraryManager',['./ModuleConfig', './PackageParse
                     for (var i = 0; i < data.length; i++) {
                         data[i].coverHref = adjustEpubLibraryPath(data[i].coverHref);
                         data[i].rootUrl = adjustEpubLibraryPath(data[i].rootUrl);
-                        data[i].contentPath = data[i].contentPath;
-                        data[i].packageFile = data[i].packageFile;
+                        data[i].contentPath = data[i].contentPath || "OEDPS";
+                        data[i].packageFile = data[i].packageFile || "package.opf";
                     }
                 }
 

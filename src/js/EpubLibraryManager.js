@@ -76,8 +76,8 @@ define(['./ModuleConfig', './PackageParser', './workers/WorkerProxy', 'StorageMa
                     for (var i = 0; i < data.length; i++) {
                         data[i].coverHref = adjustEpubLibraryPath(data[i].coverHref);
                         data[i].rootUrl = adjustEpubLibraryPath(data[i].rootUrl);
-                        data[i].contentPath = data[i].contentPath;
-                        data[i].packageFile = data[i].packageFile;
+                        data[i].contentPath = data[i].contentPath || "OEDPS";
+                        data[i].packageFile = data[i].packageFile || "package.opf";
                     }
                 }
 
