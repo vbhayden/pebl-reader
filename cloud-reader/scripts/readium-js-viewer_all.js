@@ -53679,7 +53679,7 @@ define('text',['module'], function (module) {
 });
 
 
-define('text!version.json',[],function () { return '{"readiumJsViewer":{"sha":"bcf3094ddd345913af1dcd44d8a8f9b435081905","clean":false,"version":"0.31.1","chromeVersion":"2.31.1","tag":"1.6.25-235-gbcf3094d","branch":"master","release":false,"timestamp":1627673261666},"readiumJs":{"sha":"999d7c32bcdd1184bcc248312267c6e744d737b9","clean":false,"version":"0.31.1","tag":"0.31.1-0-g999d7c3","branch":"999d7c32bcdd1184bcc248312267c6e744d737b9","release":false,"timestamp":1627673261770},"readiumSharedJs":{"sha":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","clean":false,"version":"0.31.1","tag":"0.31.1-0-g7f245be","branch":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","release":false,"timestamp":1627673261858}}';});
+define('text!version.json',[],function () { return '{"readiumJsViewer":{"sha":"80c07e79d2c097548c9100f3950b2f582dc237bc","clean":false,"version":"0.31.1","chromeVersion":"2.31.1","tag":"1.6.25-238-g80c07e79","branch":"master","release":false,"timestamp":1627673792682},"readiumJs":{"sha":"999d7c32bcdd1184bcc248312267c6e744d737b9","clean":false,"version":"0.31.1","tag":"0.31.1-0-g999d7c3","branch":"999d7c32bcdd1184bcc248312267c6e744d737b9","release":false,"timestamp":1627673792783},"readiumSharedJs":{"sha":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","clean":false,"version":"0.31.1","tag":"0.31.1-0-g7f245be","branch":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","release":false,"timestamp":1627673792869}}';});
 
 //  Copyright (c) 2014 Readium Foundation and/or its licensees. All rights reserved.
 //  
@@ -72798,7 +72798,7 @@ define('readium_js_viewer/EpubReader',[
                slider.oninput = function() {
                    var val = Math.round(this.value);
                    //Show either the page or the chapter while dragging the slider
-                   if (typeof newChapters[val].pageNumber !== 'undefined') {
+                   if (typeof newChapters[val] == 'undefined' || typeof newChapters[val].pageNumber == 'undefined') {
                        //$(sliderPageNumber).text('Page ' + newChapters[val].pageNumber);
                        //$(sliderPageNumber).show();
                    } else {
@@ -72823,7 +72823,7 @@ define('readium_js_viewer/EpubReader',[
                    var val = Math.round(this.value || value);
                    var tocUrl = currentPackageDocument.getToc();
                    $(sliderInfoContainer).removeClass('visible');
-                   if (typeof newChapters[val].pageNumber == 'undefined') {
+                   if (typeof newChapters[val] == 'undefined' || typeof newChapters[val].pageNumber == 'undefined') {
                        try {
                            spin(true);
 
