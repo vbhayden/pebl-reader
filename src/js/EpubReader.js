@@ -267,10 +267,13 @@ define([
                            elementId = undefined;
                        }
 
-                       var spineItem = readium.reader.spine().getItemByHref(hrefPart);
-
                        if (currentChapterTitle == null)
                            currentChapterTitle = this.text;
+                           
+                       var spineItem = readium.reader.spine().getItemByHref(hrefPart);
+                       if (spineItem == undefined)
+                            return; 
+
                        if (currentIdref == null)
                            currentIdref = spineItem.idref;
 
