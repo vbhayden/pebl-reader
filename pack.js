@@ -1,2 +1,0 @@
-function consoleLog(...x) { if (DEBUGGING) { console.log(...x); } }
-function consoleError(...x) { if (DEBUGGING) { console.error(...x); } }

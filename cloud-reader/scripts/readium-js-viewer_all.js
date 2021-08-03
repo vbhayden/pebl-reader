@@ -435,30 +435,26 @@ var requirejs, require, define;
 
 define("readium-js-viewer_all", function(){});
 
-(function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define('underscore', factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, (function () {
-    var current = global._;
-    var exports = global._ = factory();
-    exports.noConflict = function () { global._ = current; return exports; };
-  }()));
-}(this, (function () {
-  //     Underscore.js 1.13.1
-  //     https://underscorejs.org
-  //     (c) 2009-2021 Jeremy Ashkenas, Julian Gonggrijp, and DocumentCloud and Investigative Reporters & Editors
-  //     Underscore may be freely distributed under the MIT license.
+//     Underscore.js 1.9.1
+//     http://underscorejs.org
+//     (c) 2009-2018 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+//     Underscore may be freely distributed under the MIT license.
 
-  // Current version.
-  var VERSION = '1.13.1';
+(function() {
+
+  // Baseline setup
+  // --------------
 
   // Establish the root object, `window` (`self`) in the browser, `global`
   // on the server, or `this` in some virtual machines. We use `self`
   // instead of `window` for `WebWorker` support.
   var root = typeof self == 'object' && self.self === self && self ||
             typeof global == 'object' && global.global === global && global ||
-            Function('return this')() ||
+            this ||
             {};
+
+  // Save the previous value of the `_` variable.
+  var previousUnderscore = root._;
 
   // Save bytes in the minified (but not gzipped) version:
   var ArrayProto = Array.prototype, ObjProto = Object.prototype;
@@ -470,35 +466,87 @@ define("readium-js-viewer_all", function(){});
       toString = ObjProto.toString,
       hasOwnProperty = ObjProto.hasOwnProperty;
 
-  // Modern feature detection.
-  var supportsArrayBuffer = typeof ArrayBuffer !== 'undefined',
-      supportsDataView = typeof DataView !== 'undefined';
-
-  // All **ECMAScript 5+** native function implementations that we hope to use
+  // All **ECMAScript 5** native function implementations that we hope to use
   // are declared here.
   var nativeIsArray = Array.isArray,
       nativeKeys = Object.keys,
-      nativeCreate = Object.create,
-      nativeIsView = supportsArrayBuffer && ArrayBuffer.isView;
+      nativeCreate = Object.create;
 
-  // Create references to these builtin functions because we override them.
-  var _isNaN = isNaN,
-      _isFinite = isFinite;
+  // Naked function reference for surrogate-prototype-swapping.
+  var Ctor = function(){};
 
-  // Keys in IE < 9 that won't be iterated by `for key in ...` and thus missed.
-  var hasEnumBug = !{toString: null}.propertyIsEnumerable('toString');
-  var nonEnumerableProps = ['valueOf', 'isPrototypeOf', 'toString',
-    'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
+  // Create a safe reference to the Underscore object for use below.
+  var _ = function(obj) {
+    if (obj instanceof _) return obj;
+    if (!(this instanceof _)) return new _(obj);
+    this._wrapped = obj;
+  };
 
-  // The largest integer that can be represented exactly.
-  var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+  // Export the Underscore object for **Node.js**, with
+  // backwards-compatibility for their old module API. If we're in
+  // the browser, add `_` as a global object.
+  // (`nodeType` is checked to ensure that `module`
+  // and `exports` are not HTML elements.)
+  if (typeof exports != 'undefined' && !exports.nodeType) {
+    if (typeof module != 'undefined' && !module.nodeType && module.exports) {
+      exports = module.exports = _;
+    }
+    exports._ = _;
+  } else {
+    root._ = _;
+  }
+
+  // Current version.
+  _.VERSION = '1.9.1';
+
+  // Internal function that returns an efficient (for current engines) version
+  // of the passed-in callback, to be repeatedly applied in other Underscore
+  // functions.
+  var optimizeCb = function(func, context, argCount) {
+    if (context === void 0) return func;
+    switch (argCount == null ? 3 : argCount) {
+      case 1: return function(value) {
+        return func.call(context, value);
+      };
+      // The 2-argument case is omitted because we’re not using it.
+      case 3: return function(value, index, collection) {
+        return func.call(context, value, index, collection);
+      };
+      case 4: return function(accumulator, value, index, collection) {
+        return func.call(context, accumulator, value, index, collection);
+      };
+    }
+    return function() {
+      return func.apply(context, arguments);
+    };
+  };
+
+  var builtinIteratee;
+
+  // An internal function to generate callbacks that can be applied to each
+  // element in a collection, returning the desired result — either `identity`,
+  // an arbitrary callback, a property matcher, or a property accessor.
+  var cb = function(value, context, argCount) {
+    if (_.iteratee !== builtinIteratee) return _.iteratee(value, context);
+    if (value == null) return _.identity;
+    if (_.isFunction(value)) return optimizeCb(value, context, argCount);
+    if (_.isObject(value) && !_.isArray(value)) return _.matcher(value);
+    return _.property(value);
+  };
+
+  // External wrapper for our callback generator. Users may customize
+  // `_.iteratee` if they want additional predicate/iteratee shorthand styles.
+  // This abstraction hides the internal-only argCount argument.
+  _.iteratee = builtinIteratee = function(value, context) {
+    return cb(value, context, Infinity);
+  };
 
   // Some functions take a variable number of arguments, or a few expected
   // arguments at the beginning and then a variable number of values to operate
   // on. This helper accumulates all remaining arguments past the function’s
   // argument length (or an explicit `startIndex`), into an array that becomes
   // the last argument. Similar to ES6’s "rest parameter".
-  function restArguments(func, startIndex) {
+  var restArguments = function(func, startIndex) {
     startIndex = startIndex == null ? func.length - 1 : +startIndex;
     return function() {
       var length = Math.max(arguments.length - startIndex, 0),
@@ -519,280 +567,1067 @@ define("readium-js-viewer_all", function(){});
       args[startIndex] = rest;
       return func.apply(this, args);
     };
-  }
+  };
 
-  // Is a given variable an object?
-  function isObject(obj) {
-    var type = typeof obj;
-    return type === 'function' || type === 'object' && !!obj;
-  }
+  // An internal function for creating a new object that inherits from another.
+  var baseCreate = function(prototype) {
+    if (!_.isObject(prototype)) return {};
+    if (nativeCreate) return nativeCreate(prototype);
+    Ctor.prototype = prototype;
+    var result = new Ctor;
+    Ctor.prototype = null;
+    return result;
+  };
 
-  // Is a given value equal to null?
-  function isNull(obj) {
-    return obj === null;
-  }
-
-  // Is a given variable undefined?
-  function isUndefined(obj) {
-    return obj === void 0;
-  }
-
-  // Is a given value a boolean?
-  function isBoolean(obj) {
-    return obj === true || obj === false || toString.call(obj) === '[object Boolean]';
-  }
-
-  // Is a given value a DOM element?
-  function isElement(obj) {
-    return !!(obj && obj.nodeType === 1);
-  }
-
-  // Internal function for creating a `toString`-based type tester.
-  function tagTester(name) {
-    var tag = '[object ' + name + ']';
-    return function(obj) {
-      return toString.call(obj) === tag;
-    };
-  }
-
-  var isString = tagTester('String');
-
-  var isNumber = tagTester('Number');
-
-  var isDate = tagTester('Date');
-
-  var isRegExp = tagTester('RegExp');
-
-  var isError = tagTester('Error');
-
-  var isSymbol = tagTester('Symbol');
-
-  var isArrayBuffer = tagTester('ArrayBuffer');
-
-  var isFunction = tagTester('Function');
-
-  // Optimize `isFunction` if appropriate. Work around some `typeof` bugs in old
-  // v8, IE 11 (#1621), Safari 8 (#1929), and PhantomJS (#2236).
-  var nodelist = root.document && root.document.childNodes;
-  if (typeof /./ != 'function' && typeof Int8Array != 'object' && typeof nodelist != 'function') {
-    isFunction = function(obj) {
-      return typeof obj == 'function' || false;
-    };
-  }
-
-  var isFunction$1 = isFunction;
-
-  var hasObjectTag = tagTester('Object');
-
-  // In IE 10 - Edge 13, `DataView` has string tag `'[object Object]'`.
-  // In IE 11, the most common among them, this problem also applies to
-  // `Map`, `WeakMap` and `Set`.
-  var hasStringTagBug = (
-        supportsDataView && hasObjectTag(new DataView(new ArrayBuffer(8)))
-      ),
-      isIE11 = (typeof Map !== 'undefined' && hasObjectTag(new Map));
-
-  var isDataView = tagTester('DataView');
-
-  // In IE 10 - Edge 13, we need a different heuristic
-  // to determine whether an object is a `DataView`.
-  function ie10IsDataView(obj) {
-    return obj != null && isFunction$1(obj.getInt8) && isArrayBuffer(obj.buffer);
-  }
-
-  var isDataView$1 = (hasStringTagBug ? ie10IsDataView : isDataView);
-
-  // Is a given value an array?
-  // Delegates to ECMA5's native `Array.isArray`.
-  var isArray = nativeIsArray || tagTester('Array');
-
-  // Internal function to check whether `key` is an own property name of `obj`.
-  function has$1(obj, key) {
-    return obj != null && hasOwnProperty.call(obj, key);
-  }
-
-  var isArguments = tagTester('Arguments');
-
-  // Define a fallback version of the method in browsers (ahem, IE < 9), where
-  // there isn't any inspectable "Arguments" type.
-  (function() {
-    if (!isArguments(arguments)) {
-      isArguments = function(obj) {
-        return has$1(obj, 'callee');
-      };
-    }
-  }());
-
-  var isArguments$1 = isArguments;
-
-  // Is a given object a finite number?
-  function isFinite$1(obj) {
-    return !isSymbol(obj) && _isFinite(obj) && !isNaN(parseFloat(obj));
-  }
-
-  // Is the given value `NaN`?
-  function isNaN$1(obj) {
-    return isNumber(obj) && _isNaN(obj);
-  }
-
-  // Predicate-generating function. Often useful outside of Underscore.
-  function constant(value) {
-    return function() {
-      return value;
-    };
-  }
-
-  // Common internal logic for `isArrayLike` and `isBufferLike`.
-  function createSizePropertyCheck(getSizeProperty) {
-    return function(collection) {
-      var sizeProperty = getSizeProperty(collection);
-      return typeof sizeProperty == 'number' && sizeProperty >= 0 && sizeProperty <= MAX_ARRAY_INDEX;
-    }
-  }
-
-  // Internal helper to generate a function to obtain property `key` from `obj`.
-  function shallowProperty(key) {
+  var shallowProperty = function(key) {
     return function(obj) {
       return obj == null ? void 0 : obj[key];
     };
+  };
+
+  var has = function(obj, path) {
+    return obj != null && hasOwnProperty.call(obj, path);
   }
 
-  // Internal helper to obtain the `byteLength` property of an object.
-  var getByteLength = shallowProperty('byteLength');
+  var deepGet = function(obj, path) {
+    var length = path.length;
+    for (var i = 0; i < length; i++) {
+      if (obj == null) return void 0;
+      obj = obj[path[i]];
+    }
+    return length ? obj : void 0;
+  };
 
-  // Internal helper to determine whether we should spend extensive checks against
-  // `ArrayBuffer` et al.
-  var isBufferLike = createSizePropertyCheck(getByteLength);
-
-  // Is a given value a typed array?
-  var typedArrayPattern = /\[object ((I|Ui)nt(8|16|32)|Float(32|64)|Uint8Clamped|Big(I|Ui)nt64)Array\]/;
-  function isTypedArray(obj) {
-    // `ArrayBuffer.isView` is the most future-proof, so use it when available.
-    // Otherwise, fall back on the above regular expression.
-    return nativeIsView ? (nativeIsView(obj) && !isDataView$1(obj)) :
-                  isBufferLike(obj) && typedArrayPattern.test(toString.call(obj));
-  }
-
-  var isTypedArray$1 = supportsArrayBuffer ? isTypedArray : constant(false);
-
-  // Internal helper to obtain the `length` property of an object.
+  // Helper for collection methods to determine whether a collection
+  // should be iterated as an array or as an object.
+  // Related: http://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength
+  // Avoids a very nasty iOS 8 JIT bug on ARM-64. #2094
+  var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
   var getLength = shallowProperty('length');
+  var isArrayLike = function(collection) {
+    var length = getLength(collection);
+    return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
+  };
 
-  // Internal helper to create a simple lookup structure.
-  // `collectNonEnumProps` used to depend on `_.contains`, but this led to
-  // circular imports. `emulatedSet` is a one-off solution that only works for
-  // arrays of strings.
-  function emulatedSet(keys) {
-    var hash = {};
-    for (var l = keys.length, i = 0; i < l; ++i) hash[keys[i]] = true;
-    return {
-      contains: function(key) { return hash[key]; },
-      push: function(key) {
-        hash[key] = true;
-        return keys.push(key);
+  // Collection Functions
+  // --------------------
+
+  // The cornerstone, an `each` implementation, aka `forEach`.
+  // Handles raw objects in addition to array-likes. Treats all
+  // sparse array-likes as if they were dense.
+  _.each = _.forEach = function(obj, iteratee, context) {
+    iteratee = optimizeCb(iteratee, context);
+    var i, length;
+    if (isArrayLike(obj)) {
+      for (i = 0, length = obj.length; i < length; i++) {
+        iteratee(obj[i], i, obj);
+      }
+    } else {
+      var keys = _.keys(obj);
+      for (i = 0, length = keys.length; i < length; i++) {
+        iteratee(obj[keys[i]], keys[i], obj);
+      }
+    }
+    return obj;
+  };
+
+  // Return the results of applying the iteratee to each element.
+  _.map = _.collect = function(obj, iteratee, context) {
+    iteratee = cb(iteratee, context);
+    var keys = !isArrayLike(obj) && _.keys(obj),
+        length = (keys || obj).length,
+        results = Array(length);
+    for (var index = 0; index < length; index++) {
+      var currentKey = keys ? keys[index] : index;
+      results[index] = iteratee(obj[currentKey], currentKey, obj);
+    }
+    return results;
+  };
+
+  // Create a reducing function iterating left or right.
+  var createReduce = function(dir) {
+    // Wrap code that reassigns argument variables in a separate function than
+    // the one that accesses `arguments.length` to avoid a perf hit. (#1991)
+    var reducer = function(obj, iteratee, memo, initial) {
+      var keys = !isArrayLike(obj) && _.keys(obj),
+          length = (keys || obj).length,
+          index = dir > 0 ? 0 : length - 1;
+      if (!initial) {
+        memo = obj[keys ? keys[index] : index];
+        index += dir;
+      }
+      for (; index >= 0 && index < length; index += dir) {
+        var currentKey = keys ? keys[index] : index;
+        memo = iteratee(memo, obj[currentKey], currentKey, obj);
+      }
+      return memo;
+    };
+
+    return function(obj, iteratee, memo, context) {
+      var initial = arguments.length >= 3;
+      return reducer(obj, optimizeCb(iteratee, context, 4), memo, initial);
+    };
+  };
+
+  // **Reduce** builds up a single result from a list of values, aka `inject`,
+  // or `foldl`.
+  _.reduce = _.foldl = _.inject = createReduce(1);
+
+  // The right-associative version of reduce, also known as `foldr`.
+  _.reduceRight = _.foldr = createReduce(-1);
+
+  // Return the first value which passes a truth test. Aliased as `detect`.
+  _.find = _.detect = function(obj, predicate, context) {
+    var keyFinder = isArrayLike(obj) ? _.findIndex : _.findKey;
+    var key = keyFinder(obj, predicate, context);
+    if (key !== void 0 && key !== -1) return obj[key];
+  };
+
+  // Return all the elements that pass a truth test.
+  // Aliased as `select`.
+  _.filter = _.select = function(obj, predicate, context) {
+    var results = [];
+    predicate = cb(predicate, context);
+    _.each(obj, function(value, index, list) {
+      if (predicate(value, index, list)) results.push(value);
+    });
+    return results;
+  };
+
+  // Return all the elements for which a truth test fails.
+  _.reject = function(obj, predicate, context) {
+    return _.filter(obj, _.negate(cb(predicate)), context);
+  };
+
+  // Determine whether all of the elements match a truth test.
+  // Aliased as `all`.
+  _.every = _.all = function(obj, predicate, context) {
+    predicate = cb(predicate, context);
+    var keys = !isArrayLike(obj) && _.keys(obj),
+        length = (keys || obj).length;
+    for (var index = 0; index < length; index++) {
+      var currentKey = keys ? keys[index] : index;
+      if (!predicate(obj[currentKey], currentKey, obj)) return false;
+    }
+    return true;
+  };
+
+  // Determine if at least one element in the object matches a truth test.
+  // Aliased as `any`.
+  _.some = _.any = function(obj, predicate, context) {
+    predicate = cb(predicate, context);
+    var keys = !isArrayLike(obj) && _.keys(obj),
+        length = (keys || obj).length;
+    for (var index = 0; index < length; index++) {
+      var currentKey = keys ? keys[index] : index;
+      if (predicate(obj[currentKey], currentKey, obj)) return true;
+    }
+    return false;
+  };
+
+  // Determine if the array or object contains a given item (using `===`).
+  // Aliased as `includes` and `include`.
+  _.contains = _.includes = _.include = function(obj, item, fromIndex, guard) {
+    if (!isArrayLike(obj)) obj = _.values(obj);
+    if (typeof fromIndex != 'number' || guard) fromIndex = 0;
+    return _.indexOf(obj, item, fromIndex) >= 0;
+  };
+
+  // Invoke a method (with arguments) on every item in a collection.
+  _.invoke = restArguments(function(obj, path, args) {
+    var contextPath, func;
+    if (_.isFunction(path)) {
+      func = path;
+    } else if (_.isArray(path)) {
+      contextPath = path.slice(0, -1);
+      path = path[path.length - 1];
+    }
+    return _.map(obj, function(context) {
+      var method = func;
+      if (!method) {
+        if (contextPath && contextPath.length) {
+          context = deepGet(context, contextPath);
+        }
+        if (context == null) return void 0;
+        method = context[path];
+      }
+      return method == null ? method : method.apply(context, args);
+    });
+  });
+
+  // Convenience version of a common use case of `map`: fetching a property.
+  _.pluck = function(obj, key) {
+    return _.map(obj, _.property(key));
+  };
+
+  // Convenience version of a common use case of `filter`: selecting only objects
+  // containing specific `key:value` pairs.
+  _.where = function(obj, attrs) {
+    return _.filter(obj, _.matcher(attrs));
+  };
+
+  // Convenience version of a common use case of `find`: getting the first object
+  // containing specific `key:value` pairs.
+  _.findWhere = function(obj, attrs) {
+    return _.find(obj, _.matcher(attrs));
+  };
+
+  // Return the maximum element (or element-based computation).
+  _.max = function(obj, iteratee, context) {
+    var result = -Infinity, lastComputed = -Infinity,
+        value, computed;
+    if (iteratee == null || typeof iteratee == 'number' && typeof obj[0] != 'object' && obj != null) {
+      obj = isArrayLike(obj) ? obj : _.values(obj);
+      for (var i = 0, length = obj.length; i < length; i++) {
+        value = obj[i];
+        if (value != null && value > result) {
+          result = value;
+        }
+      }
+    } else {
+      iteratee = cb(iteratee, context);
+      _.each(obj, function(v, index, list) {
+        computed = iteratee(v, index, list);
+        if (computed > lastComputed || computed === -Infinity && result === -Infinity) {
+          result = v;
+          lastComputed = computed;
+        }
+      });
+    }
+    return result;
+  };
+
+  // Return the minimum element (or element-based computation).
+  _.min = function(obj, iteratee, context) {
+    var result = Infinity, lastComputed = Infinity,
+        value, computed;
+    if (iteratee == null || typeof iteratee == 'number' && typeof obj[0] != 'object' && obj != null) {
+      obj = isArrayLike(obj) ? obj : _.values(obj);
+      for (var i = 0, length = obj.length; i < length; i++) {
+        value = obj[i];
+        if (value != null && value < result) {
+          result = value;
+        }
+      }
+    } else {
+      iteratee = cb(iteratee, context);
+      _.each(obj, function(v, index, list) {
+        computed = iteratee(v, index, list);
+        if (computed < lastComputed || computed === Infinity && result === Infinity) {
+          result = v;
+          lastComputed = computed;
+        }
+      });
+    }
+    return result;
+  };
+
+  // Shuffle a collection.
+  _.shuffle = function(obj) {
+    return _.sample(obj, Infinity);
+  };
+
+  // Sample **n** random values from a collection using the modern version of the
+  // [Fisher-Yates shuffle](http://en.wikipedia.org/wiki/Fisher–Yates_shuffle).
+  // If **n** is not specified, returns a single random element.
+  // The internal `guard` argument allows it to work with `map`.
+  _.sample = function(obj, n, guard) {
+    if (n == null || guard) {
+      if (!isArrayLike(obj)) obj = _.values(obj);
+      return obj[_.random(obj.length - 1)];
+    }
+    var sample = isArrayLike(obj) ? _.clone(obj) : _.values(obj);
+    var length = getLength(sample);
+    n = Math.max(Math.min(n, length), 0);
+    var last = length - 1;
+    for (var index = 0; index < n; index++) {
+      var rand = _.random(index, last);
+      var temp = sample[index];
+      sample[index] = sample[rand];
+      sample[rand] = temp;
+    }
+    return sample.slice(0, n);
+  };
+
+  // Sort the object's values by a criterion produced by an iteratee.
+  _.sortBy = function(obj, iteratee, context) {
+    var index = 0;
+    iteratee = cb(iteratee, context);
+    return _.pluck(_.map(obj, function(value, key, list) {
+      return {
+        value: value,
+        index: index++,
+        criteria: iteratee(value, key, list)
+      };
+    }).sort(function(left, right) {
+      var a = left.criteria;
+      var b = right.criteria;
+      if (a !== b) {
+        if (a > b || a === void 0) return 1;
+        if (a < b || b === void 0) return -1;
+      }
+      return left.index - right.index;
+    }), 'value');
+  };
+
+  // An internal function used for aggregate "group by" operations.
+  var group = function(behavior, partition) {
+    return function(obj, iteratee, context) {
+      var result = partition ? [[], []] : {};
+      iteratee = cb(iteratee, context);
+      _.each(obj, function(value, index) {
+        var key = iteratee(value, index, obj);
+        behavior(result, value, key);
+      });
+      return result;
+    };
+  };
+
+  // Groups the object's values by a criterion. Pass either a string attribute
+  // to group by, or a function that returns the criterion.
+  _.groupBy = group(function(result, value, key) {
+    if (has(result, key)) result[key].push(value); else result[key] = [value];
+  });
+
+  // Indexes the object's values by a criterion, similar to `groupBy`, but for
+  // when you know that your index values will be unique.
+  _.indexBy = group(function(result, value, key) {
+    result[key] = value;
+  });
+
+  // Counts instances of an object that group by a certain criterion. Pass
+  // either a string attribute to count by, or a function that returns the
+  // criterion.
+  _.countBy = group(function(result, value, key) {
+    if (has(result, key)) result[key]++; else result[key] = 1;
+  });
+
+  var reStrSymbol = /[^\ud800-\udfff]|[\ud800-\udbff][\udc00-\udfff]|[\ud800-\udfff]/g;
+  // Safely create a real, live array from anything iterable.
+  _.toArray = function(obj) {
+    if (!obj) return [];
+    if (_.isArray(obj)) return slice.call(obj);
+    if (_.isString(obj)) {
+      // Keep surrogate pair characters together
+      return obj.match(reStrSymbol);
+    }
+    if (isArrayLike(obj)) return _.map(obj, _.identity);
+    return _.values(obj);
+  };
+
+  // Return the number of elements in an object.
+  _.size = function(obj) {
+    if (obj == null) return 0;
+    return isArrayLike(obj) ? obj.length : _.keys(obj).length;
+  };
+
+  // Split a collection into two arrays: one whose elements all satisfy the given
+  // predicate, and one whose elements all do not satisfy the predicate.
+  _.partition = group(function(result, value, pass) {
+    result[pass ? 0 : 1].push(value);
+  }, true);
+
+  // Array Functions
+  // ---------------
+
+  // Get the first element of an array. Passing **n** will return the first N
+  // values in the array. Aliased as `head` and `take`. The **guard** check
+  // allows it to work with `_.map`.
+  _.first = _.head = _.take = function(array, n, guard) {
+    if (array == null || array.length < 1) return n == null ? void 0 : [];
+    if (n == null || guard) return array[0];
+    return _.initial(array, array.length - n);
+  };
+
+  // Returns everything but the last entry of the array. Especially useful on
+  // the arguments object. Passing **n** will return all the values in
+  // the array, excluding the last N.
+  _.initial = function(array, n, guard) {
+    return slice.call(array, 0, Math.max(0, array.length - (n == null || guard ? 1 : n)));
+  };
+
+  // Get the last element of an array. Passing **n** will return the last N
+  // values in the array.
+  _.last = function(array, n, guard) {
+    if (array == null || array.length < 1) return n == null ? void 0 : [];
+    if (n == null || guard) return array[array.length - 1];
+    return _.rest(array, Math.max(0, array.length - n));
+  };
+
+  // Returns everything but the first entry of the array. Aliased as `tail` and `drop`.
+  // Especially useful on the arguments object. Passing an **n** will return
+  // the rest N values in the array.
+  _.rest = _.tail = _.drop = function(array, n, guard) {
+    return slice.call(array, n == null || guard ? 1 : n);
+  };
+
+  // Trim out all falsy values from an array.
+  _.compact = function(array) {
+    return _.filter(array, Boolean);
+  };
+
+  // Internal implementation of a recursive `flatten` function.
+  var flatten = function(input, shallow, strict, output) {
+    output = output || [];
+    var idx = output.length;
+    for (var i = 0, length = getLength(input); i < length; i++) {
+      var value = input[i];
+      if (isArrayLike(value) && (_.isArray(value) || _.isArguments(value))) {
+        // Flatten current level of array or arguments object.
+        if (shallow) {
+          var j = 0, len = value.length;
+          while (j < len) output[idx++] = value[j++];
+        } else {
+          flatten(value, shallow, strict, output);
+          idx = output.length;
+        }
+      } else if (!strict) {
+        output[idx++] = value;
+      }
+    }
+    return output;
+  };
+
+  // Flatten out an array, either recursively (by default), or just one level.
+  _.flatten = function(array, shallow) {
+    return flatten(array, shallow, false);
+  };
+
+  // Return a version of the array that does not contain the specified value(s).
+  _.without = restArguments(function(array, otherArrays) {
+    return _.difference(array, otherArrays);
+  });
+
+  // Produce a duplicate-free version of the array. If the array has already
+  // been sorted, you have the option of using a faster algorithm.
+  // The faster algorithm will not work with an iteratee if the iteratee
+  // is not a one-to-one function, so providing an iteratee will disable
+  // the faster algorithm.
+  // Aliased as `unique`.
+  _.uniq = _.unique = function(array, isSorted, iteratee, context) {
+    if (!_.isBoolean(isSorted)) {
+      context = iteratee;
+      iteratee = isSorted;
+      isSorted = false;
+    }
+    if (iteratee != null) iteratee = cb(iteratee, context);
+    var result = [];
+    var seen = [];
+    for (var i = 0, length = getLength(array); i < length; i++) {
+      var value = array[i],
+          computed = iteratee ? iteratee(value, i, array) : value;
+      if (isSorted && !iteratee) {
+        if (!i || seen !== computed) result.push(value);
+        seen = computed;
+      } else if (iteratee) {
+        if (!_.contains(seen, computed)) {
+          seen.push(computed);
+          result.push(value);
+        }
+      } else if (!_.contains(result, value)) {
+        result.push(value);
+      }
+    }
+    return result;
+  };
+
+  // Produce an array that contains the union: each distinct element from all of
+  // the passed-in arrays.
+  _.union = restArguments(function(arrays) {
+    return _.uniq(flatten(arrays, true, true));
+  });
+
+  // Produce an array that contains every item shared between all the
+  // passed-in arrays.
+  _.intersection = function(array) {
+    var result = [];
+    var argsLength = arguments.length;
+    for (var i = 0, length = getLength(array); i < length; i++) {
+      var item = array[i];
+      if (_.contains(result, item)) continue;
+      var j;
+      for (j = 1; j < argsLength; j++) {
+        if (!_.contains(arguments[j], item)) break;
+      }
+      if (j === argsLength) result.push(item);
+    }
+    return result;
+  };
+
+  // Take the difference between one array and a number of other arrays.
+  // Only the elements present in just the first array will remain.
+  _.difference = restArguments(function(array, rest) {
+    rest = flatten(rest, true, true);
+    return _.filter(array, function(value){
+      return !_.contains(rest, value);
+    });
+  });
+
+  // Complement of _.zip. Unzip accepts an array of arrays and groups
+  // each array's elements on shared indices.
+  _.unzip = function(array) {
+    var length = array && _.max(array, getLength).length || 0;
+    var result = Array(length);
+
+    for (var index = 0; index < length; index++) {
+      result[index] = _.pluck(array, index);
+    }
+    return result;
+  };
+
+  // Zip together multiple lists into a single array -- elements that share
+  // an index go together.
+  _.zip = restArguments(_.unzip);
+
+  // Converts lists into objects. Pass either a single array of `[key, value]`
+  // pairs, or two parallel arrays of the same length -- one of keys, and one of
+  // the corresponding values. Passing by pairs is the reverse of _.pairs.
+  _.object = function(list, values) {
+    var result = {};
+    for (var i = 0, length = getLength(list); i < length; i++) {
+      if (values) {
+        result[list[i]] = values[i];
+      } else {
+        result[list[i][0]] = list[i][1];
+      }
+    }
+    return result;
+  };
+
+  // Generator function to create the findIndex and findLastIndex functions.
+  var createPredicateIndexFinder = function(dir) {
+    return function(array, predicate, context) {
+      predicate = cb(predicate, context);
+      var length = getLength(array);
+      var index = dir > 0 ? 0 : length - 1;
+      for (; index >= 0 && index < length; index += dir) {
+        if (predicate(array[index], index, array)) return index;
+      }
+      return -1;
+    };
+  };
+
+  // Returns the first index on an array-like that passes a predicate test.
+  _.findIndex = createPredicateIndexFinder(1);
+  _.findLastIndex = createPredicateIndexFinder(-1);
+
+  // Use a comparator function to figure out the smallest index at which
+  // an object should be inserted so as to maintain order. Uses binary search.
+  _.sortedIndex = function(array, obj, iteratee, context) {
+    iteratee = cb(iteratee, context, 1);
+    var value = iteratee(obj);
+    var low = 0, high = getLength(array);
+    while (low < high) {
+      var mid = Math.floor((low + high) / 2);
+      if (iteratee(array[mid]) < value) low = mid + 1; else high = mid;
+    }
+    return low;
+  };
+
+  // Generator function to create the indexOf and lastIndexOf functions.
+  var createIndexFinder = function(dir, predicateFind, sortedIndex) {
+    return function(array, item, idx) {
+      var i = 0, length = getLength(array);
+      if (typeof idx == 'number') {
+        if (dir > 0) {
+          i = idx >= 0 ? idx : Math.max(idx + length, i);
+        } else {
+          length = idx >= 0 ? Math.min(idx + 1, length) : idx + length + 1;
+        }
+      } else if (sortedIndex && idx && length) {
+        idx = sortedIndex(array, item);
+        return array[idx] === item ? idx : -1;
+      }
+      if (item !== item) {
+        idx = predicateFind(slice.call(array, i, length), _.isNaN);
+        return idx >= 0 ? idx + i : -1;
+      }
+      for (idx = dir > 0 ? i : length - 1; idx >= 0 && idx < length; idx += dir) {
+        if (array[idx] === item) return idx;
+      }
+      return -1;
+    };
+  };
+
+  // Return the position of the first occurrence of an item in an array,
+  // or -1 if the item is not included in the array.
+  // If the array is large and already in sort order, pass `true`
+  // for **isSorted** to use binary search.
+  _.indexOf = createIndexFinder(1, _.findIndex, _.sortedIndex);
+  _.lastIndexOf = createIndexFinder(-1, _.findLastIndex);
+
+  // Generate an integer Array containing an arithmetic progression. A port of
+  // the native Python `range()` function. See
+  // [the Python documentation](http://docs.python.org/library/functions.html#range).
+  _.range = function(start, stop, step) {
+    if (stop == null) {
+      stop = start || 0;
+      start = 0;
+    }
+    if (!step) {
+      step = stop < start ? -1 : 1;
+    }
+
+    var length = Math.max(Math.ceil((stop - start) / step), 0);
+    var range = Array(length);
+
+    for (var idx = 0; idx < length; idx++, start += step) {
+      range[idx] = start;
+    }
+
+    return range;
+  };
+
+  // Chunk a single array into multiple arrays, each containing `count` or fewer
+  // items.
+  _.chunk = function(array, count) {
+    if (count == null || count < 1) return [];
+    var result = [];
+    var i = 0, length = array.length;
+    while (i < length) {
+      result.push(slice.call(array, i, i += count));
+    }
+    return result;
+  };
+
+  // Function (ahem) Functions
+  // ------------------
+
+  // Determines whether to execute a function as a constructor
+  // or a normal function with the provided arguments.
+  var executeBound = function(sourceFunc, boundFunc, context, callingContext, args) {
+    if (!(callingContext instanceof boundFunc)) return sourceFunc.apply(context, args);
+    var self = baseCreate(sourceFunc.prototype);
+    var result = sourceFunc.apply(self, args);
+    if (_.isObject(result)) return result;
+    return self;
+  };
+
+  // Create a function bound to a given object (assigning `this`, and arguments,
+  // optionally). Delegates to **ECMAScript 5**'s native `Function.bind` if
+  // available.
+  _.bind = restArguments(function(func, context, args) {
+    if (!_.isFunction(func)) throw new TypeError('Bind must be called on a function');
+    var bound = restArguments(function(callArgs) {
+      return executeBound(func, bound, context, this, args.concat(callArgs));
+    });
+    return bound;
+  });
+
+  // Partially apply a function by creating a version that has had some of its
+  // arguments pre-filled, without changing its dynamic `this` context. _ acts
+  // as a placeholder by default, allowing any combination of arguments to be
+  // pre-filled. Set `_.partial.placeholder` for a custom placeholder argument.
+  _.partial = restArguments(function(func, boundArgs) {
+    var placeholder = _.partial.placeholder;
+    var bound = function() {
+      var position = 0, length = boundArgs.length;
+      var args = Array(length);
+      for (var i = 0; i < length; i++) {
+        args[i] = boundArgs[i] === placeholder ? arguments[position++] : boundArgs[i];
+      }
+      while (position < arguments.length) args.push(arguments[position++]);
+      return executeBound(func, bound, this, this, args);
+    };
+    return bound;
+  });
+
+  _.partial.placeholder = _;
+
+  // Bind a number of an object's methods to that object. Remaining arguments
+  // are the method names to be bound. Useful for ensuring that all callbacks
+  // defined on an object belong to it.
+  _.bindAll = restArguments(function(obj, keys) {
+    keys = flatten(keys, false, false);
+    var index = keys.length;
+    if (index < 1) throw new Error('bindAll must be passed function names');
+    while (index--) {
+      var key = keys[index];
+      obj[key] = _.bind(obj[key], obj);
+    }
+  });
+
+  // Memoize an expensive function by storing its results.
+  _.memoize = function(func, hasher) {
+    var memoize = function(key) {
+      var cache = memoize.cache;
+      var address = '' + (hasher ? hasher.apply(this, arguments) : key);
+      if (!has(cache, address)) cache[address] = func.apply(this, arguments);
+      return cache[address];
+    };
+    memoize.cache = {};
+    return memoize;
+  };
+
+  // Delays a function for the given number of milliseconds, and then calls
+  // it with the arguments supplied.
+  _.delay = restArguments(function(func, wait, args) {
+    return setTimeout(function() {
+      return func.apply(null, args);
+    }, wait);
+  });
+
+  // Defers a function, scheduling it to run after the current call stack has
+  // cleared.
+  _.defer = _.partial(_.delay, _, 1);
+
+  // Returns a function, that, when invoked, will only be triggered at most once
+  // during a given window of time. Normally, the throttled function will run
+  // as much as it can, without ever going more than once per `wait` duration;
+  // but if you'd like to disable the execution on the leading edge, pass
+  // `{leading: false}`. To disable execution on the trailing edge, ditto.
+  _.throttle = function(func, wait, options) {
+    var timeout, context, args, result;
+    var previous = 0;
+    if (!options) options = {};
+
+    var later = function() {
+      previous = options.leading === false ? 0 : _.now();
+      timeout = null;
+      result = func.apply(context, args);
+      if (!timeout) context = args = null;
+    };
+
+    var throttled = function() {
+      var now = _.now();
+      if (!previous && options.leading === false) previous = now;
+      var remaining = wait - (now - previous);
+      context = this;
+      args = arguments;
+      if (remaining <= 0 || remaining > wait) {
+        if (timeout) {
+          clearTimeout(timeout);
+          timeout = null;
+        }
+        previous = now;
+        result = func.apply(context, args);
+        if (!timeout) context = args = null;
+      } else if (!timeout && options.trailing !== false) {
+        timeout = setTimeout(later, remaining);
+      }
+      return result;
+    };
+
+    throttled.cancel = function() {
+      clearTimeout(timeout);
+      previous = 0;
+      timeout = context = args = null;
+    };
+
+    return throttled;
+  };
+
+  // Returns a function, that, as long as it continues to be invoked, will not
+  // be triggered. The function will be called after it stops being called for
+  // N milliseconds. If `immediate` is passed, trigger the function on the
+  // leading edge, instead of the trailing.
+  _.debounce = function(func, wait, immediate) {
+    var timeout, result;
+
+    var later = function(context, args) {
+      timeout = null;
+      if (args) result = func.apply(context, args);
+    };
+
+    var debounced = restArguments(function(args) {
+      if (timeout) clearTimeout(timeout);
+      if (immediate) {
+        var callNow = !timeout;
+        timeout = setTimeout(later, wait);
+        if (callNow) result = func.apply(this, args);
+      } else {
+        timeout = _.delay(later, wait, this, args);
+      }
+
+      return result;
+    });
+
+    debounced.cancel = function() {
+      clearTimeout(timeout);
+      timeout = null;
+    };
+
+    return debounced;
+  };
+
+  // Returns the first function passed as an argument to the second,
+  // allowing you to adjust arguments, run code before and after, and
+  // conditionally execute the original function.
+  _.wrap = function(func, wrapper) {
+    return _.partial(wrapper, func);
+  };
+
+  // Returns a negated version of the passed-in predicate.
+  _.negate = function(predicate) {
+    return function() {
+      return !predicate.apply(this, arguments);
+    };
+  };
+
+  // Returns a function that is the composition of a list of functions, each
+  // consuming the return value of the function that follows.
+  _.compose = function() {
+    var args = arguments;
+    var start = args.length - 1;
+    return function() {
+      var i = start;
+      var result = args[start].apply(this, arguments);
+      while (i--) result = args[i].call(this, result);
+      return result;
+    };
+  };
+
+  // Returns a function that will only be executed on and after the Nth call.
+  _.after = function(times, func) {
+    return function() {
+      if (--times < 1) {
+        return func.apply(this, arguments);
       }
     };
-  }
+  };
 
-  // Internal helper. Checks `keys` for the presence of keys in IE < 9 that won't
-  // be iterated by `for key in ...` and thus missed. Extends `keys` in place if
-  // needed.
-  function collectNonEnumProps(obj, keys) {
-    keys = emulatedSet(keys);
+  // Returns a function that will only be executed up to (but not including) the Nth call.
+  _.before = function(times, func) {
+    var memo;
+    return function() {
+      if (--times > 0) {
+        memo = func.apply(this, arguments);
+      }
+      if (times <= 1) func = null;
+      return memo;
+    };
+  };
+
+  // Returns a function that will be executed at most one time, no matter how
+  // often you call it. Useful for lazy initialization.
+  _.once = _.partial(_.before, 2);
+
+  _.restArguments = restArguments;
+
+  // Object Functions
+  // ----------------
+
+  // Keys in IE < 9 that won't be iterated by `for key in ...` and thus missed.
+  var hasEnumBug = !{toString: null}.propertyIsEnumerable('toString');
+  var nonEnumerableProps = ['valueOf', 'isPrototypeOf', 'toString',
+    'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
+
+  var collectNonEnumProps = function(obj, keys) {
     var nonEnumIdx = nonEnumerableProps.length;
     var constructor = obj.constructor;
-    var proto = isFunction$1(constructor) && constructor.prototype || ObjProto;
+    var proto = _.isFunction(constructor) && constructor.prototype || ObjProto;
 
     // Constructor is a special case.
     var prop = 'constructor';
-    if (has$1(obj, prop) && !keys.contains(prop)) keys.push(prop);
+    if (has(obj, prop) && !_.contains(keys, prop)) keys.push(prop);
 
     while (nonEnumIdx--) {
       prop = nonEnumerableProps[nonEnumIdx];
-      if (prop in obj && obj[prop] !== proto[prop] && !keys.contains(prop)) {
+      if (prop in obj && obj[prop] !== proto[prop] && !_.contains(keys, prop)) {
         keys.push(prop);
       }
     }
-  }
+  };
 
   // Retrieve the names of an object's own properties.
   // Delegates to **ECMAScript 5**'s native `Object.keys`.
-  function keys(obj) {
-    if (!isObject(obj)) return [];
+  _.keys = function(obj) {
+    if (!_.isObject(obj)) return [];
     if (nativeKeys) return nativeKeys(obj);
     var keys = [];
-    for (var key in obj) if (has$1(obj, key)) keys.push(key);
+    for (var key in obj) if (has(obj, key)) keys.push(key);
     // Ahem, IE < 9.
     if (hasEnumBug) collectNonEnumProps(obj, keys);
     return keys;
-  }
+  };
 
-  // Is a given array, string, or object empty?
-  // An "empty" object has no enumerable own-properties.
-  function isEmpty(obj) {
-    if (obj == null) return true;
-    // Skip the more expensive `toString`-based type checks if `obj` has no
-    // `.length`.
-    var length = getLength(obj);
-    if (typeof length == 'number' && (
-      isArray(obj) || isString(obj) || isArguments$1(obj)
-    )) return length === 0;
-    return getLength(keys(obj)) === 0;
-  }
+  // Retrieve all the property names of an object.
+  _.allKeys = function(obj) {
+    if (!_.isObject(obj)) return [];
+    var keys = [];
+    for (var key in obj) keys.push(key);
+    // Ahem, IE < 9.
+    if (hasEnumBug) collectNonEnumProps(obj, keys);
+    return keys;
+  };
+
+  // Retrieve the values of an object's properties.
+  _.values = function(obj) {
+    var keys = _.keys(obj);
+    var length = keys.length;
+    var values = Array(length);
+    for (var i = 0; i < length; i++) {
+      values[i] = obj[keys[i]];
+    }
+    return values;
+  };
+
+  // Returns the results of applying the iteratee to each element of the object.
+  // In contrast to _.map it returns an object.
+  _.mapObject = function(obj, iteratee, context) {
+    iteratee = cb(iteratee, context);
+    var keys = _.keys(obj),
+        length = keys.length,
+        results = {};
+    for (var index = 0; index < length; index++) {
+      var currentKey = keys[index];
+      results[currentKey] = iteratee(obj[currentKey], currentKey, obj);
+    }
+    return results;
+  };
+
+  // Convert an object into a list of `[key, value]` pairs.
+  // The opposite of _.object.
+  _.pairs = function(obj) {
+    var keys = _.keys(obj);
+    var length = keys.length;
+    var pairs = Array(length);
+    for (var i = 0; i < length; i++) {
+      pairs[i] = [keys[i], obj[keys[i]]];
+    }
+    return pairs;
+  };
+
+  // Invert the keys and values of an object. The values must be serializable.
+  _.invert = function(obj) {
+    var result = {};
+    var keys = _.keys(obj);
+    for (var i = 0, length = keys.length; i < length; i++) {
+      result[obj[keys[i]]] = keys[i];
+    }
+    return result;
+  };
+
+  // Return a sorted list of the function names available on the object.
+  // Aliased as `methods`.
+  _.functions = _.methods = function(obj) {
+    var names = [];
+    for (var key in obj) {
+      if (_.isFunction(obj[key])) names.push(key);
+    }
+    return names.sort();
+  };
+
+  // An internal function for creating assigner functions.
+  var createAssigner = function(keysFunc, defaults) {
+    return function(obj) {
+      var length = arguments.length;
+      if (defaults) obj = Object(obj);
+      if (length < 2 || obj == null) return obj;
+      for (var index = 1; index < length; index++) {
+        var source = arguments[index],
+            keys = keysFunc(source),
+            l = keys.length;
+        for (var i = 0; i < l; i++) {
+          var key = keys[i];
+          if (!defaults || obj[key] === void 0) obj[key] = source[key];
+        }
+      }
+      return obj;
+    };
+  };
+
+  // Extend a given object with all the properties in passed-in object(s).
+  _.extend = createAssigner(_.allKeys);
+
+  // Assigns a given object with all the own properties in the passed-in object(s).
+  // (https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
+  _.extendOwn = _.assign = createAssigner(_.keys);
+
+  // Returns the first key on an object that passes a predicate test.
+  _.findKey = function(obj, predicate, context) {
+    predicate = cb(predicate, context);
+    var keys = _.keys(obj), key;
+    for (var i = 0, length = keys.length; i < length; i++) {
+      key = keys[i];
+      if (predicate(obj[key], key, obj)) return key;
+    }
+  };
+
+  // Internal pick helper function to determine if `obj` has key `key`.
+  var keyInObj = function(value, key, obj) {
+    return key in obj;
+  };
+
+  // Return a copy of the object only containing the whitelisted properties.
+  _.pick = restArguments(function(obj, keys) {
+    var result = {}, iteratee = keys[0];
+    if (obj == null) return result;
+    if (_.isFunction(iteratee)) {
+      if (keys.length > 1) iteratee = optimizeCb(iteratee, keys[1]);
+      keys = _.allKeys(obj);
+    } else {
+      iteratee = keyInObj;
+      keys = flatten(keys, false, false);
+      obj = Object(obj);
+    }
+    for (var i = 0, length = keys.length; i < length; i++) {
+      var key = keys[i];
+      var value = obj[key];
+      if (iteratee(value, key, obj)) result[key] = value;
+    }
+    return result;
+  });
+
+  // Return a copy of the object without the blacklisted properties.
+  _.omit = restArguments(function(obj, keys) {
+    var iteratee = keys[0], context;
+    if (_.isFunction(iteratee)) {
+      iteratee = _.negate(iteratee);
+      if (keys.length > 1) context = keys[1];
+    } else {
+      keys = _.map(flatten(keys, false, false), String);
+      iteratee = function(value, key) {
+        return !_.contains(keys, key);
+      };
+    }
+    return _.pick(obj, iteratee, context);
+  });
+
+  // Fill in a given object with default properties.
+  _.defaults = createAssigner(_.allKeys, true);
+
+  // Creates an object that inherits from the given prototype object.
+  // If additional properties are provided then they will be added to the
+  // created object.
+  _.create = function(prototype, props) {
+    var result = baseCreate(prototype);
+    if (props) _.extendOwn(result, props);
+    return result;
+  };
+
+  // Create a (shallow-cloned) duplicate of an object.
+  _.clone = function(obj) {
+    if (!_.isObject(obj)) return obj;
+    return _.isArray(obj) ? obj.slice() : _.extend({}, obj);
+  };
+
+  // Invokes interceptor with the obj, and then returns obj.
+  // The primary purpose of this method is to "tap into" a method chain, in
+  // order to perform operations on intermediate results within the chain.
+  _.tap = function(obj, interceptor) {
+    interceptor(obj);
+    return obj;
+  };
 
   // Returns whether an object has a given set of `key:value` pairs.
-  function isMatch(object, attrs) {
-    var _keys = keys(attrs), length = _keys.length;
+  _.isMatch = function(object, attrs) {
+    var keys = _.keys(attrs), length = keys.length;
     if (object == null) return !length;
     var obj = Object(object);
     for (var i = 0; i < length; i++) {
-      var key = _keys[i];
+      var key = keys[i];
       if (attrs[key] !== obj[key] || !(key in obj)) return false;
     }
     return true;
-  }
-
-  // If Underscore is called as a function, it returns a wrapped object that can
-  // be used OO-style. This wrapper holds altered versions of all functions added
-  // through `_.mixin`. Wrapped objects may be chained.
-  function _$1(obj) {
-    if (obj instanceof _$1) return obj;
-    if (!(this instanceof _$1)) return new _$1(obj);
-    this._wrapped = obj;
-  }
-
-  _$1.VERSION = VERSION;
-
-  // Extracts the result from a wrapped and chained object.
-  _$1.prototype.value = function() {
-    return this._wrapped;
   };
 
-  // Provide unwrapping proxies for some methods used in engine operations
-  // such as arithmetic and JSON stringification.
-  _$1.prototype.valueOf = _$1.prototype.toJSON = _$1.prototype.value;
 
-  _$1.prototype.toString = function() {
-    return String(this._wrapped);
-  };
-
-  // Internal function to wrap or shallow-copy an ArrayBuffer,
-  // typed array or DataView to a new view, reusing the buffer.
-  function toBufferView(bufferSource) {
-    return new Uint8Array(
-      bufferSource.buffer || bufferSource,
-      bufferSource.byteOffset || 0,
-      getByteLength(bufferSource)
-    );
-  }
-
-  // We use this string twice, so give it a name for minification.
-  var tagDataView = '[object DataView]';
-
-  // Internal recursive comparison function for `_.isEqual`.
-  function eq(a, b, aStack, bStack) {
+  // Internal recursive comparison function for `isEqual`.
+  var eq, deepEq;
+  eq = function(a, b, aStack, bStack) {
     // Identical objects are equal. `0 === -0`, but they aren't identical.
-    // See the [Harmony `egal` proposal](https://wiki.ecmascript.org/doku.php?id=harmony:egal).
+    // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
     if (a === b) return a !== 0 || 1 / a === 1 / b;
     // `null` or `undefined` only equal to itself (strict comparison).
     if (a == null || b == null) return false;
@@ -802,25 +1637,20 @@ define("readium-js-viewer_all", function(){});
     var type = typeof a;
     if (type !== 'function' && type !== 'object' && typeof b != 'object') return false;
     return deepEq(a, b, aStack, bStack);
-  }
+  };
 
-  // Internal recursive comparison function for `_.isEqual`.
-  function deepEq(a, b, aStack, bStack) {
+  // Internal recursive comparison function for `isEqual`.
+  deepEq = function(a, b, aStack, bStack) {
     // Unwrap any wrapped objects.
-    if (a instanceof _$1) a = a._wrapped;
-    if (b instanceof _$1) b = b._wrapped;
+    if (a instanceof _) a = a._wrapped;
+    if (b instanceof _) b = b._wrapped;
     // Compare `[[Class]]` names.
     var className = toString.call(a);
     if (className !== toString.call(b)) return false;
-    // Work around a bug in IE 10 - Edge 13.
-    if (hasStringTagBug && className == '[object Object]' && isDataView$1(a)) {
-      if (!isDataView$1(b)) return false;
-      className = tagDataView;
-    }
     switch (className) {
-      // These types are compared by value.
+      // Strings, numbers, regular expressions, dates, and booleans are compared by value.
       case '[object RegExp]':
-        // RegExps are coerced to strings for comparison (Note: '' + /a/i === '/a/i')
+      // RegExps are coerced to strings for comparison (Note: '' + /a/i === '/a/i')
       case '[object String]':
         // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is
         // equivalent to `new String("5")`.
@@ -839,27 +1669,17 @@ define("readium-js-viewer_all", function(){});
         return +a === +b;
       case '[object Symbol]':
         return SymbolProto.valueOf.call(a) === SymbolProto.valueOf.call(b);
-      case '[object ArrayBuffer]':
-      case tagDataView:
-        // Coerce to typed array so we can fall through.
-        return deepEq(toBufferView(a), toBufferView(b), aStack, bStack);
     }
 
     var areArrays = className === '[object Array]';
-    if (!areArrays && isTypedArray$1(a)) {
-        var byteLength = getByteLength(a);
-        if (byteLength !== getByteLength(b)) return false;
-        if (a.buffer === b.buffer && a.byteOffset === b.byteOffset) return true;
-        areArrays = true;
-    }
     if (!areArrays) {
       if (typeof a != 'object' || typeof b != 'object') return false;
 
       // Objects with different constructors are not equivalent, but `Object`s or `Array`s
       // from different frames are.
       var aCtor = a.constructor, bCtor = b.constructor;
-      if (aCtor !== bCtor && !(isFunction$1(aCtor) && aCtor instanceof aCtor &&
-                               isFunction$1(bCtor) && bCtor instanceof bCtor)
+      if (aCtor !== bCtor && !(_.isFunction(aCtor) && aCtor instanceof aCtor &&
+                               _.isFunction(bCtor) && bCtor instanceof bCtor)
                           && ('constructor' in a && 'constructor' in b)) {
         return false;
       }
@@ -893,370 +1713,195 @@ define("readium-js-viewer_all", function(){});
       }
     } else {
       // Deep compare objects.
-      var _keys = keys(a), key;
-      length = _keys.length;
+      var keys = _.keys(a), key;
+      length = keys.length;
       // Ensure that both objects contain the same number of properties before comparing deep equality.
-      if (keys(b).length !== length) return false;
+      if (_.keys(b).length !== length) return false;
       while (length--) {
         // Deep compare each member
-        key = _keys[length];
-        if (!(has$1(b, key) && eq(a[key], b[key], aStack, bStack))) return false;
+        key = keys[length];
+        if (!(has(b, key) && eq(a[key], b[key], aStack, bStack))) return false;
       }
     }
     // Remove the first object from the stack of traversed objects.
     aStack.pop();
     bStack.pop();
     return true;
-  }
+  };
 
   // Perform a deep comparison to check if two objects are equal.
-  function isEqual(a, b) {
+  _.isEqual = function(a, b) {
     return eq(a, b);
-  }
+  };
 
-  // Retrieve all the enumerable property names of an object.
-  function allKeys(obj) {
-    if (!isObject(obj)) return [];
-    var keys = [];
-    for (var key in obj) keys.push(key);
-    // Ahem, IE < 9.
-    if (hasEnumBug) collectNonEnumProps(obj, keys);
-    return keys;
-  }
+  // Is a given array, string, or object empty?
+  // An "empty" object has no enumerable own-properties.
+  _.isEmpty = function(obj) {
+    if (obj == null) return true;
+    if (isArrayLike(obj) && (_.isArray(obj) || _.isString(obj) || _.isArguments(obj))) return obj.length === 0;
+    return _.keys(obj).length === 0;
+  };
 
-  // Since the regular `Object.prototype.toString` type tests don't work for
-  // some types in IE 11, we use a fingerprinting heuristic instead, based
-  // on the methods. It's not great, but it's the best we got.
-  // The fingerprint method lists are defined below.
-  function ie11fingerprint(methods) {
-    var length = getLength(methods);
-    return function(obj) {
-      if (obj == null) return false;
-      // `Map`, `WeakMap` and `Set` have no enumerable keys.
-      var keys = allKeys(obj);
-      if (getLength(keys)) return false;
-      for (var i = 0; i < length; i++) {
-        if (!isFunction$1(obj[methods[i]])) return false;
-      }
-      // If we are testing against `WeakMap`, we need to ensure that
-      // `obj` doesn't have a `forEach` method in order to distinguish
-      // it from a regular `Map`.
-      return methods !== weakMapMethods || !isFunction$1(obj[forEachName]);
+  // Is a given value a DOM element?
+  _.isElement = function(obj) {
+    return !!(obj && obj.nodeType === 1);
+  };
+
+  // Is a given value an array?
+  // Delegates to ECMA5's native Array.isArray
+  _.isArray = nativeIsArray || function(obj) {
+    return toString.call(obj) === '[object Array]';
+  };
+
+  // Is a given variable an object?
+  _.isObject = function(obj) {
+    var type = typeof obj;
+    return type === 'function' || type === 'object' && !!obj;
+  };
+
+  // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp, isError, isMap, isWeakMap, isSet, isWeakSet.
+  _.each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error', 'Symbol', 'Map', 'WeakMap', 'Set', 'WeakSet'], function(name) {
+    _['is' + name] = function(obj) {
+      return toString.call(obj) === '[object ' + name + ']';
+    };
+  });
+
+  // Define a fallback version of the method in browsers (ahem, IE < 9), where
+  // there isn't any inspectable "Arguments" type.
+  if (!_.isArguments(arguments)) {
+    _.isArguments = function(obj) {
+      return has(obj, 'callee');
     };
   }
 
-  // In the interest of compact minification, we write
-  // each string in the fingerprints only once.
-  var forEachName = 'forEach',
-      hasName = 'has',
-      commonInit = ['clear', 'delete'],
-      mapTail = ['get', hasName, 'set'];
-
-  // `Map`, `WeakMap` and `Set` each have slightly different
-  // combinations of the above sublists.
-  var mapMethods = commonInit.concat(forEachName, mapTail),
-      weakMapMethods = commonInit.concat(mapTail),
-      setMethods = ['add'].concat(commonInit, forEachName, hasName);
-
-  var isMap = isIE11 ? ie11fingerprint(mapMethods) : tagTester('Map');
-
-  var isWeakMap = isIE11 ? ie11fingerprint(weakMapMethods) : tagTester('WeakMap');
-
-  var isSet = isIE11 ? ie11fingerprint(setMethods) : tagTester('Set');
-
-  var isWeakSet = tagTester('WeakSet');
-
-  // Retrieve the values of an object's properties.
-  function values(obj) {
-    var _keys = keys(obj);
-    var length = _keys.length;
-    var values = Array(length);
-    for (var i = 0; i < length; i++) {
-      values[i] = obj[_keys[i]];
-    }
-    return values;
-  }
-
-  // Convert an object into a list of `[key, value]` pairs.
-  // The opposite of `_.object` with one argument.
-  function pairs(obj) {
-    var _keys = keys(obj);
-    var length = _keys.length;
-    var pairs = Array(length);
-    for (var i = 0; i < length; i++) {
-      pairs[i] = [_keys[i], obj[_keys[i]]];
-    }
-    return pairs;
-  }
-
-  // Invert the keys and values of an object. The values must be serializable.
-  function invert(obj) {
-    var result = {};
-    var _keys = keys(obj);
-    for (var i = 0, length = _keys.length; i < length; i++) {
-      result[obj[_keys[i]]] = _keys[i];
-    }
-    return result;
-  }
-
-  // Return a sorted list of the function names available on the object.
-  function functions(obj) {
-    var names = [];
-    for (var key in obj) {
-      if (isFunction$1(obj[key])) names.push(key);
-    }
-    return names.sort();
-  }
-
-  // An internal function for creating assigner functions.
-  function createAssigner(keysFunc, defaults) {
-    return function(obj) {
-      var length = arguments.length;
-      if (defaults) obj = Object(obj);
-      if (length < 2 || obj == null) return obj;
-      for (var index = 1; index < length; index++) {
-        var source = arguments[index],
-            keys = keysFunc(source),
-            l = keys.length;
-        for (var i = 0; i < l; i++) {
-          var key = keys[i];
-          if (!defaults || obj[key] === void 0) obj[key] = source[key];
-        }
-      }
-      return obj;
+  // Optimize `isFunction` if appropriate. Work around some typeof bugs in old v8,
+  // IE 11 (#1621), Safari 8 (#1929), and PhantomJS (#2236).
+  var nodelist = root.document && root.document.childNodes;
+  if (typeof /./ != 'function' && typeof Int8Array != 'object' && typeof nodelist != 'function') {
+    _.isFunction = function(obj) {
+      return typeof obj == 'function' || false;
     };
   }
 
-  // Extend a given object with all the properties in passed-in object(s).
-  var extend = createAssigner(allKeys);
+  // Is a given object a finite number?
+  _.isFinite = function(obj) {
+    return !_.isSymbol(obj) && isFinite(obj) && !isNaN(parseFloat(obj));
+  };
 
-  // Assigns a given object with all the own properties in the passed-in
-  // object(s).
-  // (https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
-  var extendOwn = createAssigner(keys);
+  // Is the given value `NaN`?
+  _.isNaN = function(obj) {
+    return _.isNumber(obj) && isNaN(obj);
+  };
 
-  // Fill in a given object with default properties.
-  var defaults = createAssigner(allKeys, true);
+  // Is a given value a boolean?
+  _.isBoolean = function(obj) {
+    return obj === true || obj === false || toString.call(obj) === '[object Boolean]';
+  };
 
-  // Create a naked function reference for surrogate-prototype-swapping.
-  function ctor() {
-    return function(){};
-  }
+  // Is a given value equal to null?
+  _.isNull = function(obj) {
+    return obj === null;
+  };
 
-  // An internal function for creating a new object that inherits from another.
-  function baseCreate(prototype) {
-    if (!isObject(prototype)) return {};
-    if (nativeCreate) return nativeCreate(prototype);
-    var Ctor = ctor();
-    Ctor.prototype = prototype;
-    var result = new Ctor;
-    Ctor.prototype = null;
-    return result;
-  }
+  // Is a given variable undefined?
+  _.isUndefined = function(obj) {
+    return obj === void 0;
+  };
 
-  // Creates an object that inherits from the given prototype object.
-  // If additional properties are provided then they will be added to the
-  // created object.
-  function create(prototype, props) {
-    var result = baseCreate(prototype);
-    if (props) extendOwn(result, props);
-    return result;
-  }
-
-  // Create a (shallow-cloned) duplicate of an object.
-  function clone(obj) {
-    if (!isObject(obj)) return obj;
-    return isArray(obj) ? obj.slice() : extend({}, obj);
-  }
-
-  // Invokes `interceptor` with the `obj` and then returns `obj`.
-  // The primary purpose of this method is to "tap into" a method chain, in
-  // order to perform operations on intermediate results within the chain.
-  function tap(obj, interceptor) {
-    interceptor(obj);
-    return obj;
-  }
-
-  // Normalize a (deep) property `path` to array.
-  // Like `_.iteratee`, this function can be customized.
-  function toPath$1(path) {
-    return isArray(path) ? path : [path];
-  }
-  _$1.toPath = toPath$1;
-
-  // Internal wrapper for `_.toPath` to enable minification.
-  // Similar to `cb` for `_.iteratee`.
-  function toPath(path) {
-    return _$1.toPath(path);
-  }
-
-  // Internal function to obtain a nested property in `obj` along `path`.
-  function deepGet(obj, path) {
-    var length = path.length;
-    for (var i = 0; i < length; i++) {
-      if (obj == null) return void 0;
-      obj = obj[path[i]];
+  // Shortcut function for checking if an object has a given property directly
+  // on itself (in other words, not on a prototype).
+  _.has = function(obj, path) {
+    if (!_.isArray(path)) {
+      return has(obj, path);
     }
-    return length ? obj : void 0;
-  }
-
-  // Get the value of the (deep) property on `path` from `object`.
-  // If any property in `path` does not exist or if the value is
-  // `undefined`, return `defaultValue` instead.
-  // The `path` is normalized through `_.toPath`.
-  function get(object, path, defaultValue) {
-    var value = deepGet(object, toPath(path));
-    return isUndefined(value) ? defaultValue : value;
-  }
-
-  // Shortcut function for checking if an object has a given property directly on
-  // itself (in other words, not on a prototype). Unlike the internal `has`
-  // function, this public version can also traverse nested properties.
-  function has(obj, path) {
-    path = toPath(path);
     var length = path.length;
     for (var i = 0; i < length; i++) {
       var key = path[i];
-      if (!has$1(obj, key)) return false;
+      if (obj == null || !hasOwnProperty.call(obj, key)) {
+        return false;
+      }
       obj = obj[key];
     }
     return !!length;
-  }
+  };
+
+  // Utility Functions
+  // -----------------
+
+  // Run Underscore.js in *noConflict* mode, returning the `_` variable to its
+  // previous owner. Returns a reference to the Underscore object.
+  _.noConflict = function() {
+    root._ = previousUnderscore;
+    return this;
+  };
 
   // Keep the identity function around for default iteratees.
-  function identity(value) {
+  _.identity = function(value) {
     return value;
-  }
+  };
 
-  // Returns a predicate for checking whether an object has a given set of
-  // `key:value` pairs.
-  function matcher(attrs) {
-    attrs = extendOwn({}, attrs);
-    return function(obj) {
-      return isMatch(obj, attrs);
+  // Predicate-generating functions. Often useful outside of Underscore.
+  _.constant = function(value) {
+    return function() {
+      return value;
     };
-  }
+  };
+
+  _.noop = function(){};
 
   // Creates a function that, when passed an object, will traverse that object’s
-  // properties down the given `path`, specified as an array of keys or indices.
-  function property(path) {
-    path = toPath(path);
+  // properties down the given `path`, specified as an array of keys or indexes.
+  _.property = function(path) {
+    if (!_.isArray(path)) {
+      return shallowProperty(path);
+    }
     return function(obj) {
       return deepGet(obj, path);
     };
-  }
-
-  // Internal function that returns an efficient (for current engines) version
-  // of the passed-in callback, to be repeatedly applied in other Underscore
-  // functions.
-  function optimizeCb(func, context, argCount) {
-    if (context === void 0) return func;
-    switch (argCount == null ? 3 : argCount) {
-      case 1: return function(value) {
-        return func.call(context, value);
-      };
-      // The 2-argument case is omitted because we’re not using it.
-      case 3: return function(value, index, collection) {
-        return func.call(context, value, index, collection);
-      };
-      case 4: return function(accumulator, value, index, collection) {
-        return func.call(context, accumulator, value, index, collection);
-      };
-    }
-    return function() {
-      return func.apply(context, arguments);
-    };
-  }
-
-  // An internal function to generate callbacks that can be applied to each
-  // element in a collection, returning the desired result — either `_.identity`,
-  // an arbitrary callback, a property matcher, or a property accessor.
-  function baseIteratee(value, context, argCount) {
-    if (value == null) return identity;
-    if (isFunction$1(value)) return optimizeCb(value, context, argCount);
-    if (isObject(value) && !isArray(value)) return matcher(value);
-    return property(value);
-  }
-
-  // External wrapper for our callback generator. Users may customize
-  // `_.iteratee` if they want additional predicate/iteratee shorthand styles.
-  // This abstraction hides the internal-only `argCount` argument.
-  function iteratee(value, context) {
-    return baseIteratee(value, context, Infinity);
-  }
-  _$1.iteratee = iteratee;
-
-  // The function we call internally to generate a callback. It invokes
-  // `_.iteratee` if overridden, otherwise `baseIteratee`.
-  function cb(value, context, argCount) {
-    if (_$1.iteratee !== iteratee) return _$1.iteratee(value, context);
-    return baseIteratee(value, context, argCount);
-  }
-
-  // Returns the results of applying the `iteratee` to each element of `obj`.
-  // In contrast to `_.map` it returns an object.
-  function mapObject(obj, iteratee, context) {
-    iteratee = cb(iteratee, context);
-    var _keys = keys(obj),
-        length = _keys.length,
-        results = {};
-    for (var index = 0; index < length; index++) {
-      var currentKey = _keys[index];
-      results[currentKey] = iteratee(obj[currentKey], currentKey, obj);
-    }
-    return results;
-  }
-
-  // Predicate-generating function. Often useful outside of Underscore.
-  function noop(){}
+  };
 
   // Generates a function for a given object that returns a given property.
-  function propertyOf(obj) {
-    if (obj == null) return noop;
+  _.propertyOf = function(obj) {
+    if (obj == null) {
+      return function(){};
+    }
     return function(path) {
-      return get(obj, path);
+      return !_.isArray(path) ? obj[path] : deepGet(obj, path);
     };
-  }
+  };
+
+  // Returns a predicate for checking whether an object has a given set of
+  // `key:value` pairs.
+  _.matcher = _.matches = function(attrs) {
+    attrs = _.extendOwn({}, attrs);
+    return function(obj) {
+      return _.isMatch(obj, attrs);
+    };
+  };
 
   // Run a function **n** times.
-  function times(n, iteratee, context) {
+  _.times = function(n, iteratee, context) {
     var accum = Array(Math.max(0, n));
     iteratee = optimizeCb(iteratee, context, 1);
     for (var i = 0; i < n; i++) accum[i] = iteratee(i);
     return accum;
-  }
+  };
 
-  // Return a random integer between `min` and `max` (inclusive).
-  function random(min, max) {
+  // Return a random integer between min and max (inclusive).
+  _.random = function(min, max) {
     if (max == null) {
       max = min;
       min = 0;
     }
     return min + Math.floor(Math.random() * (max - min + 1));
-  }
+  };
 
   // A (possibly faster) way to get the current timestamp as an integer.
-  var now = Date.now || function() {
+  _.now = Date.now || function() {
     return new Date().getTime();
   };
 
-  // Internal helper to generate functions for escaping and unescaping strings
-  // to/from HTML interpolation.
-  function createEscaper(map) {
-    var escaper = function(match) {
-      return map[match];
-    };
-    // Regexes for identifying a key that needs to be escaped.
-    var source = '(?:' + keys(map).join('|') + ')';
-    var testRegexp = RegExp(source);
-    var replaceRegexp = RegExp(source, 'g');
-    return function(string) {
-      string = string == null ? '' : '' + string;
-      return testRegexp.test(string) ? string.replace(replaceRegexp, escaper) : string;
-    };
-  }
-
-  // Internal list of HTML entities for escaping.
+  // List of HTML entities for escaping.
   var escapeMap = {
     '&': '&amp;',
     '<': '&lt;',
@@ -1265,25 +1910,62 @@ define("readium-js-viewer_all", function(){});
     "'": '&#x27;',
     '`': '&#x60;'
   };
+  var unescapeMap = _.invert(escapeMap);
 
-  // Function for escaping strings to HTML interpolation.
-  var _escape = createEscaper(escapeMap);
+  // Functions for escaping and unescaping strings to/from HTML interpolation.
+  var createEscaper = function(map) {
+    var escaper = function(match) {
+      return map[match];
+    };
+    // Regexes for identifying a key that needs to be escaped.
+    var source = '(?:' + _.keys(map).join('|') + ')';
+    var testRegexp = RegExp(source);
+    var replaceRegexp = RegExp(source, 'g');
+    return function(string) {
+      string = string == null ? '' : '' + string;
+      return testRegexp.test(string) ? string.replace(replaceRegexp, escaper) : string;
+    };
+  };
+  _.escape = createEscaper(escapeMap);
+  _.unescape = createEscaper(unescapeMap);
 
-  // Internal list of HTML entities for unescaping.
-  var unescapeMap = invert(escapeMap);
+  // Traverses the children of `obj` along `path`. If a child is a function, it
+  // is invoked with its parent as context. Returns the value of the final
+  // child, or `fallback` if any child is undefined.
+  _.result = function(obj, path, fallback) {
+    if (!_.isArray(path)) path = [path];
+    var length = path.length;
+    if (!length) {
+      return _.isFunction(fallback) ? fallback.call(obj) : fallback;
+    }
+    for (var i = 0; i < length; i++) {
+      var prop = obj == null ? void 0 : obj[path[i]];
+      if (prop === void 0) {
+        prop = fallback;
+        i = length; // Ensure we don't continue iterating.
+      }
+      obj = _.isFunction(prop) ? prop.call(obj) : prop;
+    }
+    return obj;
+  };
 
-  // Function for unescaping strings from HTML interpolation.
-  var _unescape = createEscaper(unescapeMap);
+  // Generate a unique integer id (unique within the entire client session).
+  // Useful for temporary DOM ids.
+  var idCounter = 0;
+  _.uniqueId = function(prefix) {
+    var id = ++idCounter + '';
+    return prefix ? prefix + id : id;
+  };
 
-  // By default, Underscore uses ERB-style template delimiters. Change the
+  // By default, Underscore uses ERB-style template delimiters, change the
   // following template settings to use alternative delimiters.
-  var templateSettings = _$1.templateSettings = {
+  _.templateSettings = {
     evaluate: /<%([\s\S]+?)%>/g,
     interpolate: /<%=([\s\S]+?)%>/g,
     escape: /<%-([\s\S]+?)%>/g
   };
 
-  // When customizing `_.templateSettings`, if you don't want to define an
+  // When customizing `templateSettings`, if you don't want to define an
   // interpolation, evaluation or escaping regex, we need one that is
   // guaranteed not to match.
   var noMatch = /(.)^/;
@@ -1301,24 +1983,17 @@ define("readium-js-viewer_all", function(){});
 
   var escapeRegExp = /\\|'|\r|\n|\u2028|\u2029/g;
 
-  function escapeChar(match) {
+  var escapeChar = function(match) {
     return '\\' + escapes[match];
-  }
-
-  // In order to prevent third-party code injection through
-  // `_.templateSettings.variable`, we test it against the following regular
-  // expression. It is intentionally a bit more liberal than just matching valid
-  // identifiers, but still prevents possible loopholes through defaults or
-  // destructuring assignment.
-  var bareIdentifier = /^\s*(\w|\$)+\s*$/;
+  };
 
   // JavaScript micro-templating, similar to John Resig's implementation.
   // Underscore templating handles arbitrary delimiters, preserves whitespace,
   // and correctly escapes quotes within interpolated code.
   // NB: `oldSettings` only exists for backwards compatibility.
-  function template(text, settings, oldSettings) {
+  _.template = function(text, settings, oldSettings) {
     if (!settings && oldSettings) settings = oldSettings;
-    settings = defaults({}, settings, _$1.templateSettings);
+    settings = _.defaults({}, settings, _.templateSettings);
 
     // Combine delimiters into one regular expression via alternation.
     var matcher = RegExp([
@@ -1347,17 +2022,8 @@ define("readium-js-viewer_all", function(){});
     });
     source += "';\n";
 
-    var argument = settings.variable;
-    if (argument) {
-      // Insure against third-party code injection. (CVE-2021-23358)
-      if (!bareIdentifier.test(argument)) throw new Error(
-        'variable is not a bare identifier: ' + argument
-      );
-    } else {
-      // If a variable is not specified, place data values in local scope.
-      source = 'with(obj||{}){\n' + source + '}\n';
-      argument = 'obj';
-    }
+    // If a variable is not specified, place data values in local scope.
+    if (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n';
 
     source = "var __t,__p='',__j=Array.prototype.join," +
       "print=function(){__p+=__j.call(arguments,'');};\n" +
@@ -1365,1119 +2031,103 @@ define("readium-js-viewer_all", function(){});
 
     var render;
     try {
-      render = new Function(argument, '_', source);
+      render = new Function(settings.variable || 'obj', '_', source);
     } catch (e) {
       e.source = source;
       throw e;
     }
 
     var template = function(data) {
-      return render.call(this, data, _$1);
+      return render.call(this, data, _);
     };
 
     // Provide the compiled source as a convenience for precompilation.
+    var argument = settings.variable || 'obj';
     template.source = 'function(' + argument + '){\n' + source + '}';
 
     return template;
-  }
-
-  // Traverses the children of `obj` along `path`. If a child is a function, it
-  // is invoked with its parent as context. Returns the value of the final
-  // child, or `fallback` if any child is undefined.
-  function result(obj, path, fallback) {
-    path = toPath(path);
-    var length = path.length;
-    if (!length) {
-      return isFunction$1(fallback) ? fallback.call(obj) : fallback;
-    }
-    for (var i = 0; i < length; i++) {
-      var prop = obj == null ? void 0 : obj[path[i]];
-      if (prop === void 0) {
-        prop = fallback;
-        i = length; // Ensure we don't continue iterating.
-      }
-      obj = isFunction$1(prop) ? prop.call(obj) : prop;
-    }
-    return obj;
-  }
-
-  // Generate a unique integer id (unique within the entire client session).
-  // Useful for temporary DOM ids.
-  var idCounter = 0;
-  function uniqueId(prefix) {
-    var id = ++idCounter + '';
-    return prefix ? prefix + id : id;
-  }
-
-  // Start chaining a wrapped Underscore object.
-  function chain(obj) {
-    var instance = _$1(obj);
-    instance._chain = true;
-    return instance;
-  }
-
-  // Internal function to execute `sourceFunc` bound to `context` with optional
-  // `args`. Determines whether to execute a function as a constructor or as a
-  // normal function.
-  function executeBound(sourceFunc, boundFunc, context, callingContext, args) {
-    if (!(callingContext instanceof boundFunc)) return sourceFunc.apply(context, args);
-    var self = baseCreate(sourceFunc.prototype);
-    var result = sourceFunc.apply(self, args);
-    if (isObject(result)) return result;
-    return self;
-  }
-
-  // Partially apply a function by creating a version that has had some of its
-  // arguments pre-filled, without changing its dynamic `this` context. `_` acts
-  // as a placeholder by default, allowing any combination of arguments to be
-  // pre-filled. Set `_.partial.placeholder` for a custom placeholder argument.
-  var partial = restArguments(function(func, boundArgs) {
-    var placeholder = partial.placeholder;
-    var bound = function() {
-      var position = 0, length = boundArgs.length;
-      var args = Array(length);
-      for (var i = 0; i < length; i++) {
-        args[i] = boundArgs[i] === placeholder ? arguments[position++] : boundArgs[i];
-      }
-      while (position < arguments.length) args.push(arguments[position++]);
-      return executeBound(func, bound, this, this, args);
-    };
-    return bound;
-  });
-
-  partial.placeholder = _$1;
-
-  // Create a function bound to a given object (assigning `this`, and arguments,
-  // optionally).
-  var bind = restArguments(function(func, context, args) {
-    if (!isFunction$1(func)) throw new TypeError('Bind must be called on a function');
-    var bound = restArguments(function(callArgs) {
-      return executeBound(func, bound, context, this, args.concat(callArgs));
-    });
-    return bound;
-  });
-
-  // Internal helper for collection methods to determine whether a collection
-  // should be iterated as an array or as an object.
-  // Related: https://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength
-  // Avoids a very nasty iOS 8 JIT bug on ARM-64. #2094
-  var isArrayLike = createSizePropertyCheck(getLength);
-
-  // Internal implementation of a recursive `flatten` function.
-  function flatten$1(input, depth, strict, output) {
-    output = output || [];
-    if (!depth && depth !== 0) {
-      depth = Infinity;
-    } else if (depth <= 0) {
-      return output.concat(input);
-    }
-    var idx = output.length;
-    for (var i = 0, length = getLength(input); i < length; i++) {
-      var value = input[i];
-      if (isArrayLike(value) && (isArray(value) || isArguments$1(value))) {
-        // Flatten current level of array or arguments object.
-        if (depth > 1) {
-          flatten$1(value, depth - 1, strict, output);
-          idx = output.length;
-        } else {
-          var j = 0, len = value.length;
-          while (j < len) output[idx++] = value[j++];
-        }
-      } else if (!strict) {
-        output[idx++] = value;
-      }
-    }
-    return output;
-  }
-
-  // Bind a number of an object's methods to that object. Remaining arguments
-  // are the method names to be bound. Useful for ensuring that all callbacks
-  // defined on an object belong to it.
-  var bindAll = restArguments(function(obj, keys) {
-    keys = flatten$1(keys, false, false);
-    var index = keys.length;
-    if (index < 1) throw new Error('bindAll must be passed function names');
-    while (index--) {
-      var key = keys[index];
-      obj[key] = bind(obj[key], obj);
-    }
-    return obj;
-  });
-
-  // Memoize an expensive function by storing its results.
-  function memoize(func, hasher) {
-    var memoize = function(key) {
-      var cache = memoize.cache;
-      var address = '' + (hasher ? hasher.apply(this, arguments) : key);
-      if (!has$1(cache, address)) cache[address] = func.apply(this, arguments);
-      return cache[address];
-    };
-    memoize.cache = {};
-    return memoize;
-  }
-
-  // Delays a function for the given number of milliseconds, and then calls
-  // it with the arguments supplied.
-  var delay = restArguments(function(func, wait, args) {
-    return setTimeout(function() {
-      return func.apply(null, args);
-    }, wait);
-  });
-
-  // Defers a function, scheduling it to run after the current call stack has
-  // cleared.
-  var defer = partial(delay, _$1, 1);
-
-  // Returns a function, that, when invoked, will only be triggered at most once
-  // during a given window of time. Normally, the throttled function will run
-  // as much as it can, without ever going more than once per `wait` duration;
-  // but if you'd like to disable the execution on the leading edge, pass
-  // `{leading: false}`. To disable execution on the trailing edge, ditto.
-  function throttle(func, wait, options) {
-    var timeout, context, args, result;
-    var previous = 0;
-    if (!options) options = {};
-
-    var later = function() {
-      previous = options.leading === false ? 0 : now();
-      timeout = null;
-      result = func.apply(context, args);
-      if (!timeout) context = args = null;
-    };
-
-    var throttled = function() {
-      var _now = now();
-      if (!previous && options.leading === false) previous = _now;
-      var remaining = wait - (_now - previous);
-      context = this;
-      args = arguments;
-      if (remaining <= 0 || remaining > wait) {
-        if (timeout) {
-          clearTimeout(timeout);
-          timeout = null;
-        }
-        previous = _now;
-        result = func.apply(context, args);
-        if (!timeout) context = args = null;
-      } else if (!timeout && options.trailing !== false) {
-        timeout = setTimeout(later, remaining);
-      }
-      return result;
-    };
-
-    throttled.cancel = function() {
-      clearTimeout(timeout);
-      previous = 0;
-      timeout = context = args = null;
-    };
-
-    return throttled;
-  }
-
-  // When a sequence of calls of the returned function ends, the argument
-  // function is triggered. The end of a sequence is defined by the `wait`
-  // parameter. If `immediate` is passed, the argument function will be
-  // triggered at the beginning of the sequence instead of at the end.
-  function debounce(func, wait, immediate) {
-    var timeout, previous, args, result, context;
-
-    var later = function() {
-      var passed = now() - previous;
-      if (wait > passed) {
-        timeout = setTimeout(later, wait - passed);
-      } else {
-        timeout = null;
-        if (!immediate) result = func.apply(context, args);
-        // This check is needed because `func` can recursively invoke `debounced`.
-        if (!timeout) args = context = null;
-      }
-    };
-
-    var debounced = restArguments(function(_args) {
-      context = this;
-      args = _args;
-      previous = now();
-      if (!timeout) {
-        timeout = setTimeout(later, wait);
-        if (immediate) result = func.apply(context, args);
-      }
-      return result;
-    });
-
-    debounced.cancel = function() {
-      clearTimeout(timeout);
-      timeout = args = context = null;
-    };
-
-    return debounced;
-  }
-
-  // Returns the first function passed as an argument to the second,
-  // allowing you to adjust arguments, run code before and after, and
-  // conditionally execute the original function.
-  function wrap(func, wrapper) {
-    return partial(wrapper, func);
-  }
-
-  // Returns a negated version of the passed-in predicate.
-  function negate(predicate) {
-    return function() {
-      return !predicate.apply(this, arguments);
-    };
-  }
-
-  // Returns a function that is the composition of a list of functions, each
-  // consuming the return value of the function that follows.
-  function compose() {
-    var args = arguments;
-    var start = args.length - 1;
-    return function() {
-      var i = start;
-      var result = args[start].apply(this, arguments);
-      while (i--) result = args[i].call(this, result);
-      return result;
-    };
-  }
-
-  // Returns a function that will only be executed on and after the Nth call.
-  function after(times, func) {
-    return function() {
-      if (--times < 1) {
-        return func.apply(this, arguments);
-      }
-    };
-  }
-
-  // Returns a function that will only be executed up to (but not including) the
-  // Nth call.
-  function before(times, func) {
-    var memo;
-    return function() {
-      if (--times > 0) {
-        memo = func.apply(this, arguments);
-      }
-      if (times <= 1) func = null;
-      return memo;
-    };
-  }
-
-  // Returns a function that will be executed at most one time, no matter how
-  // often you call it. Useful for lazy initialization.
-  var once = partial(before, 2);
-
-  // Returns the first key on an object that passes a truth test.
-  function findKey(obj, predicate, context) {
-    predicate = cb(predicate, context);
-    var _keys = keys(obj), key;
-    for (var i = 0, length = _keys.length; i < length; i++) {
-      key = _keys[i];
-      if (predicate(obj[key], key, obj)) return key;
-    }
-  }
-
-  // Internal function to generate `_.findIndex` and `_.findLastIndex`.
-  function createPredicateIndexFinder(dir) {
-    return function(array, predicate, context) {
-      predicate = cb(predicate, context);
-      var length = getLength(array);
-      var index = dir > 0 ? 0 : length - 1;
-      for (; index >= 0 && index < length; index += dir) {
-        if (predicate(array[index], index, array)) return index;
-      }
-      return -1;
-    };
-  }
-
-  // Returns the first index on an array-like that passes a truth test.
-  var findIndex = createPredicateIndexFinder(1);
-
-  // Returns the last index on an array-like that passes a truth test.
-  var findLastIndex = createPredicateIndexFinder(-1);
-
-  // Use a comparator function to figure out the smallest index at which
-  // an object should be inserted so as to maintain order. Uses binary search.
-  function sortedIndex(array, obj, iteratee, context) {
-    iteratee = cb(iteratee, context, 1);
-    var value = iteratee(obj);
-    var low = 0, high = getLength(array);
-    while (low < high) {
-      var mid = Math.floor((low + high) / 2);
-      if (iteratee(array[mid]) < value) low = mid + 1; else high = mid;
-    }
-    return low;
-  }
-
-  // Internal function to generate the `_.indexOf` and `_.lastIndexOf` functions.
-  function createIndexFinder(dir, predicateFind, sortedIndex) {
-    return function(array, item, idx) {
-      var i = 0, length = getLength(array);
-      if (typeof idx == 'number') {
-        if (dir > 0) {
-          i = idx >= 0 ? idx : Math.max(idx + length, i);
-        } else {
-          length = idx >= 0 ? Math.min(idx + 1, length) : idx + length + 1;
-        }
-      } else if (sortedIndex && idx && length) {
-        idx = sortedIndex(array, item);
-        return array[idx] === item ? idx : -1;
-      }
-      if (item !== item) {
-        idx = predicateFind(slice.call(array, i, length), isNaN$1);
-        return idx >= 0 ? idx + i : -1;
-      }
-      for (idx = dir > 0 ? i : length - 1; idx >= 0 && idx < length; idx += dir) {
-        if (array[idx] === item) return idx;
-      }
-      return -1;
-    };
-  }
-
-  // Return the position of the first occurrence of an item in an array,
-  // or -1 if the item is not included in the array.
-  // If the array is large and already in sort order, pass `true`
-  // for **isSorted** to use binary search.
-  var indexOf = createIndexFinder(1, findIndex, sortedIndex);
-
-  // Return the position of the last occurrence of an item in an array,
-  // or -1 if the item is not included in the array.
-  var lastIndexOf = createIndexFinder(-1, findLastIndex);
-
-  // Return the first value which passes a truth test.
-  function find(obj, predicate, context) {
-    var keyFinder = isArrayLike(obj) ? findIndex : findKey;
-    var key = keyFinder(obj, predicate, context);
-    if (key !== void 0 && key !== -1) return obj[key];
-  }
-
-  // Convenience version of a common use case of `_.find`: getting the first
-  // object containing specific `key:value` pairs.
-  function findWhere(obj, attrs) {
-    return find(obj, matcher(attrs));
-  }
-
-  // The cornerstone for collection functions, an `each`
-  // implementation, aka `forEach`.
-  // Handles raw objects in addition to array-likes. Treats all
-  // sparse array-likes as if they were dense.
-  function each(obj, iteratee, context) {
-    iteratee = optimizeCb(iteratee, context);
-    var i, length;
-    if (isArrayLike(obj)) {
-      for (i = 0, length = obj.length; i < length; i++) {
-        iteratee(obj[i], i, obj);
-      }
-    } else {
-      var _keys = keys(obj);
-      for (i = 0, length = _keys.length; i < length; i++) {
-        iteratee(obj[_keys[i]], _keys[i], obj);
-      }
-    }
-    return obj;
-  }
-
-  // Return the results of applying the iteratee to each element.
-  function map(obj, iteratee, context) {
-    iteratee = cb(iteratee, context);
-    var _keys = !isArrayLike(obj) && keys(obj),
-        length = (_keys || obj).length,
-        results = Array(length);
-    for (var index = 0; index < length; index++) {
-      var currentKey = _keys ? _keys[index] : index;
-      results[index] = iteratee(obj[currentKey], currentKey, obj);
-    }
-    return results;
-  }
-
-  // Internal helper to create a reducing function, iterating left or right.
-  function createReduce(dir) {
-    // Wrap code that reassigns argument variables in a separate function than
-    // the one that accesses `arguments.length` to avoid a perf hit. (#1991)
-    var reducer = function(obj, iteratee, memo, initial) {
-      var _keys = !isArrayLike(obj) && keys(obj),
-          length = (_keys || obj).length,
-          index = dir > 0 ? 0 : length - 1;
-      if (!initial) {
-        memo = obj[_keys ? _keys[index] : index];
-        index += dir;
-      }
-      for (; index >= 0 && index < length; index += dir) {
-        var currentKey = _keys ? _keys[index] : index;
-        memo = iteratee(memo, obj[currentKey], currentKey, obj);
-      }
-      return memo;
-    };
-
-    return function(obj, iteratee, memo, context) {
-      var initial = arguments.length >= 3;
-      return reducer(obj, optimizeCb(iteratee, context, 4), memo, initial);
-    };
-  }
-
-  // **Reduce** builds up a single result from a list of values, aka `inject`,
-  // or `foldl`.
-  var reduce = createReduce(1);
-
-  // The right-associative version of reduce, also known as `foldr`.
-  var reduceRight = createReduce(-1);
-
-  // Return all the elements that pass a truth test.
-  function filter(obj, predicate, context) {
-    var results = [];
-    predicate = cb(predicate, context);
-    each(obj, function(value, index, list) {
-      if (predicate(value, index, list)) results.push(value);
-    });
-    return results;
-  }
-
-  // Return all the elements for which a truth test fails.
-  function reject(obj, predicate, context) {
-    return filter(obj, negate(cb(predicate)), context);
-  }
-
-  // Determine whether all of the elements pass a truth test.
-  function every(obj, predicate, context) {
-    predicate = cb(predicate, context);
-    var _keys = !isArrayLike(obj) && keys(obj),
-        length = (_keys || obj).length;
-    for (var index = 0; index < length; index++) {
-      var currentKey = _keys ? _keys[index] : index;
-      if (!predicate(obj[currentKey], currentKey, obj)) return false;
-    }
-    return true;
-  }
-
-  // Determine if at least one element in the object passes a truth test.
-  function some(obj, predicate, context) {
-    predicate = cb(predicate, context);
-    var _keys = !isArrayLike(obj) && keys(obj),
-        length = (_keys || obj).length;
-    for (var index = 0; index < length; index++) {
-      var currentKey = _keys ? _keys[index] : index;
-      if (predicate(obj[currentKey], currentKey, obj)) return true;
-    }
-    return false;
-  }
-
-  // Determine if the array or object contains a given item (using `===`).
-  function contains(obj, item, fromIndex, guard) {
-    if (!isArrayLike(obj)) obj = values(obj);
-    if (typeof fromIndex != 'number' || guard) fromIndex = 0;
-    return indexOf(obj, item, fromIndex) >= 0;
-  }
-
-  // Invoke a method (with arguments) on every item in a collection.
-  var invoke = restArguments(function(obj, path, args) {
-    var contextPath, func;
-    if (isFunction$1(path)) {
-      func = path;
-    } else {
-      path = toPath(path);
-      contextPath = path.slice(0, -1);
-      path = path[path.length - 1];
-    }
-    return map(obj, function(context) {
-      var method = func;
-      if (!method) {
-        if (contextPath && contextPath.length) {
-          context = deepGet(context, contextPath);
-        }
-        if (context == null) return void 0;
-        method = context[path];
-      }
-      return method == null ? method : method.apply(context, args);
-    });
-  });
-
-  // Convenience version of a common use case of `_.map`: fetching a property.
-  function pluck(obj, key) {
-    return map(obj, property(key));
-  }
-
-  // Convenience version of a common use case of `_.filter`: selecting only
-  // objects containing specific `key:value` pairs.
-  function where(obj, attrs) {
-    return filter(obj, matcher(attrs));
-  }
-
-  // Return the maximum element (or element-based computation).
-  function max(obj, iteratee, context) {
-    var result = -Infinity, lastComputed = -Infinity,
-        value, computed;
-    if (iteratee == null || typeof iteratee == 'number' && typeof obj[0] != 'object' && obj != null) {
-      obj = isArrayLike(obj) ? obj : values(obj);
-      for (var i = 0, length = obj.length; i < length; i++) {
-        value = obj[i];
-        if (value != null && value > result) {
-          result = value;
-        }
-      }
-    } else {
-      iteratee = cb(iteratee, context);
-      each(obj, function(v, index, list) {
-        computed = iteratee(v, index, list);
-        if (computed > lastComputed || computed === -Infinity && result === -Infinity) {
-          result = v;
-          lastComputed = computed;
-        }
-      });
-    }
-    return result;
-  }
-
-  // Return the minimum element (or element-based computation).
-  function min(obj, iteratee, context) {
-    var result = Infinity, lastComputed = Infinity,
-        value, computed;
-    if (iteratee == null || typeof iteratee == 'number' && typeof obj[0] != 'object' && obj != null) {
-      obj = isArrayLike(obj) ? obj : values(obj);
-      for (var i = 0, length = obj.length; i < length; i++) {
-        value = obj[i];
-        if (value != null && value < result) {
-          result = value;
-        }
-      }
-    } else {
-      iteratee = cb(iteratee, context);
-      each(obj, function(v, index, list) {
-        computed = iteratee(v, index, list);
-        if (computed < lastComputed || computed === Infinity && result === Infinity) {
-          result = v;
-          lastComputed = computed;
-        }
-      });
-    }
-    return result;
-  }
-
-  // Sample **n** random values from a collection using the modern version of the
-  // [Fisher-Yates shuffle](https://en.wikipedia.org/wiki/Fisher–Yates_shuffle).
-  // If **n** is not specified, returns a single random element.
-  // The internal `guard` argument allows it to work with `_.map`.
-  function sample(obj, n, guard) {
-    if (n == null || guard) {
-      if (!isArrayLike(obj)) obj = values(obj);
-      return obj[random(obj.length - 1)];
-    }
-    var sample = isArrayLike(obj) ? clone(obj) : values(obj);
-    var length = getLength(sample);
-    n = Math.max(Math.min(n, length), 0);
-    var last = length - 1;
-    for (var index = 0; index < n; index++) {
-      var rand = random(index, last);
-      var temp = sample[index];
-      sample[index] = sample[rand];
-      sample[rand] = temp;
-    }
-    return sample.slice(0, n);
-  }
-
-  // Shuffle a collection.
-  function shuffle(obj) {
-    return sample(obj, Infinity);
-  }
-
-  // Sort the object's values by a criterion produced by an iteratee.
-  function sortBy(obj, iteratee, context) {
-    var index = 0;
-    iteratee = cb(iteratee, context);
-    return pluck(map(obj, function(value, key, list) {
-      return {
-        value: value,
-        index: index++,
-        criteria: iteratee(value, key, list)
-      };
-    }).sort(function(left, right) {
-      var a = left.criteria;
-      var b = right.criteria;
-      if (a !== b) {
-        if (a > b || a === void 0) return 1;
-        if (a < b || b === void 0) return -1;
-      }
-      return left.index - right.index;
-    }), 'value');
-  }
-
-  // An internal function used for aggregate "group by" operations.
-  function group(behavior, partition) {
-    return function(obj, iteratee, context) {
-      var result = partition ? [[], []] : {};
-      iteratee = cb(iteratee, context);
-      each(obj, function(value, index) {
-        var key = iteratee(value, index, obj);
-        behavior(result, value, key);
-      });
-      return result;
-    };
-  }
-
-  // Groups the object's values by a criterion. Pass either a string attribute
-  // to group by, or a function that returns the criterion.
-  var groupBy = group(function(result, value, key) {
-    if (has$1(result, key)) result[key].push(value); else result[key] = [value];
-  });
-
-  // Indexes the object's values by a criterion, similar to `_.groupBy`, but for
-  // when you know that your index values will be unique.
-  var indexBy = group(function(result, value, key) {
-    result[key] = value;
-  });
-
-  // Counts instances of an object that group by a certain criterion. Pass
-  // either a string attribute to count by, or a function that returns the
-  // criterion.
-  var countBy = group(function(result, value, key) {
-    if (has$1(result, key)) result[key]++; else result[key] = 1;
-  });
-
-  // Split a collection into two arrays: one whose elements all pass the given
-  // truth test, and one whose elements all do not pass the truth test.
-  var partition = group(function(result, value, pass) {
-    result[pass ? 0 : 1].push(value);
-  }, true);
-
-  // Safely create a real, live array from anything iterable.
-  var reStrSymbol = /[^\ud800-\udfff]|[\ud800-\udbff][\udc00-\udfff]|[\ud800-\udfff]/g;
-  function toArray(obj) {
-    if (!obj) return [];
-    if (isArray(obj)) return slice.call(obj);
-    if (isString(obj)) {
-      // Keep surrogate pair characters together.
-      return obj.match(reStrSymbol);
-    }
-    if (isArrayLike(obj)) return map(obj, identity);
-    return values(obj);
-  }
-
-  // Return the number of elements in a collection.
-  function size(obj) {
-    if (obj == null) return 0;
-    return isArrayLike(obj) ? obj.length : keys(obj).length;
-  }
-
-  // Internal `_.pick` helper function to determine whether `key` is an enumerable
-  // property name of `obj`.
-  function keyInObj(value, key, obj) {
-    return key in obj;
-  }
-
-  // Return a copy of the object only containing the allowed properties.
-  var pick = restArguments(function(obj, keys) {
-    var result = {}, iteratee = keys[0];
-    if (obj == null) return result;
-    if (isFunction$1(iteratee)) {
-      if (keys.length > 1) iteratee = optimizeCb(iteratee, keys[1]);
-      keys = allKeys(obj);
-    } else {
-      iteratee = keyInObj;
-      keys = flatten$1(keys, false, false);
-      obj = Object(obj);
-    }
-    for (var i = 0, length = keys.length; i < length; i++) {
-      var key = keys[i];
-      var value = obj[key];
-      if (iteratee(value, key, obj)) result[key] = value;
-    }
-    return result;
-  });
-
-  // Return a copy of the object without the disallowed properties.
-  var omit = restArguments(function(obj, keys) {
-    var iteratee = keys[0], context;
-    if (isFunction$1(iteratee)) {
-      iteratee = negate(iteratee);
-      if (keys.length > 1) context = keys[1];
-    } else {
-      keys = map(flatten$1(keys, false, false), String);
-      iteratee = function(value, key) {
-        return !contains(keys, key);
-      };
-    }
-    return pick(obj, iteratee, context);
-  });
-
-  // Returns everything but the last entry of the array. Especially useful on
-  // the arguments object. Passing **n** will return all the values in
-  // the array, excluding the last N.
-  function initial(array, n, guard) {
-    return slice.call(array, 0, Math.max(0, array.length - (n == null || guard ? 1 : n)));
-  }
-
-  // Get the first element of an array. Passing **n** will return the first N
-  // values in the array. The **guard** check allows it to work with `_.map`.
-  function first(array, n, guard) {
-    if (array == null || array.length < 1) return n == null || guard ? void 0 : [];
-    if (n == null || guard) return array[0];
-    return initial(array, array.length - n);
-  }
-
-  // Returns everything but the first entry of the `array`. Especially useful on
-  // the `arguments` object. Passing an **n** will return the rest N values in the
-  // `array`.
-  function rest(array, n, guard) {
-    return slice.call(array, n == null || guard ? 1 : n);
-  }
-
-  // Get the last element of an array. Passing **n** will return the last N
-  // values in the array.
-  function last(array, n, guard) {
-    if (array == null || array.length < 1) return n == null || guard ? void 0 : [];
-    if (n == null || guard) return array[array.length - 1];
-    return rest(array, Math.max(0, array.length - n));
-  }
-
-  // Trim out all falsy values from an array.
-  function compact(array) {
-    return filter(array, Boolean);
-  }
-
-  // Flatten out an array, either recursively (by default), or up to `depth`.
-  // Passing `true` or `false` as `depth` means `1` or `Infinity`, respectively.
-  function flatten(array, depth) {
-    return flatten$1(array, depth, false);
-  }
-
-  // Take the difference between one array and a number of other arrays.
-  // Only the elements present in just the first array will remain.
-  var difference = restArguments(function(array, rest) {
-    rest = flatten$1(rest, true, true);
-    return filter(array, function(value){
-      return !contains(rest, value);
-    });
-  });
-
-  // Return a version of the array that does not contain the specified value(s).
-  var without = restArguments(function(array, otherArrays) {
-    return difference(array, otherArrays);
-  });
-
-  // Produce a duplicate-free version of the array. If the array has already
-  // been sorted, you have the option of using a faster algorithm.
-  // The faster algorithm will not work with an iteratee if the iteratee
-  // is not a one-to-one function, so providing an iteratee will disable
-  // the faster algorithm.
-  function uniq(array, isSorted, iteratee, context) {
-    if (!isBoolean(isSorted)) {
-      context = iteratee;
-      iteratee = isSorted;
-      isSorted = false;
-    }
-    if (iteratee != null) iteratee = cb(iteratee, context);
-    var result = [];
-    var seen = [];
-    for (var i = 0, length = getLength(array); i < length; i++) {
-      var value = array[i],
-          computed = iteratee ? iteratee(value, i, array) : value;
-      if (isSorted && !iteratee) {
-        if (!i || seen !== computed) result.push(value);
-        seen = computed;
-      } else if (iteratee) {
-        if (!contains(seen, computed)) {
-          seen.push(computed);
-          result.push(value);
-        }
-      } else if (!contains(result, value)) {
-        result.push(value);
-      }
-    }
-    return result;
-  }
-
-  // Produce an array that contains the union: each distinct element from all of
-  // the passed-in arrays.
-  var union = restArguments(function(arrays) {
-    return uniq(flatten$1(arrays, true, true));
-  });
-
-  // Produce an array that contains every item shared between all the
-  // passed-in arrays.
-  function intersection(array) {
-    var result = [];
-    var argsLength = arguments.length;
-    for (var i = 0, length = getLength(array); i < length; i++) {
-      var item = array[i];
-      if (contains(result, item)) continue;
-      var j;
-      for (j = 1; j < argsLength; j++) {
-        if (!contains(arguments[j], item)) break;
-      }
-      if (j === argsLength) result.push(item);
-    }
-    return result;
-  }
-
-  // Complement of zip. Unzip accepts an array of arrays and groups
-  // each array's elements on shared indices.
-  function unzip(array) {
-    var length = array && max(array, getLength).length || 0;
-    var result = Array(length);
-
-    for (var index = 0; index < length; index++) {
-      result[index] = pluck(array, index);
-    }
-    return result;
-  }
-
-  // Zip together multiple lists into a single array -- elements that share
-  // an index go together.
-  var zip = restArguments(unzip);
-
-  // Converts lists into objects. Pass either a single array of `[key, value]`
-  // pairs, or two parallel arrays of the same length -- one of keys, and one of
-  // the corresponding values. Passing by pairs is the reverse of `_.pairs`.
-  function object(list, values) {
-    var result = {};
-    for (var i = 0, length = getLength(list); i < length; i++) {
-      if (values) {
-        result[list[i]] = values[i];
-      } else {
-        result[list[i][0]] = list[i][1];
-      }
-    }
-    return result;
-  }
-
-  // Generate an integer Array containing an arithmetic progression. A port of
-  // the native Python `range()` function. See
-  // [the Python documentation](https://docs.python.org/library/functions.html#range).
-  function range(start, stop, step) {
-    if (stop == null) {
-      stop = start || 0;
-      start = 0;
-    }
-    if (!step) {
-      step = stop < start ? -1 : 1;
-    }
-
-    var length = Math.max(Math.ceil((stop - start) / step), 0);
-    var range = Array(length);
-
-    for (var idx = 0; idx < length; idx++, start += step) {
-      range[idx] = start;
-    }
-
-    return range;
-  }
-
-  // Chunk a single array into multiple arrays, each containing `count` or fewer
-  // items.
-  function chunk(array, count) {
-    if (count == null || count < 1) return [];
-    var result = [];
-    var i = 0, length = array.length;
-    while (i < length) {
-      result.push(slice.call(array, i, i += count));
-    }
-    return result;
-  }
-
-  // Helper function to continue chaining intermediate results.
-  function chainResult(instance, obj) {
-    return instance._chain ? _$1(obj).chain() : obj;
-  }
-
-  // Add your own custom functions to the Underscore object.
-  function mixin(obj) {
-    each(functions(obj), function(name) {
-      var func = _$1[name] = obj[name];
-      _$1.prototype[name] = function() {
-        var args = [this._wrapped];
-        push.apply(args, arguments);
-        return chainResult(this, func.apply(_$1, args));
-      };
-    });
-    return _$1;
-  }
-
-  // Add all mutator `Array` functions to the wrapper.
-  each(['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'], function(name) {
-    var method = ArrayProto[name];
-    _$1.prototype[name] = function() {
-      var obj = this._wrapped;
-      if (obj != null) {
-        method.apply(obj, arguments);
-        if ((name === 'shift' || name === 'splice') && obj.length === 0) {
-          delete obj[0];
-        }
-      }
-      return chainResult(this, obj);
-    };
-  });
-
-  // Add all accessor `Array` functions to the wrapper.
-  each(['concat', 'join', 'slice'], function(name) {
-    var method = ArrayProto[name];
-    _$1.prototype[name] = function() {
-      var obj = this._wrapped;
-      if (obj != null) obj = method.apply(obj, arguments);
-      return chainResult(this, obj);
-    };
-  });
-
-  // Named Exports
-
-  var allExports = {
-    __proto__: null,
-    VERSION: VERSION,
-    restArguments: restArguments,
-    isObject: isObject,
-    isNull: isNull,
-    isUndefined: isUndefined,
-    isBoolean: isBoolean,
-    isElement: isElement,
-    isString: isString,
-    isNumber: isNumber,
-    isDate: isDate,
-    isRegExp: isRegExp,
-    isError: isError,
-    isSymbol: isSymbol,
-    isArrayBuffer: isArrayBuffer,
-    isDataView: isDataView$1,
-    isArray: isArray,
-    isFunction: isFunction$1,
-    isArguments: isArguments$1,
-    isFinite: isFinite$1,
-    isNaN: isNaN$1,
-    isTypedArray: isTypedArray$1,
-    isEmpty: isEmpty,
-    isMatch: isMatch,
-    isEqual: isEqual,
-    isMap: isMap,
-    isWeakMap: isWeakMap,
-    isSet: isSet,
-    isWeakSet: isWeakSet,
-    keys: keys,
-    allKeys: allKeys,
-    values: values,
-    pairs: pairs,
-    invert: invert,
-    functions: functions,
-    methods: functions,
-    extend: extend,
-    extendOwn: extendOwn,
-    assign: extendOwn,
-    defaults: defaults,
-    create: create,
-    clone: clone,
-    tap: tap,
-    get: get,
-    has: has,
-    mapObject: mapObject,
-    identity: identity,
-    constant: constant,
-    noop: noop,
-    toPath: toPath$1,
-    property: property,
-    propertyOf: propertyOf,
-    matcher: matcher,
-    matches: matcher,
-    times: times,
-    random: random,
-    now: now,
-    escape: _escape,
-    unescape: _unescape,
-    templateSettings: templateSettings,
-    template: template,
-    result: result,
-    uniqueId: uniqueId,
-    chain: chain,
-    iteratee: iteratee,
-    partial: partial,
-    bind: bind,
-    bindAll: bindAll,
-    memoize: memoize,
-    delay: delay,
-    defer: defer,
-    throttle: throttle,
-    debounce: debounce,
-    wrap: wrap,
-    negate: negate,
-    compose: compose,
-    after: after,
-    before: before,
-    once: once,
-    findKey: findKey,
-    findIndex: findIndex,
-    findLastIndex: findLastIndex,
-    sortedIndex: sortedIndex,
-    indexOf: indexOf,
-    lastIndexOf: lastIndexOf,
-    find: find,
-    detect: find,
-    findWhere: findWhere,
-    each: each,
-    forEach: each,
-    map: map,
-    collect: map,
-    reduce: reduce,
-    foldl: reduce,
-    inject: reduce,
-    reduceRight: reduceRight,
-    foldr: reduceRight,
-    filter: filter,
-    select: filter,
-    reject: reject,
-    every: every,
-    all: every,
-    some: some,
-    any: some,
-    contains: contains,
-    includes: contains,
-    include: contains,
-    invoke: invoke,
-    pluck: pluck,
-    where: where,
-    max: max,
-    min: min,
-    shuffle: shuffle,
-    sample: sample,
-    sortBy: sortBy,
-    groupBy: groupBy,
-    indexBy: indexBy,
-    countBy: countBy,
-    partition: partition,
-    toArray: toArray,
-    size: size,
-    pick: pick,
-    omit: omit,
-    first: first,
-    head: first,
-    take: first,
-    initial: initial,
-    last: last,
-    rest: rest,
-    tail: rest,
-    drop: rest,
-    compact: compact,
-    flatten: flatten,
-    without: without,
-    uniq: uniq,
-    unique: uniq,
-    union: union,
-    intersection: intersection,
-    difference: difference,
-    unzip: unzip,
-    transpose: unzip,
-    zip: zip,
-    object: object,
-    range: range,
-    chunk: chunk,
-    mixin: mixin,
-    'default': _$1
   };
 
-  // Default Export
+  // Add a "chain" function. Start chaining a wrapped Underscore object.
+  _.chain = function(obj) {
+    var instance = _(obj);
+    instance._chain = true;
+    return instance;
+  };
+
+  // OOP
+  // ---------------
+  // If Underscore is called as a function, it returns a wrapped object that
+  // can be used OO-style. This wrapper holds altered versions of all the
+  // underscore functions. Wrapped objects may be chained.
+
+  // Helper function to continue chaining intermediate results.
+  var chainResult = function(instance, obj) {
+    return instance._chain ? _(obj).chain() : obj;
+  };
+
+  // Add your own custom functions to the Underscore object.
+  _.mixin = function(obj) {
+    _.each(_.functions(obj), function(name) {
+      var func = _[name] = obj[name];
+      _.prototype[name] = function() {
+        var args = [this._wrapped];
+        push.apply(args, arguments);
+        return chainResult(this, func.apply(_, args));
+      };
+    });
+    return _;
+  };
 
   // Add all of the Underscore functions to the wrapper object.
-  var _ = mixin(allExports);
-  // Legacy Node.js API.
-  _._ = _;
+  _.mixin(_);
 
-  return _;
+  // Add all mutator Array functions to the wrapper.
+  _.each(['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'], function(name) {
+    var method = ArrayProto[name];
+    _.prototype[name] = function() {
+      var obj = this._wrapped;
+      method.apply(obj, arguments);
+      if ((name === 'shift' || name === 'splice') && obj.length === 0) delete obj[0];
+      return chainResult(this, obj);
+    };
+  });
 
-})));
-//# sourceMappingURL=underscore-umd.js.map
-;
+  // Add all accessor Array functions to the wrapper.
+  _.each(['concat', 'join', 'slice'], function(name) {
+    var method = ArrayProto[name];
+    _.prototype[name] = function() {
+      return chainResult(this, method.apply(this._wrapped, arguments));
+    };
+  });
+
+  // Extracts the result from a wrapped and chained object.
+  _.prototype.value = function() {
+    return this._wrapped;
+  };
+
+  // Provide unwrapping proxy for some methods used in engine operations
+  // such as arithmetic and JSON stringification.
+  _.prototype.valueOf = _.prototype.toJSON = _.prototype.value;
+
+  _.prototype.toString = function() {
+    return String(this._wrapped);
+  };
+
+  // AMD registration happens at the end for compatibility with AMD loaders
+  // that may not enforce next-turn semantics on modules. Even though general
+  // practice for AMD registration is to be anonymous, underscore registers
+  // as a named module because, like jQuery, it is a base library that is
+  // popular enough to be bundled in a third party lib, but not be part of
+  // an AMD load request. Those cases could generate an error when an
+  // anonymous define() is called outside of a loader request.
+  if (typeof define == 'function' && define.amd) {
+    define('underscore', [], function() {
+      return _;
+    });
+  }
+}());
+
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define('eventEmitter',[],e);else{("undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this).EventEmitter3=e()}}(function(){return function i(s,f,c){function u(t,e){if(!f[t]){if(!s[t]){var n="function"==typeof require&&require;if(!e&&n)return n(t,!0);if(a)return a(t,!0);var r=new Error("Cannot find module '"+t+"'");throw r.code="MODULE_NOT_FOUND",r}var o=f[t]={exports:{}};s[t][0].call(o.exports,function(e){return u(s[t][1][e]||e)},o,o.exports,i,s,f,c)}return f[t].exports}for(var a="function"==typeof require&&require,e=0;e<c.length;e++)u(c[e]);return u}({1:[function(e,t,n){"use strict";var r=Object.prototype.hasOwnProperty,v="~";function o(){}function f(e,t,n){this.fn=e,this.context=t,this.once=n||!1}function i(e,t,n,r,o){if("function"!=typeof n)throw new TypeError("The listener must be a function");var i=new f(n,r||e,o),s=v?v+t:t;return e._events[s]?e._events[s].fn?e._events[s]=[e._events[s],i]:e._events[s].push(i):(e._events[s]=i,e._eventsCount++),e}function u(e,t){0==--e._eventsCount?e._events=new o:delete e._events[t]}function s(){this._events=new o,this._eventsCount=0}Object.create&&(o.prototype=Object.create(null),(new o).__proto__||(v=!1)),s.prototype.eventNames=function(){var e,t,n=[];if(0===this._eventsCount)return n;for(t in e=this._events)r.call(e,t)&&n.push(v?t.slice(1):t);return Object.getOwnPropertySymbols?n.concat(Object.getOwnPropertySymbols(e)):n},s.prototype.listeners=function(e){var t=v?v+e:e,n=this._events[t];if(!n)return[];if(n.fn)return[n.fn];for(var r=0,o=n.length,i=new Array(o);r<o;r++)i[r]=n[r].fn;return i},s.prototype.listenerCount=function(e){var t=v?v+e:e,n=this._events[t];return n?n.fn?1:n.length:0},s.prototype.emit=function(e,t,n,r,o,i){var s=v?v+e:e;if(!this._events[s])return!1;var f,c,u=this._events[s],a=arguments.length;if(u.fn){switch(u.once&&this.removeListener(e,u.fn,void 0,!0),a){case 1:return u.fn.call(u.context),!0;case 2:return u.fn.call(u.context,t),!0;case 3:return u.fn.call(u.context,t,n),!0;case 4:return u.fn.call(u.context,t,n,r),!0;case 5:return u.fn.call(u.context,t,n,r,o),!0;case 6:return u.fn.call(u.context,t,n,r,o,i),!0}for(c=1,f=new Array(a-1);c<a;c++)f[c-1]=arguments[c];u.fn.apply(u.context,f)}else{var l,p=u.length;for(c=0;c<p;c++)switch(u[c].once&&this.removeListener(e,u[c].fn,void 0,!0),a){case 1:u[c].fn.call(u[c].context);break;case 2:u[c].fn.call(u[c].context,t);break;case 3:u[c].fn.call(u[c].context,t,n);break;case 4:u[c].fn.call(u[c].context,t,n,r);break;default:if(!f)for(l=1,f=new Array(a-1);l<a;l++)f[l-1]=arguments[l];u[c].fn.apply(u[c].context,f)}}return!0},s.prototype.on=function(e,t,n){return i(this,e,t,n,!1)},s.prototype.once=function(e,t,n){return i(this,e,t,n,!0)},s.prototype.removeListener=function(e,t,n,r){var o=v?v+e:e;if(!this._events[o])return this;if(!t)return u(this,o),this;var i=this._events[o];if(i.fn)i.fn!==t||r&&!i.once||n&&i.context!==n||u(this,o);else{for(var s=0,f=[],c=i.length;s<c;s++)(i[s].fn!==t||r&&!i[s].once||n&&i[s].context!==n)&&f.push(i[s]);f.length?this._events[o]=1===f.length?f[0]:f:u(this,o)}return this},s.prototype.removeAllListeners=function(e){var t;return e?(t=v?v+e:e,this._events[t]&&u(this,t)):(this._events=new o,this._eventsCount=0),this},s.prototype.off=s.prototype.removeListener,s.prototype.addListener=s.prototype.on,s.prefixed=v,s.EventEmitter=s,void 0!==t&&(t.exports=s)},{}]},{},[1])(1)});
 //
 //  Created by Juan Corona
@@ -8089,17 +7739,17 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 	var jquery = createCommonjsModule(function (module) {
 	/*!
-	 * jQuery JavaScript Library v3.6.0
+	 * jQuery JavaScript Library v3.3.1
 	 * https://jquery.com/
 	 *
 	 * Includes Sizzle.js
 	 * https://sizzlejs.com/
 	 *
-	 * Copyright OpenJS Foundation and other contributors
+	 * Copyright JS Foundation and other contributors
 	 * Released under the MIT license
 	 * https://jquery.org/license
 	 *
-	 * Date: 2021-03-02T17:08Z
+	 * Date: 2018-01-20T17:24Z
 	 */
 	(function (global, factory) {
 
@@ -8125,15 +7775,13 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 		var arr = [];
 
+		var document = window.document;
+
 		var getProto = Object.getPrototypeOf;
 
 		var slice = arr.slice;
 
-		var flat = arr.flat ? function (array) {
-			return arr.flat.call(array);
-		} : function (array) {
-			return arr.concat.apply([], array);
-		};
+		var concat = arr.concat;
 
 		var push = arr.push;
 
@@ -8157,49 +7805,30 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			// In some browsers, typeof returns "function" for HTML <object> elements
 			// (i.e., `typeof document.createElement( "object" ) === "function"`).
 			// We don't want to classify *any* DOM node as a function.
-			// Support: QtWeb <=3.8.5, WebKit <=534.34, wkhtmltopdf tool <=0.12.5
-			// Plus for old WebKit, typeof returns "function" for HTML collections
-			// (e.g., `typeof document.getElementsByTagName("div") === "function"`). (gh-4756)
-			return typeof obj === "function" && typeof obj.nodeType !== "number" && typeof obj.item !== "function";
+			return typeof obj === "function" && typeof obj.nodeType !== "number";
 		};
 
 		var isWindow = function isWindow(obj) {
 			return obj != null && obj === obj.window;
 		};
 
-		var document = window.document;
-
 		var preservedScriptAttributes = {
 			type: true,
 			src: true,
-			nonce: true,
 			noModule: true
 		};
 
-		function DOMEval(code, node, doc) {
+		function DOMEval(code, doc, node) {
 			doc = doc || document;
 
 			var i,
-			    val,
 			    script = doc.createElement("script");
 
 			script.text = code;
 			if (node) {
 				for (i in preservedScriptAttributes) {
-
-					// Support: Firefox 64+, Edge 18+
-					// Some browsers don't support the "nonce" property on scripts.
-					// On the other hand, just using `getAttribute` is not enough as
-					// the `nonce` attribute is reset to an empty string whenever it
-					// becomes browsing-context connected.
-					// See https://github.com/whatwg/html/issues/2369
-					// See https://html.spec.whatwg.org/#nonce-attributes
-					// The `node.getAttribute` check was added for the sake of
-					// `jQuery.globalEval` so that it can fake a nonce-containing node
-					// via an object.
-					val = node[i] || node.getAttribute && node.getAttribute(i);
-					if (val) {
-						script.setAttribute(i, val);
+					if (node[i]) {
+						script[i] = node[i];
 					}
 				}
 			}
@@ -8219,7 +7848,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 		// unguarded in another place, it seems safer to define global only for this module
 
 
-		var version = "3.6.0",
+		var version = "3.3.1",
 
 
 		// Define a local copy of jQuery
@@ -8228,7 +7857,12 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			// The jQuery object is actually just the init constructor 'enhanced'
 			// Need init if jQuery is called (just allow error to be thrown if not included)
 			return new jQuery.fn.init(selector, context);
-		};
+		},
+
+
+		// Support: Android <=4.0 only
+		// Make sure we trim BOM and NBSP
+		rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 
 		jQuery.fn = jQuery.prototype = {
 
@@ -8294,18 +7928,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				return this.eq(-1);
 			},
 
-			even: function () {
-				return this.pushStack(jQuery.grep(this, function (_elem, i) {
-					return (i + 1) % 2;
-				}));
-			},
-
-			odd: function () {
-				return this.pushStack(jQuery.grep(this, function (_elem, i) {
-					return i % 2;
-				}));
-			},
-
 			eq: function (i) {
 				var len = this.length,
 				    j = +i + (i < 0 ? len : 0);
@@ -8362,27 +7984,23 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 					// Extend the base object
 					for (name in options) {
+						src = target[name];
 						copy = options[name];
 
-						// Prevent Object.prototype pollution
 						// Prevent never-ending loop
-						if (name === "__proto__" || target === copy) {
+						if (target === copy) {
 							continue;
 						}
 
 						// Recurse if we're merging plain objects or arrays
 						if (deep && copy && (jQuery.isPlainObject(copy) || (copyIsArray = Array.isArray(copy)))) {
-							src = target[name];
 
-							// Ensure proper type for the source value
-							if (copyIsArray && !Array.isArray(src)) {
-								clone = [];
-							} else if (!copyIsArray && !jQuery.isPlainObject(src)) {
-								clone = {};
+							if (copyIsArray) {
+								copyIsArray = false;
+								clone = src && Array.isArray(src) ? src : [];
 							} else {
-								clone = src;
+								clone = src && jQuery.isPlainObject(src) ? src : {};
 							}
-							copyIsArray = false;
 
 							// Never move original objects, clone them
 							target[name] = jQuery.extend(deep, clone, copy);
@@ -8435,6 +8053,9 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			},
 
 			isEmptyObject: function (obj) {
+
+				/* eslint-disable no-unused-vars */
+				// See https://github.com/eslint/eslint/issues/6125
 				var name;
 
 				for (name in obj) {
@@ -8443,10 +8064,9 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				return true;
 			},
 
-			// Evaluates a script in a provided context; falls back to the global one
-			// if not specified.
-			globalEval: function (code, options, doc) {
-				DOMEval(code, { nonce: options && options.nonce }, doc);
+			// Evaluates a script in a global context
+			globalEval: function (code) {
+				DOMEval(code);
 			},
 
 			each: function (obj, callback) {
@@ -8469,6 +8089,11 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				}
 
 				return obj;
+			},
+
+			// Support: Android <=4.0 only
+			trim: function (text) {
+				return text == null ? "" : (text + "").replace(rtrim, "");
 			},
 
 			// results is for internal usage only
@@ -8555,7 +8180,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				}
 
 				// Flatten any nested arrays
-				return flat(ret);
+				return concat.apply([], ret);
 			},
 
 			// A global GUID counter for objects
@@ -8571,7 +8196,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 		}
 
 		// Populate the class2type map
-		jQuery.each("Boolean Number String Function Array Date RegExp Object Error Symbol".split(" "), function (_i, name) {
+		jQuery.each("Boolean Number String Function Array Date RegExp Object Error Symbol".split(" "), function (i, name) {
 			class2type["[object " + name + "]"] = name.toLowerCase();
 		});
 
@@ -8592,16 +8217,17 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 		}
 		var Sizzle =
 		/*!
-	  * Sizzle CSS Selector Engine v2.3.6
+	  * Sizzle CSS Selector Engine v2.3.3
 	  * https://sizzlejs.com/
 	  *
-	  * Copyright JS Foundation and other contributors
+	  * Copyright jQuery Foundation and other contributors
 	  * Released under the MIT license
-	  * https://js.foundation/
+	  * http://jquery.org/license
 	  *
-	  * Date: 2021-02-16
+	  * Date: 2016-08-08
 	  */
 		function (window) {
+
 			var i,
 			    support,
 			    Expr,
@@ -8634,7 +8260,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			    classCache = createCache(),
 			    tokenCache = createCache(),
 			    compilerCache = createCache(),
-			    nonnativeSelectorCache = createCache(),
 			    sortOrder = function (a, b) {
 				if (a === b) {
 					hasDuplicate = true;
@@ -8647,10 +8272,9 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			hasOwn = {}.hasOwnProperty,
 			    arr = [],
 			    pop = arr.pop,
-			    pushNative = arr.push,
+			    push_native = arr.push,
 			    push = arr.push,
 			    slice = arr.slice,
-
 
 			// Use a stripped-down indexOf as it's faster than native
 			// https://jsperf.com/thor-indexof-vs-for/5
@@ -8664,7 +8288,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				}
 				return -1;
 			},
-			    booleans = "checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|" + "ismap|loop|multiple|open|readonly|required|scoped",
+			    booleans = "checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped",
 
 
 			// Regular expressions
@@ -8673,28 +8297,22 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			whitespace = "[\\x20\\t\\r\\n\\f]",
 
 
-			// https://www.w3.org/TR/css-syntax-3/#ident-token-diagram
-			identifier = "(?:\\\\[\\da-fA-F]{1,6}" + whitespace + "?|\\\\[^\\r\\n\\f]|[\\w-]|[^\0-\\x7f])+",
+			// http://www.w3.org/TR/CSS21/syndata.html#value-def-identifier
+			identifier = "(?:\\\\.|[\\w-]|[^\0-\\xa0])+",
 
 
 			// Attribute selectors: http://www.w3.org/TR/selectors/#attribute-selectors
 			attributes = "\\[" + whitespace + "*(" + identifier + ")(?:" + whitespace +
-
 			// Operator (capture 2)
 			"*([*^$|!~]?=)" + whitespace +
-
-			// "Attribute values must be CSS identifiers [capture 5]
-			// or strings [capture 3 or capture 4]"
+			// "Attribute values must be CSS identifiers [capture 5] or strings [capture 3 or capture 4]"
 			"*(?:'((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\"|(" + identifier + "))|)" + whitespace + "*\\]",
 			    pseudos = ":(" + identifier + ")(?:\\((" +
-
 			// To reduce the number of selectors needing tokenize in the preFilter, prefer arguments:
 			// 1. quoted (capture 3; capture 4 or capture 5)
 			"('((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\")|" +
-
 			// 2. simple (capture 6)
 			"((?:\\\\.|[^\\\\()[\\]]|" + attributes + ")*)|" +
-
 			// 3. anything else (capture 2)
 			".*" + ")\\)|)",
 
@@ -8704,7 +8322,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			    rtrim = new RegExp("^" + whitespace + "+|((?:^|[^\\\\])(?:\\\\.)*)" + whitespace + "+$", "g"),
 			    rcomma = new RegExp("^" + whitespace + "*," + whitespace + "*"),
 			    rcombinators = new RegExp("^" + whitespace + "*([>+~]|" + whitespace + ")" + whitespace + "*"),
-			    rdescend = new RegExp(whitespace + "|>"),
+			    rattributeQuotes = new RegExp("=" + whitespace + "*([^\\]'\"]*?)" + whitespace + "*\\]", "g"),
 			    rpseudo = new RegExp(pseudos),
 			    ridentifier = new RegExp("^" + identifier + "$"),
 			    matchExpr = {
@@ -8715,12 +8333,10 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				"PSEUDO": new RegExp("^" + pseudos),
 				"CHILD": new RegExp("^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\(" + whitespace + "*(even|odd|(([+-]|)(\\d*)n|)" + whitespace + "*(?:([+-]|)" + whitespace + "*(\\d+)|))" + whitespace + "*\\)|)", "i"),
 				"bool": new RegExp("^(?:" + booleans + ")$", "i"),
-
 				// For use in libraries implementing .is()
 				// We use this for POS matching in `select`
 				"needsContext": new RegExp("^" + whitespace + "*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(" + whitespace + "*((?:-\\d)?\\d*)" + whitespace + "*\\)|)(?=[^-]|$)", "i")
 			},
-			    rhtml = /HTML$/i,
 			    rinputs = /^(?:input|select|textarea|button)$/i,
 			    rheader = /^h\d$/i,
 			    rnative = /^[^{]+\{\s*\[native \w/,
@@ -8733,20 +8349,17 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 			// CSS escapes
 			// http://www.w3.org/TR/CSS21/syndata.html#escaped-characters
-			runescape = new RegExp("\\\\[\\da-fA-F]{1,6}" + whitespace + "?|\\\\([^\\r\\n\\f])", "g"),
-			    funescape = function (escape, nonHex) {
-				var high = "0x" + escape.slice(1) - 0x10000;
-
-				return nonHex ?
-
-				// Strip the backslash prefix from a non-hex escape sequence
-				nonHex :
-
-				// Replace a hexadecimal escape sequence with the encoded Unicode code point
-				// Support: IE <=11+
-				// For values outside the Basic Multilingual Plane (BMP), manually construct a
-				// surrogate pair
-				high < 0 ? String.fromCharCode(high + 0x10000) : String.fromCharCode(high >> 10 | 0xD800, high & 0x3FF | 0xDC00);
+			runescape = new RegExp("\\\\([\\da-f]{1,6}" + whitespace + "?|(" + whitespace + ")|.)", "ig"),
+			    funescape = function (_, escaped, escapedWhitespace) {
+				var high = "0x" + escaped - 0x10000;
+				// NaN means non-codepoint
+				// Support: Firefox<24
+				// Workaround erroneous numeric interpretation of +"0x"
+				return high !== high || escapedWhitespace ? escaped : high < 0 ?
+				// BMP codepoint
+				String.fromCharCode(high + 0x10000) :
+				// Supplemental Plane codepoint (surrogate pair)
+				String.fromCharCode(high >> 10 | 0xD800, high & 0x3FF | 0xDC00);
 			},
 
 
@@ -8777,24 +8390,22 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			unloadHandler = function () {
 				setDocument();
 			},
-			    inDisabledFieldset = addCombinator(function (elem) {
-				return elem.disabled === true && elem.nodeName.toLowerCase() === "fieldset";
+			    disabledAncestor = addCombinator(function (elem) {
+				return elem.disabled === true && ("form" in elem || "label" in elem);
 			}, { dir: "parentNode", next: "legend" });
 
 			// Optimize for push.apply( _, NodeList )
 			try {
 				push.apply(arr = slice.call(preferredDoc.childNodes), preferredDoc.childNodes);
-
 				// Support: Android<4.0
 				// Detect silently failing push.apply
-				// eslint-disable-next-line no-unused-expressions
 				arr[preferredDoc.childNodes.length].nodeType;
 			} catch (e) {
 				push = { apply: arr.length ?
 
 					// Leverage slice if possible
 					function (target, els) {
-						pushNative.apply(target, slice.call(els));
+						push_native.apply(target, slice.call(els));
 					} :
 
 					// Support: IE<9
@@ -8802,7 +8413,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					function (target, els) {
 						var j = target.length,
 						    i = 0;
-
 						// Can't trust NodeList.length
 						while (target[j++] = els[i++]) {}
 						target.length = j - 1;
@@ -8834,7 +8444,10 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 				// Try to shortcut find operations (as opposed to filters) in HTML documents
 				if (!seed) {
-					setDocument(context);
+
+					if ((context ? context.ownerDocument || context : preferredDoc) !== document) {
+						setDocument(context);
+					}
 					context = context || document;
 
 					if (documentIsHTML) {
@@ -8888,56 +8501,45 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 						}
 
 						// Take advantage of querySelectorAll
-						if (support.qsa && !nonnativeSelectorCache[selector + " "] && (!rbuggyQSA || !rbuggyQSA.test(selector)) && (
+						if (support.qsa && !compilerCache[selector + " "] && (!rbuggyQSA || !rbuggyQSA.test(selector))) {
 
-						// Support: IE 8 only
-						// Exclude object elements
-						nodeType !== 1 || context.nodeName.toLowerCase() !== "object")) {
+							if (nodeType !== 1) {
+								newContext = context;
+								newSelector = selector;
 
-							newSelector = selector;
-							newContext = context;
+								// qSA looks outside Element context, which is not what we want
+								// Thanks to Andrew Dupont for this workaround technique
+								// Support: IE <=8
+								// Exclude object elements
+							} else if (context.nodeName.toLowerCase() !== "object") {
 
-							// qSA considers elements outside a scoping root when evaluating child or
-							// descendant combinators, which is not what we want.
-							// In such cases, we work around the behavior by prefixing every selector in the
-							// list with an ID selector referencing the scope context.
-							// The technique has to be used as well when a leading combinator is used
-							// as such selectors are not recognized by querySelectorAll.
-							// Thanks to Andrew Dupont for this technique.
-							if (nodeType === 1 && (rdescend.test(selector) || rcombinators.test(selector))) {
-
-								// Expand context for sibling selectors
-								newContext = rsibling.test(selector) && testContext(context.parentNode) || context;
-
-								// We can use :scope instead of the ID hack if the browser
-								// supports it & if we're not changing the context.
-								if (newContext !== context || !support.scope) {
-
-									// Capture the context ID, setting it first if necessary
-									if (nid = context.getAttribute("id")) {
-										nid = nid.replace(rcssescape, fcssescape);
-									} else {
-										context.setAttribute("id", nid = expando);
-									}
+								// Capture the context ID, setting it first if necessary
+								if (nid = context.getAttribute("id")) {
+									nid = nid.replace(rcssescape, fcssescape);
+								} else {
+									context.setAttribute("id", nid = expando);
 								}
 
 								// Prefix every selector in the list
 								groups = tokenize(selector);
 								i = groups.length;
 								while (i--) {
-									groups[i] = (nid ? "#" + nid : ":scope") + " " + toSelector(groups[i]);
+									groups[i] = "#" + nid + " " + toSelector(groups[i]);
 								}
 								newSelector = groups.join(",");
+
+								// Expand context for sibling selectors
+								newContext = rsibling.test(selector) && testContext(context.parentNode) || context;
 							}
 
-							try {
-								push.apply(results, newContext.querySelectorAll(newSelector));
-								return results;
-							} catch (qsaError) {
-								nonnativeSelectorCache(selector, true);
-							} finally {
-								if (nid === expando) {
-									context.removeAttribute("id");
+							if (newSelector) {
+								try {
+									push.apply(results, newContext.querySelectorAll(newSelector));
+									return results;
+								} catch (qsaError) {} finally {
+									if (nid === expando) {
+										context.removeAttribute("id");
+									}
 								}
 							}
 						}
@@ -8958,10 +8560,8 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				var keys = [];
 
 				function cache(key, value) {
-
 					// Use (key + " ") to avoid collision with native prototype properties (see Issue #157)
 					if (keys.push(key + " ") > Expr.cacheLength) {
-
 						// Only keep the most recent entries
 						delete cache[keys.shift()];
 					}
@@ -8991,12 +8591,10 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				} catch (e) {
 					return false;
 				} finally {
-
 					// Remove from its parent by default
 					if (el.parentNode) {
 						el.parentNode.removeChild(el);
 					}
-
 					// release memory in IE
 					el = null;
 				}
@@ -9103,7 +8701,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 							// Where there is no isDisabled, check manually
 							/* jshint -W018 */
-							elem.isDisabled !== !disabled && inDisabledFieldset(elem) === disabled;
+							elem.isDisabled !== !disabled && disabledAncestor(elem) === disabled;
 						}
 
 						return elem.disabled === disabled;
@@ -9160,13 +8758,10 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 	   * @returns {Boolean} True iff elem is a non-HTML XML node
 	   */
 			isXML = Sizzle.isXML = function (elem) {
-				var namespace = elem && elem.namespaceURI,
-				    docElem = elem && (elem.ownerDocument || elem).documentElement;
-
-				// Support: IE <=8
-				// Assume HTML when documentElement doesn't yet exist, such as inside loading iframes
-				// https://bugs.jquery.com/ticket/4833
-				return !rhtml.test(namespace || docElem && docElem.nodeName || "HTML");
+				// documentElement is verified for cases where it doesn't yet exist
+				// (such as loading iframes in IE - #4833)
+				var documentElement = elem && (elem.ownerDocument || elem).documentElement;
+				return documentElement ? documentElement.nodeName !== "HTML" : false;
 			};
 
 			/**
@@ -9180,11 +8775,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				    doc = node ? node.ownerDocument || node : preferredDoc;
 
 				// Return early if doc is invalid or already selected
-				// Support: IE 11+, Edge 17 - 18+
-				// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-				// two documents; shallow comparisons work.
-				// eslint-disable-next-line eqeqeq
-				if (doc == document || doc.nodeType !== 9 || !doc.documentElement) {
+				if (doc === document || doc.nodeType !== 9 || !doc.documentElement) {
 					return document;
 				}
 
@@ -9193,13 +8784,9 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				docElem = document.documentElement;
 				documentIsHTML = !isXML(document);
 
-				// Support: IE 9 - 11+, Edge 12 - 18+
+				// Support: IE 9-11, Edge
 				// Accessing iframe documents after unload throws "permission denied" errors (jQuery #13936)
-				// Support: IE 11+, Edge 17 - 18+
-				// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-				// two documents; shallow comparisons work.
-				// eslint-disable-next-line eqeqeq
-				if (preferredDoc != document && (subWindow = document.defaultView) && subWindow.top !== subWindow) {
+				if (preferredDoc !== document && (subWindow = document.defaultView) && subWindow.top !== subWindow) {
 
 					// Support: IE 11, Edge
 					if (subWindow.addEventListener) {
@@ -9210,16 +8797,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 						subWindow.attachEvent("onunload", unloadHandler);
 					}
 				}
-
-				// Support: IE 8 - 11+, Edge 12 - 18+, Chrome <=16 - 25 only, Firefox <=3.6 - 31 only,
-				// Safari 4 - 5 only, Opera <=11.6 - 12.x only
-				// IE/Edge & older browsers don't support the :scope pseudo-class.
-				// Support: Safari 6.0 only
-				// Safari 6.0 supports :scope but it's an alias of :root there.
-				support.scope = assert(function (el) {
-					docElem.appendChild(el).appendChild(document.createElement("div"));
-					return typeof el.querySelectorAll !== "undefined" && !el.querySelectorAll(":scope fieldset div").length;
-				});
 
 				/* Attributes
 	   ---------------------------------------------------------------------- */
@@ -9323,7 +8900,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					    tmp = [],
 					    i = 0,
 
-
 					// By happy coincidence, a (broken) gEBTN appears on DocumentFragment nodes too
 					results = context.getElementsByTagName(tag);
 
@@ -9363,13 +8939,9 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				rbuggyQSA = [];
 
 				if (support.qsa = rnative.test(document.querySelectorAll)) {
-
 					// Build QSA regex
 					// Regex strategy adopted from Diego Perini
 					assert(function (el) {
-
-						var input;
-
 						// Select is set to empty string on purpose
 						// This is to test IE's treatment of not explicitly
 						// setting a boolean content attribute,
@@ -9396,18 +8968,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 							rbuggyQSA.push("~=");
 						}
 
-						// Support: IE 11+, Edge 15 - 18+
-						// IE 11/Edge don't find elements on a `[name='']` query in some cases.
-						// Adding a temporary attribute to the document before the selection works
-						// around the issue.
-						// Interestingly, IE 10 & older don't seem to have the issue.
-						input = document.createElement("input");
-						input.setAttribute("name", "");
-						el.appendChild(input);
-						if (!el.querySelectorAll("[name='']").length) {
-							rbuggyQSA.push("\\[" + whitespace + "*name" + whitespace + "*=" + whitespace + "*(?:''|\"\")");
-						}
-
 						// Webkit/Opera - :checked should return selected option elements
 						// http://www.w3.org/TR/2011/REC-css3-selectors-20110929/#checked
 						// IE8 throws error here and will not see later tests
@@ -9421,11 +8981,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 						if (!el.querySelectorAll("a#" + expando + "+*").length) {
 							rbuggyQSA.push(".#.+[+~]");
 						}
-
-						// Support: Firefox <=3.6 - 5 only
-						// Old Firefox doesn't throw on a badly-escaped identifier.
-						el.querySelectorAll("\\\f");
-						rbuggyQSA.push("[\\r\\n\\f]");
 					});
 
 					assert(function (el) {
@@ -9456,7 +9011,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 							rbuggyQSA.push(":enabled", ":disabled");
 						}
 
-						// Support: Opera 10 - 11 only
 						// Opera 10-11 does not throw on post-comma invalid pseudos
 						el.querySelectorAll("*,:x");
 						rbuggyQSA.push(",.*:");
@@ -9466,7 +9020,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				if (support.matchesSelector = rnative.test(matches = docElem.matches || docElem.webkitMatchesSelector || docElem.mozMatchesSelector || docElem.oMatchesSelector || docElem.msMatchesSelector)) {
 
 					assert(function (el) {
-
 						// Check to see if it's possible to do matchesSelector
 						// on a disconnected node (IE 9)
 						support.disconnectedMatch = matches.call(el, "*");
@@ -9522,11 +9075,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					}
 
 					// Calculate position if both inputs belong to the same document
-					// Support: IE 11+, Edge 17 - 18+
-					// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-					// two documents; shallow comparisons work.
-					// eslint-disable-next-line eqeqeq
-					compare = (a.ownerDocument || a) == (b.ownerDocument || b) ? a.compareDocumentPosition(b) :
+					compare = (a.ownerDocument || a) === (b.ownerDocument || b) ? a.compareDocumentPosition(b) :
 
 					// Otherwise we know they are disconnected
 					1;
@@ -9535,19 +9084,10 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					if (compare & 1 || !support.sortDetached && b.compareDocumentPosition(a) === compare) {
 
 						// Choose the first element that is related to our preferred document
-						// Support: IE 11+, Edge 17 - 18+
-						// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-						// two documents; shallow comparisons work.
-						// eslint-disable-next-line eqeqeq
-						if (a == document || a.ownerDocument == preferredDoc && contains(preferredDoc, a)) {
+						if (a === document || a.ownerDocument === preferredDoc && contains(preferredDoc, a)) {
 							return -1;
 						}
-
-						// Support: IE 11+, Edge 17 - 18+
-						// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-						// two documents; shallow comparisons work.
-						// eslint-disable-next-line eqeqeq
-						if (b == document || b.ownerDocument == preferredDoc && contains(preferredDoc, b)) {
+						if (b === document || b.ownerDocument === preferredDoc && contains(preferredDoc, b)) {
 							return 1;
 						}
 
@@ -9557,7 +9097,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 					return compare & 4 ? -1 : 1;
 				} : function (a, b) {
-
 					// Exit early if the nodes are identical
 					if (a === b) {
 						hasDuplicate = true;
@@ -9573,14 +9112,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 					// Parentless nodes are either documents or disconnected
 					if (!aup || !bup) {
-
-						// Support: IE 11+, Edge 17 - 18+
-						// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-						// two documents; shallow comparisons work.
-						/* eslint-disable eqeqeq */
-						return a == document ? -1 : b == document ? 1 :
-						/* eslint-enable eqeqeq */
-						aup ? -1 : bup ? 1 : sortInput ? indexOf(sortInput, a) - indexOf(sortInput, b) : 0;
+						return a === document ? -1 : b === document ? 1 : aup ? -1 : bup ? 1 : sortInput ? indexOf(sortInput, a) - indexOf(sortInput, b) : 0;
 
 						// If the nodes are siblings, we can do a quick check
 					} else if (aup === bup) {
@@ -9603,18 +9135,11 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					}
 
 					return i ?
-
 					// Do a sibling check if the nodes have a common ancestor
 					siblingCheck(ap[i], bp[i]) :
 
 					// Otherwise nodes in our document sort first
-					// Support: IE 11+, Edge 17 - 18+
-					// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-					// two documents; shallow comparisons work.
-					/* eslint-disable eqeqeq */
-					ap[i] == preferredDoc ? -1 : bp[i] == preferredDoc ? 1 :
-					/* eslint-enable eqeqeq */
-					0;
+					ap[i] === preferredDoc ? -1 : bp[i] === preferredDoc ? 1 : 0;
 				};
 
 				return document;
@@ -9625,55 +9150,47 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			};
 
 			Sizzle.matchesSelector = function (elem, expr) {
-				setDocument(elem);
+				// Set document vars if needed
+				if ((elem.ownerDocument || elem) !== document) {
+					setDocument(elem);
+				}
 
-				if (support.matchesSelector && documentIsHTML && !nonnativeSelectorCache[expr + " "] && (!rbuggyMatches || !rbuggyMatches.test(expr)) && (!rbuggyQSA || !rbuggyQSA.test(expr))) {
+				// Make sure that attribute selectors are quoted
+				expr = expr.replace(rattributeQuotes, "='$1']");
+
+				if (support.matchesSelector && documentIsHTML && !compilerCache[expr + " "] && (!rbuggyMatches || !rbuggyMatches.test(expr)) && (!rbuggyQSA || !rbuggyQSA.test(expr))) {
 
 					try {
 						var ret = matches.call(elem, expr);
 
 						// IE 9's matchesSelector returns false on disconnected nodes
 						if (ret || support.disconnectedMatch ||
-
 						// As well, disconnected nodes are said to be in a document
 						// fragment in IE 9
 						elem.document && elem.document.nodeType !== 11) {
 							return ret;
 						}
-					} catch (e) {
-						nonnativeSelectorCache(expr, true);
-					}
+					} catch (e) {}
 				}
 
 				return Sizzle(expr, document, null, [elem]).length > 0;
 			};
 
 			Sizzle.contains = function (context, elem) {
-
 				// Set document vars if needed
-				// Support: IE 11+, Edge 17 - 18+
-				// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-				// two documents; shallow comparisons work.
-				// eslint-disable-next-line eqeqeq
-				if ((context.ownerDocument || context) != document) {
+				if ((context.ownerDocument || context) !== document) {
 					setDocument(context);
 				}
 				return contains(context, elem);
 			};
 
 			Sizzle.attr = function (elem, name) {
-
 				// Set document vars if needed
-				// Support: IE 11+, Edge 17 - 18+
-				// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-				// two documents; shallow comparisons work.
-				// eslint-disable-next-line eqeqeq
-				if ((elem.ownerDocument || elem) != document) {
+				if ((elem.ownerDocument || elem) !== document) {
 					setDocument(elem);
 				}
 
 				var fn = Expr.attrHandle[name.toLowerCase()],
-
 
 				// Don't get fooled by Object.prototype properties (jQuery #13807)
 				val = fn && hasOwn.call(Expr.attrHandle, name.toLowerCase()) ? fn(elem, name, !documentIsHTML) : undefined;
@@ -9733,21 +9250,17 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				    nodeType = elem.nodeType;
 
 				if (!nodeType) {
-
 					// If no nodeType, this is expected to be an array
 					while (node = elem[i++]) {
-
 						// Do not traverse comment nodes
 						ret += getText(node);
 					}
 				} else if (nodeType === 1 || nodeType === 9 || nodeType === 11) {
-
 					// Use textContent for elements
 					// innerText usage removed for consistency of new lines (jQuery #11153)
 					if (typeof elem.textContent === "string") {
 						return elem.textContent;
 					} else {
-
 						// Traverse its children
 						for (elem = elem.firstChild; elem; elem = elem.nextSibling) {
 							ret += getText(elem);
@@ -9756,7 +9269,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				} else if (nodeType === 3 || nodeType === 4) {
 					return elem.nodeValue;
 				}
-
 				// Do not include comment or processing instruction nodes
 
 				return ret;
@@ -9797,7 +9309,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					},
 
 					"CHILD": function (match) {
-
 						/* matches from matchExpr["CHILD"]
 	     	1 type (only|nth|...)
 	     	2 what (child|of-type)
@@ -9811,7 +9322,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 						match[1] = match[1].toLowerCase();
 
 						if (match[1].slice(0, 3) === "nth") {
-
 							// nth-* requires argument
 							if (!match[3]) {
 								Sizzle.error(match[0]);
@@ -9844,10 +9354,8 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 							// Strip excess characters from unquoted arguments
 						} else if (unquoted && rpseudo.test(unquoted) && (
-
 						// Get excess from tokenize (recursively)
 						excess = tokenize(unquoted, true)) && (
-
 						// advance to the next closing parenthesis
 						excess = unquoted.indexOf(")", unquoted.length - excess) - unquoted.length)) {
 
@@ -9893,14 +9401,11 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 							result += "";
 
-							/* eslint-disable max-len */
-
 							return operator === "=" ? result === check : operator === "!=" ? result !== check : operator === "^=" ? check && result.indexOf(check) === 0 : operator === "*=" ? check && result.indexOf(check) > -1 : operator === "$=" ? check && result.slice(-check.length) === check : operator === "~=" ? (" " + result.replace(rwhitespace, " ") + " ").indexOf(check) > -1 : operator === "|=" ? result === check || result.slice(0, check.length + 1) === check + "-" : false;
-							/* eslint-enable max-len */
 						};
 					},
 
-					"CHILD": function (type, what, _argument, first, last) {
+					"CHILD": function (type, what, argument, first, last) {
 						var simple = type.slice(0, 3) !== "nth",
 						    forward = type.slice(-4) !== "last",
 						    ofType = what === "of-type";
@@ -9910,7 +9415,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 						// Shortcut for :nth-*(n)
 						function (elem) {
 							return !!elem.parentNode;
-						} : function (elem, _context, xml) {
+						} : function (elem, context, xml) {
 							var cache,
 							    uniqueCache,
 							    outerCache,
@@ -9935,7 +9440,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 												return false;
 											}
 										}
-
 										// Reverse direction for :only-* (if we haven't yet done so)
 										start = dir = type === "only" && !start && "nextSibling";
 									}
@@ -9974,10 +9478,8 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 										}
 									}
 								} else {
-
 									// Use previously-cached element index if available
 									if (useCache) {
-
 										// ...in a gzip-friendly way
 										node = elem;
 										outerCache = node[expando] || (node[expando] = {});
@@ -9994,7 +9496,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 									// xml :nth-child(...)
 									// or :nth-last-child(...) or :nth(-last)?-of-type(...)
 									if (diff === false) {
-
 										// Use the same loop as above to seek `elem` from the start
 										while (node = ++nodeIndex && node && node[dir] || (diff = nodeIndex = 0) || start.pop()) {
 
@@ -10027,7 +9528,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					},
 
 					"PSEUDO": function (pseudo, argument) {
-
 						// pseudo-class names are case-insensitive
 						// http://www.w3.org/TR/selectors/#pseudo-classes
 						// Prioritize by case sensitivity in case custom pseudos are added with uppercase letters
@@ -10063,10 +9563,8 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				},
 
 				pseudos: {
-
 					// Potentially complex pseudos
 					"not": markFunction(function (selector) {
-
 						// Trim the selector passed to compile
 						// to avoid treating leading and trailing
 						// spaces as combinators
@@ -10074,7 +9572,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 						    results = [],
 						    matcher = compile(selector.replace(rtrim, "$1"));
 
-						return matcher[expando] ? markFunction(function (seed, matches, _context, xml) {
+						return matcher[expando] ? markFunction(function (seed, matches, context, xml) {
 							var elem,
 							    unmatched = matcher(seed, null, xml, []),
 							    i = seed.length;
@@ -10085,10 +9583,9 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 									seed[i] = !(matches[i] = elem);
 								}
 							}
-						}) : function (elem, _context, xml) {
+						}) : function (elem, context, xml) {
 							input[0] = elem;
 							matcher(input, null, xml, results);
-
 							// Don't keep the element (issue #299)
 							input[0] = null;
 							return !results.pop();
@@ -10104,7 +9601,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					"contains": markFunction(function (text) {
 						text = text.replace(runescape, funescape);
 						return function (elem) {
-							return (elem.textContent || getText(elem)).indexOf(text) > -1;
+							return (elem.textContent || elem.innerText || getText(elem)).indexOf(text) > -1;
 						};
 					}),
 
@@ -10116,7 +9613,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					// The identifier C does not have to be a valid language name."
 					// http://www.w3.org/TR/selectors/#lang-pseudo
 					"lang": markFunction(function (lang) {
-
 						// lang value must be a valid identifier
 						if (!ridentifier.test(lang || "")) {
 							Sizzle.error("unsupported lang: " + lang);
@@ -10154,7 +9650,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					"disabled": createDisabledPseudo(true),
 
 					"checked": function (elem) {
-
 						// In CSS3, :checked should return both checked and selected elements
 						// http://www.w3.org/TR/2011/REC-css3-selectors-20110929/#checked
 						var nodeName = elem.nodeName.toLowerCase();
@@ -10162,11 +9657,9 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					},
 
 					"selected": function (elem) {
-
 						// Accessing this property makes selected-by-default
 						// options in Safari work properly
 						if (elem.parentNode) {
-							// eslint-disable-next-line no-unused-expressions
 							elem.parentNode.selectedIndex;
 						}
 
@@ -10175,7 +9668,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 					// Contents
 					"empty": function (elem) {
-
 						// http://www.w3.org/TR/selectors/#empty-pseudo
 						// :empty is negated by element (1) or content nodes (text: 3; cdata: 4; entity ref: 5),
 						//   but not by others (comment: 8; processing instruction: 7; etc.)
@@ -10220,11 +9712,11 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 						return [0];
 					}),
 
-					"last": createPositionalPseudo(function (_matchIndexes, length) {
+					"last": createPositionalPseudo(function (matchIndexes, length) {
 						return [length - 1];
 					}),
 
-					"eq": createPositionalPseudo(function (_matchIndexes, length, argument) {
+					"eq": createPositionalPseudo(function (matchIndexes, length, argument) {
 						return [argument < 0 ? argument + length : argument];
 					}),
 
@@ -10245,7 +9737,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					}),
 
 					"lt": createPositionalPseudo(function (matchIndexes, length, argument) {
-						var i = argument < 0 ? argument + length : argument > length ? length : argument;
+						var i = argument < 0 ? argument + length : argument;
 						for (; --i >= 0;) {
 							matchIndexes.push(i);
 						}
@@ -10300,7 +9792,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					// Comma and first run
 					if (!matched || (match = rcomma.exec(soFar))) {
 						if (match) {
-
 							// Don't consume trailing commas as valid
 							soFar = soFar.slice(match[0].length) || soFar;
 						}
@@ -10314,7 +9805,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 						matched = match.shift();
 						tokens.push({
 							value: matched,
-
 							// Cast descendant combinators to space
 							type: match[0].replace(rtrim, " ")
 						});
@@ -10343,7 +9833,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				// if we're just parsing
 				// Otherwise, throw an error or return tokens
 				return parseOnly ? soFar.length : soFar ? Sizzle.error(selector) :
-
 				// Cache the tokens
 				tokenCache(selector, groups).slice(0);
 			};
@@ -10366,7 +9855,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				    doneName = done++;
 
 				return combinator.first ?
-
 				// Check against closest ancestor/preceding element
 				function (elem, context, xml) {
 					while (elem = elem[dir]) {
@@ -10409,7 +9897,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 									// Assign to newCache so results back-propagate to previous elements
 									return newCache[2] = oldCache[2];
 								} else {
-
 									// Reuse newcache so results back-propagate to previous elements
 									uniqueCache[key] = newCache;
 
@@ -10490,7 +9977,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					// Prefilter to get matcher input, preserving a map for seed-results synchronization
 					matcherIn = preFilter && (seed || !selector) ? condense(elems, preMap, preFilter, context, xml) : elems,
 					    matcherOut = matcher ?
-
 					// If we have a postFinder, or filtered seed, or non-seed postFilter or preexisting results,
 					postFinder || (seed ? preFilter : preexisting || postFilter) ?
 
@@ -10522,13 +10008,11 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					if (seed) {
 						if (postFinder || preFilter) {
 							if (postFinder) {
-
 								// Get the final matcherOut by condensing this intermediate into postFinder contexts
 								temp = [];
 								i = matcherOut.length;
 								while (i--) {
 									if (elem = matcherOut[i]) {
-
 										// Restore matcherIn since elem is not yet a final match
 										temp.push(matcherIn[i] = elem);
 									}
@@ -10577,7 +10061,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				}, implicitRelative, true),
 				    matchers = [function (elem, context, xml) {
 					var ret = !leadingRelative && (xml || context !== outermostContext) || ((checkContext = context).nodeType ? matchContext(elem, context, xml) : matchAnyContext(elem, context, xml));
-
 					// Avoid hanging onto element (issue #299)
 					checkContext = null;
 					return ret;
@@ -10591,7 +10074,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 						// Return special upon seeing a positional matcher
 						if (matcher[expando]) {
-
 							// Find the next relative operator (if any) for proper handling
 							j = ++i;
 							for (; j < len; j++) {
@@ -10600,7 +10082,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 								}
 							}
 							return setMatcher(i > 1 && elementMatcher(matchers), i > 1 && toSelector(
-
 							// If the preceding token was a descendant combinator, insert an implicit any-element `*`
 							tokens.slice(0, i - 1).concat({ value: tokens[i - 2].type === " " ? "*" : "" })).replace(rtrim, "$1"), matcher, i < j && matcherFromTokens(tokens.slice(i, j)), j < len && matcherFromTokens(tokens = tokens.slice(j)), j < len && toSelector(tokens));
 						}
@@ -10624,22 +10105,15 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					    setMatched = [],
 					    contextBackup = outermostContext,
 
-
 					// We must always have either seed elements or outermost context
 					elems = seed || byElement && Expr.find["TAG"]("*", outermost),
-
 
 					// Use integer dirruns iff this is the outermost matcher
 					dirrunsUnique = dirruns += contextBackup == null ? 1 : Math.random() || 0.1,
 					    len = elems.length;
 
 					if (outermost) {
-
-						// Support: IE 11+, Edge 17 - 18+
-						// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-						// two documents; shallow comparisons work.
-						// eslint-disable-next-line eqeqeq
-						outermostContext = context == document || context || outermost;
+						outermostContext = context === document || context || outermost;
 					}
 
 					// Add elements passing elementMatchers directly to results
@@ -10648,12 +10122,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					for (; i !== len && (elem = elems[i]) != null; i++) {
 						if (byElement && elem) {
 							j = 0;
-
-							// Support: IE 11+, Edge 17 - 18+
-							// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-							// two documents; shallow comparisons work.
-							// eslint-disable-next-line eqeqeq
-							if (!context && elem.ownerDocument != document) {
+							if (!context && elem.ownerDocument !== document) {
 								setDocument(elem);
 								xml = !documentIsHTML;
 							}
@@ -10670,7 +10139,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 						// Track unmatched elements for set filters
 						if (bySet) {
-
 							// They will have gone through all possible matchers
 							if (elem = !matcher && elem) {
 								matchedCount--;
@@ -10701,7 +10169,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 						}
 
 						if (seed) {
-
 							// Reintegrate element matches to eliminate the need for sorting
 							if (matchedCount > 0) {
 								while (i--) {
@@ -10744,7 +10211,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				    cached = compilerCache[selector + " "];
 
 				if (!cached) {
-
 					// Generate a function of recursive functions that can be used to check each element
 					if (!match) {
 						match = tokenize(selector);
@@ -10818,7 +10284,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 							break;
 						}
 						if (find = Expr.find[type]) {
-
 							// Search, expanding context for leading sibling combinators
 							if (seed = find(token.matches[0].replace(runescape, funescape), rsibling.test(tokens[0].type) && testContext(context.parentNode) || context)) {
 
@@ -10857,7 +10322,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			// Support: Webkit<537.32 - Safari 6.0.3/Chrome 25 (fixed in Chrome 27)
 			// Detached nodes confoundingly follow *each other*
 			support.sortDetached = assert(function (el) {
-
 				// Should return 1, but returns 4 (following)
 				return el.compareDocumentPosition(document.createElement("fieldset")) & 1;
 			});
@@ -10883,7 +10347,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				el.firstChild.setAttribute("value", "");
 				return el.firstChild.getAttribute("value") === "";
 			})) {
-				addHandle("value", function (elem, _name, isXML) {
+				addHandle("value", function (elem, name, isXML) {
 					if (!isXML && elem.nodeName.toLowerCase() === "input") {
 						return elem.defaultValue;
 					}
@@ -10949,8 +10413,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 		function nodeName(elem, name) {
 
 			return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
-		}
-		var rsingleTag = /^<([a-z][^\/\0>:\x20\t\r\n\f]*)[\x20\t\r\n\f]*\/?>(?:<\/\1>|)$/i;
+		}	var rsingleTag = /^<([a-z][^\/\0>:\x20\t\r\n\f]*)[\x20\t\r\n\f]*\/?>(?:<\/\1>|)$/i;
 
 		// Implement the identical functionality for filter and not
 		function winnow(elements, qualifier, not) {
@@ -11239,7 +10702,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			parents: function (elem) {
 				return dir(elem, "parentNode");
 			},
-			parentsUntil: function (elem, _i, until) {
+			parentsUntil: function (elem, i, until) {
 				return dir(elem, "parentNode", until);
 			},
 			next: function (elem) {
@@ -11254,10 +10717,10 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			prevAll: function (elem) {
 				return dir(elem, "previousSibling");
 			},
-			nextUntil: function (elem, _i, until) {
+			nextUntil: function (elem, i, until) {
 				return dir(elem, "nextSibling", until);
 			},
-			prevUntil: function (elem, _i, until) {
+			prevUntil: function (elem, i, until) {
 				return dir(elem, "previousSibling", until);
 			},
 			siblings: function (elem) {
@@ -11267,13 +10730,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				return siblings(elem.firstChild);
 			},
 			contents: function (elem) {
-				if (elem.contentDocument != null &&
-
-				// Support: IE 11+
-				// <object> elements with no `data` attribute has an object
-				// `contentDocument` with a `null` prototype.
-				getProto(elem.contentDocument)) {
-
+				if (nodeName(elem, "iframe")) {
 					return elem.contentDocument;
 				}
 
@@ -11610,7 +11067,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 						var fns = arguments;
 
 						return jQuery.Deferred(function (newDefer) {
-							jQuery.each(tuples, function (_i, tuple) {
+							jQuery.each(tuples, function (i, tuple) {
 
 								// Map tuples (progress, done, fail) to arguments (done, fail, progress)
 								var fn = isFunction(fns[tuple[4]]) && fns[tuple[4]];
@@ -11846,8 +11303,8 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				    resolveValues = slice.call(arguments),
 
 
-				// the primary Deferred
-				primary = jQuery.Deferred(),
+				// the master Deferred
+				master = jQuery.Deferred(),
 
 
 				// subordinate callback factory
@@ -11856,28 +11313,28 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 						resolveContexts[i] = this;
 						resolveValues[i] = arguments.length > 1 ? slice.call(arguments) : value;
 						if (! --remaining) {
-							primary.resolveWith(resolveContexts, resolveValues);
+							master.resolveWith(resolveContexts, resolveValues);
 						}
 					};
 				};
 
 				// Single- and empty arguments are adopted like Promise.resolve
 				if (remaining <= 1) {
-					adoptValue(singleValue, primary.done(updateFunc(i)).resolve, primary.reject, !remaining);
+					adoptValue(singleValue, master.done(updateFunc(i)).resolve, master.reject, !remaining);
 
 					// Use .then() to unwrap secondary thenables (cf. gh-3000)
-					if (primary.state() === "pending" || isFunction(resolveValues[i] && resolveValues[i].then)) {
+					if (master.state() === "pending" || isFunction(resolveValues[i] && resolveValues[i].then)) {
 
-						return primary.then();
+						return master.then();
 					}
 				}
 
 				// Multiple arguments are aggregated like Promise.all array elements
 				while (i--) {
-					adoptValue(resolveValues[i], updateFunc(i), primary.reject);
+					adoptValue(resolveValues[i], updateFunc(i), master.reject);
 				}
 
-				return primary.promise();
+				return master.promise();
 			}
 		});
 
@@ -12005,7 +11462,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 						// ...except when executing function values
 					} else {
 						bulk = fn;
-						fn = function (elem, _key, value) {
+						fn = function (elem, key, value) {
 							return bulk.call(jQuery(elem), value);
 						};
 					}
@@ -12035,7 +11492,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 		    rdashAlpha = /-([a-z])/g;
 
 		// Used by camelCase as callback to replace()
-		function fcamelCase(_all, letter) {
+		function fcamelCase(all, letter) {
 			return letter.toUpperCase();
 		}
 
@@ -12513,23 +11970,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 		var cssExpand = ["Top", "Right", "Bottom", "Left"];
 
-		var documentElement = document.documentElement;
-
-		var isAttached = function (elem) {
-			return jQuery.contains(elem.ownerDocument, elem);
-		},
-		    composed = { composed: true };
-
-		// Support: IE 9 - 11+, Edge 12 - 18+, iOS 10.0 - 10.2 only
-		// Check attachment across shadow DOM boundaries when possible (gh-3504)
-		// Support: iOS 10.0-10.2 only
-		// Early iOS 10 versions support `attachShadow` but not `getRootNode`,
-		// leading to errors. We need to check for `getRootNode`.
-		if (documentElement.getRootNode) {
-			isAttached = function (elem) {
-				return jQuery.contains(elem.ownerDocument, elem) || elem.getRootNode(composed) === elem.ownerDocument;
-			};
-		}
 		var isHiddenWithinTree = function (elem, el) {
 
 			// isHiddenWithinTree might be called from jQuery#filter function;
@@ -12543,7 +11983,28 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			// Support: Firefox <=43 - 45
 			// Disconnected elements can have computed display: none, so first confirm that elem is
 			// in the document.
-			isAttached(elem) && jQuery.css(elem, "display") === "none";
+			jQuery.contains(elem.ownerDocument, elem) && jQuery.css(elem, "display") === "none";
+		};
+
+		var swap = function (elem, options, callback, args) {
+			var ret,
+			    name,
+			    old = {};
+
+			// Remember the old values, and insert the new ones
+			for (name in options) {
+				old[name] = elem.style[name];
+				elem.style[name] = options[name];
+			}
+
+			ret = callback.apply(elem, args || []);
+
+			// Revert the old values
+			for (name in options) {
+				elem.style[name] = old[name];
+			}
+
+			return ret;
 		};
 
 		function adjustCSS(elem, prop, valueParts, tween) {
@@ -12560,7 +12021,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 
 			// Starting value computation is required for potential unit mismatches
-			initialInUnit = elem.nodeType && (jQuery.cssNumber[prop] || unit !== "px" && +initial) && rcssNum.exec(jQuery.css(elem, prop));
+			initialInUnit = (jQuery.cssNumber[prop] || unit !== "px" && +initial) && rcssNum.exec(jQuery.css(elem, prop));
 
 			if (initialInUnit && initialInUnit[3] !== unit) {
 
@@ -12703,43 +12164,15 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 		});
 		var rcheckableType = /^(?:checkbox|radio)$/i;
 
-		var rtagName = /<([a-z][^\/\0>\x20\t\r\n\f]*)/i;
+		var rtagName = /<([a-z][^\/\0>\x20\t\r\n\f]+)/i;
 
 		var rscriptType = /^$|^module$|\/(?:java|ecma)script/i;
 
-		(function () {
-			var fragment = document.createDocumentFragment(),
-			    div = fragment.appendChild(document.createElement("div")),
-			    input = document.createElement("input");
-
-			// Support: Android 4.0 - 4.3 only
-			// Check state lost if the name is set (#11217)
-			// Support: Windows Web Apps (WWA)
-			// `name` and `type` must use .setAttribute for WWA (#14901)
-			input.setAttribute("type", "radio");
-			input.setAttribute("checked", "checked");
-			input.setAttribute("name", "t");
-
-			div.appendChild(input);
-
-			// Support: Android <=4.1 only
-			// Older WebKit doesn't clone checked state correctly in fragments
-			support.checkClone = div.cloneNode(true).cloneNode(true).lastChild.checked;
-
-			// Support: IE <=11 only
-			// Make sure textarea (and checkbox) defaultValue is properly cloned
-			div.innerHTML = "<textarea>x</textarea>";
-			support.noCloneChecked = !!div.cloneNode(true).lastChild.defaultValue;
-
-			// Support: IE <=9 only
-			// IE <=9 replaces <option> tags with their contents when inserted outside of
-			// the select element.
-			div.innerHTML = "<option></option>";
-			support.option = !!div.lastChild;
-		})();
-
 		// We have to close these tags to support XHTML (#13200)
 		var wrapMap = {
+
+			// Support: IE <=9 only
+			option: [1, "<select multiple='multiple'>", "</select>"],
 
 			// XHTML parsers do not magically insert elements in the
 			// same way that tag soup parsers do. So we cannot shorten
@@ -12752,13 +12185,11 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			_default: [0, "", ""]
 		};
 
+		// Support: IE <=9 only
+		wrapMap.optgroup = wrapMap.option;
+
 		wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
 		wrapMap.th = wrapMap.td;
-
-		// Support: IE <=9 only
-		if (!support.option) {
-			wrapMap.optgroup = wrapMap.option = [1, "<select multiple='multiple'>", "</select>"];
-		}
 
 		function getAll(context, tag) {
 
@@ -12798,7 +12229,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			    tmp,
 			    tag,
 			    wrap,
-			    attached,
+			    contains,
 			    j,
 			    fragment = context.createDocumentFragment(),
 			    nodes = [],
@@ -12863,13 +12294,13 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					continue;
 				}
 
-				attached = isAttached(elem);
+				contains = jQuery.contains(elem.ownerDocument, elem);
 
 				// Append to fragment
 				tmp = getAll(fragment.appendChild(elem), "script");
 
 				// Preserve script evaluation history
-				if (attached) {
+				if (contains) {
 					setGlobalEval(tmp);
 				}
 
@@ -12887,7 +12318,35 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			return fragment;
 		}
 
-		var rtypenamespace = /^([^.]*)(?:\.(.+)|)/;
+		(function () {
+			var fragment = document.createDocumentFragment(),
+			    div = fragment.appendChild(document.createElement("div")),
+			    input = document.createElement("input");
+
+			// Support: Android 4.0 - 4.3 only
+			// Check state lost if the name is set (#11217)
+			// Support: Windows Web Apps (WWA)
+			// `name` and `type` must use .setAttribute for WWA (#14901)
+			input.setAttribute("type", "radio");
+			input.setAttribute("checked", "checked");
+			input.setAttribute("name", "t");
+
+			div.appendChild(input);
+
+			// Support: Android <=4.1 only
+			// Older WebKit doesn't clone checked state correctly in fragments
+			support.checkClone = div.cloneNode(true).cloneNode(true).lastChild.checked;
+
+			// Support: IE <=11 only
+			// Make sure textarea (and checkbox) defaultValue is properly cloned
+			div.innerHTML = "<textarea>x</textarea>";
+			support.noCloneChecked = !!div.cloneNode(true).lastChild.defaultValue;
+		})();
+		var documentElement = document.documentElement;
+
+		var rkeyEvent = /^key/,
+		    rmouseEvent = /^(?:mouse|pointer|contextmenu|drag|drop)|click/,
+		    rtypenamespace = /^([^.]*)(?:\.(.+)|)/;
 
 		function returnTrue() {
 			return true;
@@ -12897,19 +12356,8 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			return false;
 		}
 
-		// Support: IE <=9 - 11+
-		// focus() and blur() are asynchronous, except when they are no-op.
-		// So expect focus to be synchronous when the element is already active,
-		// and blur to be synchronous when the element is not already active.
-		// (focus and blur are always synchronous in other supported browsers,
-		// this just defines when we can count on it).
-		function expectSync(elem, type) {
-			return elem === safeActiveElement() === (type === "focus");
-		}
-
 		// Support: IE <=9 only
-		// Accessing document.activeElement can throw unexpectedly
-		// https://bugs.jquery.com/ticket/13393
+		// See #13393 for more info
 		function safeActiveElement() {
 			try {
 				return document.activeElement;
@@ -13000,8 +12448,8 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				    origType,
 				    elemData = dataPriv.get(elem);
 
-				// Only attach events to objects that accept data
-				if (!acceptData(elem)) {
+				// Don't attach events to noData or text/comment nodes (but allow plain objects)
+				if (!elemData) {
 					return;
 				}
 
@@ -13025,7 +12473,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 				// Init the element's event structure and main handler, if this is the first
 				if (!(events = elemData.events)) {
-					events = elemData.events = Object.create(null);
+					events = elemData.events = {};
 				}
 				if (!(eventHandle = elemData.handle)) {
 					eventHandle = elemData.handle = function (e) {
@@ -13182,6 +12630,9 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 			dispatch: function (nativeEvent) {
 
+				// Make a writable jQuery.Event from the native event object
+				var event = jQuery.event.fix(nativeEvent);
+
 				var i,
 				    j,
 				    ret,
@@ -13189,11 +12640,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				    handleObj,
 				    handlerQueue,
 				    args = new Array(arguments.length),
-
-
-				// Make a writable jQuery.Event from the native event object
-				event = jQuery.event.fix(nativeEvent),
-				    handlers = (dataPriv.get(this, "events") || Object.create(null))[event.type] || [],
+				    handlers = (dataPriv.get(this, "events") || {})[event.type] || [],
 				    special = jQuery.event.special[event.type] || {};
 
 				// Use the fix-ed jQuery.Event rather than the (read-only) native event
@@ -13221,9 +12668,9 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					j = 0;
 					while ((handleObj = matched.handlers[j++]) && !event.isImmediatePropagationStopped()) {
 
-						// If the event is namespaced, then each handler is only invoked if it is
-						// specially universal or its namespaces are a superset of the event's.
-						if (!event.rnamespace || handleObj.namespace === false || event.rnamespace.test(handleObj.namespace)) {
+						// Triggered event must either 1) have no namespace, or 2) have namespace(s)
+						// a subset or equal to those in the bound event (both can have no namespace).
+						if (!event.rnamespace || event.rnamespace.test(handleObj.namespace)) {
 
 							event.handleObj = handleObj;
 							event.data = handleObj.data;
@@ -13344,46 +12791,39 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					// Prevent triggered image.load events from bubbling to window.load
 					noBubble: true
 				},
+				focus: {
+
+					// Fire native event if possible so blur/focus sequence is correct
+					trigger: function () {
+						if (this !== safeActiveElement() && this.focus) {
+							this.focus();
+							return false;
+						}
+					},
+					delegateType: "focusin"
+				},
+				blur: {
+					trigger: function () {
+						if (this === safeActiveElement() && this.blur) {
+							this.blur();
+							return false;
+						}
+					},
+					delegateType: "focusout"
+				},
 				click: {
 
-					// Utilize native event to ensure correct state for checkable inputs
-					setup: function (data) {
-
-						// For mutual compressibility with _default, replace `this` access with a local var.
-						// `|| data` is dead code meant only to preserve the variable through minification.
-						var el = this || data;
-
-						// Claim the first handler
-						if (rcheckableType.test(el.type) && el.click && nodeName(el, "input")) {
-
-							// dataPriv.set( el, "click", ... )
-							leverageNative(el, "click", returnTrue);
+					// For checkbox, fire native event so checked state will be right
+					trigger: function () {
+						if (this.type === "checkbox" && this.click && nodeName(this, "input")) {
+							this.click();
+							return false;
 						}
-
-						// Return false to allow normal processing in the caller
-						return false;
-					},
-					trigger: function (data) {
-
-						// For mutual compressibility with _default, replace `this` access with a local var.
-						// `|| data` is dead code meant only to preserve the variable through minification.
-						var el = this || data;
-
-						// Force setup before triggering a click
-						if (rcheckableType.test(el.type) && el.click && nodeName(el, "input")) {
-
-							leverageNative(el, "click");
-						}
-
-						// Return non-false to allow normal event-path propagation
-						return true;
 					},
 
-					// For cross-browser consistency, suppress native .click() on links
-					// Also prevent it if we're currently inside a leveraged native-event stack
+					// For cross-browser consistency, don't fire native .click() on links
 					_default: function (event) {
-						var target = event.target;
-						return rcheckableType.test(target.type) && target.click && nodeName(target, "input") && dataPriv.get(target, "click") || nodeName(target, "a");
+						return nodeName(event.target, "a");
 					}
 				},
 
@@ -13399,97 +12839,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				}
 			}
 		};
-
-		// Ensure the presence of an event listener that handles manually-triggered
-		// synthetic events by interrupting progress until reinvoked in response to
-		// *native* events that it fires directly, ensuring that state changes have
-		// already occurred before other listeners are invoked.
-		function leverageNative(el, type, expectSync) {
-
-			// Missing expectSync indicates a trigger call, which must force setup through jQuery.event.add
-			if (!expectSync) {
-				if (dataPriv.get(el, type) === undefined) {
-					jQuery.event.add(el, type, returnTrue);
-				}
-				return;
-			}
-
-			// Register the controller as a special universal handler for all event namespaces
-			dataPriv.set(el, type, false);
-			jQuery.event.add(el, type, {
-				namespace: false,
-				handler: function (event) {
-					var notAsync,
-					    result,
-					    saved = dataPriv.get(this, type);
-
-					if (event.isTrigger & 1 && this[type]) {
-
-						// Interrupt processing of the outer synthetic .trigger()ed event
-						// Saved data should be false in such cases, but might be a leftover capture object
-						// from an async native handler (gh-4350)
-						if (!saved.length) {
-
-							// Store arguments for use when handling the inner native event
-							// There will always be at least one argument (an event object), so this array
-							// will not be confused with a leftover capture object.
-							saved = slice.call(arguments);
-							dataPriv.set(this, type, saved);
-
-							// Trigger the native event and capture its result
-							// Support: IE <=9 - 11+
-							// focus() and blur() are asynchronous
-							notAsync = expectSync(this, type);
-							this[type]();
-							result = dataPriv.get(this, type);
-							if (saved !== result || notAsync) {
-								dataPriv.set(this, type, false);
-							} else {
-								result = {};
-							}
-							if (saved !== result) {
-
-								// Cancel the outer synthetic event
-								event.stopImmediatePropagation();
-								event.preventDefault();
-
-								// Support: Chrome 86+
-								// In Chrome, if an element having a focusout handler is blurred by
-								// clicking outside of it, it invokes the handler synchronously. If
-								// that handler calls `.remove()` on the element, the data is cleared,
-								// leaving `result` undefined. We need to guard against this.
-								return result && result.value;
-							}
-
-							// If this is an inner synthetic event for an event with a bubbling surrogate
-							// (focus or blur), assume that the surrogate already propagated from triggering the
-							// native event and prevent that from happening again here.
-							// This technically gets the ordering wrong w.r.t. to `.trigger()` (in which the
-							// bubbling surrogate propagates *after* the non-bubbling base), but that seems
-							// less bad than duplication.
-						} else if ((jQuery.event.special[type] || {}).delegateType) {
-							event.stopPropagation();
-						}
-
-						// If this is a native event triggered above, everything is now in order
-						// Fire an inner synthetic event with the original arguments
-					} else if (saved.length) {
-
-						// ...and capture the result
-						dataPriv.set(this, type, {
-							value: jQuery.event.trigger(
-
-							// Support: IE <=9 - 11+
-							// Extend with the prototype to reset the above stopImmediatePropagation()
-							jQuery.extend(saved[0], jQuery.Event.prototype), saved.slice(1), this)
-						});
-
-						// Abort handling of the native event
-						event.stopImmediatePropagation();
-					}
-				}
-			});
-		}
 
 		jQuery.removeEvent = function (elem, type, handle) {
 
@@ -13598,7 +12947,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			shiftKey: true,
 			view: true,
 			"char": true,
-			code: true,
 			charCode: true,
 			key: true,
 			keyCode: true,
@@ -13615,41 +12963,35 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			targetTouches: true,
 			toElement: true,
 			touches: true,
-			which: true
+
+			which: function (event) {
+				var button = event.button;
+
+				// Add which for key events
+				if (event.which == null && rkeyEvent.test(event.type)) {
+					return event.charCode != null ? event.charCode : event.keyCode;
+				}
+
+				// Add which for click: 1 === left; 2 === middle; 3 === right
+				if (!event.which && button !== undefined && rmouseEvent.test(event.type)) {
+					if (button & 1) {
+						return 1;
+					}
+
+					if (button & 2) {
+						return 3;
+					}
+
+					if (button & 4) {
+						return 2;
+					}
+
+					return 0;
+				}
+
+				return event.which;
+			}
 		}, jQuery.event.addProp);
-
-		jQuery.each({ focus: "focusin", blur: "focusout" }, function (type, delegateType) {
-			jQuery.event.special[type] = {
-
-				// Utilize native event if possible so blur/focus sequence is correct
-				setup: function () {
-
-					// Claim the first handler
-					// dataPriv.set( this, "focus", ... )
-					// dataPriv.set( this, "blur", ... )
-					leverageNative(this, type, expectSync);
-
-					// Return false to allow normal processing in the caller
-					return false;
-				},
-				trigger: function () {
-
-					// Force setup before trigger
-					leverageNative(this, type);
-
-					// Return non-false to allow normal event-path propagation
-					return true;
-				},
-
-				// Suppress native focus or blur as it's already being fired
-				// in leverageNative.
-				_default: function () {
-					return true;
-				},
-
-				delegateType: delegateType
-			};
-		});
 
 		// Create mouseenter/leave events using mouseover/out and event-time checks
 		// so that event delegation works in jQuery.
@@ -13729,6 +13071,14 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 		var
 
+		/* eslint-disable max-len */
+
+		// See https://github.com/eslint/eslint/issues/3229
+		rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([a-z][^\/\0>\x20\t\r\n\f]*)[^>]*)\/>/gi,
+
+
+		/* eslint-enable */
+
 		// Support: IE <=10 - 11, Edge 12 - 13 only
 		// In IE/Edge using regex groups here causes severe slowdowns.
 		// See https://connect.microsoft.com/IE/feedback/details/1736512/
@@ -13765,7 +13115,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 		}
 
 		function cloneCopyEvent(src, dest) {
-			var i, l, type, pdataOld, udataOld, udataCur, events;
+			var i, l, type, pdataOld, pdataCur, udataOld, udataCur, events;
 
 			if (dest.nodeType !== 1) {
 				return;
@@ -13773,11 +13123,13 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 			// 1. Copy private data: events, handlers, etc.
 			if (dataPriv.hasData(src)) {
-				pdataOld = dataPriv.get(src);
+				pdataOld = dataPriv.access(src);
+				pdataCur = dataPriv.set(dest, pdataOld);
 				events = pdataOld.events;
 
 				if (events) {
-					dataPriv.remove(dest, "handle events");
+					delete pdataCur.handle;
+					pdataCur.events = {};
 
 					for (type in events) {
 						for (i = 0, l = events[type].length; i < l; i++) {
@@ -13813,7 +13165,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 		function domManip(collection, args, callback, ignored) {
 
 			// Flatten any nested arrays
-			args = flat(args);
+			args = concat.apply([], args);
 
 			var fragment,
 			    first,
@@ -13886,13 +13238,11 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 								if (node.src && (node.type || "").toLowerCase() !== "module") {
 
 									// Optional AJAX dependency, but won't run scripts if not present
-									if (jQuery._evalUrl && !node.noModule) {
-										jQuery._evalUrl(node.src, {
-											nonce: node.nonce || node.getAttribute("nonce")
-										}, doc);
+									if (jQuery._evalUrl) {
+										jQuery._evalUrl(node.src);
 									}
 								} else {
-									DOMEval(node.textContent.replace(rcleanScript, ""), node, doc);
+									DOMEval(node.textContent.replace(rcleanScript, ""), doc, node);
 								}
 							}
 						}
@@ -13914,7 +13264,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				}
 
 				if (node.parentNode) {
-					if (keepData && isAttached(node)) {
+					if (keepData && jQuery.contains(node.ownerDocument, node)) {
 						setGlobalEval(getAll(node, "script"));
 					}
 					node.parentNode.removeChild(node);
@@ -13926,7 +13276,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 		jQuery.extend({
 			htmlPrefilter: function (html) {
-				return html;
+				return html.replace(rxhtmlTag, "<$1></$2>");
 			},
 
 			clone: function (elem, dataAndEvents, deepDataAndEvents) {
@@ -13935,7 +13285,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				    srcElements,
 				    destElements,
 				    clone = elem.cloneNode(true),
-				    inPage = isAttached(elem);
+				    inPage = jQuery.contains(elem.ownerDocument, elem);
 
 				// Fix IE cloning issues
 				if (!support.noCloneChecked && (elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem)) {
@@ -14189,27 +13539,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			return view.getComputedStyle(elem);
 		};
 
-		var swap = function (elem, options, callback) {
-			var ret,
-			    name,
-			    old = {};
-
-			// Remember the old values, and insert the new ones
-			for (name in options) {
-				old[name] = elem.style[name];
-				elem.style[name] = options[name];
-			}
-
-			ret = callback.call(elem);
-
-			// Revert the old values
-			for (name in options) {
-				elem.style[name] = old[name];
-			}
-
-			return ret;
-		};
-
 		var rboxStyle = new RegExp(cssExpand.join("|"), "i");
 
 		(function () {
@@ -14244,10 +13573,8 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 				// Support: IE 9 only
 				// Detect overflow:scroll screwiness (gh-3699)
-				// Support: Chrome <=64
-				// Don't get tricked when zoom affects offsetWidth (gh-4029)
 				div.style.position = "absolute";
-				scrollboxSizeVal = roundPixelMeasures(div.offsetWidth / 3) === 12;
+				scrollboxSizeVal = div.offsetWidth === 36 || "absolute";
 
 				documentElement.removeChild(container);
 
@@ -14264,7 +13591,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			    boxSizingReliableVal,
 			    scrollboxSizeVal,
 			    pixelBoxStylesVal,
-			    reliableTrDimensionsVal,
 			    reliableMarginLeftVal,
 			    container = document.createElement("div"),
 			    div = document.createElement("div");
@@ -14300,49 +13626,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				scrollboxSize: function () {
 					computeStyleTests();
 					return scrollboxSizeVal;
-				},
-
-				// Support: IE 9 - 11+, Edge 15 - 18+
-				// IE/Edge misreport `getComputedStyle` of table rows with width/height
-				// set in CSS while `offset*` properties report correct values.
-				// Behavior in IE 9 is more subtle than in newer versions & it passes
-				// some versions of this test; make sure not to make it pass there!
-				//
-				// Support: Firefox 70+
-				// Only Firefox includes border widths
-				// in computed dimensions. (gh-4529)
-				reliableTrDimensions: function () {
-					var table, tr, trChild, trStyle;
-					if (reliableTrDimensionsVal == null) {
-						table = document.createElement("table");
-						tr = document.createElement("tr");
-						trChild = document.createElement("div");
-
-						table.style.cssText = "position:absolute;left:-11111px;border-collapse:separate";
-						tr.style.cssText = "border:1px solid";
-
-						// Support: Chrome 86+
-						// Height set through cssText does not get applied.
-						// Computed height then comes back as 0.
-						tr.style.height = "1px";
-						trChild.style.height = "9px";
-
-						// Support: Android 8 Chrome 86+
-						// In our bodyBackground.html iframe,
-						// display for all div elements is set to "inline",
-						// which causes a problem only in Android 8 Chrome 86.
-						// Ensuring the div is display: block
-						// gets around this issue.
-						trChild.style.display = "block";
-
-						documentElement.appendChild(table).appendChild(tr).appendChild(trChild);
-
-						trStyle = window.getComputedStyle(tr);
-						reliableTrDimensionsVal = parseInt(trStyle.height, 10) + parseInt(trStyle.borderTopWidth, 10) + parseInt(trStyle.borderBottomWidth, 10) === tr.offsetHeight;
-
-						documentElement.removeChild(table);
-					}
-					return reliableTrDimensionsVal;
 				}
 			});
 		})();
@@ -14368,7 +13651,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			if (computed) {
 				ret = computed.getPropertyValue(name) || computed[name];
 
-				if (ret === "" && !isAttached(elem)) {
+				if (ret === "" && !jQuery.contains(elem.ownerDocument, elem)) {
 					ret = jQuery.style(elem, name);
 				}
 
@@ -14421,12 +13704,28 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			};
 		}
 
-		var cssPrefixes = ["Webkit", "Moz", "ms"],
-		    emptyStyle = document.createElement("div").style,
-		    vendorProps = {};
+		var
 
-		// Return a vendor-prefixed property or undefined
+		// Swappable if display is none or starts with table
+		// except "table", "table-cell", or "table-caption"
+		// See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
+		rdisplayswap = /^(none|table(?!-c[ea]).+)/,
+		    rcustomProp = /^--/,
+		    cssShow = { position: "absolute", visibility: "hidden", display: "block" },
+		    cssNormalTransform = {
+			letterSpacing: "0",
+			fontWeight: "400"
+		},
+		    cssPrefixes = ["Webkit", "Moz", "ms"],
+		    emptyStyle = document.createElement("div").style;
+
+		// Return a css property mapped to a potentially vendor prefixed property
 		function vendorPropName(name) {
+
+			// Shortcut for names that are not vendor prefixed
+			if (name in emptyStyle) {
+				return name;
+			}
 
 			// Check for vendor prefixed names
 			var capName = name[0].toUpperCase() + name.slice(1),
@@ -14440,33 +13739,17 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			}
 		}
 
-		// Return a potentially-mapped jQuery.cssProps or vendor prefixed property
+		// Return a property mapped along what jQuery.cssProps suggests or to
+		// a vendor prefixed property.
 		function finalPropName(name) {
-			var final = jQuery.cssProps[name] || vendorProps[name];
-
-			if (final) {
-				return final;
+			var ret = jQuery.cssProps[name];
+			if (!ret) {
+				ret = jQuery.cssProps[name] = vendorPropName(name) || name;
 			}
-			if (name in emptyStyle) {
-				return name;
-			}
-			return vendorProps[name] = vendorPropName(name) || name;
+			return ret;
 		}
 
-		var
-
-		// Swappable if display is none or starts with table
-		// except "table", "table-cell", or "table-caption"
-		// See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
-		rdisplayswap = /^(none|table(?!-c[ea]).+)/,
-		    rcustomProp = /^--/,
-		    cssShow = { position: "absolute", visibility: "hidden", display: "block" },
-		    cssNormalTransform = {
-			letterSpacing: "0",
-			fontWeight: "400"
-		};
-
-		function setPositiveNumber(_elem, value, subtract) {
+		function setPositiveNumber(elem, value, subtract) {
 
 			// Any relative (+/-) values have already been
 			// normalized at this point
@@ -14530,11 +13813,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 				// offsetWidth/offsetHeight is a rounded sum of content, padding, scroll gutter, and border
 				// Assuming integer scroll gutter, subtract the rest and round down
-				delta += Math.max(0, Math.ceil(elem["offset" + dimension[0].toUpperCase() + dimension.slice(1)] - computedVal - delta - extra - 0.5
-
-				// If offsetWidth/offsetHeight is unknown, then we can't determine content-box scroll gutter
-				// Use an explicit zero to avoid NaN (gh-3964)
-				)) || 0;
+				delta += Math.max(0, Math.ceil(elem["offset" + dimension[0].toUpperCase() + dimension.slice(1)] - computedVal - delta - extra - 0.5));
 			}
 
 			return delta;
@@ -14544,15 +13823,9 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 			// Start with computed style
 			var styles = getStyles(elem),
-
-
-			// To avoid forcing a reflow, only fetch boxSizing if we need it (gh-4322).
-			// Fake content-box until we know it's needed to know the true value.
-			boxSizingNeeded = !support.boxSizingReliable() || extra,
-			    isBorderBox = boxSizingNeeded && jQuery.css(elem, "boxSizing", false, styles) === "border-box",
-			    valueIsBorderBox = isBorderBox,
 			    val = curCSS(elem, dimension, styles),
-			    offsetProp = "offset" + dimension[0].toUpperCase() + dimension.slice(1);
+			    isBorderBox = jQuery.css(elem, "boxSizing", false, styles) === "border-box",
+			    valueIsBorderBox = isBorderBox;
 
 			// Support: Firefox <=54
 			// Return a confounding non-pixel value or feign ignorance, as appropriate.
@@ -14563,37 +13836,20 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				val = "auto";
 			}
 
-			// Support: IE 9 - 11 only
-			// Use offsetWidth/offsetHeight for when box sizing is unreliable.
-			// In those cases, the computed value can be trusted to be border-box.
-			if ((!support.boxSizingReliable() && isBorderBox ||
-
-			// Support: IE 10 - 11+, Edge 15 - 18+
-			// IE/Edge misreport `getComputedStyle` of table rows with width/height
-			// set in CSS while `offset*` properties report correct values.
-			// Interestingly, in some cases IE 9 doesn't suffer from this issue.
-			!support.reliableTrDimensions() && nodeName(elem, "tr") ||
+			// Check for style in case a browser which returns unreliable values
+			// for getComputedStyle silently falls back to the reliable elem.style
+			valueIsBorderBox = valueIsBorderBox && (support.boxSizingReliable() || val === elem.style[dimension]);
 
 			// Fall back to offsetWidth/offsetHeight when value is "auto"
 			// This happens for inline elements with no explicit setting (gh-3571)
-			val === "auto" ||
-
 			// Support: Android <=4.1 - 4.3 only
 			// Also use offsetWidth/offsetHeight for misreported inline dimensions (gh-3602)
-			!parseFloat(val) && jQuery.css(elem, "display", false, styles) === "inline") &&
+			if (val === "auto" || !parseFloat(val) && jQuery.css(elem, "display", false, styles) === "inline") {
 
-			// Make sure the element is visible & connected
-			elem.getClientRects().length) {
+				val = elem["offset" + dimension[0].toUpperCase() + dimension.slice(1)];
 
-				isBorderBox = jQuery.css(elem, "boxSizing", false, styles) === "border-box";
-
-				// Where available, offsetWidth/offsetHeight approximate border box dimensions.
-				// Where not available (e.g., SVG), assume unreliable box-sizing and interpret the
-				// retrieved value as a content box dimension.
-				valueIsBorderBox = offsetProp in elem;
-				if (valueIsBorderBox) {
-					val = elem[offsetProp];
-				}
+				// offsetWidth/offsetHeight provide border-box values
+				valueIsBorderBox = true;
 			}
 
 			// Normalize "" and auto
@@ -14631,13 +13887,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				"flexGrow": true,
 				"flexShrink": true,
 				"fontWeight": true,
-				"gridArea": true,
-				"gridColumn": true,
-				"gridColumnEnd": true,
-				"gridColumnStart": true,
-				"gridRow": true,
-				"gridRowEnd": true,
-				"gridRowStart": true,
 				"lineHeight": true,
 				"opacity": true,
 				"order": true,
@@ -14695,9 +13944,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					}
 
 					// If a number was passed in, add the unit (except for certain CSS properties)
-					// The isCustomProp check can be removed in jQuery 4.0 when we only auto-append
-					// "px" to a few hardcoded values.
-					if (type === "number" && !isCustomProp) {
+					if (type === "number") {
 						value += ret && ret[3] || (jQuery.cssNumber[origName] ? "" : "px");
 					}
 
@@ -14770,7 +14017,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			}
 		});
 
-		jQuery.each(["height", "width"], function (_i, dimension) {
+		jQuery.each(["height", "width"], function (i, dimension) {
 			jQuery.cssHooks[dimension] = {
 				get: function (elem, computed, extra) {
 					if (computed) {
@@ -14794,21 +14041,12 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				set: function (elem, value, extra) {
 					var matches,
 					    styles = getStyles(elem),
-
-
-					// Only read styles.position if the test has a chance to fail
-					// to avoid forcing a reflow.
-					scrollboxSizeBuggy = !support.scrollboxSize() && styles.position === "absolute",
-
-
-					// To avoid forcing a reflow, only fetch boxSizing if we need it (gh-3991)
-					boxSizingNeeded = scrollboxSizeBuggy || extra,
-					    isBorderBox = boxSizingNeeded && jQuery.css(elem, "boxSizing", false, styles) === "border-box",
-					    subtract = extra ? boxModelAdjustment(elem, dimension, extra, isBorderBox, styles) : 0;
+					    isBorderBox = jQuery.css(elem, "boxSizing", false, styles) === "border-box",
+					    subtract = extra && boxModelAdjustment(elem, dimension, extra, isBorderBox, styles);
 
 					// Account for unreliable border-box dimensions by comparing offset* to computed and
 					// faking a content-box to get border and padding (gh-3699)
-					if (isBorderBox && scrollboxSizeBuggy) {
+					if (isBorderBox && support.scrollboxSize() === styles.position) {
 						subtract -= Math.ceil(elem["offset" + dimension[0].toUpperCase() + dimension.slice(1)] - parseFloat(styles[dimension]) - boxModelAdjustment(elem, dimension, "border", false, styles) - 0.5);
 					}
 
@@ -14958,7 +14196,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					// Use .style if available and use plain properties where available.
 					if (jQuery.fx.step[tween.prop]) {
 						jQuery.fx.step[tween.prop](tween);
-					} else if (tween.elem.nodeType === 1 && (jQuery.cssHooks[tween.prop] || tween.elem.style[finalPropName(tween.prop)] != null)) {
+					} else if (tween.elem.nodeType === 1 && (tween.elem.style[jQuery.cssProps[tween.prop]] != null || jQuery.cssHooks[tween.prop])) {
 						jQuery.style(tween.elem, tween.prop, tween.now + tween.unit);
 					} else {
 						tween.elem[tween.prop] = tween.now;
@@ -15490,7 +14728,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 						anim.stop(true);
 					}
 				};
-
 				doAnimation.finish = doAnimation;
 
 				return empty || optall.queue === false ? this.each(doAnimation) : this.queue(optall.queue, doAnimation);
@@ -15507,7 +14744,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					clearQueue = type;
 					type = undefined;
 				}
-				if (clearQueue) {
+				if (clearQueue && type !== false) {
 					this.queue(type || "fx", []);
 				}
 
@@ -15589,7 +14826,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			}
 		});
 
-		jQuery.each(["toggle", "show", "hide"], function (_i, name) {
+		jQuery.each(["toggle", "show", "hide"], function (i, name) {
 			var cssFn = jQuery.fn[name];
 			jQuery.fn[name] = function (speed, easing, callback) {
 				return speed == null || typeof speed === "boolean" ? cssFn.apply(this, arguments) : this.animate(genFx(name, true), speed, easing, callback);
@@ -15804,7 +15041,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			}
 		};
 
-		jQuery.each(jQuery.expr.match.bool.source.match(/\w+/g), function (_i, name) {
+		jQuery.each(jQuery.expr.match.bool.source.match(/\w+/g), function (i, name) {
 			var getter = attrHandle[name] || jQuery.find.attr;
 
 			attrHandle[name] = function (elem, name, isXML) {
@@ -16395,7 +15632,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					event.type = i > 1 ? bubbleType : special.bindType || type;
 
 					// jQuery handler
-					handle = (dataPriv.get(cur, "events") || Object.create(null))[event.type] && dataPriv.get(cur, "handle");
+					handle = (dataPriv.get(cur, "events") || {})[event.type] && dataPriv.get(cur, "handle");
 					if (handle) {
 						handle.apply(cur, data);
 					}
@@ -16498,10 +15735,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 				jQuery.event.special[fix] = {
 					setup: function () {
-
-						// Handle: regular nodes (via `this.ownerDocument`), window
-						// (via `this.document`) & document (via `this`).
-						var doc = this.ownerDocument || this.document || this,
+						var doc = this.ownerDocument || this,
 						    attaches = dataPriv.access(doc, fix);
 
 						if (!attaches) {
@@ -16510,7 +15744,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 						dataPriv.access(doc, fix, (attaches || 0) + 1);
 					},
 					teardown: function () {
-						var doc = this.ownerDocument || this.document || this,
+						var doc = this.ownerDocument || this,
 						    attaches = dataPriv.access(doc, fix) - 1;
 
 						if (!attaches) {
@@ -16525,13 +15759,13 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 		}
 		var location = window.location;
 
-		var nonce = { guid: Date.now() };
+		var nonce = Date.now();
 
 		var rquery = /\?/;
 
 		// Cross-browser xml parsing
 		jQuery.parseXML = function (data) {
-			var xml, parserErrorElem;
+			var xml;
 			if (!data || typeof data !== "string") {
 				return null;
 			}
@@ -16540,13 +15774,12 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			// IE throws on parseFromString with invalid input.
 			try {
 				xml = new window.DOMParser().parseFromString(data, "text/xml");
-			} catch (e) {}
+			} catch (e) {
+				xml = undefined;
+			}
 
-			parserErrorElem = xml && xml.getElementsByTagName("parsererror")[0];
-			if (!xml || parserErrorElem) {
-				jQuery.error("Invalid XML: " + (parserErrorElem ? jQuery.map(parserErrorElem.childNodes, function (el) {
-					return el.textContent;
-				}).join("\n") : data));
+			if (!xml || xml.getElementsByTagName("parsererror").length) {
+				jQuery.error("Invalid XML: " + data);
 			}
 			return xml;
 		};
@@ -16599,10 +15832,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				s[s.length] = encodeURIComponent(key) + "=" + encodeURIComponent(value == null ? "" : value);
 			};
 
-			if (a == null) {
-				return "";
-			}
-
 			// If an array was passed in, assume that it is an array of form elements.
 			if (Array.isArray(a) || a.jquery && !jQuery.isPlainObject(a)) {
 
@@ -16638,7 +15867,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 					// Use .is( ":disabled" ) so that fieldset[disabled] works
 					return this.name && !jQuery(this).is(":disabled") && rsubmittable.test(this.nodeName) && !rsubmitterTypes.test(type) && (this.checked || !rcheckableType.test(type));
-				}).map(function (_i, elem) {
+				}).map(function (i, elem) {
 					var val = jQuery(this).val();
 
 					if (val == null) {
@@ -16694,7 +15923,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 		// Anchor tag for parsing the document origin
 		originAnchor = document.createElement("a");
-
 		originAnchor.href = location.href;
 
 		// Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
@@ -17124,12 +16352,12 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 							if (!responseHeaders) {
 								responseHeaders = {};
 								while (match = rheaders.exec(responseHeadersString)) {
-									responseHeaders[match[1].toLowerCase() + " "] = (responseHeaders[match[1].toLowerCase() + " "] || []).concat(match[2]);
+									responseHeaders[match[1].toLowerCase()] = match[2];
 								}
 							}
-							match = responseHeaders[key.toLowerCase() + " "];
+							match = responseHeaders[key.toLowerCase()];
 						}
-						return match == null ? null : match.join(", ");
+						return match == null ? null : match;
 					},
 
 					// Raw string
@@ -17270,7 +16498,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 					// Add or update anti-cache param if needed
 					if (s.cache === false) {
 						cacheURL = cacheURL.replace(rantiCache, "$1");
-						uncached = (rquery.test(cacheURL) ? "&" : "?") + "_=" + nonce.guid++ + uncached;
+						uncached = (rquery.test(cacheURL) ? "&" : "?") + "_=" + nonce++ + uncached;
 					}
 
 					// Put hash and anti-cache on the URL that will be requested (gh-1732)
@@ -17399,11 +16627,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 						response = ajaxHandleResponses(s, jqXHR, responses);
 					}
 
-					// Use a noop converter for missing script but not if jsonp
-					if (!isSuccess && jQuery.inArray("script", s.dataTypes) > -1 && jQuery.inArray("json", s.dataTypes) < 0) {
-						s.converters["text script"] = function () {};
-					}
-
 					// Convert no matter what (that way responseXXX fields are always set)
 					response = ajaxConvert(s, response, jqXHR, isSuccess);
 
@@ -17493,7 +16716,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			}
 		});
 
-		jQuery.each(["get", "post"], function (_i, method) {
+		jQuery.each(["get", "post"], function (i, method) {
 			jQuery[method] = function (url, data, callback, type) {
 
 				// Shift arguments if data argument was omitted
@@ -17514,16 +16737,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			};
 		});
 
-		jQuery.ajaxPrefilter(function (s) {
-			var i;
-			for (i in s.headers) {
-				if (i.toLowerCase() === "content-type") {
-					s.contentType = s.headers[i] || "";
-				}
-			}
-		});
-
-		jQuery._evalUrl = function (url, options, doc) {
+		jQuery._evalUrl = function (url) {
 			return jQuery.ajax({
 				url: url,
 
@@ -17533,16 +16747,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 				cache: true,
 				async: false,
 				global: false,
-
-				// Only evaluate the response if it is successful (gh-4126)
-				// dataFilter is not invoked for failure responses, so using it instead
-				// of the default converter is kludgy but it works.
-				converters: {
-					"text script": function () {}
-				},
-				dataFilter: function (response) {
-					jQuery.globalEval(response, options, doc);
-				}
+				"throws": true
 			});
 		};
 
@@ -17798,12 +17003,15 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 		// Bind script tag hack transport
 		jQuery.ajaxTransport("script", function (s) {
 
-			// This transport only deals with cross domain or forced-by-attrs requests
-			if (s.crossDomain || s.scriptAttrs) {
+			// This transport only deals with cross domain requests
+			if (s.crossDomain) {
 				var script, callback;
 				return {
 					send: function (_, complete) {
-						script = jQuery("<script>").attr(s.scriptAttrs || {}).prop({ charset: s.scriptCharset, src: s.url }).on("load error", callback = function (evt) {
+						script = jQuery("<script>").prop({
+							charset: s.scriptCharset,
+							src: s.url
+						}).on("load error", callback = function (evt) {
 							script.remove();
 							callback = null;
 							if (evt) {
@@ -17830,7 +17038,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 		jQuery.ajaxSetup({
 			jsonp: "callback",
 			jsonpCallback: function () {
-				var callback = oldCallbacks.pop() || jQuery.expando + "_" + nonce.guid++;
+				var callback = oldCallbacks.pop() || jQuery.expando + "_" + nonce++;
 				this[callback] = true;
 				return callback;
 			}
@@ -18035,6 +17243,13 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			return this;
 		};
 
+		// Attach a bunch of functions for handling common AJAX events
+		jQuery.each(["ajaxStart", "ajaxStop", "ajaxComplete", "ajaxError", "ajaxSuccess", "ajaxSend"], function (i, type) {
+			jQuery.fn[type] = function (fn) {
+				return this.on(type, fn);
+			};
+		});
+
 		jQuery.expr.pseudos.animated = function (elem) {
 			return jQuery.grep(jQuery.timers, function (fn) {
 				return elem === fn.elem;
@@ -18235,7 +17450,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 		// Blink bug: https://bugs.chromium.org/p/chromium/issues/detail?id=589347
 		// getComputedStyle returns percent when specified for top/left/bottom/right;
 		// rather than make the css module depend on the offset module, just check for it here
-		jQuery.each(["top", "left"], function (_i, prop) {
+		jQuery.each(["top", "left"], function (i, prop) {
 			jQuery.cssHooks[prop] = addGetHookIf(support.pixelPosition, function (elem, computed) {
 				if (computed) {
 					computed = curCSS(elem, prop);
@@ -18248,11 +17463,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 		// Create innerHeight, innerWidth, height, width, outerHeight and outerWidth methods
 		jQuery.each({ Height: "height", Width: "width" }, function (name, type) {
-			jQuery.each({
-				padding: "inner" + name,
-				content: type,
-				"": "outer" + name
-			}, function (defaultExtra, funcName) {
+			jQuery.each({ padding: "inner" + name, content: type, "": "outer" + name }, function (defaultExtra, funcName) {
 
 				// Margin is only for outerHeight, outerWidth
 				jQuery.fn[funcName] = function (margin, value) {
@@ -18289,10 +17500,18 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			});
 		});
 
-		jQuery.each(["ajaxStart", "ajaxStop", "ajaxComplete", "ajaxError", "ajaxSuccess", "ajaxSend"], function (_i, type) {
-			jQuery.fn[type] = function (fn) {
-				return this.on(type, fn);
+		jQuery.each(("blur focus focusin focusout resize scroll click dblclick " + "mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " + "change select submit keydown keypress keyup contextmenu").split(" "), function (i, name) {
+
+			// Handle event binding
+			jQuery.fn[name] = function (data, fn) {
+				return arguments.length > 0 ? this.on(name, null, data, fn) : this.trigger(name);
 			};
+		});
+
+		jQuery.fn.extend({
+			hover: function (fnOver, fnOut) {
+				return this.mouseenter(fnOver).mouseleave(fnOut || fnOver);
+			}
 		});
 
 		jQuery.fn.extend({
@@ -18311,24 +17530,8 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 
 				// ( namespace ) or ( selector, types [, fn] )
 				return arguments.length === 1 ? this.off(selector, "**") : this.off(types, selector || "**", fn);
-			},
-
-			hover: function (fnOver, fnOut) {
-				return this.mouseenter(fnOver).mouseleave(fnOut || fnOver);
 			}
 		});
-
-		jQuery.each(("blur focus focusin focusout resize scroll click dblclick " + "mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " + "change select submit keydown keypress keyup contextmenu").split(" "), function (_i, name) {
-
-			// Handle event binding
-			jQuery.fn[name] = function (data, fn) {
-				return arguments.length > 0 ? this.on(name, null, data, fn) : this.trigger(name);
-			};
-		});
-
-		// Support: Android <=4.0 only
-		// Make sure we trim BOM and NBSP
-		var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 
 		// Bind a function to a context, optionally partially applying any
 		// arguments.
@@ -18392,10 +17595,6 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 			!isNaN(obj - parseFloat(obj));
 		};
 
-		jQuery.trim = function (text) {
-			return text == null ? "" : (text + "").replace(rtrim, "");
-		};
-
 		// Register as a named AMD module, since jQuery can be concatenated with other
 		// files that may use define, but not via a proper concatenation script that
 		// understands anonymous AMD modules. A named AMD is safest and most robust
@@ -18439,7 +17638,7 @@ function(_, Class, TextLineInferrer, HighlightView, HighlightBorderView, Highlig
 		// Expose jQuery and $ identifiers, even in AMD
 		// (#7102#comment:10, https://github.com/jquery/jquery/pull/557)
 		// and CommonJS for browser emulators (#13566)
-		if (typeof noGlobal === "undefined") {
+		if (!noGlobal) {
 			window.jQuery = window.$ = jQuery;
 		}
 
@@ -23914,50 +23113,6 @@ define('readium_plugin_highlights/main',['readium_js_plugins', 'readium_shared_j
 });
 
 define('readium_plugin_highlights', ['readium_plugin_highlights/main'], function (main) { return main; });
-
-/**
- * This plugin helps to properly load the Hypothes.is client with Readium.
- * Enable this plugin if you want to add the Hypothesis client to your reader
- * so that visitors can annotate EPUBs without having to install
- * the Hypothesis browser extension.
- */
-
-define('readium_plugin_hypothesis/main',['readium_js_plugins'], function (Plugins) {
-
-    var H_EMBED_URL = 'https://hypothes.is/embed.js';
-
-    Plugins.register("hypothesis", function () {
-        var self = this;
-
-        // Request that the UI controls make space for the Hypothesis sidebar
-        window.hypothesisConfig = function () {
-            return {
-                onLayoutChange: function(state) {
-                    if (state.expanded) {
-                        self.emit('offsetPageButton', state.width);
-                    } else {
-                        self.emit('offsetPageButton', 0);
-                    }
-                    if (!state.expanded) {
-                        self.emit('offsetNavBar', state.width);
-                    }
-                }
-            };
-        };
-
-        // The script for Hypothesis needs to be included once
-        // Readium has been fully loaded by the RequireJS/AMD shim.
-        // We can do this here in this callback when this plugin is invoked.
-
-        // Inject the script
-        var script = document.createElement('script');
-        script.setAttribute('src', H_EMBED_URL);
-        script.setAttribute('async', 'true');
-        document.head.appendChild(script);
-    });
-});
-
-define('readium_plugin_hypothesis', ['readium_plugin_hypothesis/main'], function (main) { return main; });
 
 /*
 This code is required to IE for console shim
@@ -31157,8 +30312,8 @@ define("console_shim", function(){});
 //  prior written permission.
 
 //'text!empty:'
-define('readium_shared_js/globalsSetup',['./globals', 'underscore', 'console_shim', 'es6-shim', 'eventEmitter', 'URIjs', 'readium_cfi_js', 'readium_js_plugins'],
-function (Globals, _, console_shim, es6Shim, EventEmitter, URI, EPUBcfi, PluginsController) {
+define('readium_shared_js/globalsSetup',['./globals', 'console_shim', 'es6-shim', 'eventEmitter', 'URIjs', 'readium_cfi_js', 'readium_js_plugins'],
+function (Globals, console_shim, es6Shim, EventEmitter, URI, EPUBcfi, PluginsController) {
 
     console.log("Globals...");
 
@@ -38369,8 +37524,6 @@ var InternalLinksSupport = function(reader) {
 
         var epubContentDocument = $iframe[0].contentDocument;
 
-        $(epubContentDocument).off('click', 'a');
-
         $(epubContentDocument).on('click', 'a', function (clickEvent) {
             // Check for both href and xlink:href attribute and get value
             var href;
@@ -44158,37 +43311,16 @@ var Spine = function(epubPackage, spineDTO) {
             if(self.items[i].idref == idref) {
                 self.items.splice(i, 1);
                 removedItem = true;
-                if (i === self.items.length)
+                if (i === self.items.length - 1)
                     nextValidIndex = i - 1;
                 else
                     nextValidIndex = i;
             }
-            if (removedItem && self.items.length > i)
+            if (removedItem)
                 self.items[i].index--;
         }
 
         return self.items[nextValidIndex];
-    }
-
-    this.moveItem = function(idref, newIndex) {
-        var item;
-        for(var i = 0; i < self.items.length; i++) {
-            if(self.items[i].idref == idref) {
-                item = self.items[i];
-                break;
-            }
-        }
-
-        if (!item)
-            return false;
-
-        self.items.splice(item.index, 1);
-        self.items.splice(newIndex, 0, item);
-        for (var i = 0; i < self.items.length; i++) {
-            self.items[i].index = i;
-        }
-
-        return self.items;
     }
 
     /**
@@ -46347,7 +45479,6 @@ define('readium_shared_js/models/metadata',[], function () {
         this.rights = undefined;
         this.modifiedDate = undefined;
         this.publishedDate = undefined;
-        this.duration = undefined;
         this.epubVersion = undefined;
 
         if (packageMetadata) {
@@ -46360,7 +45491,6 @@ define('readium_shared_js/models/metadata',[], function () {
             this.rights = packageMetadata.rights;
             this.modifiedDate = packageMetadata.modified_date;
             this.publishedDate = packageMetadata.pubdate;
-            this.duration = packageMetadata.duration;
             this.epubVersion = packageMetadata.epub_version;
         }
     };
@@ -46714,7 +45844,7 @@ var ReflowableView = function(options, reader){
         _htmlBodyIsLTRDirection = true;
         _htmlBodyIsLTRWritingMode = undefined;
 
-        var win = (_$iframe[0].contentDocument && _$iframe[0].contentDocument.defaultView) || _$iframe[0].contentWindow;
+        var win = _$iframe[0].contentDocument.defaultView || _$iframe[0].contentWindow;
 
         //Helpers.isIframeAlive
         var htmlBodyComputedStyle = win.getComputedStyle(_$htmlBody[0], null);
@@ -47063,7 +46193,7 @@ var ReflowableView = function(options, reader){
     };
 
 
-    this.updatePagination_ = function() {
+    function updatePagination_() {
 
         // At 100% font-size = 16px (on HTML, not body or descendant markup!)
         var MAXW = _paginationInfo.columnMaxWidth;
@@ -47163,10 +46293,6 @@ var ReflowableView = function(options, reader){
                 filler = Math.floor((textWidth - MAXW) * 0.5);
             }
         }
-
-        let forceSingleColumn = _$epubHtml[0].getAttribute('data-force-single-column');
-        if (forceSingleColumn && forceSingleColumn === "true")
-            _paginationInfo.visibleColumnCount = 1;
         
         _$el.css({"left": (filler+adjustedGapLeft + "px"), "right": (filler+adjustedGapRight + "px")});
         
@@ -47340,7 +46466,7 @@ var ReflowableView = function(options, reader){
         // execution, provoking a flicker
         initResizeSensor();
     }
-    var updatePagination = _.debounce(this.updatePagination_, 100);
+    var updatePagination = _.debounce(updatePagination_, 100);
 
     function initResizeSensor() {
         var bodyElement = _$htmlBody[0];
@@ -49263,10 +48389,6 @@ var ReaderView = function (options) {
         }
     }
 
-    this.moveSpineItem = function (idref, newIndex) {
-        _spine.moveItem(idref, newIndex);
-    }
-
     /**
      * Opens specified page index of the current spine item
      *
@@ -50291,12 +49413,6 @@ var ReaderView = function (options) {
         }
         return undefined;
     };
-
-    this.updatePagination = function() {
-        if (_currentView && _currentView.updatePagination_) {
-            return _currentView.updatePagination_();
-        }
-    }
     
 };
 
@@ -50513,8 +49629,6 @@ define('readium_js/epub-fetch/plain_resource_fetcher',['URIjs', './discover_cont
                     fetchCallback(result);
                 },
                 error: function (xhr, status, errorThrown) {
-                    if (xhr.status === 507)
-                        alert('Insufficient library bandwidth. Contact your site administrator.')
                     onerror(new Error(errorThrown));
                 }
             });
@@ -55689,8 +54803,6 @@ define('readium_js/epub-fetch/publication_fetcher',['URIjs', './markup_parser', 
                               fetchCallback(result);
                           },
                           error: function (xhr, status, errorThrown) {
-                              if (xhr.status === 507)
-                                alert('Insufficient library bandwidth. Contact your site administrator.')
                               onerror(new Error(errorThrown));
                           }
                     });
@@ -56608,7 +55720,6 @@ define('readium_js/epub-model/package_document_parser',['underscore', '../epub-f
             metadata.modified_date = getMetaElemPropertyText(metadataElem, "dcterms:modified");
             metadata.ncx = spineElem.getAttribute("toc") ? spineElem.getAttribute("toc") : "";
             metadata.pubdate = getElemText(metadataElem, "date");
-            metadata.duration = getMetaElemPropertyText(metadataElem, "duration");
             metadata.publisher = getElemText(metadataElem, "publisher");
             metadata.rights = getElemText(metadataElem, "rights");
             metadata.title = getElemText(metadataElem, "title");
@@ -57827,8 +56938,6 @@ define('readium_js/epub-fetch/iframe_zip_loader',['URIjs', 'readium_shared_js/vi
                     callback(result);
                 },
                 error: function (xhr, status, errorThrown) {
-                    if (xhr.status === 507)
-                        alert('Insufficient library bandwidth. Contact your site administrator.')
                     console.error('Error when AJAX fetching ' + path);
                     console.error(status);
                     console.error(errorThrown);
@@ -59279,19 +58388,19 @@ define('text',['module'], function (module) {
 
 define('hgn',{load: function(id){throw new Error("Dynamic load not allowed: " + id);}});
 
-define("hgn!readium_js_viewer_html_templates/managed-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"managed-dialog\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"managed-label\">\r");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">\r");t.b("\n" + i);t.b("        <div class=\"modal-content\">\r");t.b("\n" + i);t.b("            <div class=\"modal-header\">\r");t.b("\n" + i);t.b("                <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"close\" title=\"close\"><span aria-hidden=\"true\">&times;<span></button>\r");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"managed-label\"></h2>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("            <div class=\"modal-body\">\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("            <div class=\"modal-footer\">\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("        </div>\r");t.b("\n" + i);t.b("        <!-- /.modal-content --> \r");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/managed-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"managed-dialog\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"managed-label\">");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">");t.b("\n" + i);t.b("        <div class=\"modal-content\">");t.b("\n" + i);t.b("            <div class=\"modal-header\">");t.b("\n" + i);t.b("                <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"close\" title=\"close\"><span aria-hidden=\"true\">&times;<span></button>");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"managed-label\"></h2>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("            <div class=\"modal-body\">");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("            <div class=\"modal-footer\">");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <!-- /.modal-content --> ");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->");t.b("\n" + i);t.b("</div>");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/progress-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"progress progress-striped active\">\r");t.b("\n" + i);t.b("  <div class=\"progress-bar\"  role=\"progressbar\" aria-valuenow=\"1\" aria-valuemin=\"1\" aria-valuemax=\"100\" style=\"width: 1%\">\r");t.b("\n" + i);t.b("    <!-- <span class=\"progress-message sr-only\">");t.b(t.v(t.f("message",c,p,0)));t.b("</span> -->\r");t.b("\n" + i);t.b("  </div>\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("<div class=\"progress-message\">");t.b(t.v(t.f("message",c,p,0)));t.b("</div>\r");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/progress-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"progress progress-striped active\">");t.b("\n" + i);t.b("  <div class=\"progress-bar\"  role=\"progressbar\" aria-valuenow=\"1\" aria-valuemin=\"1\" aria-valuemax=\"100\" style=\"width: 1%\">");t.b("\n" + i);t.b("    <!-- <span class=\"progress-message sr-only\">");t.b(t.v(t.f("message",c,p,0)));t.b("</span> -->");t.b("\n" + i);t.b("  </div>");t.b("\n" + i);t.b("</div>");t.b("\n" + i);t.b("<div class=\"progress-message\">");t.b(t.v(t.f("message",c,p,0)));t.b("</div>");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/managed-buttons.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");if(t.s(t.f("buttons",c,p,1),c,p,0,12,157,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<button type=\"button\" class=\"btn btn-default ");if(t.s(t.f("classes",c,p,1),c,p,0,71,77,"{{ }}")){t.rs(c,p,function(c,p,t){t.b(t.v(t.d(".",c,p,0)));t.b(" ");});c.pop();}t.b("\" ");if(t.s(t.f("dismiss",c,p,1),c,p,0,103,125,"{{ }}")){t.rs(c,p,function(c,p,t){t.b(" data-dismiss=\"modal\" ");});c.pop();}t.b(">");t.b(t.v(t.f("text",c,p,0)));t.b("</button>\r");t.b("\n" + i);});c.pop();}return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/managed-buttons.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");if(t.s(t.f("buttons",c,p,1),c,p,0,12,155,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<button type=\"button\" class=\"btn btn-default ");if(t.s(t.f("classes",c,p,1),c,p,0,70,76,"{{ }}")){t.rs(c,p,function(c,p,t){t.b(t.v(t.d(".",c,p,0)));t.b(" ");});c.pop();}t.b("\" ");if(t.s(t.f("dismiss",c,p,1),c,p,0,102,124,"{{ }}")){t.rs(c,p,function(c,p,t){t.b(" data-dismiss=\"modal\" ");});c.pop();}t.b(">");t.b(t.v(t.f("text",c,p,0)));t.b("</button>");t.b("\n" + i);});c.pop();}return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define('text!readium_js_viewer_i18n/_locales/en_US/messages.json',[],function () { return '{\r\n    "gitHasLocalChanges": {\r\n\t"message": "with local changes"\r\n    },\r\n\r\n    "chrome_extension_name": {\r\n\t"message": "Readium"\r\n    },\r\n    "about" : {\r\n\t"message" : "About"\r\n    },\r\n    "preview" : {\r\n\t"message" : "PREVIEW"\r\n    },\r\n    "list_view" : {\r\n\t"message" : "List View"\r\n    },\r\n    "thumbnail_view" : {\r\n\t"message" : "Grid View"\r\n    },\r\n    "view_library": {\r\n\t"message" : "PeBL Bookshelf"\r\n    },\r\n    "highlight_selection" : {\r\n\t"message" : "Highlight Selected Text"\r\n    },\r\n    "show_annotations" : {\r\n\t"message" : "Highlight List"\r\n    },\r\n    "bookmark" : {\r\n        "message" : "Add a Bookmark"\r\n    },\r\n    "bookmark_list" : {\r\n        "message" : "Bookmark List"\r\n    },\r\n    "search": {\r\n        "message": "Search"\r\n    },\r\n    "share_url" : {\r\n\t"message" : "Share reader bookmark..."\r\n    },\r\n    "share_url_label" : {\r\n\t"message" : "Use your clipboard to copy/paste this shareable link:"\r\n    },\r\n    "toc" : {\r\n\t"message" : "Table of Contents"\r\n    },\r\n    "settings" : {\r\n\t"message" : "Settings"\r\n    },\r\n    "bookmarks" : {\r\n\t"message" : "Bookmark List"\r\n    },        \r\n    "layout" : {\r\n\t"message" : "Layout"\r\n    },\r\n    "style" : {\r\n\t"message" : "Style"\r\n    },\r\n    "enter_fullscreen" : {\r\n\t"message" : "Enter Fullscreen"\r\n    },\r\n    "exit_fullscreen" : {\r\n\t"message" : "Exit Fullscreen"\r\n    },\r\n    "chrome_extension_description": {\r\n\t"message": "A reader for EPUB3 books."\r\n    },\r\n    "ok" : {\r\n\t"message" : "Ok"\r\n    },\r\n    "delete_dlg_title" : {\r\n\t"message" : "Confirm Delete"\r\n    },\r\n    "delete_progress_title" : {\r\n\t"message" : "Delete in Progress"\r\n    },\r\n    "delete_progress_message" : {\r\n\t"message" : "Deleting"\r\n    },\r\n    "migrate_dlg_title" : {\r\n\t"message" : "Migrating Books"\r\n    },\r\n    "migrate_dlg_message" : {\r\n\t"message" : "Loading data..."\r\n    },\r\n    "migrating" : {\r\n\t"message" : "Migrating"\r\n    },\r\n    "replace_dlg_title" : {\r\n\t"message": "Conflict Detected"\r\n    },\r\n    "replace_dlg_message": {\r\n\t"message": "If you continue, the following epub will be replaced with the one you are importing"\r\n    },\r\n    "import_dlg_title" : {\r\n\t"message": "Importing EPUB"\r\n    },\r\n    "import_dlg_message" : {\r\n\t"message": "Examining EPUB content..."\r\n    },\r\n    "storing_file" : {\r\n\t"message": "For initial viewing the e-book must be processed:"\r\n    },\r\n    "err_unknown" : {\r\n\t"message": "Unknown error. Check console for more details."\r\n    },\r\n    "err_storage" : {\r\n\t"message": "Unable to access storage"\r\n    },\r\n    "err_epub_corrupt" : {\r\n\t"message": "Invalid or corrupted EPUB package"\r\n    },\r\n    "err_ajax": {\r\n\t"message": "Error in ajax request"\r\n    },\r\n    "err_dlg_title" : {\r\n\t"message": "Unexpected Error"\r\n    },\r\n    "replace" : {\r\n\t"message": "Replace"\r\n    },\r\n    "gethelp" : {\r\n\t"message" : "If you encounter any problems, have questions, or would like to say hello, visit <a href=\\"http://idpf.org/forums/readium\\">our forum</a>"\r\n    },\r\n    "i18n_readium_library" : {\r\n\t"message" : "Readium Library"\r\n    },\r\n    "i18n_loading" : {\r\n\t"message" : "Loading Library"\r\n    },\r\n    "i18n_readium_options" : {\r\n\t"message" : "Readium Options:"\r\n    },\r\n    "i18n_save_changes" : {\r\n\t"message" : "Save changes"\r\n    },\r\n    "i18n_close" : {\r\n\t"message" : "Close"\r\n    },\r\n    "i18n_keyboard_shortcuts" : {\r\n\t"message" : "Keyboard shortcuts"\r\n    },\r\n    "i18n_keyboard_reload" : {\r\n\t"message" : "Please reload the page for keyboard shortcuts to take effect."\r\n    },\r\n    "i18n_keyboard_onerror_reset" : {\r\n\t"message" : "Please note: Any shortcuts marked INVALID or DUPLICATE have been reset to original values."\r\n    },\r\n    "i18n_reset_key" : {\r\n\t"message" : "Reset key"\r\n    },\r\n    "i18n_reset_key_all" : {\r\n\t"message" : "Reset all keyboard shortcuts"\r\n    },\r\n    "i18n_duplicate_keyboard_shortcut" : {\r\n\t"message" : "DUPLICATE"\r\n    },\r\n    "i18n_invalid_keyboard_shortcut" : {\r\n\t"message" : "INVALID"\r\n    },\r\n    "i18n_paginate_all" : {\r\n\t"message" : "Paginate all reflowable ePUB content"\r\n    },\r\n    "i18n_automatically" : {\r\n\t"message" : "Automatically open *.epub urls in readium"\r\n    },\r\n    "i18n_show_warning" : {\r\n\t"message" : "Show warning messages when unpacking EPUB files"\r\n    },\r\n    "i18n_details" : {\r\n\t"message" : "Details"\r\n    },\r\n    "i18n_read" : {\r\n\t"message" : "Read"\r\n    },\r\n    "i18n_delete" : {\r\n\t"message" : "Delete"\r\n    },\r\n    "i18n_delete_book" : {\r\n        "message" : "Delete Book"\r\n    },\r\n    "i18n_download_book" : {\r\n        "message": "Download Book"\r\n    },\r\n    "i18n_author" : {\r\n\t"message" : "Author: "\r\n    },\r\n    "i18n_publisher" : {\r\n\t"message" : "Publisher: "\r\n    },\r\n    "i18n_source" : {\r\n\t"message" : "Source: "\r\n    },\r\n    "i18n_pub_date" : {\r\n\t"message" : "Pub Date: "\r\n    },\r\n    "i18n_modified_date" : {\r\n\t"message" : "Modified Date: "\r\n    },\r\n    "i18n_id" : {\r\n\t"message" : "ID: "\r\n    },\r\n    "i18n_epub_version" : {\r\n\t"message" : "EPUB version: "\r\n    },\r\n    "i18n_created_at" : {\r\n\t"message" : "Created at: "\r\n    },\r\n    "i18n_format" : {\r\n\t"message" : "Format: "\r\n    },\r\n    "i18n_added" : {\r\n\t"message" : "Added: "\r\n    },\r\n    "i18n_unknown" : {\r\n\t"message" : "Unknown"\r\n    },\r\n    "i18n_sorry" : {\r\n\t"message" : "Sorry, the current EPUB does not contain a media overlay for this content"\r\n    },\r\n    "i18n_add_items" : {\r\n\t"message" : "Add items to your library here!"\r\n    },\r\n    "i18n_extracting" : {\r\n\t"message" : "extracting: "\r\n    },\r\n    "i18n_are_you_sure" : {\r\n\t"message" : "Are you sure you want to permanently delete "\r\n    },\r\n    "i18n_add_book_to_readium_library" : {\r\n\t"message" : "Add Book To Readium Library:"\r\n    },\r\n    "i18n_add_book_to_pebl_library" : {\r\n\t"message" : "Add Book To Library:"\r\n    },    \r\n    "i18n_add_book" : {\r\n\t"message" : "Add to Library"\r\n    },\r\n    "i18n_cancel" : {\r\n\t"message" : "Cancel"\r\n    },\r\n    "i18n_from_the_web" : {\r\n\t"message" : "From the web:"\r\n    },\r\n    "i18n_from_local_file" : {\r\n\t"message" : "Upload EPUB:"\r\n    },\r\n    "i18n_upload_cover": {\r\n    "message": "Upload Cover:"\r\n    },\r\n    "i18n_enter_a_url" : {\r\n\t"message" : "Enter a URL to a .epub file"\r\n    },\r\n    "i18n_unpacked_directory" : {\r\n\t"message" : "Unpacked Directory:"\r\n    },\r\n    "i18n_validate" : {\r\n\t"message" : "Validate:"\r\n    },\r\n    "i18n_confirm_that_this_book" : {\r\n\t"message" : "Confirm that this book complies with ePUB standards"\r\n    },\r\n    "i18n_single_pages" : {\r\n\t"message" : "Single Pages"\r\n    },\r\n    "i18n_double_pages" : {\r\n\t"message" : "Double Pages"\r\n    },\r\n    "i18n_save_settings" : {\r\n\t"message" : "Save Settings"\r\n    },\r\n    "i18n_font_size" : {\r\n\t"message" : "FONT SIZE"\r\n    },\r\n    "i18n_font_selection" : {\r\n\t"message" : "FONT FACE"\r\n    },\r\n    "i18n_fonttype_default" : {\r\n\t"message" : "Default"\r\n    },\r\n\r\n    "i18n_margins" : {\r\n\t"message" : "MARGINS"\r\n    },\r\n    "i18n_pageMaxWidth" : {\r\n\t"message" : "PAGE WIDTH"\r\n    },\r\n    "i18n_pageMaxWidth_Disabled" : {\r\n\t"message" : "Disabled (no maximum)"\r\n    },\r\n    "i18n_text_and_background_color" : {\r\n\t"message" : "TEXT AND BACKGROUND COLOR"\r\n    },\r\n    "i18n_author_theme" : {\r\n\t"message" : "Default (author styles)"\r\n    },\r\n    "i18n_black_and_white" : {\r\n\t"message" : "Black and White"\r\n    },\r\n    "i18n_arabian_nights" : {\r\n\t"message" : "Arabian Nights"\r\n    },\r\n    "i18n_sands_of_dune" : {\r\n\t"message" : "Sands of Dune"\r\n    },\r\n    "i18n_ballard_blues" : {\r\n\t"message" : "Ballard Blues"\r\n    },\r\n    "i18n_vancouver_mist" : {\r\n\t"message" : "Vancouver Mist"\r\n    },\r\n    "i18n_display_format" : {\r\n\t"message" : "DISPLAY FORMAT"\r\n    },\r\n    "i18n_spread_auto" : {\r\n\t"message" : "Auto"\r\n    },\r\n    "i18n_scroll_mode" : {\r\n\t"message" : "SCROLL MODE"\r\n    },\r\n    "i18n_scroll_mode_auto" : {\r\n\t"message" : "Auto"\r\n    },\r\n    "i18n_scroll_mode_doc" : {\r\n\t"message" : "Document"\r\n    },\r\n    "i18n_scroll_mode_continuous" : {\r\n\t"message" : "Continuous"\r\n    },\r\n\r\n    "i18n_page_transition" : {\r\n\t"message" : "PAGE EFFECTS"\r\n    },\r\n    "i18n_page_transition_none" : {\r\n\t"message" : "Disabled"\r\n    },\r\n    "i18n_page_transition_fade" : {\r\n\t"message" : "Fade"\r\n    },\r\n    "i18n_page_transition_slide" : {\r\n\t"message" : "Slide"\r\n    },\r\n    "i18n_page_transition_swoosh" : {\r\n\t"message" : "Swoosh"\r\n    },\r\n    "i18n_page_transition_butterfly" : {\r\n\t"message" : "Butterfly"\r\n    },\r\n\r\n    "i18n_html_readium_tm_a_project" : {\r\n\t"message" : "Readium for Chrome is the Chrome browser extension configuration of ReadiumJS, an open source reading system and JavaScript library for displaying EPUB® publications in web browsers. ReadiumJS is a project of the Readium Foundation (Readium.org). To learn more or to contribute, visit the <a id=\\"aboutFirst Focusable\\" href=\\"http://readium.org/projects/readiumjs\\">project homepage</a>"\r\n    },\r\n    "i18n_alt_about_logos" : {\r\n\t"message" : "HTML5, i d p f, ePUB"\r\n    },\r\n    "i18n_toolbar" : {\r\n\t"message" : "Toolbar"\r\n    },\r\n    "i18n_toolbar_show" : {\r\n\t"message" : "Show toolbar"\r\n    },\r\n    "i18n_toolbar_hide" : {\r\n\t"message" : "Hide toolbar"\r\n    },\r\n    "i18n_audio_play" : {\r\n\t"message" : "Play"\r\n    },\r\n    "i18n_audio_pause" : {\r\n\t"message" : "Pause"\r\n    },\r\n    "i18n_audio_play_background" : {\r\n\t"message" : "Play background track"\r\n    },\r\n    "i18n_audio_pause_background" : {\r\n\t"message" : "Pause background track"\r\n    },\r\n    "i18n_audio_previous" : {\r\n\t"message" : "Previous audio phrase"\r\n    },\r\n    "i18n_audio_next" : {\r\n\t"message" : "Next audio phrase"\r\n    },\r\n    "i18n_audio_volume" : {\r\n\t"message" : "Audio volume"\r\n    },\r\n    "i18n_audio_volume_increase" : {\r\n\t"message" : "Increase audio volume"\r\n    },\r\n    "i18n_audio_volume_decrease" : {\r\n\t"message" : "Decrease audio volume"\r\n    },\r\n    "i18n_audio_time" : {\r\n\t"message" : "Audio time cursor"\r\n    },\r\n    "i18n_audio_mute" : {\r\n\t"message" : "Mute audio"\r\n    },\r\n    "i18n_audio_unmute" : {\r\n\t"message" : "Unmute audio"\r\n    },\r\n    "i18n_audio_expand" : {\r\n\t"message" : "Show advanced audio controls"\r\n    },\r\n    "i18n_audio_collapse" : {\r\n\t"message" : "Close advanced audio controls"\r\n    },\r\n    "i18n_audio_esc" : {\r\n\t"message" : "Escape current audio context"\r\n    },\r\n    "i18n_audio_rate" : {\r\n\t"message" : "Audio playback rate"\r\n    },\r\n    "i18n_audio_rate_increase" : {\r\n\t"message" : "Increase audio playback rate"\r\n    },\r\n    "i18n_audio_rate_decrease" : {\r\n\t"message" : "Decrease audio playback rate"\r\n    },\r\n    "i18n_audio_rate_reset" : {\r\n\t"message" : "Reset audio playback to normal speed"\r\n    },\r\n    "i18n_audio_skip_disable" : {\r\n\t"message" : "Disable skippability"\r\n    },\r\n    "i18n_audio_skip_enable" : {\r\n\t"message" : "Enable skippability"\r\n    },\r\n\r\n    "i18n_auto_page_turn_enable" : {\r\n\t"message" : "Enable automatic page turn"\r\n    },\r\n    "i18n_auto_page_turn_disable" : {\r\n\t"message" : "Disable automatic page turn"\r\n    },\r\n\r\n    "i18n_playback_scroll_enable" : {\r\n\t"message" : "Enable scroll during playback"\r\n    },\r\n    "i18n_playback_scroll_disable" : {\r\n\t"message" : "Disable scroll during playback"\r\n    },\r\n    "i18n_add_note": {\r\n    "message": "Add Note"\r\n    },\r\n\r\n    "i18n_log_in" : {\r\n\t"message" : "Login"\r\n    },\r\n\r\n    "i18n_log_out" : {\r\n\t"message" : "Logout"\r\n    },\r\n    \r\n    "i18n_audio_touch_enable" : {\r\n\t"message" : "Enable touch-to-play"\r\n    },\r\n    "i18n_audio_touch_disable" : {\r\n\t"message" : "Disable touch-to-play"\r\n    },\r\n    "i18n_audio_highlight_default" : {\r\n\t"message" : "default"\r\n    },\r\n    "i18n_audio_highlight" : {\r\n\t"message" : "Audio color"\r\n    },\r\n    "i18n_audio_sync" : {\r\n\t"message" : "Text/audio synchronization granularity"\r\n    },\r\n    "i18n_audio_sync_default" : {\r\n\t"message" : "Default"\r\n    },\r\n    "i18n_audio_sync_word" : {\r\n\t"message" : "Word"\r\n    },\r\n    "i18n_audio_sync_sentence" : {\r\n\t"message" : "Sentence"\r\n    },\r\n    "i18n_audio_sync_paragraph" : {\r\n\t"message" : "Paragraph"\r\n    },\r\n    "i18n_page_previous" : {\r\n\t"message" : "Previous Page"\r\n    },\r\n    "i18n_page_next" : {\r\n\t"message" : "Next Page"\r\n    },\r\n    "i18n_page_navigation" : {\r\n\t"message" : "Page Navigation"\r\n    },\r\n    "i18n_ChromeApp_deprecated_dialog_title" : {\r\n\t"message" : "Readium Chrome App - WARNING"\r\n    },\r\n    "i18n_ChromeApp_deprecated_dialog_HTML" : {\r\n\t"message" : "<p><strong><u>IMPORTANT:</u></strong></p><p>This is the final release of the Readium Chrome App. Google decided to remove support for \\"apps\\" in the Chrome Web Browser, as <a href=\\"https://developer.chrome.com/apps/migration\\" target=\\"_blank\\">explained here</a>.</p> <p>At some point, Google will completely disable existing Chrome apps. This is unfortunately outside of Readium\'s control.</p> <p>Consequently, please consider using alternative software to read EPUB files. Visit the <a href=\\"https://readium.org/about/applications.html/\\" target=\\"_blank\\">Readium website</a> for suggestions.</p>"\r\n    },\r\n    "chrome_accept_languages": {\r\n\t"message": "$CHROME$ accepts $languages$ languages",\r\n\t"placeholders": {\r\n\t    "chrome": {\r\n\t\t"content": "Chrome",\r\n\t\t"example": "Chrome"\r\n\t    },\r\n\t    "languages": {\r\n\t\t"content": "$1",\r\n\t\t"example": "en-US,ja,sr,de,zh_CN"\r\n\t    }\r\n\t}\r\n    }\r\n}\r\n';});
+define('text!readium_js_viewer_i18n/_locales/en_US/messages.json',[],function () { return '{\n    "gitHasLocalChanges": {\n\t"message": "with local changes"\n    },\n\n    "chrome_extension_name": {\n\t"message": "Readium"\n    },\n    "about" : {\n\t"message" : "About"\n    },\n    "preview" : {\n\t"message" : "PREVIEW"\n    },\n    "list_view" : {\n\t"message" : "List View"\n    },\n    "thumbnail_view" : {\n\t"message" : "Grid View"\n    },\n    "view_library": {\n\t"message" : "PeBL Bookshelf"\n    },\n    "highlight_selection" : {\n\t"message" : "Highlight Selected Text"\n    },\n    "show_annotations" : {\n\t"message" : "Highlight List"\n    },\n    "bookmark" : {\n        "message" : "Add a Bookmark"\n    },\n    "bookmark_list" : {\n        "message" : "Bookmark List"\n    },\n    "search": {\n        "message": "Search"\n    },\n    "share_url" : {\n\t"message" : "Share reader bookmark..."\n    },\n    "share_url_label" : {\n\t"message" : "Use your clipboard to copy/paste this shareable link:"\n    },\n    "toc" : {\n\t"message" : "Table of Contents"\n    },\n    "settings" : {\n\t"message" : "Settings"\n    },\n    "bookmarks" : {\n\t"message" : "Bookmark List"\n    },        \n    "layout" : {\n\t"message" : "Layout"\n    },\n    "style" : {\n\t"message" : "Style"\n    },\n    "enter_fullscreen" : {\n\t"message" : "Enter Fullscreen"\n    },\n    "exit_fullscreen" : {\n\t"message" : "Exit Fullscreen"\n    },\n    "chrome_extension_description": {\n\t"message": "A reader for EPUB3 books."\n    },\n    "ok" : {\n\t"message" : "Ok"\n    },\n    "delete_dlg_title" : {\n\t"message" : "Confirm Delete"\n    },\n    "delete_progress_title" : {\n\t"message" : "Delete in Progress"\n    },\n    "delete_progress_message" : {\n\t"message" : "Deleting"\n    },\n    "migrate_dlg_title" : {\n\t"message" : "Migrating Books"\n    },\n    "migrate_dlg_message" : {\n\t"message" : "Loading data..."\n    },\n    "migrating" : {\n\t"message" : "Migrating"\n    },\n    "replace_dlg_title" : {\n\t"message": "Conflict Detected"\n    },\n    "replace_dlg_message": {\n\t"message": "If you continue, the following epub will be replaced with the one you are importing"\n    },\n    "import_dlg_title" : {\n\t"message": "Importing EPUB"\n    },\n    "import_dlg_message" : {\n\t"message": "Examining EPUB content..."\n    },\n    "storing_file" : {\n\t"message": "For initial viewing the e-book must be processed:"\n    },\n    "err_unknown" : {\n\t"message": "Unknown error. Check console for more details."\n    },\n    "err_storage" : {\n\t"message": "Unable to access storage"\n    },\n    "err_epub_corrupt" : {\n\t"message": "Invalid or corrupted EPUB package"\n    },\n    "err_ajax": {\n\t"message": "Error in ajax request"\n    },\n    "err_dlg_title" : {\n\t"message": "Unexpected Error"\n    },\n    "replace" : {\n\t"message": "Replace"\n    },\n    "gethelp" : {\n\t"message" : "If you encounter any problems, have questions, or would like to say hello, visit <a href=\\"http://idpf.org/forums/readium\\">our forum</a>"\n    },\n    "i18n_readium_library" : {\n\t"message" : "Readium Library"\n    },\n    "i18n_loading" : {\n\t"message" : "Loading Library"\n    },\n    "i18n_readium_options" : {\n\t"message" : "Readium Options:"\n    },\n    "i18n_save_changes" : {\n\t"message" : "Save changes"\n    },\n    "i18n_close" : {\n\t"message" : "Close"\n    },\n    "i18n_keyboard_shortcuts" : {\n\t"message" : "Keyboard shortcuts"\n    },\n    "i18n_keyboard_reload" : {\n\t"message" : "Please reload the page for keyboard shortcuts to take effect."\n    },\n    "i18n_keyboard_onerror_reset" : {\n\t"message" : "Please note: Any shortcuts marked INVALID or DUPLICATE have been reset to original values."\n    },\n    "i18n_reset_key" : {\n\t"message" : "Reset key"\n    },\n    "i18n_reset_key_all" : {\n\t"message" : "Reset all keyboard shortcuts"\n    },\n    "i18n_duplicate_keyboard_shortcut" : {\n\t"message" : "DUPLICATE"\n    },\n    "i18n_invalid_keyboard_shortcut" : {\n\t"message" : "INVALID"\n    },\n    "i18n_paginate_all" : {\n\t"message" : "Paginate all reflowable ePUB content"\n    },\n    "i18n_automatically" : {\n\t"message" : "Automatically open *.epub urls in readium"\n    },\n    "i18n_show_warning" : {\n\t"message" : "Show warning messages when unpacking EPUB files"\n    },\n    "i18n_details" : {\n\t"message" : "Details"\n    },\n    "i18n_read" : {\n\t"message" : "Read"\n    },\n    "i18n_delete" : {\n\t"message" : "Delete"\n    },\n    "i18n_delete_book" : {\n        "message" : "Delete Book"\n    },\n    "i18n_download_book" : {\n        "message": "Download Book"\n    },\n    "i18n_author" : {\n\t"message" : "Author: "\n    },\n    "i18n_publisher" : {\n\t"message" : "Publisher: "\n    },\n    "i18n_source" : {\n\t"message" : "Source: "\n    },\n    "i18n_pub_date" : {\n\t"message" : "Pub Date: "\n    },\n    "i18n_modified_date" : {\n\t"message" : "Modified Date: "\n    },\n    "i18n_id" : {\n\t"message" : "ID: "\n    },\n    "i18n_epub_version" : {\n\t"message" : "EPUB version: "\n    },\n    "i18n_created_at" : {\n\t"message" : "Created at: "\n    },\n    "i18n_format" : {\n\t"message" : "Format: "\n    },\n    "i18n_added" : {\n\t"message" : "Added: "\n    },\n    "i18n_unknown" : {\n\t"message" : "Unknown"\n    },\n    "i18n_sorry" : {\n\t"message" : "Sorry, the current EPUB does not contain a media overlay for this content"\n    },\n    "i18n_add_items" : {\n\t"message" : "Add items to your library here!"\n    },\n    "i18n_extracting" : {\n\t"message" : "extracting: "\n    },\n    "i18n_are_you_sure" : {\n\t"message" : "Are you sure you want to permanently delete "\n    },\n    "i18n_add_book_to_readium_library" : {\n\t"message" : "Add Book To Readium Library:"\n    },\n    "i18n_add_book_to_pebl_library" : {\n\t"message" : "Add Book To Library:"\n    },    \n    "i18n_add_book" : {\n\t"message" : "Add to Library"\n    },\n    "i18n_cancel" : {\n\t"message" : "Cancel"\n    },\n    "i18n_from_the_web" : {\n\t"message" : "From the web:"\n    },\n    "i18n_from_local_file" : {\n\t"message" : "Upload EPUB:"\n    },\n    "i18n_upload_cover": {\n    "message": "Upload Cover:"\n    },\n    "i18n_enter_a_url" : {\n\t"message" : "Enter a URL to a .epub file"\n    },\n    "i18n_unpacked_directory" : {\n\t"message" : "Unpacked Directory:"\n    },\n    "i18n_validate" : {\n\t"message" : "Validate:"\n    },\n    "i18n_confirm_that_this_book" : {\n\t"message" : "Confirm that this book complies with ePUB standards"\n    },\n    "i18n_single_pages" : {\n\t"message" : "Single Pages"\n    },\n    "i18n_double_pages" : {\n\t"message" : "Double Pages"\n    },\n    "i18n_save_settings" : {\n\t"message" : "Save Settings"\n    },\n    "i18n_font_size" : {\n\t"message" : "FONT SIZE"\n    },\n    "i18n_font_selection" : {\n\t"message" : "FONT FACE"\n    },\n    "i18n_fonttype_default" : {\n\t"message" : "Default"\n    },\n\n    "i18n_margins" : {\n\t"message" : "MARGINS"\n    },\n    "i18n_pageMaxWidth" : {\n\t"message" : "PAGE WIDTH"\n    },\n    "i18n_pageMaxWidth_Disabled" : {\n\t"message" : "Disabled (no maximum)"\n    },\n    "i18n_text_and_background_color" : {\n\t"message" : "TEXT AND BACKGROUND COLOR"\n    },\n    "i18n_author_theme" : {\n\t"message" : "Default (author styles)"\n    },\n    "i18n_black_and_white" : {\n\t"message" : "Black and White"\n    },\n    "i18n_arabian_nights" : {\n\t"message" : "Arabian Nights"\n    },\n    "i18n_sands_of_dune" : {\n\t"message" : "Sands of Dune"\n    },\n    "i18n_ballard_blues" : {\n\t"message" : "Ballard Blues"\n    },\n    "i18n_vancouver_mist" : {\n\t"message" : "Vancouver Mist"\n    },\n    "i18n_display_format" : {\n\t"message" : "DISPLAY FORMAT"\n    },\n    "i18n_spread_auto" : {\n\t"message" : "Auto"\n    },\n    "i18n_scroll_mode" : {\n\t"message" : "SCROLL MODE"\n    },\n    "i18n_scroll_mode_auto" : {\n\t"message" : "Auto"\n    },\n    "i18n_scroll_mode_doc" : {\n\t"message" : "Document"\n    },\n    "i18n_scroll_mode_continuous" : {\n\t"message" : "Continuous"\n    },\n\n    "i18n_page_transition" : {\n\t"message" : "PAGE EFFECTS"\n    },\n    "i18n_page_transition_none" : {\n\t"message" : "Disabled"\n    },\n    "i18n_page_transition_fade" : {\n\t"message" : "Fade"\n    },\n    "i18n_page_transition_slide" : {\n\t"message" : "Slide"\n    },\n    "i18n_page_transition_swoosh" : {\n\t"message" : "Swoosh"\n    },\n    "i18n_page_transition_butterfly" : {\n\t"message" : "Butterfly"\n    },\n\n    "i18n_html_readium_tm_a_project" : {\n\t"message" : "Readium for Chrome is the Chrome browser extension configuration of ReadiumJS, an open source reading system and JavaScript library for displaying EPUB® publications in web browsers. ReadiumJS is a project of the Readium Foundation (Readium.org). To learn more or to contribute, visit the <a id=\\"aboutFirst Focusable\\" href=\\"http://readium.org/projects/readiumjs\\">project homepage</a>"\n    },\n    "i18n_alt_about_logos" : {\n\t"message" : "HTML5, i d p f, ePUB"\n    },\n    "i18n_toolbar" : {\n\t"message" : "Toolbar"\n    },\n    "i18n_toolbar_show" : {\n\t"message" : "Show toolbar"\n    },\n    "i18n_toolbar_hide" : {\n\t"message" : "Hide toolbar"\n    },\n    "i18n_audio_play" : {\n\t"message" : "Play"\n    },\n    "i18n_audio_pause" : {\n\t"message" : "Pause"\n    },\n    "i18n_audio_play_background" : {\n\t"message" : "Play background track"\n    },\n    "i18n_audio_pause_background" : {\n\t"message" : "Pause background track"\n    },\n    "i18n_audio_previous" : {\n\t"message" : "Previous audio phrase"\n    },\n    "i18n_audio_next" : {\n\t"message" : "Next audio phrase"\n    },\n    "i18n_audio_volume" : {\n\t"message" : "Audio volume"\n    },\n    "i18n_audio_volume_increase" : {\n\t"message" : "Increase audio volume"\n    },\n    "i18n_audio_volume_decrease" : {\n\t"message" : "Decrease audio volume"\n    },\n    "i18n_audio_time" : {\n\t"message" : "Audio time cursor"\n    },\n    "i18n_audio_mute" : {\n\t"message" : "Mute audio"\n    },\n    "i18n_audio_unmute" : {\n\t"message" : "Unmute audio"\n    },\n    "i18n_audio_expand" : {\n\t"message" : "Show advanced audio controls"\n    },\n    "i18n_audio_collapse" : {\n\t"message" : "Close advanced audio controls"\n    },\n    "i18n_audio_esc" : {\n\t"message" : "Escape current audio context"\n    },\n    "i18n_audio_rate" : {\n\t"message" : "Audio playback rate"\n    },\n    "i18n_audio_rate_increase" : {\n\t"message" : "Increase audio playback rate"\n    },\n    "i18n_audio_rate_decrease" : {\n\t"message" : "Decrease audio playback rate"\n    },\n    "i18n_audio_rate_reset" : {\n\t"message" : "Reset audio playback to normal speed"\n    },\n    "i18n_audio_skip_disable" : {\n\t"message" : "Disable skippability"\n    },\n    "i18n_audio_skip_enable" : {\n\t"message" : "Enable skippability"\n    },\n\n    "i18n_auto_page_turn_enable" : {\n\t"message" : "Enable automatic page turn"\n    },\n    "i18n_auto_page_turn_disable" : {\n\t"message" : "Disable automatic page turn"\n    },\n\n    "i18n_playback_scroll_enable" : {\n\t"message" : "Enable scroll during playback"\n    },\n    "i18n_playback_scroll_disable" : {\n\t"message" : "Disable scroll during playback"\n    },\n    "i18n_add_note": {\n    "message": "Add Note"\n    },\n\n    "i18n_log_in" : {\n\t"message" : "Login"\n    },\n\n    "i18n_log_out" : {\n\t"message" : "Logout"\n    },\n    \n    "i18n_audio_touch_enable" : {\n\t"message" : "Enable touch-to-play"\n    },\n    "i18n_audio_touch_disable" : {\n\t"message" : "Disable touch-to-play"\n    },\n    "i18n_audio_highlight_default" : {\n\t"message" : "default"\n    },\n    "i18n_audio_highlight" : {\n\t"message" : "Audio color"\n    },\n    "i18n_audio_sync" : {\n\t"message" : "Text/audio synchronization granularity"\n    },\n    "i18n_audio_sync_default" : {\n\t"message" : "Default"\n    },\n    "i18n_audio_sync_word" : {\n\t"message" : "Word"\n    },\n    "i18n_audio_sync_sentence" : {\n\t"message" : "Sentence"\n    },\n    "i18n_audio_sync_paragraph" : {\n\t"message" : "Paragraph"\n    },\n    "i18n_page_previous" : {\n\t"message" : "Previous Page"\n    },\n    "i18n_page_next" : {\n\t"message" : "Next Page"\n    },\n    "i18n_page_navigation" : {\n\t"message" : "Page Navigation"\n    },\n    "i18n_ChromeApp_deprecated_dialog_title" : {\n\t"message" : "Readium Chrome App - WARNING"\n    },\n    "i18n_ChromeApp_deprecated_dialog_HTML" : {\n\t"message" : "<p><strong><u>IMPORTANT:</u></strong></p><p>This is the final release of the Readium Chrome App. Google decided to remove support for \\"apps\\" in the Chrome Web Browser, as <a href=\\"https://developer.chrome.com/apps/migration\\" target=\\"_blank\\">explained here</a>.</p> <p>At some point, Google will completely disable existing Chrome apps. This is unfortunately outside of Readium\'s control.</p> <p>Consequently, please consider using alternative software to read EPUB files. Visit the <a href=\\"https://readium.org/about/applications.html/\\" target=\\"_blank\\">Readium website</a> for suggestions.</p>"\n    },\n    "chrome_accept_languages": {\n\t"message": "$CHROME$ accepts $languages$ languages",\n\t"placeholders": {\n\t    "chrome": {\n\t\t"content": "Chrome",\n\t\t"example": "Chrome"\n\t    },\n\t    "languages": {\n\t\t"content": "$1",\n\t\t"example": "en-US,ja,sr,de,zh_CN"\n\t    }\n\t}\n    }\n}\n';});
 
 
-define('text!readium_js_viewer_i18n/_locales/en_US/skinning.json',[],function () { return '{\r\n    "i18n_pebl_library" : { "message" : "__PEBL_LIBRARY_TITLE__" },\r\n    "i18n_pebl_reader" : { "message" : "__PEBL_READER_TITLE__" },\r\n    "i18n_pebl_title" : { "message" : "__PEBL_TITLE__" },\r\n    "i18n_pebl_webreader_logo": { "message": "__PEBL_WEBREADER_LOGO__" }\r\n}\r\n';});
+define('text!readium_js_viewer_i18n/_locales/en_US/skinning.json',[],function () { return '{\n"i18n_pebl_library" : { "message" : "PeBL Library" },\n"i18n_pebl_reader" : { "message" : "PeBL Reader" },\n"i18n_pebl_webreader_logo" : { "message" : "images/PEBL-Logo-Color-small.png" }\n}\n';});
 
 //  Copyright (c) 2014 Readium Foundation and/or its licensees. All rights reserved.
 //
@@ -59857,9 +58966,7 @@ define('readium_js/Readium',[
                                                     rootDir: ebookURL,
                                                     rootUrl: ebookURL,
                                                     coverPath: metadata.cover_href,
-                                                    coverHref: openBookData.rootUrl + "/" + metadata.cover_href,
-                                                    pubdate: metadata.pubdate,
-                                                    duration: metadata.duration
+                                                    coverHref: openBookData.rootUrl + "/" + metadata.cover_href
                                                 });
                                                 StorageManager.saveBookshelf("db://epub_library.json",
                                                     bookshelf,
@@ -61344,37 +60451,38 @@ define('readium_js_viewer/EpubLibraryManager',['./ModuleConfig', './PackageParse
 
 });
 
-define("hgn!readium_js_viewer_html_templates/library-navbar.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<header id=\"app-header\" class=\"btn-group navbar-left\">\r");t.b("\n" + i);t.b("    <!-- <button type=\"button\" class=\"btn btn-default icon icon-show-hide\"></button>  -->\r");t.b("\n" + i);t.b("    <button id=\"aboutButt1\" tabindex=\"0\" type=\"button\" class=\"btn\" aria-label=\"");t.b(t.v(t.d("strings.view_library",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("          <img style=\"margin-right: 1em;width: auto;height: 26px;\" src=\"");t.b(t.v(t.d("strings.i18n_pebl_webreader_logo",c,p,0)));t.b("\" alt=\"PeBL Logo\"/>\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    <h1 id=\"webreaderTitle\">");t.b(t.v(t.d("strings.i18n_pebl_title",c,p,0)));t.b("</h1>\r");t.b("\n" + i);t.b("</header>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("<div class=\"btn-group navbar-right\">\r");t.b("\n" + i);t.b("    <!-- <button tabindex=\"1\" type=\"button\" class=\"btn icon-shareUrl\" aria-label=\"");t.b(t.v(t.d("strings.share_url",c,p,0)));t.b("\"> -->\r");t.b("\n" + i);t.b("    <!--     <span class=\"glyphicon glyphicon-link\" aria-hidden=\"true\"></span> -->\r");t.b("\n" + i);t.b("    <!-- </button> -->\r");t.b("\n" + i);t.b("    <!-- <button id=\"searchButt\" tabindex=\"1\" type=\"button\" class=\"btn icon-search\" aria-label=\"");t.b(t.v(t.d("strings.search",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-search.svg\" aria-hidden=\"true\" height=\"18px\" />\r");t.b("\n" + i);t.b("    </button> -->\r");t.b("\n" + i);t.b("    <button tabindex=\"0\" type=\"button\" class=\"btn icon-thumbnails\" aria-label=\"");t.b(t.v(t.d("strings.thumbnail_view",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_grid-view.svg\" aria-hidden=\"true\" height=\"18px\" />\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    <button tabindex=\"0\" type=\"button\" class=\"btn icon-list-view\" aria-label=\"");t.b(t.v(t.d("strings.list_view",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("            <img src=\"images/pebl-icons-wip_list-view.svg\" aria-hidden=\"true\" height=\"18px\" />\r");t.b("\n" + i);t.b("        </button>\r");t.b("\n" + i);t.b("    <button id=\"addbutt\" tabindex=\"0\" type=\"button\" class=\"btn \" aria-label=\"");t.b(t.v(t.d("strings.i18n_add_book",c,p,0)));t.b("\" data-toggle=\"modal\" data-target=\"#add-epub-dialog\">\r");t.b("\n" + i);t.b("            <img src=\"images/pebl-icons-wip_new-book.svg\" aria-hidden=\"true\" height=\"18px\" />\r");t.b("\n" + i);t.b("        </button>\r");t.b("\n" + i);t.b("    <button id=\"settbutt1\" tabindex=\"0\" type=\"button\" class=\"btn \" aria-label=\"");t.b(t.v(t.d("strings.settings",c,p,0)));t.b("\" data-toggle=\"modal\" data-target=\"#settings-dialog\">\r");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_settings.svg\" aria-hidden=\"true\" height=\"18px\" />\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("<!--     <button style=\"display: none;\" id=\"installbutt\" tabindex=\"1\" type=\"button\" class=\"btn icon-install\" aria-label=\"");t.b(t.v(t.d("strings.install",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_download.svg\" aria-hidden=\"true\" height=\"18px\" />\r");t.b("\n" + i);t.b("    </button> -->\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("<!--     <button id=\"installbutt2\" tabindex=\"1\" type=\"button\" class=\"btn \" aria-label=\"");t.b(t.v(t.d("strings.install",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_download.svg\" aria-hidden=\"true\" height=\"18px\" />\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b(" -->\r");t.b("\n" + i);t.b("    <div tabindex=\"0\" role=\"button\" id=\"readerCurrentClassContainer\" style=\"width: auto; display: none;\" class=\"btn\">\r");t.b("\n" + i);t.b("        <span id=\"readerCurrentClass\"></span>\r");t.b("\n" + i);t.b("    </div>\r");t.b("\n" + i);t.b("    <button id=\"loginButt\" tabindex=\"0\" type=\"button\" class=\"btn \" aria-label=\"");t.b(t.v(t.d("strings.i18n_log_in",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_login.svg\" aria-hidden=\"true\" height=\"18px\" />\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("</div>\r");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+
+define("hgn!readium_js_viewer_html_templates/library-navbar.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<header id=\"app-header\" class=\"btn-group navbar-left\">");t.b("\n" + i);t.b("    <!-- <button type=\"button\" class=\"btn btn-default icon icon-show-hide\"></button>  -->");t.b("\n" + i);t.b("    <button id=\"aboutButt1\" tabindex=\"0\" type=\"button\" class=\"btn\" aria-label=\"");t.b(t.v(t.d("strings.view_library",c,p,0)));t.b("\">");t.b("\n" + i);t.b("          <img style=\"margin-right: 1em;width: auto;height: 26px;\" src=\"");t.b(t.v(t.d("strings.i18n_pebl_webreader_logo",c,p,0)));t.b("\" alt=\"PeBL Logo\"/>");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    <h1 id=\"webreaderTitle\">");t.b(t.v(t.d("strings.i18n_pebl_title",c,p,0)));t.b("</h1>");t.b("\n" + i);t.b("</header>");t.b("\n");t.b("\n" + i);t.b("<div class=\"btn-group navbar-right\">");t.b("\n" + i);t.b("    <!-- <button tabindex=\"1\" type=\"button\" class=\"btn icon-shareUrl\" aria-label=\"");t.b(t.v(t.d("strings.share_url",c,p,0)));t.b("\"> -->");t.b("\n" + i);t.b("    <!--     <span class=\"glyphicon glyphicon-link\" aria-hidden=\"true\"></span> -->");t.b("\n" + i);t.b("    <!-- </button> -->");t.b("\n" + i);t.b("    <!-- <button id=\"searchButt\" tabindex=\"1\" type=\"button\" class=\"btn icon-search\" aria-label=\"");t.b(t.v(t.d("strings.search",c,p,0)));t.b("\">");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-search.svg\" aria-hidden=\"true\" height=\"18px\" />");t.b("\n" + i);t.b("    </button> -->");t.b("\n" + i);t.b("    <button tabindex=\"0\" type=\"button\" class=\"btn icon-thumbnails\" aria-label=\"");t.b(t.v(t.d("strings.thumbnail_view",c,p,0)));t.b("\">");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_grid-view.svg\" aria-hidden=\"true\" height=\"18px\" />");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    <button tabindex=\"0\" type=\"button\" class=\"btn icon-list-view\" aria-label=\"");t.b(t.v(t.d("strings.list_view",c,p,0)));t.b("\">");t.b("\n" + i);t.b("            <img src=\"images/pebl-icons-wip_list-view.svg\" aria-hidden=\"true\" height=\"18px\" />");t.b("\n" + i);t.b("        </button>");t.b("\n" + i);t.b("    <button id=\"addbutt\" tabindex=\"0\" type=\"button\" class=\"btn \" aria-label=\"");t.b(t.v(t.d("strings.i18n_add_book",c,p,0)));t.b("\" data-toggle=\"modal\" data-target=\"#add-epub-dialog\">");t.b("\n" + i);t.b("            <img src=\"images/pebl-icons-wip_new-book.svg\" aria-hidden=\"true\" height=\"18px\" />");t.b("\n" + i);t.b("        </button>");t.b("\n" + i);t.b("    <button id=\"settbutt1\" tabindex=\"0\" type=\"button\" class=\"btn \" aria-label=\"");t.b(t.v(t.d("strings.settings",c,p,0)));t.b("\" data-toggle=\"modal\" data-target=\"#settings-dialog\">");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_settings.svg\" aria-hidden=\"true\" height=\"18px\" />");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("<!--     <button style=\"display: none;\" id=\"installbutt\" tabindex=\"1\" type=\"button\" class=\"btn icon-install\" aria-label=\"");t.b(t.v(t.d("strings.install",c,p,0)));t.b("\">");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_download.svg\" aria-hidden=\"true\" height=\"18px\" />");t.b("\n" + i);t.b("    </button> -->");t.b("\n");t.b("\n" + i);t.b("<!--     <button id=\"installbutt2\" tabindex=\"1\" type=\"button\" class=\"btn \" aria-label=\"");t.b(t.v(t.d("strings.install",c,p,0)));t.b("\">");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_download.svg\" aria-hidden=\"true\" height=\"18px\" />");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b(" -->");t.b("\n" + i);t.b("    <div tabindex=\"0\" role=\"button\" id=\"readerCurrentClassContainer\" style=\"width: auto; display: none;\" class=\"btn\">");t.b("\n" + i);t.b("        <span id=\"readerCurrentClass\"></span>");t.b("\n" + i);t.b("    </div>");t.b("\n" + i);t.b("    <button id=\"loginButt\" tabindex=\"0\" type=\"button\" class=\"btn \" aria-label=\"");t.b(t.v(t.d("strings.i18n_log_in",c,p,0)));t.b("\">");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_login.svg\" aria-hidden=\"true\" height=\"18px\" />");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("</div>");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/library-body.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div id=\"library-body\" class=\"library-body\" role=\"main\" aria-labelledby=\"library-title\"  tabindex=\"0\">\r");t.b("\n" + i);t.b("	<h1 id=\"library-title\" class=\"library-row-title\">Bookshelf</h1>\r");t.b("\n" + i);t.b("	<div class=\"row library-items cloud-library\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("	</div>\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("<div id=\"adminSidebar\" class=\"is-collapsed\" role=\"nav\" aria-labelledby=\"adminSidebarTitle\"  tabindex=\"-1\">\r");t.b("\n" + i);t.b("    <div class=\"adminSidebar_toolWrapper\">\r");t.b("\n" + i);t.b("        <h2 id=\"adminSidebarTitle\" class=\"adminSidebar_title\"><i class=\"show-on-collapse fas fa-chalkboard-teacher\"></i><span class=\"hide-on-collapse\">Instructor Panel</span></h2>\r");t.b("\n" + i);t.b("        <button id=\"adminSidebarLibraryButton\" class=\"button adminSidebar-button is-active\" aria-label=\"bookshelf\" title=\"Bookshelf\" tabindex=\"0\"><i class=\"fas fa-book\"></i> <span class=\"hide-on-collapse\">Bookshelf</span></button>\r");t.b("\n" + i);t.b("        <!-- <button class=\"button adminSidebar-button\"><i class=\"fas fa-comments\"></i> <span class=\"hide-on-collapse\">Discussions</span></button> -->\r");t.b("\n" + i);t.b("        <button id=\"adminSidebarAnalyticsButton\" class=\"button adminSidebar-button\" aria-label=\"analytics\" title=\"Analytics\" tabindex=\"0\"><i class=\"fas fa-chart-bar\"></i> <span class=\"hide-on-collapse\">Analytics</span></button>\r");t.b("\n" + i);t.b("    </div>\r");t.b("\n" + i);t.b("    <div class=\"adminSidebar_footer\">\r");t.b("\n" + i);t.b("        <button id=\"adminSidebarToggleButton\" class=\"button adminSidebar-button\" aria-label=\"collapse sidebar\" tabindex=\"0\"><i class=\"fas fa-caret-square-left hide-on-collapse\"></i><i class=\"fas fa-caret-square-right show-on-collapse\"></i> <span class=\"hide-on-collapse\">Collapse Sidebar</span></button>\r");t.b("\n" + i);t.b("    </div>\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("<div id=\"analytics-body\" style=\"display: none;\" aria-labelledby=\"analytics-title\" role=\"complementary\" tabindex=\"-1\">\r");t.b("\n" + i);t.b("	<h1 id=\"analytics-title\">Analytics</h1>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("	<select id=\"analytics-book-title\"></select>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("	<div id=\"analytics-content\" style=\"display: none;\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("		<h3>Percentage of Book Completion</h3>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("		<div id=\"percentageCompletionContainer\"></div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("		<div id=\"questionCountsContainer\">\r");t.b("\n" + i);t.b("			<div>\r");t.b("\n" + i);t.b("				<h3>Most Participated-in Discussions</h3>\r");t.b("\n" + i);t.b("				<div id=\"mostAnsweredQuestionCountsContainer\"></div>\r");t.b("\n" + i);t.b("			</div>\r");t.b("\n" + i);t.b("		</div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("		<div>\r");t.b("\n" + i);t.b("			<h3>Most Answered Multiple Choice Answers</h3>\r");t.b("\n" + i);t.b("			<div id=\"quizChartContainer\"></div>\r");t.b("\n" + i);t.b("		</div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("		<div id=\"reportedMessagesContainer\">\r");t.b("\n" + i);t.b("			<div>\r");t.b("\n" + i);t.b("				<h3>Reported Submissions</h3>\r");t.b("\n" + i);t.b("				<div id=\"reportedMessagesCountsContainer\"></div>\r");t.b("\n" + i);t.b("			</div>\r");t.b("\n" + i);t.b("		</div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("	</div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("<div id=\"search-library-body\" class=\"sidebar-body\" aria-label=\"");t.b(t.v(t.d("strings.search",c,p,0)));t.b("\" role=\"search\" tabindex=\"-1\"></div>\r");t.b("\n" + i);t.b("\r");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/library-body.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div id=\"library-body\" class=\"library-body\" role=\"main\" aria-labelledby=\"library-title\"  tabindex=\"0\">");t.b("\n" + i);t.b("	<h1 id=\"library-title\" class=\"library-row-title\">Bookshelf</h1>");t.b("\n" + i);t.b("	<div class=\"row library-items cloud-library\">");t.b("\n");t.b("\n" + i);t.b("	</div>");t.b("\n" + i);t.b("</div>");t.b("\n");t.b("\n" + i);t.b("<div id=\"adminSidebar\" class=\"is-collapsed\" role=\"nav\" aria-labelledby=\"adminSidebarTitle\"  tabindex=\"-1\">");t.b("\n" + i);t.b("    <div class=\"adminSidebar_toolWrapper\">");t.b("\n" + i);t.b("        <h2 id=\"adminSidebarTitle\" class=\"adminSidebar_title\"><i class=\"show-on-collapse fas fa-chalkboard-teacher\"></i><span class=\"hide-on-collapse\">Instructor Panel</span></h2>");t.b("\n" + i);t.b("        <button id=\"adminSidebarLibraryButton\" class=\"button adminSidebar-button is-active\" aria-label=\"bookshelf\" title=\"Bookshelf\" tabindex=\"0\"><i class=\"fas fa-book\"></i> <span class=\"hide-on-collapse\">Bookshelf</span></button>");t.b("\n" + i);t.b("        <!-- <button class=\"button adminSidebar-button\"><i class=\"fas fa-comments\"></i> <span class=\"hide-on-collapse\">Discussions</span></button> -->");t.b("\n" + i);t.b("        <button id=\"adminSidebarAnalyticsButton\" class=\"button adminSidebar-button\" aria-label=\"analytics\" title=\"Analytics\" tabindex=\"0\"><i class=\"fas fa-chart-bar\"></i> <span class=\"hide-on-collapse\">Analytics</span></button>");t.b("\n" + i);t.b("    </div>");t.b("\n" + i);t.b("    <div class=\"adminSidebar_footer\">");t.b("\n" + i);t.b("        <button id=\"adminSidebarToggleButton\" class=\"button adminSidebar-button\" aria-label=\"collapse sidebar\" tabindex=\"0\"><i class=\"fas fa-caret-square-left hide-on-collapse\"></i><i class=\"fas fa-caret-square-right show-on-collapse\"></i> <span class=\"hide-on-collapse\">Collapse Sidebar</span></button>");t.b("\n" + i);t.b("    </div>");t.b("\n" + i);t.b("</div>");t.b("\n");t.b("\n" + i);t.b("<div id=\"analytics-body\" style=\"display: none;\" aria-labelledby=\"analytics-title\" role=\"complementary\" tabindex=\"-1\">");t.b("\n" + i);t.b("	<h1 id=\"analytics-title\">Analytics</h1>");t.b("\n");t.b("\n" + i);t.b("	<select id=\"analytics-book-title\"></select>");t.b("\n");t.b("\n" + i);t.b("	<div id=\"analytics-content\" style=\"display: none;\">");t.b("\n");t.b("\n" + i);t.b("		<h3>Percentage of Book Completion</h3>");t.b("\n");t.b("\n" + i);t.b("		<div id=\"percentageCompletionContainer\"></div>");t.b("\n");t.b("\n" + i);t.b("		<div id=\"questionCountsContainer\">");t.b("\n" + i);t.b("			<div>");t.b("\n" + i);t.b("				<h3>Most Participated-in Discussions</h3>");t.b("\n" + i);t.b("				<div id=\"mostAnsweredQuestionCountsContainer\"></div>");t.b("\n" + i);t.b("			</div>");t.b("\n" + i);t.b("		</div>");t.b("\n");t.b("\n" + i);t.b("		<div>");t.b("\n" + i);t.b("			<h3>Most Answered Multiple Choice Answers</h3>");t.b("\n" + i);t.b("			<div id=\"quizChartContainer\"></div>");t.b("\n" + i);t.b("		</div>");t.b("\n");t.b("\n" + i);t.b("		<div id=\"reportedMessagesContainer\">");t.b("\n" + i);t.b("			<div>");t.b("\n" + i);t.b("				<h3>Reported Submissions</h3>");t.b("\n" + i);t.b("				<div id=\"reportedMessagesCountsContainer\"></div>");t.b("\n" + i);t.b("			</div>");t.b("\n" + i);t.b("		</div>");t.b("\n");t.b("\n" + i);t.b("	</div>");t.b("\n");t.b("\n" + i);t.b("</div>");t.b("\n");t.b("\n" + i);t.b("<div id=\"search-library-body\" class=\"sidebar-body\" aria-label=\"");t.b(t.v(t.d("strings.search",c,p,0)));t.b("\" role=\"search\" tabindex=\"-1\"></div>");t.b("\n");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/empty-library.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"pull-right\">\r");t.b("\n" + i);t.b("    <div id=\"empty-message\">\r");t.b("\n" + i);t.b("        ");t.b(t.v(t.d("strings.i18n_add_items",c,p,0)));t.b("\r");t.b("\n" + i);t.b("    </div>\r");t.b("\n" + i);t.b("    <img id=\"empty-message-arrow\" src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/library_arrow.png\" alt=\"\">\r");t.b("\n" + i);t.b("</div>\r");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/empty-library.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"pull-right\">");t.b("\n" + i);t.b("    <div id=\"empty-message\">");t.b("\n" + i);t.b("        ");t.b(t.v(t.d("strings.i18n_add_items",c,p,0)));t.b("\n" + i);t.b("    </div>");t.b("\n" + i);t.b("    <img id=\"empty-message-arrow\" src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/library_arrow.png\" alt=\"\">");t.b("\n" + i);t.b("</div>");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/library-item.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"col-xs-4 col-sm-3 col-md-2 library-item ");t.b(t.v(t.d("epub.libraryState",c,p,0)));t.b("\" id=\"");t.b(t.v(t.d("epub.id",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("    <div class='info-wrap'>\r");t.b("\n" + i);t.b("        <!-- <div class='caption book-info'>\r");t.b("\n" + i);t.b("            <h4 class='title'>");t.b(t.v(t.d("epub.title",c,p,0)));t.b("</h4>\r");t.b("\n" + i);t.b("            <div class='author'>");t.b(t.v(t.d("epub.author",c,p,0)));if(!t.s(t.d("epub.author",c,p,1),c,p,1,0,0,"")){t.b("No Author Listed");};t.b("</div>\r");t.b("\n" + i);t.b("        </div> -->\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("        <button type=\"button\" style=\"background: none; border: none; padding: 0; margin: 0;\" class=\"read\"\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("        data-id=\"");t.b(t.v(t.d("epub.id",c,p,0)));t.b("\"\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("        data-title=\"");t.b(t.v(t.d("epub.title",c,p,0)));t.b("\"\r");t.b("\n" + i);t.b("        \r");t.b("\n" + i);if(t.s(t.d("epub.isSubLibraryLink",c,p,1),c,p,0,571,642,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("        \r");t.b("\n" + i);t.b("        data-library=\"");t.b(t.v(t.d("epub.rootUrl",c,p,0)));t.b("\"\r");t.b("\n" + i);t.b("        \r");t.b("\n" + i);});c.pop();}t.b("\r");t.b("\n" + i);if(!t.s(t.d("epub.isSubLibraryLink",c,p,1),c,p,1,0,0,"")){t.b("            \r");t.b("\n" + i);if(t.s(t.d("epub.isExternalLink",c,p,1),c,p,0,758,842,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("            \r");t.b("\n" + i);t.b("            data-link=\"");t.b(t.v(t.d("epub.rootUrl",c,p,0)));t.b("\"\r");t.b("\n" + i);t.b("            \r");t.b("\n" + i);});c.pop();}t.b("    \r");t.b("\n" + i);if(!t.s(t.d("epub.isExternalLink",c,p,1),c,p,1,0,0,"")){t.b("            \r");t.b("\n" + i);t.b("            data-book=\"");t.b(t.v(t.d("epub.rootUrl",c,p,0)));t.b("\"\r");t.b("\n" + i);t.b("            \r");t.b("\n" + i);};t.b("        \r");t.b("\n" + i);};t.b("        \r");t.b("\n" + i);t.b("        aria-label=\"(");t.b(t.v(t.d("count.n",c,p,0)));t.b(") ");t.b(t.v(t.d("epub.title",c,p,0)));t.b("\" title=\"(");t.b(t.v(t.d("count.n",c,p,0)));t.b(") ");t.b(t.v(t.d("epub.title",c,p,0)));t.b("\"  tabindex=\"0\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);if(t.s(t.d("epub.coverHref",c,p,1),c,p,0,1208,1345,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("        <div aria-hidden=\"true\" class=\"no-cover has-cover\" style=\"background-image:url(");t.b(t.v(t.f("coverHref",c,p,0)));t.b(");\"><p>&nbsp;</p></div>\r");t.b("\n" + i);});c.pop();}t.b("\r");t.b("\n" + i);if(!t.s(t.d("epub.coverHref",c,p,1),c,p,1,0,0,"")){t.b("        <div aria-hidden=\"true\" class=\"no-cover\" style=\"background-image: url('");t.b(t.v(t.f("noCoverBackground",c,p,0)));t.b("')\"><p>");t.b(t.v(t.d("epub.title",c,p,0)));t.b("</p></div>\r");t.b("\n" + i);};t.b("    </button>\r");t.b("\n" + i);t.b("    </div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("    <!-- <div class=\"caption buttons\">\r");t.b("\n" + i);t.b("        <a href=\"#\" class=\"btn btn-default read\" data-book=\"");t.b(t.v(t.d("epub.packageUrl",c,p,0)));t.b("\" role=\"button\">");t.b(t.v(t.d("strings.i18n_read",c,p,0)));t.b("</a>\r");t.b("\n" + i);t.b("        <a href=\"#details-modal\" data-book=\"");t.b(t.v(t.d("epub.packageUrl",c,p,0)));t.b("\" aria-pressed=\"true\" class=\"btn btn-default details\" data-toggle=\"modal\" role=\"button\">");t.b(t.v(t.d("strings.i18n_details",c,p,0)));t.b("</a>\r");t.b("\n" + i);t.b("    </div> -->\r");t.b("\n" + i);t.b("    <div class='caption book-info'>\r");t.b("\n" + i);t.b("        <h4 class='title' title=\"");t.b(t.v(t.d("epub.title",c,p,0)));t.b("\">");t.b(t.v(t.d("epub.title",c,p,0)));t.b("</h4>\r");t.b("\n" + i);t.b("        <div class='author' title=\"");t.b(t.v(t.d("epub.author",c,p,0)));t.b("\">");t.b(t.v(t.d("epub.author",c,p,0)));if(!t.s(t.d("epub.author",c,p,1),c,p,1,0,0,"")){t.b("No Author Listed");};t.b("</div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);if(!t.s(t.d("epub.isSubLibraryLink",c,p,1),c,p,1,0,0,"")){t.b("            \r");t.b("\n" + i);if(!t.s(t.d("epub.isExternalLink",c,p,1),c,p,1,0,0,"")){t.b("\r");t.b("\n" + i);if(t.s(t.d("epub.packagePath",c,p,1),c,p,0,2306,2606,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("                    \r");t.b("\n" + i);t.b("                    <div class=\"buttons\">\r");t.b("\n" + i);t.b("            \r");t.b("\n" + i);t.b("                        <button disabled ");if(!t.s(t.d("epub.coverHref",c,p,1),c,p,1,0,0,"")){t.b(" data-no-cover=\"");t.b(t.v(t.f("noCoverBackground",c,p,0)));t.b("\" ");};t.b(" class=\"btn\">Available</button>\r");t.b("\n" + i);t.b("                    \r");t.b("\n" + i);t.b("                    </div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);});c.pop();}t.b("\r");t.b("\n" + i);if(!t.s(t.d("epub.packagePath",c,p,1),c,p,1,0,0,"")){t.b("\r");t.b("\n" + i);t.b("                    <div class=\"button\">\r");t.b("\n" + i);t.b("                        <button aria-label=\"");t.b(t.v(t.d("strings.i1n_download_book",c,p,0)));t.b(" (");t.b(t.v(t.d("count.n",c,p,0)));t.b(") ");t.b(t.v(t.d("epub.title",c,p,0)));t.b("\" title=\"");t.b(t.v(t.d("strings.i18n_download_book",c,p,0)));t.b(" (");t.b(t.v(t.d("count.n",c,p,0)));t.b(") ");t.b(t.v(t.d("epub.title",c,p,0)));t.b("\" tabindex=\"0\" data-root=\"");t.b(t.v(t.d("epub.rootUrl",c,p,0)));t.b("\" data-title=\"");t.b(t.v(t.d("epub.title",c,p,0)));t.b("\" class=\"btn download-book-button\">");t.b(t.v(t.d("strings.i18n_download_book",c,p,0)));t.b("</button>\r");t.b("\n" + i);t.b("                    </div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);};t.b("\r");t.b("\n" + i);t.b("                <div class=\"buttons\">\r");t.b("\n" + i);t.b("        \r");t.b("\n" + i);t.b("                    <button data-id=\"");t.b(t.v(t.d("epub.id",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_delete_book",c,p,0)));t.b(" (");t.b(t.v(t.d("count.n",c,p,0)));t.b(") ");t.b(t.v(t.d("epub.title",c,p,0)));t.b("\" title=\"");t.b(t.v(t.d("strings.i18n_delete_book",c,p,0)));t.b(" (");t.b(t.v(t.d("count.n",c,p,0)));t.b(") ");t.b(t.v(t.d("epub.title",c,p,0)));t.b("\" tabindex=\"");t.b(t.v(t.d("count.tabindex",c,p,0)));t.b("\" data-package=\"");t.b(t.v(t.d("epub.rootUrl",c,p,0)));t.b("/");t.b(t.v(t.d("epub.packagePath",c,p,0)));t.b("\" data-root=\"");t.b(t.v(t.d("epub.rootUrl",c,p,0)));t.b("\" data-root-dir=\"");t.b(t.v(t.d("epub.rootDir",c,p,0)));t.b("\" ");if(!t.s(t.d("epub.coverHref",c,p,1),c,p,1,0,0,"")){t.b(" data-no-cover=\"");t.b(t.v(t.f("noCoverBackground",c,p,0)));t.b("\" ");};t.b(" class=\"btn delete-book-button\">");t.b(t.v(t.d("strings.i18n_delete_book",c,p,0)));t.b("</button>\r");t.b("\n" + i);t.b("                    \r");t.b("\n" + i);t.b("                </div>\r");t.b("\n" + i);t.b("    \r");t.b("\n" + i);t.b("                \r");t.b("\n" + i);};t.b("        \r");t.b("\n" + i);};t.b("    </div>\r");t.b("\n" + i);t.b("</div>\r");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/library-item.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"col-xs-4 col-sm-3 col-md-2 library-item ");t.b(t.v(t.d("epub.libraryState",c,p,0)));t.b("\" id=\"");t.b(t.v(t.d("epub.id",c,p,0)));t.b("\">");t.b("\n" + i);t.b("    <div class='info-wrap'>");t.b("\n" + i);t.b("        <!-- <div class='caption book-info'>");t.b("\n" + i);t.b("            <h4 class='title'>");t.b(t.v(t.d("epub.title",c,p,0)));t.b("</h4>");t.b("\n" + i);t.b("            <div class='author'>");t.b(t.v(t.d("epub.author",c,p,0)));if(!t.s(t.d("epub.author",c,p,1),c,p,1,0,0,"")){t.b("No Author Listed");};t.b("</div>");t.b("\n" + i);t.b("        </div> -->");t.b("\n");t.b("\n" + i);t.b("        <button type=\"button\" style=\"background: none; border: none; padding: 0; margin: 0;\" class=\"read\"");t.b("\n");t.b("\n" + i);t.b("        data-id=\"");t.b(t.v(t.d("epub.id",c,p,0)));t.b("\"");t.b("\n");t.b("\n" + i);t.b("        data-title=\"");t.b(t.v(t.d("epub.title",c,p,0)));t.b("\"");t.b("\n" + i);t.b("        ");t.b("\n" + i);if(t.s(t.d("epub.isSubLibraryLink",c,p,1),c,p,0,558,625,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("        ");t.b("\n" + i);t.b("        data-library=\"");t.b(t.v(t.d("epub.rootUrl",c,p,0)));t.b("\"");t.b("\n" + i);t.b("        ");t.b("\n" + i);});c.pop();}t.b("\n" + i);if(!t.s(t.d("epub.isSubLibraryLink",c,p,1),c,p,1,0,0,"")){t.b("            ");t.b("\n" + i);if(t.s(t.d("epub.isExternalLink",c,p,1),c,p,0,737,817,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("            ");t.b("\n" + i);t.b("            data-link=\"");t.b(t.v(t.d("epub.rootUrl",c,p,0)));t.b("\"");t.b("\n" + i);t.b("            ");t.b("\n" + i);});c.pop();}t.b("    ");t.b("\n" + i);if(!t.s(t.d("epub.isExternalLink",c,p,1),c,p,1,0,0,"")){t.b("            ");t.b("\n" + i);t.b("            data-book=\"");t.b(t.v(t.d("epub.rootUrl",c,p,0)));t.b("\"");t.b("\n" + i);t.b("            ");t.b("\n" + i);};t.b("        ");t.b("\n" + i);};t.b("        ");t.b("\n" + i);t.b("        aria-label=\"(");t.b(t.v(t.d("count.n",c,p,0)));t.b(") ");t.b(t.v(t.d("epub.title",c,p,0)));t.b("\" title=\"(");t.b(t.v(t.d("count.n",c,p,0)));t.b(") ");t.b(t.v(t.d("epub.title",c,p,0)));t.b("\"  tabindex=\"0\">");t.b("\n");t.b("\n" + i);if(t.s(t.d("epub.coverHref",c,p,1),c,p,0,1171,1306,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("        <div aria-hidden=\"true\" class=\"no-cover has-cover\" style=\"background-image:url(");t.b(t.v(t.f("coverHref",c,p,0)));t.b(");\"><p>&nbsp;</p></div>");t.b("\n" + i);});c.pop();}t.b("\n" + i);if(!t.s(t.d("epub.coverHref",c,p,1),c,p,1,0,0,"")){t.b("        <div aria-hidden=\"true\" class=\"no-cover\" style=\"background-image: url('");t.b(t.v(t.f("noCoverBackground",c,p,0)));t.b("')\"><p>");t.b(t.v(t.d("epub.title",c,p,0)));t.b("</p></div>");t.b("\n" + i);};t.b("    </button>");t.b("\n" + i);t.b("    </div>");t.b("\n");t.b("\n" + i);t.b("    <!-- <div class=\"caption buttons\">");t.b("\n" + i);t.b("        <a href=\"#\" class=\"btn btn-default read\" data-book=\"");t.b(t.v(t.d("epub.packageUrl",c,p,0)));t.b("\" role=\"button\">");t.b(t.v(t.d("strings.i18n_read",c,p,0)));t.b("</a>");t.b("\n" + i);t.b("        <a href=\"#details-modal\" data-book=\"");t.b(t.v(t.d("epub.packageUrl",c,p,0)));t.b("\" aria-pressed=\"true\" class=\"btn btn-default details\" data-toggle=\"modal\" role=\"button\">");t.b(t.v(t.d("strings.i18n_details",c,p,0)));t.b("</a>");t.b("\n" + i);t.b("    </div> -->");t.b("\n" + i);t.b("    <div class='caption book-info'>");t.b("\n" + i);t.b("        <h4 class='title' title=\"");t.b(t.v(t.d("epub.title",c,p,0)));t.b("\">");t.b(t.v(t.d("epub.title",c,p,0)));t.b("</h4>");t.b("\n" + i);t.b("        <div class='author' title=\"");t.b(t.v(t.d("epub.author",c,p,0)));t.b("\">");t.b(t.v(t.d("epub.author",c,p,0)));if(!t.s(t.d("epub.author",c,p,1),c,p,1,0,0,"")){t.b("No Author Listed");};t.b("</div>");t.b("\n");t.b("\n" + i);if(!t.s(t.d("epub.isSubLibraryLink",c,p,1),c,p,1,0,0,"")){t.b("            ");t.b("\n" + i);if(!t.s(t.d("epub.isExternalLink",c,p,1),c,p,1,0,0,"")){t.b("\n" + i);if(t.s(t.d("epub.packagePath",c,p,1),c,p,0,2247,2539,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("                    ");t.b("\n" + i);t.b("                    <div class=\"buttons\">");t.b("\n" + i);t.b("            ");t.b("\n" + i);t.b("                        <button disabled ");if(!t.s(t.d("epub.coverHref",c,p,1),c,p,1,0,0,"")){t.b(" data-no-cover=\"");t.b(t.v(t.f("noCoverBackground",c,p,0)));t.b("\" ");};t.b(" class=\"btn\">Available</button>");t.b("\n" + i);t.b("                    ");t.b("\n" + i);t.b("                    </div>");t.b("\n");t.b("\n" + i);});c.pop();}t.b("\n" + i);if(!t.s(t.d("epub.packagePath",c,p,1),c,p,1,0,0,"")){t.b("\n" + i);t.b("                    <div class=\"button\">");t.b("\n" + i);t.b("                        <button aria-label=\"");t.b(t.v(t.d("strings.i1n_download_book",c,p,0)));t.b(" (");t.b(t.v(t.d("count.n",c,p,0)));t.b(") ");t.b(t.v(t.d("epub.title",c,p,0)));t.b("\" title=\"");t.b(t.v(t.d("strings.i18n_download_book",c,p,0)));t.b(" (");t.b(t.v(t.d("count.n",c,p,0)));t.b(") ");t.b(t.v(t.d("epub.title",c,p,0)));t.b("\" tabindex=\"0\" data-root=\"");t.b(t.v(t.d("epub.rootUrl",c,p,0)));t.b("\" data-title=\"");t.b(t.v(t.d("epub.title",c,p,0)));t.b("\" class=\"btn download-book-button\">");t.b(t.v(t.d("strings.i18n_download_book",c,p,0)));t.b("</button>");t.b("\n" + i);t.b("                    </div>");t.b("\n");t.b("\n" + i);};t.b("\n" + i);t.b("                <div class=\"buttons\">");t.b("\n" + i);t.b("        ");t.b("\n" + i);t.b("                    <button data-id=\"");t.b(t.v(t.d("epub.id",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_delete_book",c,p,0)));t.b(" (");t.b(t.v(t.d("count.n",c,p,0)));t.b(") ");t.b(t.v(t.d("epub.title",c,p,0)));t.b("\" title=\"");t.b(t.v(t.d("strings.i18n_delete_book",c,p,0)));t.b(" (");t.b(t.v(t.d("count.n",c,p,0)));t.b(") ");t.b(t.v(t.d("epub.title",c,p,0)));t.b("\" tabindex=\"");t.b(t.v(t.d("count.tabindex",c,p,0)));t.b("\" data-package=\"");t.b(t.v(t.d("epub.rootUrl",c,p,0)));t.b("/");t.b(t.v(t.d("epub.packagePath",c,p,0)));t.b("\" data-root=\"");t.b(t.v(t.d("epub.rootUrl",c,p,0)));t.b("\" data-root-dir=\"");t.b(t.v(t.d("epub.rootDir",c,p,0)));t.b("\" ");if(!t.s(t.d("epub.coverHref",c,p,1),c,p,1,0,0,"")){t.b(" data-no-cover=\"");t.b(t.v(t.f("noCoverBackground",c,p,0)));t.b("\" ");};t.b(" class=\"btn delete-book-button\">");t.b(t.v(t.d("strings.i18n_delete_book",c,p,0)));t.b("</button>");t.b("\n" + i);t.b("                    ");t.b("\n" + i);t.b("                </div>");t.b("\n" + i);t.b("    ");t.b("\n" + i);t.b("                ");t.b("\n" + i);};t.b("        ");t.b("\n" + i);};t.b("    </div>");t.b("\n" + i);t.b("</div>");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/add-epub-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"add-epub-dialog\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"add-epub-label\">\r");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">\r");t.b("\n" + i);t.b("        <div class=\"modal-content\">\r");t.b("\n" + i);t.b("            <div class=\"modal-header\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <button id=\"closeAddEpubCross\" type=\"button\" class=\"close\" data-dismiss=\"modal\" tabindex=\"999\" title=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_add_book",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_add_book",c,p,0)));t.b("\"><span aria-hidden=\"true\">&times;</span></button>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"add-epub-label\">");t.b(t.v(t.d("strings.i18n_add_book",c,p,0)));t.b("</h2>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("            <div class=\"modal-body\">\r");t.b("\n" + i);t.b("                <form class=\"form-horizontal\" role=\"form\">\r");t.b("\n" + i);t.b("                <!-- ");if(t.s(t.f("canHandleUrl",c,p,1),c,p,0,749,1176,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("\r");t.b("\n" + i);t.b("                <div class=\"form-group\">\r");t.b("\n" + i);t.b("                    <label id=\"add1\" class=\"control-label col-sm-5\">");t.b(t.v(t.d("strings.i18n_from_the_web",c,p,0)));t.b("</label>\r");t.b("\n" + i);t.b("                    <div class=\"col-sm-7\">\r");t.b("\n" + i);t.b("                        <input tabindex=\"1000\" type=\"text\" id=\"url-upload\" class=\"form-control\" placeholder=\"");t.b(t.v(t.d("strings.i18n_enter_a_url",c,p,0)));t.b("\" aria-labelledby=\"add1\">\r");t.b("\n" + i);t.b("                    </div>\r");t.b("\n" + i);t.b("                </div>\r");t.b("\n" + i);t.b("                ");});c.pop();}t.b(" -->\r");t.b("\n" + i);t.b("                <div id=\"epub-upload-div\" class=\"form-group\">\r");t.b("\n" + i);t.b("                    <label id=\"add2\" class=\"control-label col-sm-5\">");t.b(t.v(t.d("strings.i18n_from_local_file",c,p,0)));t.b("</label>\r");t.b("\n" + i);t.b("                    <div class=\"col-sm-7\">\r");t.b("\n" + i);t.b("                        <input tabindex=\"1000\" accept=\".epub\" type=\"file\" id=\"epub-upload\" class=\"form-control\" aria-labelledby=\"add2\">\r");t.b("\n" + i);t.b("                    </div>\r");t.b("\n" + i);t.b("                </div>\r");t.b("\n" + i);t.b("                <!-- ");if(t.s(t.f("canHandleDirectory",c,p,1),c,p,0,1649,2087,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("\r");t.b("\n" + i);t.b("                <div class=\"form-group\">\r");t.b("\n" + i);t.b("                    <label id=\"add3\" class=\"control-label col-sm-5\">");t.b(t.v(t.d("strings.i18n_unpacked_directory",c,p,0)));t.b("</label>\r");t.b("\n" + i);t.b("                    <div class=\"col-sm-7\">\r");t.b("\n" + i);t.b("                        <input tabindex=\"1000\" type=\"file\" id=\"dir-upload\" webkitdirectory=\"\" mozdirectory=\"\" directory=\"\" class=\"form-control\" aria-labelledby=\"add3\">\r");t.b("\n" + i);t.b("                    </div>\r");t.b("\n" + i);t.b("                </div>\r");t.b("\n" + i);t.b("                ");});c.pop();}t.b(" -->\r");t.b("\n" + i);t.b("                </form>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("            <div class=\"modal-footer\">\r");t.b("\n" + i);t.b("                <button tabindex=\"1000\" type=\"button\" class=\"btn btn-default add-book\" data-dismiss=\"modal\" style=\"display:none;\">");t.b(t.v(t.d("strings.i18n_add_book",c,p,0)));t.b("</button>\r");t.b("\n" + i);t.b("                \r");t.b("\n" + i);t.b("                <button tabindex=\"1000\" type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\">");t.b(t.v(t.d("strings.i18n_cancel",c,p,0)));t.b("</button>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("        </div>\r");t.b("\n" + i);t.b("        <!-- /.modal-content --> \r");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/add-epub-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"add-epub-dialog\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"add-epub-label\">");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">");t.b("\n" + i);t.b("        <div class=\"modal-content\">");t.b("\n" + i);t.b("            <div class=\"modal-header\">");t.b("\n");t.b("\n" + i);t.b("                <button id=\"closeAddEpubCross\" type=\"button\" class=\"close\" data-dismiss=\"modal\" tabindex=\"999\" title=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_add_book",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_add_book",c,p,0)));t.b("\"><span aria-hidden=\"true\">&times;</span></button>");t.b("\n");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"add-epub-label\">");t.b(t.v(t.d("strings.i18n_add_book",c,p,0)));t.b("</h2>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("            <div class=\"modal-body\">");t.b("\n" + i);t.b("                <form class=\"form-horizontal\" role=\"form\">");t.b("\n" + i);t.b("                <!-- ");if(t.s(t.f("canHandleUrl",c,p,1),c,p,0,738,1158,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("\n" + i);t.b("                <div class=\"form-group\">");t.b("\n" + i);t.b("                    <label id=\"add1\" class=\"control-label col-sm-5\">");t.b(t.v(t.d("strings.i18n_from_the_web",c,p,0)));t.b("</label>");t.b("\n" + i);t.b("                    <div class=\"col-sm-7\">");t.b("\n" + i);t.b("                        <input tabindex=\"1000\" type=\"text\" id=\"url-upload\" class=\"form-control\" placeholder=\"");t.b(t.v(t.d("strings.i18n_enter_a_url",c,p,0)));t.b("\" aria-labelledby=\"add1\">");t.b("\n" + i);t.b("                    </div>");t.b("\n" + i);t.b("                </div>");t.b("\n" + i);t.b("                ");});c.pop();}t.b(" -->");t.b("\n" + i);t.b("                <div id=\"epub-upload-div\" class=\"form-group\">");t.b("\n" + i);t.b("                    <label id=\"add2\" class=\"control-label col-sm-5\">");t.b(t.v(t.d("strings.i18n_from_local_file",c,p,0)));t.b("</label>");t.b("\n" + i);t.b("                    <div class=\"col-sm-7\">");t.b("\n" + i);t.b("                        <input tabindex=\"1000\" accept=\".epub\" type=\"file\" id=\"epub-upload\" class=\"form-control\" aria-labelledby=\"add2\">");t.b("\n" + i);t.b("                    </div>");t.b("\n" + i);t.b("                </div>");t.b("\n" + i);t.b("                <!-- ");if(t.s(t.f("canHandleDirectory",c,p,1),c,p,0,1624,2055,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("\n" + i);t.b("                <div class=\"form-group\">");t.b("\n" + i);t.b("                    <label id=\"add3\" class=\"control-label col-sm-5\">");t.b(t.v(t.d("strings.i18n_unpacked_directory",c,p,0)));t.b("</label>");t.b("\n" + i);t.b("                    <div class=\"col-sm-7\">");t.b("\n" + i);t.b("                        <input tabindex=\"1000\" type=\"file\" id=\"dir-upload\" webkitdirectory=\"\" mozdirectory=\"\" directory=\"\" class=\"form-control\" aria-labelledby=\"add3\">");t.b("\n" + i);t.b("                    </div>");t.b("\n" + i);t.b("                </div>");t.b("\n" + i);t.b("                ");});c.pop();}t.b(" -->");t.b("\n" + i);t.b("                </form>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("            <div class=\"modal-footer\">");t.b("\n" + i);t.b("                <button tabindex=\"1000\" type=\"button\" class=\"btn btn-default add-book\" data-dismiss=\"modal\" style=\"display:none;\">");t.b(t.v(t.d("strings.i18n_add_book",c,p,0)));t.b("</button>");t.b("\n" + i);t.b("                ");t.b("\n" + i);t.b("                <button tabindex=\"1000\" type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\">");t.b(t.v(t.d("strings.i18n_cancel",c,p,0)));t.b("</button>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <!-- /.modal-content --> ");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->");t.b("\n" + i);t.b("</div>");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/download-books-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"download-books-dialog\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"download-books-label\">\r");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">\r");t.b("\n" + i);t.b("        <div class=\"modal-content\">\r");t.b("\n" + i);t.b("            <div class=\"modal-header\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <button id=\"closeDownloadBooksCross\" type=\"button\" class=\"close\" data-dismiss=\"modal\" tabindex=\"0\" title=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_download_books",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_download_books",c,p,0)));t.b("\"><span aria-hidden=\"true\">&times;</span></button>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"download-books-label\">");t.b(t.v(t.d("strings.i18n_download_books",c,p,0)));t.b("</h2>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("            <div class=\"modal-body\">\r");t.b("\n" + i);t.b("                <p>In order to use the eReader without an internet connection, the eBooks in your bookshelf need to be downloaded. This process can take a few minutes.</p>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("            <div class=\"modal-footer\">\r");t.b("\n" + i);t.b("                <button id=\"download-books-submit\" tabindex=\"0\" type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\">Download</button>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <button tabindex=\"1000\" type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\">");t.b(t.v(t.d("strings.i18n_cancel",c,p,0)));t.b("</button>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("        </div>\r");t.b("\n" + i);t.b("        <!-- /.modal-content --> \r");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/download-books-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"download-books-dialog\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"download-books-label\">");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">");t.b("\n" + i);t.b("        <div class=\"modal-content\">");t.b("\n" + i);t.b("            <div class=\"modal-header\">");t.b("\n");t.b("\n" + i);t.b("                <button id=\"closeDownloadBooksCross\" type=\"button\" class=\"close\" data-dismiss=\"modal\" tabindex=\"0\" title=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_download_books",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_download_books",c,p,0)));t.b("\"><span aria-hidden=\"true\">&times;</span></button>");t.b("\n");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"download-books-label\">");t.b(t.v(t.d("strings.i18n_download_books",c,p,0)));t.b("</h2>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("            <div class=\"modal-body\">");t.b("\n" + i);t.b("                <p>In order to use the eReader without an internet connection, the eBooks in your bookshelf need to be downloaded. This process can take a few minutes.</p>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("            <div class=\"modal-footer\">");t.b("\n" + i);t.b("                <button id=\"download-books-submit\" tabindex=\"0\" type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\">Download</button>");t.b("\n");t.b("\n" + i);t.b("                <button tabindex=\"1000\" type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\">");t.b(t.v(t.d("strings.i18n_cancel",c,p,0)));t.b("</button>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <!-- /.modal-content --> ");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->");t.b("\n" + i);t.b("</div>");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/install-reader-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"install-reader-dialog\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"install-reader-label\">\r");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">\r");t.b("\n" + i);t.b("        <div class=\"modal-content\">\r");t.b("\n" + i);t.b("            <div class=\"modal-header\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <button id=\"closeInstallReadercross\" type=\"button\" class=\"close\" data-dismiss=\"modal\" tabindex=\"0\" title=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_install_reader",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_install_reader",c,p,0)));t.b("\"><span aria-hidden=\"true\">&times;</span></button>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"install-reader-label\">Download finished</h2>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("            <div class=\"modal-body\">\r");t.b("\n" + i);t.b("                <p><span id=\"downloaded-book-title\">MCDP 7 Interactive E-Book</span> has been added to your web bookshelf.</p>\r");t.b("\n" + i);if(!t.s(t.f("hideInstallInstructions",c,p,1),c,p,1,0,0,"")){t.b("                <p>To add this to your desktop for extended offline use, see <a target=\"_blank\" href=\"install-reader.html?install=");t.b(t.v(t.f("param",c,p,0)));t.b("\">these instructions</a>.</p>\r");t.b("\n" + i);};t.b("            </div>\r");t.b("\n" + i);t.b("        </div>\r");t.b("\n" + i);t.b("        <!-- /.modal-content --> \r");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/install-reader-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"install-reader-dialog\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"install-reader-label\">");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">");t.b("\n" + i);t.b("        <div class=\"modal-content\">");t.b("\n" + i);t.b("            <div class=\"modal-header\">");t.b("\n");t.b("\n" + i);t.b("                <button id=\"closeInstallReadercross\" type=\"button\" class=\"close\" data-dismiss=\"modal\" tabindex=\"0\" title=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_install_reader",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_install_reader",c,p,0)));t.b("\"><span aria-hidden=\"true\">&times;</span></button>");t.b("\n");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"install-reader-label\">Download finished</h2>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("            <div class=\"modal-body\">");t.b("\n" + i);t.b("                <p><span id=\"downloaded-book-title\">MCDP 7 Interactive E-Book</span> has been added to your web bookshelf.</p>");t.b("\n" + i);if(!t.s(t.f("hideInstallInstructions",c,p,1),c,p,1,0,0,"")){t.b("                <p>To add this to your desktop for extended offline use, see <a target=\"_blank\" href=\"install-reader.html?install=");t.b(t.v(t.f("param",c,p,0)));t.b("\">these instructions</a>.</p>");t.b("\n" + i);};t.b("            </div>");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <!-- /.modal-content --> ");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->");t.b("\n" + i);t.b("</div>");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/install-ios-reader-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"install-ios-reader-dialog\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"install-reader-label\">\r");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">\r");t.b("\n" + i);t.b("        <div class=\"modal-content\">\r");t.b("\n" + i);t.b("            <div class=\"modal-header\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <button id=\"closeInstallIosReadercross\" type=\"button\" class=\"close\" data-dismiss=\"modal\" tabindex=\"0\" title=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_install_ios_reader",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_install_ios_reader",c,p,0)));t.b("\"><span aria-hidden=\"true\">&times;</span></button>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"install-ios-reader-label\">");t.b(t.v(t.d("strings.i18n_install_ios_reader",c,p,0)));t.b("</h2>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("            <div class=\"modal-body\">\r");t.b("\n" + i);t.b("                <p>First, tap the share button at the top of the browser window.</p>\r");t.b("\n" + i);t.b("                <img src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/ios-share-icon.png\" alt=\"");t.b(t.t(t.d("strings.i18n_alt_ios-share-icon",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("                <p>Then, tap the add to home screen button.</p>\r");t.b("\n" + i);t.b("                <img src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/ios-add-home-screen-icon.png\" alt=\"");t.b(t.t(t.d("strings.i18n_alt_ios-add-home-screen-icon",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("            <div class=\"modal-footer\">\r");t.b("\n" + i);t.b("                <button id=\"install-ios-reader-submit\" tabindex=\"0\" type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\">OK</button>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("        </div>\r");t.b("\n" + i);t.b("        <!-- /.modal-content --> \r");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/install-ios-reader-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"install-ios-reader-dialog\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"install-reader-label\">");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">");t.b("\n" + i);t.b("        <div class=\"modal-content\">");t.b("\n" + i);t.b("            <div class=\"modal-header\">");t.b("\n");t.b("\n" + i);t.b("                <button id=\"closeInstallIosReadercross\" type=\"button\" class=\"close\" data-dismiss=\"modal\" tabindex=\"0\" title=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_install_ios_reader",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_install_ios_reader",c,p,0)));t.b("\"><span aria-hidden=\"true\">&times;</span></button>");t.b("\n");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"install-ios-reader-label\">");t.b(t.v(t.d("strings.i18n_install_ios_reader",c,p,0)));t.b("</h2>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("            <div class=\"modal-body\">");t.b("\n" + i);t.b("                <p>First, tap the share button at the top of the browser window.</p>");t.b("\n" + i);t.b("                <img src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/ios-share-icon.png\" alt=\"");t.b(t.t(t.d("strings.i18n_alt_ios-share-icon",c,p,0)));t.b("\">");t.b("\n" + i);t.b("                <p>Then, tap the add to home screen button.</p>");t.b("\n" + i);t.b("                <img src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/ios-add-home-screen-icon.png\" alt=\"");t.b(t.t(t.d("strings.i18n_alt_ios-add-home-screen-icon",c,p,0)));t.b("\">");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("            <div class=\"modal-footer\">");t.b("\n" + i);t.b("                <button id=\"install-ios-reader-submit\" tabindex=\"0\" type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\">OK</button>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <!-- /.modal-content --> ");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->");t.b("\n" + i);t.b("</div>");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/spinner-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"install-spinner-dialog\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"install-spinner-label\">\r");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">\r");t.b("\n" + i);t.b("        <div class=\"modal-content\">\r");t.b("\n" + i);t.b("            <div class=\"modal-header\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <button id=\"closeInstallSpinnercross\" type=\"button\" class=\"close\" data-dismiss=\"modal\" tabindex=\"0\" title=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_install_spinner",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_install_spinner",c,p,0)));t.b("\"><span aria-hidden=\"true\">&times;</span></button>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"install-spinner-label\">Downloading your Library. Please do not close this window until the process is complete.</h2>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("            <div id=\"install-spinner-body\" class=\"modal-body\">\r");t.b("\n" + i);t.b("                \r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("        </div>\r");t.b("\n" + i);t.b("        <!-- /.modal-content --> \r");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/spinner-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"install-spinner-dialog\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"install-spinner-label\">");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">");t.b("\n" + i);t.b("        <div class=\"modal-content\">");t.b("\n" + i);t.b("            <div class=\"modal-header\">");t.b("\n");t.b("\n" + i);t.b("                <button id=\"closeInstallSpinnercross\" type=\"button\" class=\"close\" data-dismiss=\"modal\" tabindex=\"0\" title=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_install_spinner",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_install_spinner",c,p,0)));t.b("\"><span aria-hidden=\"true\">&times;</span></button>");t.b("\n");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"install-spinner-label\">Downloading your Library. Please do not close this window until the process is complete.</h2>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("            <div id=\"install-spinner-body\" class=\"modal-body\">");t.b("\n" + i);t.b("                ");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <!-- /.modal-content --> ");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->");t.b("\n" + i);t.b("</div>");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/analytics-spinner-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"analytics-spinner-dialog\" tabindex=\"-1\" role=\"dialog\">\r");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">\r");t.b("\n" + i);t.b("        <div class=\"modal-content\">\r");t.b("\n" + i);t.b("            <div class=\"modal-header\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"analytics-spinner-label\">Loading Analytics</h2>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("            <div id=\"analytics-spinner-body\" class=\"modal-body\">\r");t.b("\n" + i);t.b("                \r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("        </div>\r");t.b("\n" + i);t.b("        <!-- /.modal-content --> \r");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/analytics-spinner-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"analytics-spinner-dialog\" tabindex=\"-1\" role=\"dialog\">");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">");t.b("\n" + i);t.b("        <div class=\"modal-content\">");t.b("\n" + i);t.b("            <div class=\"modal-header\">");t.b("\n");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"analytics-spinner-label\">Loading Analytics</h2>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("            <div id=\"analytics-spinner-body\" class=\"modal-body\">");t.b("\n" + i);t.b("                ");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <!-- /.modal-content --> ");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->");t.b("\n" + i);t.b("</div>");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/upload-epub-spinner-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"upload-epub-spinner-dialog\" tabindex=\"-1\" role=\"dialog\">\r");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">\r");t.b("\n" + i);t.b("        <div class=\"modal-content\">\r");t.b("\n" + i);t.b("            <div class=\"modal-header\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <h4 class=\"modal-title\" id=\"analytics-spinner-label\">Uploading EPUB</h4>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("            <div id=\"upload-epub-spinner-body\" class=\"modal-body\">\r");t.b("\n" + i);t.b("                \r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("        </div>\r");t.b("\n" + i);t.b("        <!-- /.modal-content --> \r");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/upload-epub-spinner-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"upload-epub-spinner-dialog\" tabindex=\"-1\" role=\"dialog\">");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">");t.b("\n" + i);t.b("        <div class=\"modal-content\">");t.b("\n" + i);t.b("            <div class=\"modal-header\">");t.b("\n");t.b("\n" + i);t.b("                <h4 class=\"modal-title\" id=\"analytics-spinner-label\">Uploading EPUB</h4>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("            <div id=\"upload-epub-spinner-body\" class=\"modal-body\">");t.b("\n" + i);t.b("                ");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <!-- /.modal-content --> ");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->");t.b("\n" + i);t.b("</div>");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 /**
  * Copyright (c) 2011-2014 Felix Gnass
@@ -61776,10 +60884,10 @@ define('readium_js_viewer/Spinner',['spin'], function(Spinner){
     return new Spinner(opts);
 });
 
-define("hgn!readium_js_viewer_html_templates/settings-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div tabindex=\"-1\" class=\"modal fade\" id=\"settings-dialog\" role=\"dialog\" aria-labelledby=\"settings-label\">\r");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">\r");t.b("\n" + i);t.b("        <div class=\"modal-content\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("           <div class=\"modal-header\">\r");t.b("\n" + i);t.b("             <h2 class=\"modal-title\" id=\"settings-label\">");t.b(t.v(t.d("strings.settings",c,p,0)));t.b("</h2>\r");t.b("\n" + i);t.b("             <button type=\"button\" class=\"close\" id=\"closeSettingsCross\" data-dismiss=\"modal\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.settings",c,p,0)));t.b("\" tabindex=\"0\"><span aria-hidden=\"true\">&times;</span></button>\r");t.b("\n" + i);t.b("           </div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("           <div class=\"modal-body\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("             <ul class=\"nav nav-tabs\" role=\"tablist\" aria-owns=\"tab-butt-style tab-butt-layout tab-butt-keys\">\r");t.b("\n" + i);t.b("                <li role=\"presentation\" class=\"active\">\r");t.b("\n" + i);t.b("                    <button id=\"tab-butt-style\" aria-label=\"");t.b(t.v(t.d("strings.style",c,p,0)));t.b("\" role='tab' aria-controls=\"tab-style\" data-toggle=\"tab\" data-target=\"#tab-style\" tabindex=\"0\">");t.b(t.v(t.d("strings.style",c,p,0)));t.b("</button>\r");t.b("\n" + i);t.b("                </li>\r");t.b("\n" + i);t.b("                <li role=\"presentation\">\r");t.b("\n" + i);t.b("                    <button id=\"tab-butt-layout\" aria-label=\"");t.b(t.v(t.d("strings.layout",c,p,0)));t.b("\" role='tab' aria-controls=\"tab-layout\" data-toggle=\"tab\" data-target=\"#tab-layout\" tabindex=\"0\">");t.b(t.v(t.d("strings.layout",c,p,0)));t.b("</button>\r");t.b("\n" + i);t.b("                </li>\r");t.b("\n" + i);t.b("                <!-- <li role=\"presentation\"><button id=\"tab-butt-keys\"  title=\"");t.b(t.v(t.d("strings.i18n_keyboard_shortcuts",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_keyboard_shortcuts",c,p,0)));t.b("\" role='tab' aria-controls=\"tab-keyboard\" data-toggle=\"tab\" data-target=\"#tab-keyboard\" tabindex=\"-1\">");t.b(t.v(t.d("strings.i18n_keyboard_shortcuts",c,p,0)));t.b("</button></li> -->\r");t.b("\n" + i);t.b("                <li role=\"presentation\">\r");t.b("\n" + i);t.b("                    <button id=\"tab-butt-about\" aria-label=\"");t.b(t.v(t.d("strings.about",c,p,0)));t.b("\" role='tab' aria-controls=\"tab-about\" data-toggle=\"tab\" data-target=\"#tab-about\" tabindex=\"0\">");t.b(t.v(t.d("strings.about",c,p,0)));t.b("</button>\r");t.b("\n" + i);t.b("                </li>\r");t.b("\n" + i);t.b("             </ul>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("             <div class=\"tab-content\">\r");t.b("\n" + i);t.b("                <div id=\"tab-style\" class=\"tab-pane active\" role=\"tabpanel\" aria-expanded=\"true\">\r");t.b("\n" + i);t.b("                    <fieldset>\r");t.b("\n" + i);t.b("                        <legend>");t.b(t.v(t.d("strings.preview",c,p,0)));t.b("</legend>\r");t.b("\n" + i);t.b("                        <div  aria-hidden=\"true\" class=\"row\">\r");t.b("\n" + i);t.b("                            <div data-theme=\"author-theme\" class=\"col-xs-10 col-xs-offset-1 preview-text author-theme\">\r");t.b("\n" + i);t.b("                                This is the preview of the font size that will appear in your books. Please use the slider below to adjust the font size.\r");t.b("\n" + i);t.b("                            </div>\r");t.b("\n" + i);t.b("                        </div>\r");t.b("\n" + i);t.b("                    </fieldset>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                    <fieldset>\r");t.b("\n" + i);t.b("                        <legend>");t.b(t.v(t.d("strings.i18n_font_size",c,p,0)));t.b("</legend>\r");t.b("\n" + i);t.b("                        <div class=\"row\">\r");t.b("\n" + i);t.b("                            <div class=\"col-xs-2 icon-scale-down\">\r");t.b("\n" + i);t.b("                                <img src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/glyphicons_115_text_smaller.png\" alt=\"\" aria-hidden=\"true\">\r");t.b("\n" + i);t.b("                            </div>\r");t.b("\n" + i);t.b("                            <div style=\"display: flex;justify-content: center;align-items: center;margin-bottom: 1em;\" class=\"col-xs-8\">\r");t.b("\n" + i);t.b("                                <input style=\"width: 50%;transform: scale(2);\"  type=\"range\" id=\"font-size-input\" min=\"60\" aria-value-min=\"60\" aria-valuemin=\"60\" step=\"10\" max=\"170\" aria-value-max=\"170\" aria-valuemax=\"170\" value=\"100\" aria-valuenow=\"100\" aria-value-now=\"100\" aria-valuetext=\"1em\" aria-value-text=\"1em\" title=\"");t.b(t.v(t.d("strings.i18n_font_size",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_font_size",c,p,0)));t.b("\" />\r");t.b("\n" + i);t.b("                            </div>\r");t.b("\n" + i);t.b("                            <div class=\"col-xs-2\">\r");t.b("\n" + i);t.b("                                <img src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/glyphicons_116_text_bigger.png\" alt=\"\" aria-hidden=\"true\">\r");t.b("\n" + i);t.b("                            </div>\r");t.b("\n" + i);t.b("                        </div>\r");t.b("\n" + i);t.b("                    </fieldset>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                    <h3 style=\"display: none;\" id=\"setting-header-font-selection\" class=\"setting-header\">");t.b(t.v(t.d("strings.i18n_font_selection",c,p,0)));t.b("</h3>\r");t.b("\n" + i);t.b("                    <div style=\"display: none;\" class=\"row\">\r");t.b("\n" + i);t.b("                        <div class=\"col-xs-8 col-xs-offset-2\">\r");t.b("\n" + i);t.b("                            <select style=\"width: 100%; padding: 0.5em;\" aria-labelledby=\"setting-header-font-selection\" id=\"font-selection-input\"  title=\"");t.b(t.v(t.d("strings.i18n_font_selection",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_font_selection",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("                                <option value=\"0\" aria-label=\"");t.b(t.v(t.d("strings.i18n_fonttype_default",c,p,0)));t.b("\" title=\"");t.b(t.v(t.d("strings.i18n_fonttype_default",c,p,0)));t.b("\">");t.b(t.v(t.d("strings.i18n_fonttype_default",c,p,0)));t.b("</option>\r");t.b("\n" + i);t.b("							</select>\r");t.b("\n" + i);t.b("                        </div>\r");t.b("\n" + i);t.b("                    </div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                    <h3 style=\"display: none;\" id=\"setting-header-color-legend\" class=\"setting-header\">");t.b(t.v(t.d("strings.i18n_text_and_background_color",c,p,0)));t.b("</h3>\r");t.b("\n" + i);t.b("                    <div style=\"display: none;\" role=\"group\" aria-labelledby=\"setting-header-color-legend\" id=\"theme-radio-group\" class=\"row\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                        <button role=\"button\" data-theme=\"author-theme\"  title=\"");t.b(t.v(t.d("strings.i18n_author_theme",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_author_theme",c,p,0)));t.b("\" class=\"col-xs-8 col-xs-offset-2 theme-option author-theme clickable\">");t.b(t.v(t.d("strings.i18n_author_theme",c,p,0)));t.b("</button>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                        <!-- <button role=\"button\" data-theme=\"default-theme\"  title=\"");t.b(t.v(t.d("strings.i18n_black_and_white",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_black_and_white",c,p,0)));t.b("\" class=\"col-xs-8 col-xs-offset-2 theme-option default-theme clickable\">");t.b(t.v(t.d("strings.i18n_black_and_white",c,p,0)));t.b("</button>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                        <button role=\"button\" data-theme=\"night-theme\"  title=\"");t.b(t.v(t.d("strings.i18n_arabian_nights",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.NightTheme",c,p,0)));t.b("]\" aria-label=\"");t.b(t.v(t.d("strings.i18n_arabian_nights",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.NightTheme",c,p,0)));t.b("]\" class=\"col-xs-8 col-xs-offset-2 theme-option night-theme clickable\" >");t.b(t.v(t.d("strings.i18n_arabian_nights",c,p,0)));t.b("</button>  --><!-- accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.NightTheme",c,p,0)));t.b("\" -->\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                        <!-- <button role=\"button\" data-theme=\"parchment-theme\"  title=\"");t.b(t.v(t.d("strings.i18n_sands_of_dune",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_sands_of_dune",c,p,0)));t.b("\" class=\"col-xs-8 col-xs-offset-2 theme-option parchment-theme clickable\">");t.b(t.v(t.d("strings.i18n_sands_of_dune",c,p,0)));t.b("</button>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                        <button role=\"button\" data-theme=\"ballard-theme\"  title=\"");t.b(t.v(t.d("strings.i18n_ballard_blues",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_ballard_blues",c,p,0)));t.b("\" class=\"col-xs-8 col-xs-offset-2 theme-option ballard-theme clickable\">");t.b(t.v(t.d("strings.i18n_ballard_blues",c,p,0)));t.b("</button>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                        <button role=\"button\" data-theme=\"vancouver-theme\"  title=\"");t.b(t.v(t.d("strings.i18n_vancouver_mist",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_vancouver_mist",c,p,0)));t.b("\" class=\"col-xs-8 col-xs-offset-2 theme-option vancouver-theme clickable\">");t.b(t.v(t.d("strings.i18n_vancouver_mist",c,p,0)));t.b("</button> -->\r");t.b("\n" + i);t.b("                    </div>\r");t.b("\n" + i);t.b("                </div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <div id=\"tab-layout\" class=\"tab-pane\" role=\"tabpanel\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                    <!-- disabled: replaced with setting-header-column-max-width-legend (see below) -->\r");t.b("\n" + i);t.b("                    <h3 style=\"display:none;\" id=\"setting-header-margins-legend\" class=\"setting-header\">");t.b(t.v(t.d("strings.i18n_margins",c,p,0)));t.b("</h3>\r");t.b("\n" + i);t.b("                    <div style=\"display:none;\" class=\"row\">\r");t.b("\n" + i);t.b("                        <div class=\"col-xs-2 icon-scale-down\">\r");t.b("\n" + i);t.b("                            <img style=\"height: 32px;\" src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/margin1_off.png\" alt=\"\" aria-hidden=\"true\">\r");t.b("\n" + i);t.b("                        </div>\r");t.b("\n" + i);t.b("                        <div class=\"col-xs-8\">\r");t.b("\n" + i);t.b("                            <input  type=\"range\" role=\"slider\" aria-labelledby=\"setting-header-margins-legend\" id=\"margin-size-input\" min=\"20\" aria-value-min=\"20\" aria-valuemin=\"20\" step=\"20\" max=\"100\" aria-value-max=\"100\" aria-valuemax=\"100\" value=\"20\" aria-valuenow=\"20\" aria-value-now=\"20\" aria-valuetext=\"20\" aria-value-text=\"20\" title=\"");t.b(t.v(t.d("strings.i18n_margins",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_margins",c,p,0)));t.b("\"/>\r");t.b("\n" + i);t.b("                        </div>\r");t.b("\n" + i);t.b("                        <div class=\"col-xs-2\">\r");t.b("\n" + i);t.b("                            <img style=\"height: 32px;\" src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/margin4_off.png\" alt=\"\" aria-hidden=\"true\">\r");t.b("\n" + i);t.b("                        </div>\r");t.b("\n" + i);t.b("                    </div>\r");t.b("\n" + i);t.b("                    \r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                    <!--<h2 id=\"setting-header-column-max-width-legend\" class=\"setting-header\">");t.b(t.v(t.d("strings.i18n_pageMaxWidth",c,p,0)));t.b("</h2>-->\r");t.b("\n" + i);t.b("                    <fieldset>\r");t.b("\n" + i);t.b("                        <legend>");t.b(t.v(t.d("strings.i18n_pageMaxWidth",c,p,0)));t.b("</legend>\r");t.b("\n" + i);t.b("                        <div class=\"row\">\r");t.b("\n" + i);t.b("                            <p style=\"margin-left: 15px;\">Only applies in Single Column View</p>\r");t.b("\n" + i);t.b("                        </div>\r");t.b("\n" + i);t.b("                        <div class=\"row\">\r");t.b("\n" + i);t.b("                            <div class=\"col-xs-2\">\r");t.b("\n" + i);t.b("                                <!-- <img style=\"height: 32px;\" src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/margin4_off.png\" alt=\"\" aria-hidden=\"true\"> -->\r");t.b("\n" + i);t.b("                            </div>\r");t.b("\n" + i);t.b("                            <div style=\"display: flex; justify-content: center;align-items: center;margin-bottom: 1em;\" class=\"col-xs-8\">\r");t.b("\n" + i);t.b("                                <input style=\"width: 50%;transform: scale(2);\"  type=\"range\" role=\"slider\" id=\"column-max-width-input\" min=\"500\" aria-value-min=\"500\" aria-valuemin=\"500\" step=\"50\" max=\"2000\" aria-value-max=\"2000\" aria-valuemax=\"2000\" value=\"700\" aria-valuenow=\"700\" aria-value-now=\"700\" aria-valuetext=\"700\" aria-value-text=\"700\" title=\"");t.b(t.v(t.d("strings.i18n_pageMaxWidth",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_pageMaxWidth",c,p,0)));t.b("\"/>\r");t.b("\n" + i);t.b("                            </div>\r");t.b("\n" + i);t.b("                            <div class=\"col-xs-2 icon-scale-down\">\r");t.b("\n" + i);t.b("                            <!--  <img style=\"height: 32px;\" src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/margin1_off.png\" alt=\"\" aria-hidden=\"true\"> -->\r");t.b("\n" + i);t.b("                            </div>\r");t.b("\n" + i);t.b("                        </div>\r");t.b("\n" + i);t.b("                    </fieldset>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                    <!-- <h2 id=\"setting-header-display-legend\" class=\"setting-header\">");t.b(t.v(t.d("strings.i18n_display_format",c,p,0)));t.b("</h2>-->\r");t.b("\n" + i);t.b("                    <fieldset>\r");t.b("\n" + i);t.b("                        <legend>");t.b(t.v(t.d("strings.i18n_display_format",c,p,0)));t.b("</legend>\r");t.b("\n" + i);t.b("                        <div role=\"radiogroup\" class=\"row\" style=\"width:100%;text-align:center;\" >\r");t.b("\n" + i);t.b("                            <div role=\"radio\" id=\"spread-default-option\"\r");t.b("\n" + i);t.b("                            style=\"vertical-align:middle;width:30%;display:inline-block;position:relative;\">\r");t.b("\n" + i);t.b("                                <input name=\"display-format\" value=\"single\" type=\"radio\" id=\"spread-default-radio\" aria-labelledby=\"spread-defaul-label\" />\r");t.b("\n" + i);t.b("                                <label for=\"spread-default-radio\" class=\"underlinedLabel\" id=\"spread-defaul-label\">\r");t.b("\n" + i);t.b("                                    ");t.b(t.v(t.d("strings.i18n_spread_auto",c,p,0)));t.b("\r");t.b("\n" + i);t.b("                                </label>\r");t.b("\n" + i);t.b("                            </div>\r");t.b("\n" + i);t.b("                            <div role=\"radio\" id=\"one-up-option\"\r");t.b("\n" + i);t.b("                            style=\"vertical-align:middle;width:30%;display:inline-block;position:relative;\">\r");t.b("\n" + i);t.b("                                <input  name=\"display-format\" value=\"single\" type=\"radio\" id=\"single-page-radio\" aria-labelledby=\"single-page-label\"/>\r");t.b("\n" + i);t.b("                                <label for=\"single-page-radio\" class=\"underlinedLabel\" id=\"single-page-label\">\r");t.b("\n" + i);t.b("                                    <img src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/ico_singlepage_up.png\" alt=\"");t.b(t.v(t.d("strings.i18n_display_format",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_single_pages",c,p,0)));t.b("\"/>\r");t.b("\n" + i);t.b("                                </label>\r");t.b("\n" + i);t.b("                            </div>\r");t.b("\n" + i);t.b("                            <div role=\"radio\" id=\"two-up-option\"\r");t.b("\n" + i);t.b("                            style=\"vertical-align:middle;width:30%;display:inline-block;position:relative;\">\r");t.b("\n" + i);t.b("                                <input  name=\"display-format\" value=\"double\" type=\"radio\" id=\"double-page-radio\" aria-labelledby=\"double-page-label\" />\r");t.b("\n" + i);t.b("                                <label for=\"double-page-radio\" class=\"underlinedLabel\" id=\"double-page-label\">\r");t.b("\n" + i);t.b("                                    <img src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/ico_doublepage_up.png\" alt=\"");t.b(t.v(t.d("strings.i18n_display_format",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_double_pages",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("                                </label>\r");t.b("\n" + i);t.b("                            </div>\r");t.b("\n" + i);t.b("                        </div>\r");t.b("\n" + i);t.b("                    </fieldset>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                    <h3 style=\"display: none;\" id=\"setting-header-scroll-legend\" class=\"setting-header\">");t.b(t.v(t.d("strings.i18n_scroll_mode",c,p,0)));t.b("</h3>\r");t.b("\n" + i);t.b("                    <div style=\"display: none;\" role=\"radiogroup\" class=\"row\" style=\"width:100%;text-align:center;\" aria-labelledby=\"setting-header-scroll-legend\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                        <div role=\"radio\" id=\"scroll-default-option\" style=\"vertical-align:middle;width:30%;display:inline-block;position:relative;\">\r");t.b("\n" + i);t.b("                            <input style=\"\"  name=\"scrolling\" value=\"single\" type=\"radio\" id=\"scroll-default-radio\"/>\r");t.b("\n" + i);t.b("                            <label style=\"\" for=\"scroll-default-radio\" class=\"underlinedLabel\">\r");t.b("\n" + i);t.b("                                ");t.b(t.v(t.d("strings.i18n_scroll_mode_auto",c,p,0)));t.b("\r");t.b("\n" + i);t.b("                            </label>\r");t.b("\n" + i);t.b("                        </div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                        <!-- <div role=\"radio\" id=\"scroll-doc-option\" style=\"vertical-align:middle;width:30%;display:inline-block;position:relative;\">\r");t.b("\n" + i);t.b("                            <input style=\"\"  name=\"scrolling\" value=\"single\" type=\"radio\" id=\"scroll-doc-radio\"/>\r");t.b("\n" + i);t.b("                            <label style=\"\" for=\"scroll-doc-radio\" class=\"underlinedLabel\">\r");t.b("\n" + i);t.b("                                <span style=\"font-size:150%;color:#888888;\" class=\"glyphicon glyphicon-file\" aria-hidden=\"true\"></span> ");t.b(t.v(t.d("strings.i18n_scroll_mode_doc",c,p,0)));t.b("\r");t.b("\n" + i);t.b("                            </label>\r");t.b("\n" + i);t.b("                        </div> -->\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                        <!-- Disable continous scroll option -->\r");t.b("\n" + i);t.b("                        <!-- <div role=\"radio\" id=\"scroll-continuous-option\" style=\"vertical-align:middle;width:30%;display:inline-block;position:relative;\">\r");t.b("\n" + i);t.b("                            <input style=\"\"  name=\"scrolling\" value=\"single\" type=\"radio\" id=\"scroll-continuous-radio\"/>\r");t.b("\n" + i);t.b("                            <label style=\"\" for=\"scroll-continuous-radio\" class=\"underlinedLabel\">\r");t.b("\n" + i);t.b("                                <span style=\"font-size:150%;color:#888888;\" class=\"glyphicon glyphicon-road\" aria-hidden=\"true\"></span> ");t.b(t.v(t.d("strings.i18n_scroll_mode_continuous",c,p,0)));t.b("\r");t.b("\n" + i);t.b("                            </label>\r");t.b("\n" + i);t.b("                        </div> -->\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                    </div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                    <!-- Page transitions are seriously broken (see readium-shared-js one_page_view.js disablePageTransitions boolean), so we hide the UI config options -->\r");t.b("\n" + i);t.b("                    <h3 style=\"display:none;\" hiddenx=\"hidden\" id=\"setting-header-pageTransition-legend\" class=\"setting-header\">");t.b(t.v(t.d("strings.i18n_page_transition",c,p,0)));t.b("</h3>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                    <div style=\"display:none; width:100%;text-align:center;\" hiddenx=\"hidden\" role=\"radiogroup\" class=\"row\" aria-labelledby=\"setting-header-pageTransition-legend\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                        <div role=\"radio\" id=\"pageTransition-none-option\" style=\"vertical-align:middle;width:15%;display:inline-block;position:relative;\">\r");t.b("\n" + i);t.b("                            <input style=\"\"  name=\"pageTransition\" value=\"single\" type=\"radio\" id=\"pageTransition-none-radio\"/>\r");t.b("\n" + i);t.b("                            <label style=\"\" for=\"pageTransition-none-radio\" class=\"underlinedLabel\">\r");t.b("\n" + i);t.b("                                ");t.b(t.v(t.d("strings.i18n_page_transition_none",c,p,0)));t.b("\r");t.b("\n" + i);t.b("                            </label>\r");t.b("\n" + i);t.b("                        </div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                        <div role=\"radio\" id=\"pageTransition-1-option\" style=\"vertical-align:middle;width:15%;display:inline-block;position:relative;\">\r");t.b("\n" + i);t.b("                            <input style=\"\"  name=\"pageTransition\" value=\"single\" type=\"radio\" id=\"pageTransition-1-radio\"/>\r");t.b("\n" + i);t.b("                            <label style=\"\" for=\"pageTransition-1-radio\" class=\"underlinedLabel\">\r");t.b("\n" + i);t.b("                                ");t.b(t.v(t.d("strings.i18n_page_transition_fade",c,p,0)));t.b("\r");t.b("\n" + i);t.b("                            </label>\r");t.b("\n" + i);t.b("                        </div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                        <div role=\"radio\" id=\"pageTransition-2-option\" style=\"vertical-align:middle;width:15%;display:inline-block;position:relative;\">\r");t.b("\n" + i);t.b("                            <input style=\"\"  name=\"pageTransition\" value=\"single\" type=\"radio\" id=\"pageTransition-2-radio\"/>\r");t.b("\n" + i);t.b("                            <label style=\"\" for=\"pageTransition-2-radio\" class=\"underlinedLabel\">\r");t.b("\n" + i);t.b("                                ");t.b(t.v(t.d("strings.i18n_page_transition_slide",c,p,0)));t.b("\r");t.b("\n" + i);t.b("                            </label>\r");t.b("\n" + i);t.b("                        </div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                        <div role=\"radio\" id=\"pageTransition-3-option\" style=\"vertical-align:middle;width:15%;display:inline-block;position:relative;\">\r");t.b("\n" + i);t.b("                            <input style=\"\"  name=\"pageTransition\" value=\"single\" type=\"radio\" id=\"pageTransition-3-radio\"/>\r");t.b("\n" + i);t.b("                            <label style=\"\" for=\"pageTransition-3-radio\" class=\"underlinedLabel\">\r");t.b("\n" + i);t.b("                                ");t.b(t.v(t.d("strings.i18n_page_transition_swoosh",c,p,0)));t.b("\r");t.b("\n" + i);t.b("                            </label>\r");t.b("\n" + i);t.b("                        </div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                        <div role=\"radio\" id=\"pageTransition-4-option\" style=\"vertical-align:middle;width:15%;display:inline-block;position:relative;\">\r");t.b("\n" + i);t.b("                            <input style=\"\"  name=\"pageTransition\" value=\"single\" type=\"radio\" id=\"pageTransition-4-radio\"/>\r");t.b("\n" + i);t.b("                            <label style=\"\" for=\"pageTransition-4-radio\" class=\"underlinedLabel\">\r");t.b("\n" + i);t.b("                                ");t.b(t.v(t.d("strings.i18n_page_transition_butterfly",c,p,0)));t.b("\r");t.b("\n" + i);t.b("                            </label>\r");t.b("\n" + i);t.b("                        </div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                    </div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                    </div>\r");t.b("\n" + i);t.b("                    <!-- <div style=\"display: none;\" id=\"tab-keyboard\" class=\"tab-pane\" role=\"tabpanel\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                    <div style=\"display: none;\" class=\"row\" style=\"position:relative;\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                        <div id=\"invalid_keyboard_shortcut_ALERT\"></div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                        <ul id=\"keyboard-list\">\r");t.b("\n" + i);t.b("                        </ul>\r");t.b("\n" + i);t.b("                    </div>\r");t.b("\n" + i);t.b("                     </div> -->\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                     <div id=\"tab-about\" class=\"tab-pane\" role=\"tabpanel\">\r");t.b("\n" + i);t.b("                         <div class=\"\" style=\"position: relative;\">\r");t.b("\n" + i);t.b("                            <fieldset>\r");t.b("\n" + i);t.b("                                <legend class=\"version\">VERSION</legend>\r");t.b("\n" + i);t.b("                                <p>");t.b(t.v(t.d("viewerJs.version",c,p,0)));t.b("</p>\r");t.b("\n" + i);t.b("                            </fieldset>\r");t.b("\n" + i);t.b("                         </div>\r");t.b("\n" + i);t.b("                     </div>\r");t.b("\n" + i);t.b("                </div>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("            <div class=\"modal-footer\">\r");t.b("\n" + i);t.b("                <button id=\"buttClose\"  type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.SettingsModalClose",c,p,0)));t.b("]\" tabindex=\"0\">");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b("</button>\r");t.b("\n" + i);t.b("                <button id=\"buttSave\"  type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\" aria-label=\"");t.b(t.v(t.d("strings.i18n_save_changes",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.SettingsModalSave",c,p,0)));t.b("]\" tabindex=\"0\">");t.b(t.v(t.d("strings.i18n_save_changes",c,p,0)));t.b("</button>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("        </div>\r");t.b("\n" + i);t.b("        <!-- /.modal-content -->\r");t.b("\n" + i);t.b("    </div>\r");t.b("\n" + i);t.b("    <!-- /.modal-dialog -->\r");t.b("\n" + i);t.b("</div>\r");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/settings-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div tabindex=\"-1\" class=\"modal fade\" id=\"settings-dialog\" role=\"dialog\" aria-labelledby=\"settings-label\">");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">");t.b("\n" + i);t.b("        <div class=\"modal-content\">");t.b("\n");t.b("\n" + i);t.b("           <div class=\"modal-header\">");t.b("\n" + i);t.b("             <h2 class=\"modal-title\" id=\"settings-label\">");t.b(t.v(t.d("strings.settings",c,p,0)));t.b("</h2>");t.b("\n" + i);t.b("             <button type=\"button\" class=\"close\" id=\"closeSettingsCross\" data-dismiss=\"modal\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.settings",c,p,0)));t.b("\" tabindex=\"0\"><span aria-hidden=\"true\">&times;</span></button>");t.b("\n" + i);t.b("           </div>");t.b("\n");t.b("\n" + i);t.b("           <div class=\"modal-body\">");t.b("\n");t.b("\n" + i);t.b("             <ul class=\"nav nav-tabs\" role=\"tablist\" aria-owns=\"tab-butt-style tab-butt-layout tab-butt-keys\">");t.b("\n" + i);t.b("                <li role=\"presentation\" class=\"active\">");t.b("\n" + i);t.b("                    <button id=\"tab-butt-style\" aria-label=\"");t.b(t.v(t.d("strings.style",c,p,0)));t.b("\" role='tab' aria-controls=\"tab-style\" data-toggle=\"tab\" data-target=\"#tab-style\" tabindex=\"0\">");t.b(t.v(t.d("strings.style",c,p,0)));t.b("</button>");t.b("\n" + i);t.b("                </li>");t.b("\n" + i);t.b("                <li role=\"presentation\">");t.b("\n" + i);t.b("                    <button id=\"tab-butt-layout\" aria-label=\"");t.b(t.v(t.d("strings.layout",c,p,0)));t.b("\" role='tab' aria-controls=\"tab-layout\" data-toggle=\"tab\" data-target=\"#tab-layout\" tabindex=\"0\">");t.b(t.v(t.d("strings.layout",c,p,0)));t.b("</button>");t.b("\n" + i);t.b("                </li>");t.b("\n" + i);t.b("                <!-- <li role=\"presentation\"><button id=\"tab-butt-keys\"  title=\"");t.b(t.v(t.d("strings.i18n_keyboard_shortcuts",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_keyboard_shortcuts",c,p,0)));t.b("\" role='tab' aria-controls=\"tab-keyboard\" data-toggle=\"tab\" data-target=\"#tab-keyboard\" tabindex=\"-1\">");t.b(t.v(t.d("strings.i18n_keyboard_shortcuts",c,p,0)));t.b("</button></li> -->");t.b("\n" + i);t.b("                <li role=\"presentation\">");t.b("\n" + i);t.b("                    <button id=\"tab-butt-about\" aria-label=\"");t.b(t.v(t.d("strings.about",c,p,0)));t.b("\" role='tab' aria-controls=\"tab-about\" data-toggle=\"tab\" data-target=\"#tab-about\" tabindex=\"0\">");t.b(t.v(t.d("strings.about",c,p,0)));t.b("</button>");t.b("\n" + i);t.b("                </li>");t.b("\n" + i);t.b("             </ul>");t.b("\n");t.b("\n");t.b("\n" + i);t.b("             <div class=\"tab-content\">");t.b("\n" + i);t.b("                <div id=\"tab-style\" class=\"tab-pane active\" role=\"tabpanel\" aria-expanded=\"true\">");t.b("\n" + i);t.b("                    <fieldset>");t.b("\n" + i);t.b("                        <legend>");t.b(t.v(t.d("strings.preview",c,p,0)));t.b("</legend>");t.b("\n" + i);t.b("                        <div  aria-hidden=\"true\" class=\"row\">");t.b("\n" + i);t.b("                            <div data-theme=\"author-theme\" class=\"col-xs-10 col-xs-offset-1 preview-text author-theme\">");t.b("\n" + i);t.b("                                This is the preview of the font size that will appear in your books. Please use the slider below to adjust the font size.");t.b("\n" + i);t.b("                            </div>");t.b("\n" + i);t.b("                        </div>");t.b("\n" + i);t.b("                    </fieldset>");t.b("\n");t.b("\n" + i);t.b("                    <fieldset>");t.b("\n" + i);t.b("                        <legend>");t.b(t.v(t.d("strings.i18n_font_size",c,p,0)));t.b("</legend>");t.b("\n" + i);t.b("                        <div class=\"row\">");t.b("\n" + i);t.b("                            <div class=\"col-xs-2 icon-scale-down\">");t.b("\n" + i);t.b("                                <img src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/glyphicons_115_text_smaller.png\" alt=\"\" aria-hidden=\"true\">");t.b("\n" + i);t.b("                            </div>");t.b("\n" + i);t.b("                            <div style=\"display: flex;justify-content: center;align-items: center;margin-bottom: 1em;\" class=\"col-xs-8\">");t.b("\n" + i);t.b("                                <input style=\"width: 50%;transform: scale(2);\"  type=\"range\" id=\"font-size-input\" min=\"60\" aria-value-min=\"60\" aria-valuemin=\"60\" step=\"10\" max=\"170\" aria-value-max=\"170\" aria-valuemax=\"170\" value=\"100\" aria-valuenow=\"100\" aria-value-now=\"100\" aria-valuetext=\"1em\" aria-value-text=\"1em\" title=\"");t.b(t.v(t.d("strings.i18n_font_size",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_font_size",c,p,0)));t.b("\" />");t.b("\n" + i);t.b("                            </div>");t.b("\n" + i);t.b("                            <div class=\"col-xs-2\">");t.b("\n" + i);t.b("                                <img src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/glyphicons_116_text_bigger.png\" alt=\"\" aria-hidden=\"true\">");t.b("\n" + i);t.b("                            </div>");t.b("\n" + i);t.b("                        </div>");t.b("\n" + i);t.b("                    </fieldset>");t.b("\n");t.b("\n" + i);t.b("                    <h3 style=\"display: none;\" id=\"setting-header-font-selection\" class=\"setting-header\">");t.b(t.v(t.d("strings.i18n_font_selection",c,p,0)));t.b("</h3>");t.b("\n" + i);t.b("                    <div style=\"display: none;\" class=\"row\">");t.b("\n" + i);t.b("                        <div class=\"col-xs-8 col-xs-offset-2\">");t.b("\n" + i);t.b("                            <select style=\"width: 100%; padding: 0.5em;\" aria-labelledby=\"setting-header-font-selection\" id=\"font-selection-input\"  title=\"");t.b(t.v(t.d("strings.i18n_font_selection",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_font_selection",c,p,0)));t.b("\">");t.b("\n" + i);t.b("                                <option value=\"0\" aria-label=\"");t.b(t.v(t.d("strings.i18n_fonttype_default",c,p,0)));t.b("\" title=\"");t.b(t.v(t.d("strings.i18n_fonttype_default",c,p,0)));t.b("\">");t.b(t.v(t.d("strings.i18n_fonttype_default",c,p,0)));t.b("</option>");t.b("\n" + i);t.b("							</select>");t.b("\n" + i);t.b("                        </div>");t.b("\n" + i);t.b("                    </div>");t.b("\n");t.b("\n");t.b("\n" + i);t.b("                    <h3 style=\"display: none;\" id=\"setting-header-color-legend\" class=\"setting-header\">");t.b(t.v(t.d("strings.i18n_text_and_background_color",c,p,0)));t.b("</h3>");t.b("\n" + i);t.b("                    <div style=\"display: none;\" role=\"group\" aria-labelledby=\"setting-header-color-legend\" id=\"theme-radio-group\" class=\"row\">");t.b("\n");t.b("\n" + i);t.b("                        <button role=\"button\" data-theme=\"author-theme\"  title=\"");t.b(t.v(t.d("strings.i18n_author_theme",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_author_theme",c,p,0)));t.b("\" class=\"col-xs-8 col-xs-offset-2 theme-option author-theme clickable\">");t.b(t.v(t.d("strings.i18n_author_theme",c,p,0)));t.b("</button>");t.b("\n");t.b("\n" + i);t.b("                        <!-- <button role=\"button\" data-theme=\"default-theme\"  title=\"");t.b(t.v(t.d("strings.i18n_black_and_white",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_black_and_white",c,p,0)));t.b("\" class=\"col-xs-8 col-xs-offset-2 theme-option default-theme clickable\">");t.b(t.v(t.d("strings.i18n_black_and_white",c,p,0)));t.b("</button>");t.b("\n");t.b("\n" + i);t.b("                        <button role=\"button\" data-theme=\"night-theme\"  title=\"");t.b(t.v(t.d("strings.i18n_arabian_nights",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.NightTheme",c,p,0)));t.b("]\" aria-label=\"");t.b(t.v(t.d("strings.i18n_arabian_nights",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.NightTheme",c,p,0)));t.b("]\" class=\"col-xs-8 col-xs-offset-2 theme-option night-theme clickable\" >");t.b(t.v(t.d("strings.i18n_arabian_nights",c,p,0)));t.b("</button>  --><!-- accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.NightTheme",c,p,0)));t.b("\" -->");t.b("\n");t.b("\n" + i);t.b("                        <!-- <button role=\"button\" data-theme=\"parchment-theme\"  title=\"");t.b(t.v(t.d("strings.i18n_sands_of_dune",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_sands_of_dune",c,p,0)));t.b("\" class=\"col-xs-8 col-xs-offset-2 theme-option parchment-theme clickable\">");t.b(t.v(t.d("strings.i18n_sands_of_dune",c,p,0)));t.b("</button>");t.b("\n");t.b("\n" + i);t.b("                        <button role=\"button\" data-theme=\"ballard-theme\"  title=\"");t.b(t.v(t.d("strings.i18n_ballard_blues",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_ballard_blues",c,p,0)));t.b("\" class=\"col-xs-8 col-xs-offset-2 theme-option ballard-theme clickable\">");t.b(t.v(t.d("strings.i18n_ballard_blues",c,p,0)));t.b("</button>");t.b("\n");t.b("\n" + i);t.b("                        <button role=\"button\" data-theme=\"vancouver-theme\"  title=\"");t.b(t.v(t.d("strings.i18n_vancouver_mist",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_vancouver_mist",c,p,0)));t.b("\" class=\"col-xs-8 col-xs-offset-2 theme-option vancouver-theme clickable\">");t.b(t.v(t.d("strings.i18n_vancouver_mist",c,p,0)));t.b("</button> -->");t.b("\n" + i);t.b("                    </div>");t.b("\n" + i);t.b("                </div>");t.b("\n");t.b("\n" + i);t.b("                <div id=\"tab-layout\" class=\"tab-pane\" role=\"tabpanel\">");t.b("\n");t.b("\n" + i);t.b("                    <!-- disabled: replaced with setting-header-column-max-width-legend (see below) -->");t.b("\n" + i);t.b("                    <h3 style=\"display:none;\" id=\"setting-header-margins-legend\" class=\"setting-header\">");t.b(t.v(t.d("strings.i18n_margins",c,p,0)));t.b("</h3>");t.b("\n" + i);t.b("                    <div style=\"display:none;\" class=\"row\">");t.b("\n" + i);t.b("                        <div class=\"col-xs-2 icon-scale-down\">");t.b("\n" + i);t.b("                            <img style=\"height: 32px;\" src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/margin1_off.png\" alt=\"\" aria-hidden=\"true\">");t.b("\n" + i);t.b("                        </div>");t.b("\n" + i);t.b("                        <div class=\"col-xs-8\">");t.b("\n" + i);t.b("                            <input  type=\"range\" role=\"slider\" aria-labelledby=\"setting-header-margins-legend\" id=\"margin-size-input\" min=\"20\" aria-value-min=\"20\" aria-valuemin=\"20\" step=\"20\" max=\"100\" aria-value-max=\"100\" aria-valuemax=\"100\" value=\"20\" aria-valuenow=\"20\" aria-value-now=\"20\" aria-valuetext=\"20\" aria-value-text=\"20\" title=\"");t.b(t.v(t.d("strings.i18n_margins",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_margins",c,p,0)));t.b("\"/>");t.b("\n" + i);t.b("                        </div>");t.b("\n" + i);t.b("                        <div class=\"col-xs-2\">");t.b("\n" + i);t.b("                            <img style=\"height: 32px;\" src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/margin4_off.png\" alt=\"\" aria-hidden=\"true\">");t.b("\n" + i);t.b("                        </div>");t.b("\n" + i);t.b("                    </div>");t.b("\n" + i);t.b("                    ");t.b("\n");t.b("\n" + i);t.b("                    <!--<h2 id=\"setting-header-column-max-width-legend\" class=\"setting-header\">");t.b(t.v(t.d("strings.i18n_pageMaxWidth",c,p,0)));t.b("</h2>-->");t.b("\n" + i);t.b("                    <fieldset>");t.b("\n" + i);t.b("                        <legend>");t.b(t.v(t.d("strings.i18n_pageMaxWidth",c,p,0)));t.b("</legend>");t.b("\n" + i);t.b("                        <div class=\"row\">");t.b("\n" + i);t.b("                            <p style=\"margin-left: 15px;\">Only applies in Single Column View</p>");t.b("\n" + i);t.b("                        </div>");t.b("\n" + i);t.b("                        <div class=\"row\">");t.b("\n" + i);t.b("                            <div class=\"col-xs-2\">");t.b("\n" + i);t.b("                                <!-- <img style=\"height: 32px;\" src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/margin4_off.png\" alt=\"\" aria-hidden=\"true\"> -->");t.b("\n" + i);t.b("                            </div>");t.b("\n" + i);t.b("                            <div style=\"display: flex; justify-content: center;align-items: center;margin-bottom: 1em;\" class=\"col-xs-8\">");t.b("\n" + i);t.b("                                <input style=\"width: 50%;transform: scale(2);\"  type=\"range\" role=\"slider\" id=\"column-max-width-input\" min=\"500\" aria-value-min=\"500\" aria-valuemin=\"500\" step=\"50\" max=\"2000\" aria-value-max=\"2000\" aria-valuemax=\"2000\" value=\"700\" aria-valuenow=\"700\" aria-value-now=\"700\" aria-valuetext=\"700\" aria-value-text=\"700\" title=\"");t.b(t.v(t.d("strings.i18n_pageMaxWidth",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_pageMaxWidth",c,p,0)));t.b("\"/>");t.b("\n" + i);t.b("                            </div>");t.b("\n" + i);t.b("                            <div class=\"col-xs-2 icon-scale-down\">");t.b("\n" + i);t.b("                            <!--  <img style=\"height: 32px;\" src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/margin1_off.png\" alt=\"\" aria-hidden=\"true\"> -->");t.b("\n" + i);t.b("                            </div>");t.b("\n" + i);t.b("                        </div>");t.b("\n" + i);t.b("                    </fieldset>");t.b("\n");t.b("\n" + i);t.b("                    <!-- <h2 id=\"setting-header-display-legend\" class=\"setting-header\">");t.b(t.v(t.d("strings.i18n_display_format",c,p,0)));t.b("</h2>-->");t.b("\n" + i);t.b("                    <fieldset>");t.b("\n" + i);t.b("                        <legend>");t.b(t.v(t.d("strings.i18n_display_format",c,p,0)));t.b("</legend>");t.b("\n" + i);t.b("                        <div role=\"radiogroup\" class=\"row\" style=\"width:100%;text-align:center;\" >");t.b("\n" + i);t.b("                            <div role=\"radio\" id=\"spread-default-option\"");t.b("\n" + i);t.b("                            style=\"vertical-align:middle;width:30%;display:inline-block;position:relative;\">");t.b("\n" + i);t.b("                                <input name=\"display-format\" value=\"single\" type=\"radio\" id=\"spread-default-radio\" aria-labelledby=\"spread-defaul-label\" />");t.b("\n" + i);t.b("                                <label for=\"spread-default-radio\" class=\"underlinedLabel\" id=\"spread-defaul-label\">");t.b("\n" + i);t.b("                                    ");t.b(t.v(t.d("strings.i18n_spread_auto",c,p,0)));t.b("\n" + i);t.b("                                </label>");t.b("\n" + i);t.b("                            </div>");t.b("\n" + i);t.b("                            <div role=\"radio\" id=\"one-up-option\"");t.b("\n" + i);t.b("                            style=\"vertical-align:middle;width:30%;display:inline-block;position:relative;\">");t.b("\n" + i);t.b("                                <input  name=\"display-format\" value=\"single\" type=\"radio\" id=\"single-page-radio\" aria-labelledby=\"single-page-label\"/>");t.b("\n" + i);t.b("                                <label for=\"single-page-radio\" class=\"underlinedLabel\" id=\"single-page-label\">");t.b("\n" + i);t.b("                                    <img src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/ico_singlepage_up.png\" alt=\"");t.b(t.v(t.d("strings.i18n_display_format",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_single_pages",c,p,0)));t.b("\"/>");t.b("\n" + i);t.b("                                </label>");t.b("\n" + i);t.b("                            </div>");t.b("\n" + i);t.b("                            <div role=\"radio\" id=\"two-up-option\"");t.b("\n" + i);t.b("                            style=\"vertical-align:middle;width:30%;display:inline-block;position:relative;\">");t.b("\n" + i);t.b("                                <input  name=\"display-format\" value=\"double\" type=\"radio\" id=\"double-page-radio\" aria-labelledby=\"double-page-label\" />");t.b("\n" + i);t.b("                                <label for=\"double-page-radio\" class=\"underlinedLabel\" id=\"double-page-label\">");t.b("\n" + i);t.b("                                    <img src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/ico_doublepage_up.png\" alt=\"");t.b(t.v(t.d("strings.i18n_display_format",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_double_pages",c,p,0)));t.b("\">");t.b("\n" + i);t.b("                                </label>");t.b("\n" + i);t.b("                            </div>");t.b("\n" + i);t.b("                        </div>");t.b("\n" + i);t.b("                    </fieldset>");t.b("\n");t.b("\n" + i);t.b("                    <h3 style=\"display: none;\" id=\"setting-header-scroll-legend\" class=\"setting-header\">");t.b(t.v(t.d("strings.i18n_scroll_mode",c,p,0)));t.b("</h3>");t.b("\n" + i);t.b("                    <div style=\"display: none;\" role=\"radiogroup\" class=\"row\" style=\"width:100%;text-align:center;\" aria-labelledby=\"setting-header-scroll-legend\">");t.b("\n");t.b("\n" + i);t.b("                        <div role=\"radio\" id=\"scroll-default-option\" style=\"vertical-align:middle;width:30%;display:inline-block;position:relative;\">");t.b("\n" + i);t.b("                            <input style=\"\"  name=\"scrolling\" value=\"single\" type=\"radio\" id=\"scroll-default-radio\"/>");t.b("\n" + i);t.b("                            <label style=\"\" for=\"scroll-default-radio\" class=\"underlinedLabel\">");t.b("\n" + i);t.b("                                ");t.b(t.v(t.d("strings.i18n_scroll_mode_auto",c,p,0)));t.b("\n" + i);t.b("                            </label>");t.b("\n" + i);t.b("                        </div>");t.b("\n");t.b("\n" + i);t.b("                        <!-- <div role=\"radio\" id=\"scroll-doc-option\" style=\"vertical-align:middle;width:30%;display:inline-block;position:relative;\">");t.b("\n" + i);t.b("                            <input style=\"\"  name=\"scrolling\" value=\"single\" type=\"radio\" id=\"scroll-doc-radio\"/>");t.b("\n" + i);t.b("                            <label style=\"\" for=\"scroll-doc-radio\" class=\"underlinedLabel\">");t.b("\n" + i);t.b("                                <span style=\"font-size:150%;color:#888888;\" class=\"glyphicon glyphicon-file\" aria-hidden=\"true\"></span> ");t.b(t.v(t.d("strings.i18n_scroll_mode_doc",c,p,0)));t.b("\n" + i);t.b("                            </label>");t.b("\n" + i);t.b("                        </div> -->");t.b("\n");t.b("\n" + i);t.b("                        <!-- Disable continous scroll option -->");t.b("\n" + i);t.b("                        <!-- <div role=\"radio\" id=\"scroll-continuous-option\" style=\"vertical-align:middle;width:30%;display:inline-block;position:relative;\">");t.b("\n" + i);t.b("                            <input style=\"\"  name=\"scrolling\" value=\"single\" type=\"radio\" id=\"scroll-continuous-radio\"/>");t.b("\n" + i);t.b("                            <label style=\"\" for=\"scroll-continuous-radio\" class=\"underlinedLabel\">");t.b("\n" + i);t.b("                                <span style=\"font-size:150%;color:#888888;\" class=\"glyphicon glyphicon-road\" aria-hidden=\"true\"></span> ");t.b(t.v(t.d("strings.i18n_scroll_mode_continuous",c,p,0)));t.b("\n" + i);t.b("                            </label>");t.b("\n" + i);t.b("                        </div> -->");t.b("\n");t.b("\n" + i);t.b("                    </div>");t.b("\n");t.b("\n" + i);t.b("                    <!-- Page transitions are seriously broken (see readium-shared-js one_page_view.js disablePageTransitions boolean), so we hide the UI config options -->");t.b("\n" + i);t.b("                    <h3 style=\"display:none;\" hiddenx=\"hidden\" id=\"setting-header-pageTransition-legend\" class=\"setting-header\">");t.b(t.v(t.d("strings.i18n_page_transition",c,p,0)));t.b("</h3>");t.b("\n");t.b("\n" + i);t.b("                    <div style=\"display:none; width:100%;text-align:center;\" hiddenx=\"hidden\" role=\"radiogroup\" class=\"row\" aria-labelledby=\"setting-header-pageTransition-legend\">");t.b("\n");t.b("\n" + i);t.b("                        <div role=\"radio\" id=\"pageTransition-none-option\" style=\"vertical-align:middle;width:15%;display:inline-block;position:relative;\">");t.b("\n" + i);t.b("                            <input style=\"\"  name=\"pageTransition\" value=\"single\" type=\"radio\" id=\"pageTransition-none-radio\"/>");t.b("\n" + i);t.b("                            <label style=\"\" for=\"pageTransition-none-radio\" class=\"underlinedLabel\">");t.b("\n" + i);t.b("                                ");t.b(t.v(t.d("strings.i18n_page_transition_none",c,p,0)));t.b("\n" + i);t.b("                            </label>");t.b("\n" + i);t.b("                        </div>");t.b("\n");t.b("\n" + i);t.b("                        <div role=\"radio\" id=\"pageTransition-1-option\" style=\"vertical-align:middle;width:15%;display:inline-block;position:relative;\">");t.b("\n" + i);t.b("                            <input style=\"\"  name=\"pageTransition\" value=\"single\" type=\"radio\" id=\"pageTransition-1-radio\"/>");t.b("\n" + i);t.b("                            <label style=\"\" for=\"pageTransition-1-radio\" class=\"underlinedLabel\">");t.b("\n" + i);t.b("                                ");t.b(t.v(t.d("strings.i18n_page_transition_fade",c,p,0)));t.b("\n" + i);t.b("                            </label>");t.b("\n" + i);t.b("                        </div>");t.b("\n");t.b("\n" + i);t.b("                        <div role=\"radio\" id=\"pageTransition-2-option\" style=\"vertical-align:middle;width:15%;display:inline-block;position:relative;\">");t.b("\n" + i);t.b("                            <input style=\"\"  name=\"pageTransition\" value=\"single\" type=\"radio\" id=\"pageTransition-2-radio\"/>");t.b("\n" + i);t.b("                            <label style=\"\" for=\"pageTransition-2-radio\" class=\"underlinedLabel\">");t.b("\n" + i);t.b("                                ");t.b(t.v(t.d("strings.i18n_page_transition_slide",c,p,0)));t.b("\n" + i);t.b("                            </label>");t.b("\n" + i);t.b("                        </div>");t.b("\n");t.b("\n" + i);t.b("                        <div role=\"radio\" id=\"pageTransition-3-option\" style=\"vertical-align:middle;width:15%;display:inline-block;position:relative;\">");t.b("\n" + i);t.b("                            <input style=\"\"  name=\"pageTransition\" value=\"single\" type=\"radio\" id=\"pageTransition-3-radio\"/>");t.b("\n" + i);t.b("                            <label style=\"\" for=\"pageTransition-3-radio\" class=\"underlinedLabel\">");t.b("\n" + i);t.b("                                ");t.b(t.v(t.d("strings.i18n_page_transition_swoosh",c,p,0)));t.b("\n" + i);t.b("                            </label>");t.b("\n" + i);t.b("                        </div>");t.b("\n");t.b("\n" + i);t.b("                        <div role=\"radio\" id=\"pageTransition-4-option\" style=\"vertical-align:middle;width:15%;display:inline-block;position:relative;\">");t.b("\n" + i);t.b("                            <input style=\"\"  name=\"pageTransition\" value=\"single\" type=\"radio\" id=\"pageTransition-4-radio\"/>");t.b("\n" + i);t.b("                            <label style=\"\" for=\"pageTransition-4-radio\" class=\"underlinedLabel\">");t.b("\n" + i);t.b("                                ");t.b(t.v(t.d("strings.i18n_page_transition_butterfly",c,p,0)));t.b("\n" + i);t.b("                            </label>");t.b("\n" + i);t.b("                        </div>");t.b("\n");t.b("\n");t.b("\n" + i);t.b("                    </div>");t.b("\n");t.b("\n");t.b("\n" + i);t.b("                    </div>");t.b("\n" + i);t.b("                    <!-- <div style=\"display: none;\" id=\"tab-keyboard\" class=\"tab-pane\" role=\"tabpanel\">");t.b("\n");t.b("\n" + i);t.b("                    <div style=\"display: none;\" class=\"row\" style=\"position:relative;\">");t.b("\n");t.b("\n" + i);t.b("                        <div id=\"invalid_keyboard_shortcut_ALERT\"></div>");t.b("\n");t.b("\n" + i);t.b("                        <ul id=\"keyboard-list\">");t.b("\n" + i);t.b("                        </ul>");t.b("\n" + i);t.b("                    </div>");t.b("\n" + i);t.b("                     </div> -->");t.b("\n");t.b("\n" + i);t.b("                     <div id=\"tab-about\" class=\"tab-pane\" role=\"tabpanel\">");t.b("\n" + i);t.b("                         <div class=\"\" style=\"position: relative;\">");t.b("\n" + i);t.b("                            <fieldset>");t.b("\n" + i);t.b("                                <legend class=\"version\">VERSION</legend>");t.b("\n" + i);t.b("                                <p>");t.b(t.v(t.d("viewerJs.version",c,p,0)));t.b("</p>");t.b("\n" + i);t.b("                            </fieldset>");t.b("\n" + i);t.b("                         </div>");t.b("\n" + i);t.b("                     </div>");t.b("\n" + i);t.b("                </div>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("            <div class=\"modal-footer\">");t.b("\n" + i);t.b("                <button id=\"buttClose\"  type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.SettingsModalClose",c,p,0)));t.b("]\" tabindex=\"0\">");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b("</button>");t.b("\n" + i);t.b("                <button id=\"buttSave\"  type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\" aria-label=\"");t.b(t.v(t.d("strings.i18n_save_changes",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.SettingsModalSave",c,p,0)));t.b("]\" tabindex=\"0\">");t.b(t.v(t.d("strings.i18n_save_changes",c,p,0)));t.b("</button>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <!-- /.modal-content -->");t.b("\n" + i);t.b("    </div>");t.b("\n" + i);t.b("    <!-- /.modal-dialog -->");t.b("\n" + i);t.b("</div>");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/settings-keyboard-item.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");if(t.s(t.f("name",c,p,1),c,p,0,9,747,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<li>\r");t.b("\n" + i);t.b("<label id=\"label_");t.b(t.v(t.f("name",c,p,0)));t.b("\">");t.b(t.v(t.f("i18n",c,p,0)));t.b("<br/><span>");t.b(t.v(t.f("name",c,p,0)));t.b("</span></label>\r");t.b("\n" + i);t.b("<input id=\"");t.b(t.v(t.f("name",c,p,0)));t.b("\" name=\"");t.b(t.v(t.f("name",c,p,0)));t.b("\" class=\"keyboardInput\" type=\"text\"  placeholder=\"");t.b(t.v(t.f("shortcut",c,p,0)));t.b("\" value=\"");t.b(t.v(t.f("shortcut",c,p,0)));t.b("\" aria-labelledbyxxx=\"label_");t.b(t.v(t.f("name",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.f("i18n",c,p,0)));t.b("\" title=\"");t.b(t.v(t.f("i18n",c,p,0)));t.b("\"></input>\r");t.b("\n" + i);t.b("<button class=\"resetKey captureKeyboardShortcut\" role=\"button\" data-key=\"");t.b(t.v(t.f("name",c,p,0)));t.b("\"  title=\"");t.b(t.v(t.d("strings.i18n_reset_key",c,p,0)));t.b(" (");t.b(t.v(t.f("def",c,p,0)));t.b(")\" aria-label=\"");t.b(t.v(t.d("strings.i18n_reset_key",c,p,0)));t.b(" (");t.b(t.v(t.f("def",c,p,0)));t.b(")\"><span aria-hidden=\"true\">&#8855;</span></button>\r");t.b("\n" + i);t.b("<span id=\"duplicate_keyboard_shortcut\" aria-hidden=\"true\">");t.b(t.v(t.d("strings.i18n_duplicate_keyboard_shortcut",c,p,0)));t.b("</span>\r");t.b("\n" + i);t.b("<span id=\"invalid_keyboard_shortcut\" aria-hidden=\"true\">");t.b(t.v(t.d("strings.i18n_invalid_keyboard_shortcut",c,p,0)));t.b("</span>\r");t.b("\n" + i);t.b("</li>\r");t.b("\n" + i);});c.pop();}if(!t.s(t.f("name",c,p,1),c,p,1,0,0,"")){t.b("<li id=\"resetAllKeys");t.b(t.v(t.f("id",c,p,0)));t.b("\" class=\"resetAllKeys\">\r");t.b("\n" + i);t.b("<button class=\"resetKey\" role=\"button\"  title=\"");t.b(t.v(t.d("strings.i18n_reset_key_all",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_reset_key_all",c,p,0)));t.b("\"><span aria-hidden=\"true\">");t.b(t.v(t.d("strings.i18n_reset_key_all",c,p,0)));t.b("  &#8855;</span></button>\r");t.b("\n" + i);t.b("</li>\r");t.b("\n" + i);};return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/settings-keyboard-item.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");if(t.s(t.f("name",c,p,1),c,p,0,9,739,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<li>");t.b("\n" + i);t.b("<label id=\"label_");t.b(t.v(t.f("name",c,p,0)));t.b("\">");t.b(t.v(t.f("i18n",c,p,0)));t.b("<br/><span>");t.b(t.v(t.f("name",c,p,0)));t.b("</span></label>");t.b("\n" + i);t.b("<input id=\"");t.b(t.v(t.f("name",c,p,0)));t.b("\" name=\"");t.b(t.v(t.f("name",c,p,0)));t.b("\" class=\"keyboardInput\" type=\"text\"  placeholder=\"");t.b(t.v(t.f("shortcut",c,p,0)));t.b("\" value=\"");t.b(t.v(t.f("shortcut",c,p,0)));t.b("\" aria-labelledbyxxx=\"label_");t.b(t.v(t.f("name",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.f("i18n",c,p,0)));t.b("\" title=\"");t.b(t.v(t.f("i18n",c,p,0)));t.b("\"></input>");t.b("\n" + i);t.b("<button class=\"resetKey captureKeyboardShortcut\" role=\"button\" data-key=\"");t.b(t.v(t.f("name",c,p,0)));t.b("\"  title=\"");t.b(t.v(t.d("strings.i18n_reset_key",c,p,0)));t.b(" (");t.b(t.v(t.f("def",c,p,0)));t.b(")\" aria-label=\"");t.b(t.v(t.d("strings.i18n_reset_key",c,p,0)));t.b(" (");t.b(t.v(t.f("def",c,p,0)));t.b(")\"><span aria-hidden=\"true\">&#8855;</span></button>");t.b("\n" + i);t.b("<span id=\"duplicate_keyboard_shortcut\" aria-hidden=\"true\">");t.b(t.v(t.d("strings.i18n_duplicate_keyboard_shortcut",c,p,0)));t.b("</span>");t.b("\n" + i);t.b("<span id=\"invalid_keyboard_shortcut\" aria-hidden=\"true\">");t.b(t.v(t.d("strings.i18n_invalid_keyboard_shortcut",c,p,0)));t.b("</span>");t.b("\n" + i);t.b("</li>");t.b("\n" + i);});c.pop();}if(!t.s(t.f("name",c,p,1),c,p,1,0,0,"")){t.b("<li id=\"resetAllKeys");t.b(t.v(t.f("id",c,p,0)));t.b("\" class=\"resetAllKeys\">");t.b("\n" + i);t.b("<button class=\"resetKey\" role=\"button\"  title=\"");t.b(t.v(t.d("strings.i18n_reset_key_all",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_reset_key_all",c,p,0)));t.b("\"><span aria-hidden=\"true\">");t.b(t.v(t.d("strings.i18n_reset_key_all",c,p,0)));t.b("  &#8855;</span></button>");t.b("\n" + i);t.b("</li>");t.b("\n" + i);};return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 define('readium_js_viewer/Keyboard',['i18nStrings'], function(Strings) {
     var keyBindings = {};
@@ -64624,6 +63732,7 @@ define('readium_js_viewer/EpubLibrary',[
                importEpub : importEpub
            };
        });
+
 /*!
  * Bootstrap v3.4.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 Twitter, Inc.
@@ -67943,25 +67052,25 @@ define("bootstrapA11y", ["bootstrap"], (function (global) {
 }(this)));
 
 
-define("hgn!readium_js_viewer_html_templates/about-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"about-dialog\" tabindex=\"-1\" role=\"dialog\" aria-label=\"");t.b(t.t(t.d("strings.about",c,p,0)));t.b("\" >\r");t.b("\n" + i);t.b("  <div class=\"modal-dialog\">\r");t.b("\n" + i);t.b("    <div class=\"modal-content\">\r");t.b("\n" + i);t.b("      <div class=\"modal-body\">\r");t.b("\n" + i);t.b("          <!-- <div class=\"splash-logo\">\r");t.b("\n" + i);t.b("              <img src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/about_readium_logo.png\" alt=\"\">\r");t.b("\n" + i);t.b("          </div> -->\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("          <!-- <div class=\"about-message\">\r");t.b("\n" + i);t.b("              <span>");t.b(t.t(t.d("strings.i18n_html_readium_tm_a_project",c,p,0)));t.b("</span>\r");t.b("\n" + i);t.b("          </div> -->\r");t.b("\n" + i);t.b("<!--           <div>\r");t.b("\n" + i);t.b("                 <img src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/partner_logos.png\" alt=\"");t.b(t.t(t.d("strings.i18n_alt_about_logos",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("            </div> -->\r");t.b("\n" + i);t.b("        <!-- <h4 style=\"color:#111155\">");t.b(t.t(t.d("strings.gethelp",c,p,0)));t.b("</h4> -->\r");t.b("\n" + i);t.b("        <div class=\"version\">");t.b(t.v(t.d("viewerJs.version",c,p,0)));t.b("</div>\r");t.b("\n" + i);t.b("        <!-- <div class=\"build-date\">");t.b(t.v(t.f("dateTimeString",c,p,0)));t.b("</div> -->\r");t.b("\n" + i);t.b("        <!-- <div class=\"version-details\">\r");t.b("\n" + i);t.b("            \r");t.b("\n" + i);t.b("          <div><a target=\"_blank\" href=\"https://github.com/readium/readium-js-viewer/tree/");t.b(t.v(t.d("viewerJs.sha",c,p,0)));t.b("\">readium-js-viewer@");t.b(t.v(t.d("viewerJs.sha",c,p,0)));t.b("</a>");if(!t.s(t.d("viewerJs.clean",c,p,1),c,p,1,0,0,"")){t.b("<span class=\"local-changes-alert\"> (");t.b(t.t(t.d("strings.gitHasLocalChanges",c,p,0)));t.b(")</span>");};t.b("</div>\r");t.b("\n" + i);t.b("          \r");t.b("\n" + i);t.b("          <div><a target=\"_blank\" href=\"https://github.com/readium/readium-js/tree/");t.b(t.v(t.d("readiumJs.sha",c,p,0)));t.b("\">readium-js@");t.b(t.v(t.d("readiumJs.sha",c,p,0)));t.b("</a>");if(!t.s(t.d("readiumJs.clean",c,p,1),c,p,1,0,0,"")){t.b("<span class=\"local-changes-alert\"> (");t.b(t.t(t.d("strings.gitHasLocalChanges",c,p,0)));t.b(")</span>");};t.b("</div>\r");t.b("\n" + i);t.b("          \r");t.b("\n" + i);t.b("          <div><a target=\"_blank\" href=\"https://github.com/readium/readium-shared-js/tree/");t.b(t.v(t.d("sharedJs.sha",c,p,0)));t.b("\">readium-shared-js@");t.b(t.v(t.d("sharedJs.sha",c,p,0)));t.b("</a>");if(!t.s(t.d("sharedJs.clean",c,p,1),c,p,1,0,0,"")){t.b("<span class=\"local-changes-alert\"> (");t.b(t.t(t.d("strings.gitHasLocalChanges",c,p,0)));t.b(")</span>");};t.b("</div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("        </div> -->\r");t.b("\n" + i);t.b("      </div>\r");t.b("\n" + i);t.b("    </div><!-- /.modal-content -->\r");t.b("\n" + i);t.b("  </div><!-- /.modal-dialog -->\r");t.b("\n" + i);t.b("</div><!-- /.modal -->\r");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/about-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"about-dialog\" tabindex=\"-1\" role=\"dialog\" aria-label=\"");t.b(t.t(t.d("strings.about",c,p,0)));t.b("\" >");t.b("\n" + i);t.b("  <div class=\"modal-dialog\">");t.b("\n" + i);t.b("    <div class=\"modal-content\">");t.b("\n" + i);t.b("      <div class=\"modal-body\">");t.b("\n" + i);t.b("          <!-- <div class=\"splash-logo\">");t.b("\n" + i);t.b("              <img src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/about_readium_logo.png\" alt=\"\">");t.b("\n" + i);t.b("          </div> -->");t.b("\n");t.b("\n" + i);t.b("          <!-- <div class=\"about-message\">");t.b("\n" + i);t.b("              <span>");t.b(t.t(t.d("strings.i18n_html_readium_tm_a_project",c,p,0)));t.b("</span>");t.b("\n" + i);t.b("          </div> -->");t.b("\n" + i);t.b("<!--           <div>");t.b("\n" + i);t.b("                 <img src=\"");t.b(t.t(t.f("imagePathPrefix",c,p,0)));t.b("images/partner_logos.png\" alt=\"");t.b(t.t(t.d("strings.i18n_alt_about_logos",c,p,0)));t.b("\">");t.b("\n" + i);t.b("            </div> -->");t.b("\n" + i);t.b("        <!-- <h4 style=\"color:#111155\">");t.b(t.t(t.d("strings.gethelp",c,p,0)));t.b("</h4> -->");t.b("\n" + i);t.b("        <div class=\"version\">");t.b(t.v(t.d("viewerJs.version",c,p,0)));t.b("</div>");t.b("\n" + i);t.b("        <!-- <div class=\"build-date\">");t.b(t.v(t.f("dateTimeString",c,p,0)));t.b("</div> -->");t.b("\n" + i);t.b("        <!-- <div class=\"version-details\">");t.b("\n" + i);t.b("            ");t.b("\n" + i);t.b("          <div><a target=\"_blank\" href=\"https://github.com/readium/readium-js-viewer/tree/");t.b(t.v(t.d("viewerJs.sha",c,p,0)));t.b("\">readium-js-viewer@");t.b(t.v(t.d("viewerJs.sha",c,p,0)));t.b("</a>");if(!t.s(t.d("viewerJs.clean",c,p,1),c,p,1,0,0,"")){t.b("<span class=\"local-changes-alert\"> (");t.b(t.t(t.d("strings.gitHasLocalChanges",c,p,0)));t.b(")</span>");};t.b("</div>");t.b("\n" + i);t.b("          ");t.b("\n" + i);t.b("          <div><a target=\"_blank\" href=\"https://github.com/readium/readium-js/tree/");t.b(t.v(t.d("readiumJs.sha",c,p,0)));t.b("\">readium-js@");t.b(t.v(t.d("readiumJs.sha",c,p,0)));t.b("</a>");if(!t.s(t.d("readiumJs.clean",c,p,1),c,p,1,0,0,"")){t.b("<span class=\"local-changes-alert\"> (");t.b(t.t(t.d("strings.gitHasLocalChanges",c,p,0)));t.b(")</span>");};t.b("</div>");t.b("\n" + i);t.b("          ");t.b("\n" + i);t.b("          <div><a target=\"_blank\" href=\"https://github.com/readium/readium-shared-js/tree/");t.b(t.v(t.d("sharedJs.sha",c,p,0)));t.b("\">readium-shared-js@");t.b(t.v(t.d("sharedJs.sha",c,p,0)));t.b("</a>");if(!t.s(t.d("sharedJs.clean",c,p,1),c,p,1,0,0,"")){t.b("<span class=\"local-changes-alert\"> (");t.b(t.t(t.d("strings.gitHasLocalChanges",c,p,0)));t.b(")</span>");};t.b("</div>");t.b("\n");t.b("\n" + i);t.b("        </div> -->");t.b("\n" + i);t.b("      </div>");t.b("\n" + i);t.b("    </div><!-- /.modal-content -->");t.b("\n" + i);t.b("  </div><!-- /.modal-dialog -->");t.b("\n" + i);t.b("</div><!-- /.modal -->");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/reader-navbar.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<header id=\"app-header\" class=\"btn-group navbar-left\">\r");t.b("\n" + i);t.b("  <!-- <button type=\"button\" class=\"btn btn-default icon icon-show-hide\"></button>  -->\r");t.b("\n" + i);t.b("  <button id=\"aboutButt1\" tabindex=\"0\" type=\"button\" class=\"btn\" aria-label=\"");t.b(t.v(t.d("strings.view_library",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("        <img style=\"margin-right: 1em;width: auto;height: 26px;\" src=\"");t.b(t.v(t.d("strings.i18n_pebl_webreader_logo",c,p,0)));t.b("\" alt=\"PeBL Logo\"/>\r");t.b("\n" + i);t.b("  </button>\r");t.b("\n" + i);t.b("  <h1 id=\"webreaderTitle\"></h1>\r");t.b("\n" + i);t.b("  \r");t.b("\n" + i);t.b("  <!-- <button id=\"buttShowToolBar\" style=\"opacity:0;visibility:hidden;border:0;outline:0;padding:0;margin:0;width:1px;height=1px;\" tabindex=\"-1\" aria-hidden=\"true\" type=\"button\" aria-label=\"access key ");t.b(t.v(t.d("keyboard.ToolbarShow",c,p,0)));t.b("\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.ToolbarShow",c,p,0)));t.b("\"> </button>\r");t.b("\n" + i);t.b("  \r");t.b("\n" + i);t.b("  <button id=\"buttHideToolBar\" style=\"opacity:0;visibility:hidden;border:0;outline:0;padding:0;margin:0;width:0;height=0;\" tabindex=\"-1\" aria-hidden=\"true\" type=\"button\" aria-label=\"access key ");t.b(t.v(t.d("keyboard.ToolbarHide",c,p,0)));t.b("\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.ToolbarHide",c,p,0)));t.b("\"> </button>\r");t.b("\n" + i);t.b("  \r");t.b("\n" + i);t.b("  <button id=\"buttNightTheme\" style=\"opacity:0;visibility:hidden;border:0;outline:0;padding:0;margin:0;width:0;height=0;\" tabindex=\"-1\" aria-hidden=\"true\" type=\"button\" aria-label=\"access key ");t.b(t.v(t.d("keyboard.NightTheme",c,p,0)));t.b("\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.NightTheme",c,p,0)));t.b("\"> </button>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("  <button id=\"buttRatePlus\" style=\"opacity:0;visibility:hidden;border:0;outline:0;padding:0;margin:0;width:0;height=0;\" tabindex=\"-1\" aria-hidden=\"true\" type=\"button\" aria-label=\"access key ");t.b(t.v(t.d("keyboard.MediaOverlaysRateIncrease",c,p,0)));t.b("\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysRateIncrease",c,p,0)));t.b("\"> </button>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("  <button id=\"buttRateMinus\" style=\"opacity:0;visibility:hidden;border:0;outline:0;padding:0;margin:0;width:0;height=0;\" tabindex=\"-1\" aria-hidden=\"true\" type=\"button\" aria-label=\"access key ");t.b(t.v(t.d("keyboard.MediaOverlaysRateDecrease",c,p,0)));t.b("\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysRateDecrease",c,p,0)));t.b("\"> </button>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("  <button id=\"buttVolumePlus\" style=\"opacity:0;visibility:hidden;border:0;outline:0;padding:0;margin:0;width:0;height=0;\" tabindex=\"-1\" aria-hidden=\"true\" type=\"button\" aria-label=\"access key ");t.b(t.v(t.d("keyboard.MediaOverlaysVolumeIncrease",c,p,0)));t.b("\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysVolumeIncrease",c,p,0)));t.b("\"> </button>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("  <button id=\"buttVolumeMinus\" style=\"opacity:0;visibility:hidden;border:0;outline:0;padding:0;margin:0;width:0;height=0;\" tabindex=\"-1\" aria-hidden=\"true\" type=\"button\" aria-label=\"access key ");t.b(t.v(t.d("keyboard.MediaOverlaysVolumeDecrease",c,p,0)));t.b("\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysVolumeDecrease",c,p,0)));t.b("\"> </button> -->\r");t.b("\n" + i);t.b("  \r");t.b("\n" + i);t.b("</header>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("<div class=\"btn-group navbar-right\">\r");t.b("\n" + i);t.b("  \r");t.b("\n" + i);t.b("  <!-- <div id=\"backgroundAudioTrack-div\">\r");t.b("\n" + i);t.b("    <button tabindex=\"-1\" id=\"backgroundAudioTrack-button-play\" type=\"button\" class=\"btn icon-play-audio-background\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_play_background",c,p,0)));t.b("\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.BackgroundAudioPlayPause",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("      <span class=\"glyphicon glyphicon-music\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    <button tabindex=\"-1\" id=\"backgroundAudioTrack-button-pause\" type=\"button\" class=\"btn icon-pause-audio-background\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_pause_background",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("      <span class=\"glyphicon glyphicon-volume-up\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    \r");t.b("\n" + i);t.b("  </div> -->\r");t.b("\n" + i);t.b("  \r");t.b("\n" + i);t.b("  <!--Audioplayer Controls START-->\r");t.b("\n" + i);t.b("  <!-- <div id=\"audioplayer\">\r");t.b("\n" + i);t.b("    <button tabindex=\"-1\" id=\"btn-collapse-audio\" type=\"button\" class=\"btn icon-collapse-audio\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_collapse",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("      <span class=\"glyphicon glyphicon-open\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    <button tabindex=\"-1\" id=\"btn-expand-audio\" type=\"button\" class=\"btn icon-expand-audio\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_expand",c,p,0)));t.b("\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysAdvancedPanelShowHide",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("      <span class=\"glyphicon glyphicon-save\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    <button tabindex=\"-1\" id=\"btn-previous-audio\" type=\"button\" class=\"btn icon-previous-audio\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_previous",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysPrevious",c,p,0)));t.b("]\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysPrevious",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("      <span class=\"glyphicon glyphicon-backward\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    <button tabindex=\"-1\" id=\"btn-play-audio\" type=\"button\" class=\"btn icon-play-audio\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_play",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysPlayPause",c,p,0)));t.b("]\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysPlayPause",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("      <span class=\"glyphicon glyphicon-play\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    <button tabindex=\"-1\" id=\"btn-pause-audio\" type=\"button\" class=\"btn icon-pause-audio\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_pause",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysPlayPause",c,p,0)));t.b("]\">\r");t.b("\n" + i);t.b("      <span class=\"glyphicon glyphicon-pause\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    <button tabindex=\"-1\" id=\"btn-next-audio\" type=\"button\" class=\"btn icon-next-audio\" arial-label=\"");t.b(t.v(t.d("strings.i18n_audio_next",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysNext",c,p,0)));t.b("]\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysNext",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("      <span class=\"glyphicon glyphicon-forward\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    <div id=\"audioResponsive\">\r");t.b("\n" + i);t.b("      <button tabindex=\"-1\" id=\"btn-audio-volume-mute\" type=\"button\" class=\"btn icon-audio-volume-mute\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_mute",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysVolumeMuteToggle",c,p,0)));t.b("]\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysVolumeMuteToggle",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("        <span class=\"glyphicon glyphicon-volume-up\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("      </button>\r");t.b("\n" + i);t.b("      <button tabindex=\"-1\" id=\"btn-audio-volume-unmute\" type=\"button\" class=\"btn icon-audio-volume-unmute\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_unmute",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysVolumeMuteToggle",c,p,0)));t.b("]\">\r");t.b("\n" + i);t.b("        <span class=\"glyphicon glyphicon-volume-off\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("      </button>\r");t.b("\n" + i);t.b("      <input tabindex=\"-1\" id=\"volume-range-slider\" type=\"range\" role=\"slider\" min=\"0\" aria-value-min=\"0\" aria-valuemin=\"0\" max=\"100\" aria-value-max=\"100\" aria-valuemax=\"100\" value=\"100\" aria-valuenow=\"100\" aria-value-now=\"100\" aria-valuetext=\"100%\" aria-value-text=\"100%\" arial-label=\"");t.b(t.v(t.d("strings.i18n_audio_volume",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysVolumeDecrease",c,p,0)));t.b("] / [");t.b(t.v(t.d("keyboard.MediaOverlaysVolumeIncrease",c,p,0)));t.b("]\" />\r");t.b("\n" + i);t.b("      <button tabindex=\"-1\" id=\"btn-touch-audio-enable\" type=\"button\" class=\"btn icon-touch-audio-enable\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_touch_enable",c,p,0)));t.b("\" >\r");t.b("\n" + i);t.b("        <span id=\"icon-touch-off-hand\" class=\"glyphicon glyphicon-hand-up\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("        <span id=\"icon-touch-off\" class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("      </button>\r");t.b("\n" + i);t.b("      <button tabindex=\"-1\" id=\"btn-touch-audio-disable\" type=\"button\" class=\"btn icon-touch-audio-disable\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_touch_disable",c,p,0)));t.b("\" >\r");t.b("\n" + i);t.b("        <span id=\"icon-touch-on-hand\" class=\"glyphicon glyphicon-hand-up\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("        <span id=\"icon-touch-on\" class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("      </button>\r");t.b("\n" + i);t.b("    </div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("    <div id=\"audioExpanded\" role=\"alert\">\r");t.b("\n" + i);t.b("      <input tabindex=\"-1\" id=\"time-range-slider\" type=\"range\" role=\"slider\" min=\"0\" aria-value-min=\"0\" aria-valuemin=\"0\" max=\"100\" aria-value-max=\"100\" aria-valuemax=\"100\" value=\"0\" aria-valuenow=\"0\" aria-value-now=\"0\" aria-valuetext=\"0%\" aria-value-text=\"0%\" data-value=\"0\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_time",c,p,0)));t.b("\"  />\r");t.b("\n" + i);t.b("      <button tabindex=\"-1\" id=\"btn-audio-rate\" type=\"button\" class=\"btn icon-rate-audio\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_rate_reset",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysRateReset",c,p,0)));t.b("]\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysRateReset",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("        <span class=\"glyphicon glyphicon-play-circle\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("      </button>\r");t.b("\n" + i);t.b("      <input tabindex=\"-1\" id=\"rate-range-slider\" type=\"range\" role=\"slider\" min=\"0\" aria-value-min=\"0\" aria-valuemin=\"0\" max=\"4\" aria-value-max=\"4\" aria-valuemax=\"4\" value=\"1\" aria-valuenow=\"1\" aria-value-now=\"1\" aria-valuetext=\"1x\" aria-value-text=\"1x\" step=\"0.1\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_rate",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysRateDecrease",c,p,0)));t.b("] / [");t.b(t.v(t.d("keyboard.MediaOverlaysRateIncrease",c,p,0)));t.b("]\" />\r");t.b("\n" + i);t.b("      <span aria-hidden=\"true\" tabindex=\"-1\" id=\"rate-range-slider-label\">1x</span>\r");t.b("\n" + i);t.b("      <form action=\"\" id=\"mo-sync-form\">\r");t.b("\n" + i);t.b("        <input tabindex=\"-1\" type=\"radio\" name=\"mo-sync\" value=\"default\" id=\"mo-sync-default\" class=\"mo-sync\" checked=\"checked\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_sync_default",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_audio_sync",c,p,0)));t.b("\"> </input>\r");t.b("\n" + i);t.b("        <label tabindex=\"-1\" for=\"mo-sync-default\" title=\"");t.b(t.v(t.d("strings.i18n_audio_sync_default",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_audio_sync",c,p,0)));t.b("\"><span aria-hidden=\"true\">&#8855;</span></label>\r");t.b("\n" + i);t.b("        <input tabindex=\"-1\" type=\"radio\" name=\"mo-sync\" value=\"word\" id=\"mo-sync-word\" class=\"mo-sync\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_sync_word",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_audio_sync",c,p,0)));t.b("\"> </input>\r");t.b("\n" + i);t.b("        <label tabindex=\"-1\" for=\"mo-sync-word\" title=\"");t.b(t.v(t.d("strings.i18n_audio_sync_word",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_audio_sync",c,p,0)));t.b("\"><span aria-hidden=\"true\">");t.b(t.v(t.d("strings.i18n_audio_sync_word",c,p,0)));t.b("</span></label>\r");t.b("\n" + i);t.b("        <input tabindex=\"-1\" type=\"radio\" name=\"mo-sync\" value=\"sentence\" id=\"mo-sync-sentence\" class=\"mo-sync\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_sync_sentence",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_audio_sync",c,p,0)));t.b("\"> </input>\r");t.b("\n" + i);t.b("        <label tabindex=\"-1\" for=\"mo-sync-sentence\" title=\"");t.b(t.v(t.d("strings.i18n_audio_sync_sentence",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_audio_sync",c,p,0)));t.b("\"><span aria-hidden=\"true\">");t.b(t.v(t.d("strings.i18n_audio_sync_sentence",c,p,0)));t.b("</span></label>\r");t.b("\n" + i);t.b("        <input tabindex=\"-1\" type=\"radio\" name=\"mo-sync\" value=\"paragraph\" id=\"mo-sync-paragraph\" class=\"mo-sync\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_sync_paragraph",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_audio_sync",c,p,0)));t.b("\"> </input>\r");t.b("\n" + i);t.b("        <label tabindex=\"-1\" for=\"mo-sync-paragraph\" title=\"");t.b(t.v(t.d("strings.i18n_audio_sync_paragraph",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_audio_sync",c,p,0)));t.b("\"><span aria-hidden=\"true\">");t.b(t.v(t.d("strings.i18n_audio_sync_paragraph",c,p,0)));t.b("</span></label>\r");t.b("\n" + i);t.b("      </form>\r");t.b("\n" + i);t.b("      <div id=\"audio-block\">\r");t.b("\n" + i);t.b("        <div id=\"mo-highlighters\">\r");t.b("\n" + i);t.b("          <button tabindex=\"-1\" id=\"mo-highlighter-0\" type=\"button\" class=\"btn btn-mo-highlighter\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_highlight",c,p,0)));t.b(": ");t.b(t.v(t.d("strings.i18n_audio_highlight_default",c,p,0)));t.b("\" aria-selected=\"true\" data-mohighlight=\"0\" >\r");t.b("\n" + i);t.b("            ");t.b(t.v(t.d("strings.i18n_audio_highlight_default",c,p,0)));t.b("\r");t.b("\n" + i);t.b("          </button>\r");t.b("\n" + i);t.b("          <button tabindex=\"-1\" id=\"mo-highlighter-1\" type=\"button\" class=\"btn btn-mo-highlighter\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_highlight",c,p,0)));t.b(": #1\" data-mohighlight=\"1\" >\r");t.b("\n" + i);t.b("          </button>\r");t.b("\n" + i);t.b("          <button tabindex=\"-1\" id=\"mo-highlighter-2\" type=\"button\" class=\"btn btn-mo-highlighter\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_highlight",c,p,0)));t.b(": #2\" data-mohighlight=\"2\" >\r");t.b("\n" + i);t.b("          </button>\r");t.b("\n" + i);t.b("          <button tabindex=\"-1\" id=\"mo-highlighter-3\" type=\"button\" class=\"btn btn-mo-highlighter\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_highlight",c,p,0)));t.b(": #3\" data-mohighlight=\"3\" >\r");t.b("\n" + i);t.b("          </button>\r");t.b("\n" + i);t.b("          <button tabindex=\"-1\" id=\"mo-highlighter-4\" type=\"button\" class=\"btn btn-mo-highlighter\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_highlight",c,p,0)));t.b(": #4\" data-mohighlight=\"4\" >\r");t.b("\n" + i);t.b("          </button>\r");t.b("\n" + i);t.b("          <button tabindex=\"-1\" id=\"mo-highlighter-5\" type=\"button\" class=\"btn btn-mo-highlighter\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_highlight",c,p,0)));t.b(": #5\" data-mohighlight=\"5\" >\r");t.b("\n" + i);t.b("          </button>\r");t.b("\n" + i);t.b("          <button tabindex=\"-1\" id=\"mo-highlighter-6\" type=\"button\" class=\"btn btn-mo-highlighter\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_highlight",c,p,0)));t.b(": #6\" data-mohighlight=\"6\" >\r");t.b("\n" + i);t.b("          </button>\r");t.b("\n" + i);t.b("        </div>\r");t.b("\n" + i);t.b("        <button tabindex=\"-1\" id=\"btn-playback-scroll-enable\" type=\"button\" class=\"btn icon-playback-scroll-enable\" aria-label=\"");t.b(t.v(t.d("strings.i18n_playback_scroll_enable",c,p,0)));t.b("\" >\r");t.b("\n" + i);t.b("          <span id=\"icon-playback-scroll-off\" class=\"glyphicon glyphicon-sort-by-attributes\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("        </button>\r");t.b("\n" + i);t.b("        <button tabindex=\"-1\" id=\"btn-playback-scroll-disable\" type=\"button\" class=\"btn icon-playback-scroll-disable\" aria-label=\"");t.b(t.v(t.d("strings.i18n_playback_scroll_disable",c,p,0)));t.b("\" >\r");t.b("\n" + i);t.b("          <span id=\"icon-playback-scroll-on\" class=\"glyphicon glyphicon-sort\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("        </button>\r");t.b("\n" + i);t.b("        <button tabindex=\"-1\" id=\"btn-auto-page-turn-enable\" type=\"button\" class=\"btn icon-auto-page-turn-enable\" aria-label=\"");t.b(t.v(t.d("strings.i18n_auto_page_turn_enable",c,p,0)));t.b("\" >\r");t.b("\n" + i);t.b("          <span id=\"icon-auto-page-turn-off\" class=\"glyphicon glyphicon-sound-stereo\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("        </button>\r");t.b("\n" + i);t.b("        <button tabindex=\"-1\" id=\"btn-auto-page-turn-disable\" type=\"button\" class=\"btn icon-auto-page-turn-disable\" aria-label=\"");t.b(t.v(t.d("strings.i18n_auto_page_turn_disable",c,p,0)));t.b("\" >\r");t.b("\n" + i);t.b("          <span id=\"icon-auto-page-turn-on\" class=\"glyphicon glyphicon-sound-dolby\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("        </button>\r");t.b("\n" + i);t.b("        <button tabindex=\"-1\" id=\"btn-skip-audio-enable\" type=\"button\" class=\"btn icon-skip-audio-enable\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_skip_enable",c,p,0)));t.b("\" >\r");t.b("\n" + i);t.b("          <span id=\"icon-skip-off\" class=\"glyphicon glyphicon-remove-circle\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("        </button>\r");t.b("\n" + i);t.b("        <button tabindex=\"-1\" id=\"btn-skip-audio-disable\" type=\"button\" class=\"btn icon-skip-audio-disable\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_skip_disable",c,p,0)));t.b("\" >\r");t.b("\n" + i);t.b("          <span id=\"icon-skip-on\" class=\"glyphicon glyphicon-ok-circle\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("        </button>\r");t.b("\n" + i);t.b("        <button tabindex=\"-1\" id=\"btn-esc-audio\" type=\"button\" class=\"btn icon-esc-audio\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_esc",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysEscape",c,p,0)));t.b("]\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysEscape",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("          <span class=\"glyphicon glyphicon-eject\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("        </button>\r");t.b("\n" + i);t.b("      </div> -->\r");t.b("\n" + i);t.b("      \r");t.b("\n" + i);t.b("      <!-- div class=\"checkbox\">\r");t.b("\n" + i);t.b("           <label>\r");t.b("\n" + i);t.b("             <input type=\"checkbox\" value=\"false\"> Skip\r");t.b("\n" + i);t.b("           </label>\r");t.b("\n" + i);t.b("            </div -->\r");t.b("\n" + i);t.b("        <!-- </div>\r");t.b("\n" + i);t.b("    </div>  -->\r");t.b("\n" + i);t.b("    <!--Audioplayer Controls END-->\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("    <!--\r");t.b("\n" + i);t.b("        <div class=\"bookmark-wrapper dropdown\">\r");t.b("\n" + i);t.b("        <a tabindex=\"1\" href=\"#\" data-toggle=\"dropdown\"><button type=\"button\" class=\"btn\" aria-label=\"");t.b(t.v(t.d("strings.bookmark",c,p,0)));t.b("\"><span class=\"glyphicon glyphicon-bookmark\" aria-hidden=\"true\"></span></button></a>\r");t.b("\n" + i);t.b("        <ul id=\"bookmark-menu\" class=\"dropdown-menu\" role=\"menu\">\r");t.b("\n" + i);t.b("            <li ><span tabindex=\"1\">Bookmark Page</a></li>\r");t.b("\n" + i);t.b("            <li ><span tabindex=\"1\">View Bookmarks</a></li>\r");t.b("\n" + i);t.b("        </ul>\r");t.b("\n" + i);t.b("    </div>\r");t.b("\n" + i);t.b("    -->\r");t.b("\n" + i);t.b("    <!--\r");t.b("\n" + i);t.b("        <button tabindex=\"1\" type=\"button\" class=\"btn icon-library\" aria-label=\"");t.b(t.v(t.d("strings.view_library",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.SwitchToLibrary",c,p,0)));t.b("]\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.SwitchToLibrary",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("        <span class=\"glyphicon glyphicon-folder-open\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    -->\r");t.b("\n" + i);t.b("    <!-- \r");t.b("\n" + i);t.b("    <button tabindex=\"1\" type=\"button\" class=\"btn icon-show-bookmarks\" aria-label=\"");t.b(t.v(t.d("strings.show_bookmarks",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("        <span class=\"glyphicon glyphicon-bookmark\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    -->\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("    <button id=\"searchButt\" type=\"button\" \r");t.b("\n" + i);t.b("        class=\"btn icon-search\"\r");t.b("\n" + i);t.b("        aria-label=\"");t.b(t.v(t.d("strings.search",c,p,0)));t.b("\"\r");t.b("\n" + i);t.b("        tabindex=\"0\" >\r");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-search.svg\" aria-hidden=\"true\" height=\"18px\" alt=\"");t.b(t.v(t.d("strings.search",c,p,0)));t.b("\" />\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    <div class=\"btn\">|</div>\r");t.b("\n" + i);t.b("    <button id=\"tocButt\" type=\"button\"\r");t.b("\n" + i);t.b("        class=\"btn icon-toc\"\r");t.b("\n" + i);t.b("        aria-label=\"");t.b(t.v(t.d("strings.toc",c,p,0)));t.b("\"\r");t.b("\n" + i);t.b("        accesskey=\"T\"\r");t.b("\n" + i);t.b("        tabindex=\"0\" >\r");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_toc.svg\" aria-hidden=\"true\" height=\"18px\" alt=\"");t.b(t.v(t.d("strings.toc",c,p,0)));t.b("\" />\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    <button id=\"highlightButt\" type=\"button\"\r");t.b("\n" + i);t.b("        class=\"btn icon-annotations\"\r");t.b("\n" + i);t.b("        aria-label=\"");t.b(t.v(t.d("strings.highlight_selection",c,p,0)));t.b("\"\r");t.b("\n" + i);t.b("        tabindex=\"0\" >\r");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_new-highlight.svg\" aria-hidden=\"true\" height=\"18px\" alt=\"");t.b(t.v(t.d("strings.highlight_selection",c,p,0)));t.b("\" />\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    <!-- <button tabindex=\"0\" type=\"button\" class=\"btn icon-shareUrl\" aria-label=\"");t.b(t.v(t.d("strings.share_url",c,p,0)));t.b("\"> -->\r");t.b("\n" + i);t.b("    <!--     <span class=\"glyphicon glyphicon-link\" aria-hidden=\"true\"></span> -->\r");t.b("\n" + i);t.b("    <!-- </button> -->\r");t.b("\n" + i);t.b("    <button id=\"showHighlightsButt\" type=\"button\"\r");t.b("\n" + i);t.b("        class=\"btn icon-show-annotations\"\r");t.b("\n" + i);t.b("        aria-label=\"");t.b(t.v(t.d("strings.show_annotations",c,p,0)));t.b("\"\r");t.b("\n" + i);t.b("        tabindex=\"0\">\r");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_highlight-list.svg\" aria-hidden=\"true\" height=\"18px\"  alt=\"");t.b(t.v(t.d("strings.show_annotations",c,p,0)));t.b("\"/>\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    <div class=\"btn\">|</div>\r");t.b("\n" + i);t.b("    <button id=\"bookmark-page\" type=\"button\"\r");t.b("\n" + i);t.b("        class=\"btn\"\r");t.b("\n" + i);t.b("        aria-label=\"");t.b(t.v(t.d("strings.bookmark",c,p,0)));t.b("\"\r");t.b("\n" + i);t.b("        accesskey=\"B\"\r");t.b("\n" + i);t.b("        tabindex=\"0\">\r");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_new-bookmark.svg\"aria-hidden=\"true\" height=\"18px\" alt=\"");t.b(t.v(t.d("strings.bookmark",c,p,0)));t.b("\" />\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    <button id=\"bookmark-show\" type=\"button\"\r");t.b("\n" + i);t.b("        class=\"btn\"\r");t.b("\n" + i);t.b("        aria-label=\"");t.b(t.v(t.d("strings.bookmark_list",c,p,0)));t.b("\"\r");t.b("\n" + i);t.b("        accesskey=\"O\"\r");t.b("\n" + i);t.b("        tabindex=\"0\">\r");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_bookmark-list.svg\" aria-hidden=\"true\" height=\"18px\" alt=\"");t.b(t.v(t.d("strings.bookmark_list",c,p,0)));t.b("\" />\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    <div class=\"btn\">|</div>\r");t.b("\n" + i);t.b("    <button id=\"settbutt1\" type=\"button\"\r");t.b("\n" + i);t.b("        class=\"btn icon-settings\"\r");t.b("\n" + i);t.b("        data-toggle=\"modal\"\r");t.b("\n" + i);t.b("        data-target=\"#settings-dialog\"\r");t.b("\n" + i);t.b("        aria-label=\"");t.b(t.v(t.d("strings.settings",c,p,0)));t.b("\"\r");t.b("\n" + i);t.b("        accesskey=\"S\"\r");t.b("\n" + i);t.b("        tabindex=\"0\">\r");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_settings.svg\" aria-hidden=\"true\" height=\"18px\" />\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("    <div tabindex=\"0\" role=\"button\" id=\"readerCurrentClassContainer\" style=\"width: auto; display: none;\" class=\"btn\">\r");t.b("\n" + i);t.b("        <span id=\"readerCurrentClass\"></span>\r");t.b("\n" + i);t.b("    </div>\r");t.b("\n" + i);t.b("    <button id=\"loginButt\" type=\"button\"\r");t.b("\n" + i);t.b("        class=\"btn icon-log-in\"\r");t.b("\n" + i);t.b("        tabindex=\"0\"\r");t.b("\n" + i);t.b("        aria-label=\"");t.b(t.v(t.d("strings.i18n_log_in",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_login.svg\" aria-hidden=\"true\" height=\"18px\" alt=\"");t.b(t.v(t.d("strings.i18n_log_in",c,p,0)));t.b("\" />\r");t.b("\n" + i);t.b("    </button>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("    <!-- <button tabindex=\"-1\" type=\"button\" class=\"btn icon-help\" aria-label=\"");t.b(t.v(t.d("strings.help",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.help",c,p,0)));t.b("]\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.help",c,p,0)));t.b("\">\r");t.b("\n" + i);t.b("        <span class=\"glyphicon glyphicon-question-sign\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("    </button> -->\r");t.b("\n" + i);t.b("    \r");t.b("\n" + i);t.b("    <!-- <button type=\"button\" class=\"btn btn-default icon icon-bookmark\"></button>-->\r");t.b("\n" + i);t.b("</div>\r");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/reader-navbar.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<header id=\"app-header\" class=\"btn-group navbar-left\">");t.b("\n" + i);t.b("  <!-- <button type=\"button\" class=\"btn btn-default icon icon-show-hide\"></button>  -->");t.b("\n" + i);t.b("  <button id=\"aboutButt1\" tabindex=\"0\" type=\"button\" class=\"btn\" aria-label=\"");t.b(t.v(t.d("strings.view_library",c,p,0)));t.b("\">");t.b("\n" + i);t.b("        <img style=\"margin-right: 1em;width: auto;height: 26px;\" src=\"");t.b(t.v(t.d("strings.i18n_pebl_webreader_logo",c,p,0)));t.b("\" alt=\"PeBL Logo\"/>");t.b("\n" + i);t.b("  </button>");t.b("\n" + i);t.b("  <h1 id=\"webreaderTitle\"></h1>");t.b("\n" + i);t.b("  ");t.b("\n" + i);t.b("  <!-- <button id=\"buttShowToolBar\" style=\"opacity:0;visibility:hidden;border:0;outline:0;padding:0;margin:0;width:1px;height=1px;\" tabindex=\"-1\" aria-hidden=\"true\" type=\"button\" aria-label=\"access key ");t.b(t.v(t.d("keyboard.ToolbarShow",c,p,0)));t.b("\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.ToolbarShow",c,p,0)));t.b("\"> </button>");t.b("\n" + i);t.b("  ");t.b("\n" + i);t.b("  <button id=\"buttHideToolBar\" style=\"opacity:0;visibility:hidden;border:0;outline:0;padding:0;margin:0;width:0;height=0;\" tabindex=\"-1\" aria-hidden=\"true\" type=\"button\" aria-label=\"access key ");t.b(t.v(t.d("keyboard.ToolbarHide",c,p,0)));t.b("\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.ToolbarHide",c,p,0)));t.b("\"> </button>");t.b("\n" + i);t.b("  ");t.b("\n" + i);t.b("  <button id=\"buttNightTheme\" style=\"opacity:0;visibility:hidden;border:0;outline:0;padding:0;margin:0;width:0;height=0;\" tabindex=\"-1\" aria-hidden=\"true\" type=\"button\" aria-label=\"access key ");t.b(t.v(t.d("keyboard.NightTheme",c,p,0)));t.b("\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.NightTheme",c,p,0)));t.b("\"> </button>");t.b("\n");t.b("\n" + i);t.b("  <button id=\"buttRatePlus\" style=\"opacity:0;visibility:hidden;border:0;outline:0;padding:0;margin:0;width:0;height=0;\" tabindex=\"-1\" aria-hidden=\"true\" type=\"button\" aria-label=\"access key ");t.b(t.v(t.d("keyboard.MediaOverlaysRateIncrease",c,p,0)));t.b("\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysRateIncrease",c,p,0)));t.b("\"> </button>");t.b("\n");t.b("\n" + i);t.b("  <button id=\"buttRateMinus\" style=\"opacity:0;visibility:hidden;border:0;outline:0;padding:0;margin:0;width:0;height=0;\" tabindex=\"-1\" aria-hidden=\"true\" type=\"button\" aria-label=\"access key ");t.b(t.v(t.d("keyboard.MediaOverlaysRateDecrease",c,p,0)));t.b("\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysRateDecrease",c,p,0)));t.b("\"> </button>");t.b("\n");t.b("\n" + i);t.b("  <button id=\"buttVolumePlus\" style=\"opacity:0;visibility:hidden;border:0;outline:0;padding:0;margin:0;width:0;height=0;\" tabindex=\"-1\" aria-hidden=\"true\" type=\"button\" aria-label=\"access key ");t.b(t.v(t.d("keyboard.MediaOverlaysVolumeIncrease",c,p,0)));t.b("\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysVolumeIncrease",c,p,0)));t.b("\"> </button>");t.b("\n");t.b("\n" + i);t.b("  <button id=\"buttVolumeMinus\" style=\"opacity:0;visibility:hidden;border:0;outline:0;padding:0;margin:0;width:0;height=0;\" tabindex=\"-1\" aria-hidden=\"true\" type=\"button\" aria-label=\"access key ");t.b(t.v(t.d("keyboard.MediaOverlaysVolumeDecrease",c,p,0)));t.b("\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysVolumeDecrease",c,p,0)));t.b("\"> </button> -->");t.b("\n" + i);t.b("  ");t.b("\n" + i);t.b("</header>");t.b("\n");t.b("\n" + i);t.b("<div class=\"btn-group navbar-right\">");t.b("\n" + i);t.b("  ");t.b("\n" + i);t.b("  <!-- <div id=\"backgroundAudioTrack-div\">");t.b("\n" + i);t.b("    <button tabindex=\"-1\" id=\"backgroundAudioTrack-button-play\" type=\"button\" class=\"btn icon-play-audio-background\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_play_background",c,p,0)));t.b("\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.BackgroundAudioPlayPause",c,p,0)));t.b("\">");t.b("\n" + i);t.b("      <span class=\"glyphicon glyphicon-music\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    <button tabindex=\"-1\" id=\"backgroundAudioTrack-button-pause\" type=\"button\" class=\"btn icon-pause-audio-background\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_pause_background",c,p,0)));t.b("\">");t.b("\n" + i);t.b("      <span class=\"glyphicon glyphicon-volume-up\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    ");t.b("\n" + i);t.b("  </div> -->");t.b("\n" + i);t.b("  ");t.b("\n" + i);t.b("  <!--Audioplayer Controls START-->");t.b("\n" + i);t.b("  <!-- <div id=\"audioplayer\">");t.b("\n" + i);t.b("    <button tabindex=\"-1\" id=\"btn-collapse-audio\" type=\"button\" class=\"btn icon-collapse-audio\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_collapse",c,p,0)));t.b("\">");t.b("\n" + i);t.b("      <span class=\"glyphicon glyphicon-open\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    <button tabindex=\"-1\" id=\"btn-expand-audio\" type=\"button\" class=\"btn icon-expand-audio\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_expand",c,p,0)));t.b("\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysAdvancedPanelShowHide",c,p,0)));t.b("\">");t.b("\n" + i);t.b("      <span class=\"glyphicon glyphicon-save\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    <button tabindex=\"-1\" id=\"btn-previous-audio\" type=\"button\" class=\"btn icon-previous-audio\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_previous",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysPrevious",c,p,0)));t.b("]\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysPrevious",c,p,0)));t.b("\">");t.b("\n" + i);t.b("      <span class=\"glyphicon glyphicon-backward\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    <button tabindex=\"-1\" id=\"btn-play-audio\" type=\"button\" class=\"btn icon-play-audio\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_play",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysPlayPause",c,p,0)));t.b("]\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysPlayPause",c,p,0)));t.b("\">");t.b("\n" + i);t.b("      <span class=\"glyphicon glyphicon-play\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    <button tabindex=\"-1\" id=\"btn-pause-audio\" type=\"button\" class=\"btn icon-pause-audio\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_pause",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysPlayPause",c,p,0)));t.b("]\">");t.b("\n" + i);t.b("      <span class=\"glyphicon glyphicon-pause\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    <button tabindex=\"-1\" id=\"btn-next-audio\" type=\"button\" class=\"btn icon-next-audio\" arial-label=\"");t.b(t.v(t.d("strings.i18n_audio_next",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysNext",c,p,0)));t.b("]\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysNext",c,p,0)));t.b("\">");t.b("\n" + i);t.b("      <span class=\"glyphicon glyphicon-forward\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    <div id=\"audioResponsive\">");t.b("\n" + i);t.b("      <button tabindex=\"-1\" id=\"btn-audio-volume-mute\" type=\"button\" class=\"btn icon-audio-volume-mute\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_mute",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysVolumeMuteToggle",c,p,0)));t.b("]\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysVolumeMuteToggle",c,p,0)));t.b("\">");t.b("\n" + i);t.b("        <span class=\"glyphicon glyphicon-volume-up\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("      </button>");t.b("\n" + i);t.b("      <button tabindex=\"-1\" id=\"btn-audio-volume-unmute\" type=\"button\" class=\"btn icon-audio-volume-unmute\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_unmute",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysVolumeMuteToggle",c,p,0)));t.b("]\">");t.b("\n" + i);t.b("        <span class=\"glyphicon glyphicon-volume-off\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("      </button>");t.b("\n" + i);t.b("      <input tabindex=\"-1\" id=\"volume-range-slider\" type=\"range\" role=\"slider\" min=\"0\" aria-value-min=\"0\" aria-valuemin=\"0\" max=\"100\" aria-value-max=\"100\" aria-valuemax=\"100\" value=\"100\" aria-valuenow=\"100\" aria-value-now=\"100\" aria-valuetext=\"100%\" aria-value-text=\"100%\" arial-label=\"");t.b(t.v(t.d("strings.i18n_audio_volume",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysVolumeDecrease",c,p,0)));t.b("] / [");t.b(t.v(t.d("keyboard.MediaOverlaysVolumeIncrease",c,p,0)));t.b("]\" />");t.b("\n" + i);t.b("      <button tabindex=\"-1\" id=\"btn-touch-audio-enable\" type=\"button\" class=\"btn icon-touch-audio-enable\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_touch_enable",c,p,0)));t.b("\" >");t.b("\n" + i);t.b("        <span id=\"icon-touch-off-hand\" class=\"glyphicon glyphicon-hand-up\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("        <span id=\"icon-touch-off\" class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("      </button>");t.b("\n" + i);t.b("      <button tabindex=\"-1\" id=\"btn-touch-audio-disable\" type=\"button\" class=\"btn icon-touch-audio-disable\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_touch_disable",c,p,0)));t.b("\" >");t.b("\n" + i);t.b("        <span id=\"icon-touch-on-hand\" class=\"glyphicon glyphicon-hand-up\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("        <span id=\"icon-touch-on\" class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("      </button>");t.b("\n" + i);t.b("    </div>");t.b("\n");t.b("\n" + i);t.b("    <div id=\"audioExpanded\" role=\"alert\">");t.b("\n" + i);t.b("      <input tabindex=\"-1\" id=\"time-range-slider\" type=\"range\" role=\"slider\" min=\"0\" aria-value-min=\"0\" aria-valuemin=\"0\" max=\"100\" aria-value-max=\"100\" aria-valuemax=\"100\" value=\"0\" aria-valuenow=\"0\" aria-value-now=\"0\" aria-valuetext=\"0%\" aria-value-text=\"0%\" data-value=\"0\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_time",c,p,0)));t.b("\"  />");t.b("\n" + i);t.b("      <button tabindex=\"-1\" id=\"btn-audio-rate\" type=\"button\" class=\"btn icon-rate-audio\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_rate_reset",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysRateReset",c,p,0)));t.b("]\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysRateReset",c,p,0)));t.b("\">");t.b("\n" + i);t.b("        <span class=\"glyphicon glyphicon-play-circle\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("      </button>");t.b("\n" + i);t.b("      <input tabindex=\"-1\" id=\"rate-range-slider\" type=\"range\" role=\"slider\" min=\"0\" aria-value-min=\"0\" aria-valuemin=\"0\" max=\"4\" aria-value-max=\"4\" aria-valuemax=\"4\" value=\"1\" aria-valuenow=\"1\" aria-value-now=\"1\" aria-valuetext=\"1x\" aria-value-text=\"1x\" step=\"0.1\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_rate",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysRateDecrease",c,p,0)));t.b("] / [");t.b(t.v(t.d("keyboard.MediaOverlaysRateIncrease",c,p,0)));t.b("]\" />");t.b("\n" + i);t.b("      <span aria-hidden=\"true\" tabindex=\"-1\" id=\"rate-range-slider-label\">1x</span>");t.b("\n" + i);t.b("      <form action=\"\" id=\"mo-sync-form\">");t.b("\n" + i);t.b("        <input tabindex=\"-1\" type=\"radio\" name=\"mo-sync\" value=\"default\" id=\"mo-sync-default\" class=\"mo-sync\" checked=\"checked\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_sync_default",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_audio_sync",c,p,0)));t.b("\"> </input>");t.b("\n" + i);t.b("        <label tabindex=\"-1\" for=\"mo-sync-default\" title=\"");t.b(t.v(t.d("strings.i18n_audio_sync_default",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_audio_sync",c,p,0)));t.b("\"><span aria-hidden=\"true\">&#8855;</span></label>");t.b("\n" + i);t.b("        <input tabindex=\"-1\" type=\"radio\" name=\"mo-sync\" value=\"word\" id=\"mo-sync-word\" class=\"mo-sync\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_sync_word",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_audio_sync",c,p,0)));t.b("\"> </input>");t.b("\n" + i);t.b("        <label tabindex=\"-1\" for=\"mo-sync-word\" title=\"");t.b(t.v(t.d("strings.i18n_audio_sync_word",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_audio_sync",c,p,0)));t.b("\"><span aria-hidden=\"true\">");t.b(t.v(t.d("strings.i18n_audio_sync_word",c,p,0)));t.b("</span></label>");t.b("\n" + i);t.b("        <input tabindex=\"-1\" type=\"radio\" name=\"mo-sync\" value=\"sentence\" id=\"mo-sync-sentence\" class=\"mo-sync\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_sync_sentence",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_audio_sync",c,p,0)));t.b("\"> </input>");t.b("\n" + i);t.b("        <label tabindex=\"-1\" for=\"mo-sync-sentence\" title=\"");t.b(t.v(t.d("strings.i18n_audio_sync_sentence",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_audio_sync",c,p,0)));t.b("\"><span aria-hidden=\"true\">");t.b(t.v(t.d("strings.i18n_audio_sync_sentence",c,p,0)));t.b("</span></label>");t.b("\n" + i);t.b("        <input tabindex=\"-1\" type=\"radio\" name=\"mo-sync\" value=\"paragraph\" id=\"mo-sync-paragraph\" class=\"mo-sync\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_sync_paragraph",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_audio_sync",c,p,0)));t.b("\"> </input>");t.b("\n" + i);t.b("        <label tabindex=\"-1\" for=\"mo-sync-paragraph\" title=\"");t.b(t.v(t.d("strings.i18n_audio_sync_paragraph",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_audio_sync",c,p,0)));t.b("\"><span aria-hidden=\"true\">");t.b(t.v(t.d("strings.i18n_audio_sync_paragraph",c,p,0)));t.b("</span></label>");t.b("\n" + i);t.b("      </form>");t.b("\n" + i);t.b("      <div id=\"audio-block\">");t.b("\n" + i);t.b("        <div id=\"mo-highlighters\">");t.b("\n" + i);t.b("          <button tabindex=\"-1\" id=\"mo-highlighter-0\" type=\"button\" class=\"btn btn-mo-highlighter\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_highlight",c,p,0)));t.b(": ");t.b(t.v(t.d("strings.i18n_audio_highlight_default",c,p,0)));t.b("\" aria-selected=\"true\" data-mohighlight=\"0\" >");t.b("\n" + i);t.b("            ");t.b(t.v(t.d("strings.i18n_audio_highlight_default",c,p,0)));t.b("\n" + i);t.b("          </button>");t.b("\n" + i);t.b("          <button tabindex=\"-1\" id=\"mo-highlighter-1\" type=\"button\" class=\"btn btn-mo-highlighter\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_highlight",c,p,0)));t.b(": #1\" data-mohighlight=\"1\" >");t.b("\n" + i);t.b("          </button>");t.b("\n" + i);t.b("          <button tabindex=\"-1\" id=\"mo-highlighter-2\" type=\"button\" class=\"btn btn-mo-highlighter\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_highlight",c,p,0)));t.b(": #2\" data-mohighlight=\"2\" >");t.b("\n" + i);t.b("          </button>");t.b("\n" + i);t.b("          <button tabindex=\"-1\" id=\"mo-highlighter-3\" type=\"button\" class=\"btn btn-mo-highlighter\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_highlight",c,p,0)));t.b(": #3\" data-mohighlight=\"3\" >");t.b("\n" + i);t.b("          </button>");t.b("\n" + i);t.b("          <button tabindex=\"-1\" id=\"mo-highlighter-4\" type=\"button\" class=\"btn btn-mo-highlighter\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_highlight",c,p,0)));t.b(": #4\" data-mohighlight=\"4\" >");t.b("\n" + i);t.b("          </button>");t.b("\n" + i);t.b("          <button tabindex=\"-1\" id=\"mo-highlighter-5\" type=\"button\" class=\"btn btn-mo-highlighter\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_highlight",c,p,0)));t.b(": #5\" data-mohighlight=\"5\" >");t.b("\n" + i);t.b("          </button>");t.b("\n" + i);t.b("          <button tabindex=\"-1\" id=\"mo-highlighter-6\" type=\"button\" class=\"btn btn-mo-highlighter\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_highlight",c,p,0)));t.b(": #6\" data-mohighlight=\"6\" >");t.b("\n" + i);t.b("          </button>");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <button tabindex=\"-1\" id=\"btn-playback-scroll-enable\" type=\"button\" class=\"btn icon-playback-scroll-enable\" aria-label=\"");t.b(t.v(t.d("strings.i18n_playback_scroll_enable",c,p,0)));t.b("\" >");t.b("\n" + i);t.b("          <span id=\"icon-playback-scroll-off\" class=\"glyphicon glyphicon-sort-by-attributes\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("        </button>");t.b("\n" + i);t.b("        <button tabindex=\"-1\" id=\"btn-playback-scroll-disable\" type=\"button\" class=\"btn icon-playback-scroll-disable\" aria-label=\"");t.b(t.v(t.d("strings.i18n_playback_scroll_disable",c,p,0)));t.b("\" >");t.b("\n" + i);t.b("          <span id=\"icon-playback-scroll-on\" class=\"glyphicon glyphicon-sort\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("        </button>");t.b("\n" + i);t.b("        <button tabindex=\"-1\" id=\"btn-auto-page-turn-enable\" type=\"button\" class=\"btn icon-auto-page-turn-enable\" aria-label=\"");t.b(t.v(t.d("strings.i18n_auto_page_turn_enable",c,p,0)));t.b("\" >");t.b("\n" + i);t.b("          <span id=\"icon-auto-page-turn-off\" class=\"glyphicon glyphicon-sound-stereo\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("        </button>");t.b("\n" + i);t.b("        <button tabindex=\"-1\" id=\"btn-auto-page-turn-disable\" type=\"button\" class=\"btn icon-auto-page-turn-disable\" aria-label=\"");t.b(t.v(t.d("strings.i18n_auto_page_turn_disable",c,p,0)));t.b("\" >");t.b("\n" + i);t.b("          <span id=\"icon-auto-page-turn-on\" class=\"glyphicon glyphicon-sound-dolby\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("        </button>");t.b("\n" + i);t.b("        <button tabindex=\"-1\" id=\"btn-skip-audio-enable\" type=\"button\" class=\"btn icon-skip-audio-enable\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_skip_enable",c,p,0)));t.b("\" >");t.b("\n" + i);t.b("          <span id=\"icon-skip-off\" class=\"glyphicon glyphicon-remove-circle\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("        </button>");t.b("\n" + i);t.b("        <button tabindex=\"-1\" id=\"btn-skip-audio-disable\" type=\"button\" class=\"btn icon-skip-audio-disable\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_skip_disable",c,p,0)));t.b("\" >");t.b("\n" + i);t.b("          <span id=\"icon-skip-on\" class=\"glyphicon glyphicon-ok-circle\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("        </button>");t.b("\n" + i);t.b("        <button tabindex=\"-1\" id=\"btn-esc-audio\" type=\"button\" class=\"btn icon-esc-audio\" aria-label=\"");t.b(t.v(t.d("strings.i18n_audio_esc",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.MediaOverlaysEscape",c,p,0)));t.b("]\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.MediaOverlaysEscape",c,p,0)));t.b("\">");t.b("\n" + i);t.b("          <span class=\"glyphicon glyphicon-eject\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("        </button>");t.b("\n" + i);t.b("      </div> -->");t.b("\n" + i);t.b("      ");t.b("\n" + i);t.b("      <!-- div class=\"checkbox\">");t.b("\n" + i);t.b("           <label>");t.b("\n" + i);t.b("             <input type=\"checkbox\" value=\"false\"> Skip");t.b("\n" + i);t.b("           </label>");t.b("\n" + i);t.b("            </div -->");t.b("\n" + i);t.b("        <!-- </div>");t.b("\n" + i);t.b("    </div>  -->");t.b("\n" + i);t.b("    <!--Audioplayer Controls END-->");t.b("\n");t.b("\n");t.b("\n" + i);t.b("    <!--");t.b("\n" + i);t.b("        <div class=\"bookmark-wrapper dropdown\">");t.b("\n" + i);t.b("        <a tabindex=\"1\" href=\"#\" data-toggle=\"dropdown\"><button type=\"button\" class=\"btn\" aria-label=\"");t.b(t.v(t.d("strings.bookmark",c,p,0)));t.b("\"><span class=\"glyphicon glyphicon-bookmark\" aria-hidden=\"true\"></span></button></a>");t.b("\n" + i);t.b("        <ul id=\"bookmark-menu\" class=\"dropdown-menu\" role=\"menu\">");t.b("\n" + i);t.b("            <li ><span tabindex=\"1\">Bookmark Page</a></li>");t.b("\n" + i);t.b("            <li ><span tabindex=\"1\">View Bookmarks</a></li>");t.b("\n" + i);t.b("        </ul>");t.b("\n" + i);t.b("    </div>");t.b("\n" + i);t.b("    -->");t.b("\n" + i);t.b("    <!--");t.b("\n" + i);t.b("        <button tabindex=\"1\" type=\"button\" class=\"btn icon-library\" aria-label=\"");t.b(t.v(t.d("strings.view_library",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.SwitchToLibrary",c,p,0)));t.b("]\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.SwitchToLibrary",c,p,0)));t.b("\">");t.b("\n" + i);t.b("        <span class=\"glyphicon glyphicon-folder-open\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    -->");t.b("\n" + i);t.b("    <!-- ");t.b("\n" + i);t.b("    <button tabindex=\"1\" type=\"button\" class=\"btn icon-show-bookmarks\" aria-label=\"");t.b(t.v(t.d("strings.show_bookmarks",c,p,0)));t.b("\">");t.b("\n" + i);t.b("        <span class=\"glyphicon glyphicon-bookmark\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    -->");t.b("\n");t.b("\n" + i);t.b("    <button id=\"searchButt\" type=\"button\" ");t.b("\n" + i);t.b("        class=\"btn icon-search\"");t.b("\n" + i);t.b("        aria-label=\"");t.b(t.v(t.d("strings.search",c,p,0)));t.b("\"");t.b("\n" + i);t.b("        tabindex=\"0\" >");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-search.svg\" aria-hidden=\"true\" height=\"18px\" alt=\"");t.b(t.v(t.d("strings.search",c,p,0)));t.b("\" />");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    <div class=\"btn\">|</div>");t.b("\n" + i);t.b("    <button id=\"tocButt\" type=\"button\"");t.b("\n" + i);t.b("        class=\"btn icon-toc\"");t.b("\n" + i);t.b("        aria-label=\"");t.b(t.v(t.d("strings.toc",c,p,0)));t.b("\"");t.b("\n" + i);t.b("        accesskey=\"T\"");t.b("\n" + i);t.b("        tabindex=\"0\" >");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_toc.svg\" aria-hidden=\"true\" height=\"18px\" alt=\"");t.b(t.v(t.d("strings.toc",c,p,0)));t.b("\" />");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    <button id=\"highlightButt\" type=\"button\"");t.b("\n" + i);t.b("        class=\"btn icon-annotations\"");t.b("\n" + i);t.b("        aria-label=\"");t.b(t.v(t.d("strings.highlight_selection",c,p,0)));t.b("\"");t.b("\n" + i);t.b("        tabindex=\"0\" >");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_new-highlight.svg\" aria-hidden=\"true\" height=\"18px\" alt=\"");t.b(t.v(t.d("strings.highlight_selection",c,p,0)));t.b("\" />");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    <!-- <button tabindex=\"0\" type=\"button\" class=\"btn icon-shareUrl\" aria-label=\"");t.b(t.v(t.d("strings.share_url",c,p,0)));t.b("\"> -->");t.b("\n" + i);t.b("    <!--     <span class=\"glyphicon glyphicon-link\" aria-hidden=\"true\"></span> -->");t.b("\n" + i);t.b("    <!-- </button> -->");t.b("\n" + i);t.b("    <button id=\"showHighlightsButt\" type=\"button\"");t.b("\n" + i);t.b("        class=\"btn icon-show-annotations\"");t.b("\n" + i);t.b("        aria-label=\"");t.b(t.v(t.d("strings.show_annotations",c,p,0)));t.b("\"");t.b("\n" + i);t.b("        tabindex=\"0\">");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_highlight-list.svg\" aria-hidden=\"true\" height=\"18px\"  alt=\"");t.b(t.v(t.d("strings.show_annotations",c,p,0)));t.b("\"/>");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    <div class=\"btn\">|</div>");t.b("\n" + i);t.b("    <button id=\"bookmark-page\" type=\"button\"");t.b("\n" + i);t.b("        class=\"btn\"");t.b("\n" + i);t.b("        aria-label=\"");t.b(t.v(t.d("strings.bookmark",c,p,0)));t.b("\"");t.b("\n" + i);t.b("        accesskey=\"B\"");t.b("\n" + i);t.b("        tabindex=\"0\">");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_new-bookmark.svg\"aria-hidden=\"true\" height=\"18px\" alt=\"");t.b(t.v(t.d("strings.bookmark",c,p,0)));t.b("\" />");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    <button id=\"bookmark-show\" type=\"button\"");t.b("\n" + i);t.b("        class=\"btn\"");t.b("\n" + i);t.b("        aria-label=\"");t.b(t.v(t.d("strings.bookmark_list",c,p,0)));t.b("\"");t.b("\n" + i);t.b("        accesskey=\"O\"");t.b("\n" + i);t.b("        tabindex=\"0\">");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_bookmark-list.svg\" aria-hidden=\"true\" height=\"18px\" alt=\"");t.b(t.v(t.d("strings.bookmark_list",c,p,0)));t.b("\" />");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    <div class=\"btn\">|</div>");t.b("\n" + i);t.b("    <button id=\"settbutt1\" type=\"button\"");t.b("\n" + i);t.b("        class=\"btn icon-settings\"");t.b("\n" + i);t.b("        data-toggle=\"modal\"");t.b("\n" + i);t.b("        data-target=\"#settings-dialog\"");t.b("\n" + i);t.b("        aria-label=\"");t.b(t.v(t.d("strings.settings",c,p,0)));t.b("\"");t.b("\n" + i);t.b("        accesskey=\"S\"");t.b("\n" + i);t.b("        tabindex=\"0\">");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_settings.svg\" aria-hidden=\"true\" height=\"18px\" />");t.b("\n" + i);t.b("    </button>");t.b("\n" + i);t.b("    <div tabindex=\"0\" role=\"button\" id=\"readerCurrentClassContainer\" style=\"width: auto; display: none;\" class=\"btn\">");t.b("\n" + i);t.b("        <span id=\"readerCurrentClass\"></span>");t.b("\n" + i);t.b("    </div>");t.b("\n" + i);t.b("    <button id=\"loginButt\" type=\"button\"");t.b("\n" + i);t.b("        class=\"btn icon-log-in\"");t.b("\n" + i);t.b("        tabindex=\"0\"");t.b("\n" + i);t.b("        aria-label=\"");t.b(t.v(t.d("strings.i18n_log_in",c,p,0)));t.b("\">");t.b("\n" + i);t.b("        <img src=\"images/pebl-icons-wip_login.svg\" aria-hidden=\"true\" height=\"18px\" alt=\"");t.b(t.v(t.d("strings.i18n_log_in",c,p,0)));t.b("\" />");t.b("\n" + i);t.b("    </button>");t.b("\n");t.b("\n" + i);t.b("    <!-- <button tabindex=\"-1\" type=\"button\" class=\"btn icon-help\" aria-label=\"");t.b(t.v(t.d("strings.help",c,p,0)));t.b(" [");t.b(t.v(t.d("keyboard.help",c,p,0)));t.b("]\" accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.help",c,p,0)));t.b("\">");t.b("\n" + i);t.b("        <span class=\"glyphicon glyphicon-question-sign\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("    </button> -->");t.b("\n" + i);t.b("    ");t.b("\n" + i);t.b("    <!-- <button type=\"button\" class=\"btn btn-default icon icon-bookmark\"></button>-->");t.b("\n" + i);t.b("</div>");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/reader-body.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div id=\"reading-area\" role=\"main\" tabindex=\"0\" aria-label=\"reading area\">  \r");t.b("\n" + i);t.b("  <div id=\"epub-reader-container\">\r");t.b("\n" + i);t.b("    <div id=\"epub-reader-frame\">\r");t.b("\n" + i);t.b("    </div>\r");t.b("\n" + i);t.b("  </div>\r");t.b("\n" + i);t.b("  \r");t.b("\n" + i);t.b("  <div id=\"readium-page-btns\" role=\"navigation\">\r");t.b("\n" + i);t.b("    <!-- page left/right buttons inserted here when EPUB is loaded (page progression direction) -->\r");t.b("\n" + i);t.b("  </div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("  <div id=\"readium-slider\" title=\"Book Slider\" role=\"slider\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"0\" aria-orientation=\"horizontal\"></div>\r");t.b("\n" + i);t.b("  \r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("<div id=\"readium-toc-body\" class=\"sidebar-body\" aria-label=\"");t.b(t.v(t.d("strings.toc",c,p,0)));t.b("\" role=\"nav\" tabindex=\"-1\"></div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("<div id=\"annotations-body\" class=\"sidebar-body\" role=\"complementary\" aria-labelledby=\"annotationsLabel\" tabindex=\"-1\">\r");t.b("\n" + i);t.b("  <h2 id=\"annotationsLabel\">Highlights and Annotations</h2>\r");t.b("\n" + i);t.b("	<h3><img src=\"images/pebl-icons-wip_highlight-list.svg\" aria-hidden=\"true\" height=\"18px\"> My Private Annotations</h3>\r");t.b("\n" + i);t.b("  <button id=\"downloadAnnotationsButton\">Download notes and annotations</button>\r");t.b("\n" + i);t.b("	<div id=\"my-annotations\"></div>\r");t.b("\n" + i);if(!t.s(t.d("disabledFeatures.sharedAnnotations",c,p,1),c,p,1,0,0,"")){t.b("	<h3><img src=\"images/pebl-icons-wip_highlight-list.svg\" aria-hidden=\"true\" height=\"18px\"> My Shared Annotations</h3>\r");t.b("\n" + i);t.b("	<div id=\"my-shared-annotations\"></div>\r");t.b("\n" + i);t.b("	<h3><img src=\"images/pebl-icons-wip_highlight-list.svg\" aria-hidden=\"true\" height=\"18px\"> Shared with Me</h3>\r");t.b("\n" + i);t.b("  <button id=\"hideSharedAnnotationsButton\">Hide shared annotations</button>\r");t.b("\n" + i);t.b("	<div id=\"general-shared-annotations\"></div>\r");t.b("\n" + i);};t.b("</div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("<div id=\"bookmarks-body\"class=\"sidebar-body\" aria-label=\"");t.b(t.v(t.d("strings.bookmarks",c,p,0)));t.b("\" role=\"complementary\" tabindex=\"-1\"></div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("<div id=\"search-body\" class=\"sidebar-body\" aria-label=\"");t.b(t.v(t.d("strings.search",c,p,0)));t.b("\" role=\"complementary\" tabindex=\"-1\"></div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("<select aria-label=\"IOS Keyboard Clear Input\" aria-hidden=\"true\" style=\"display: none; position: absolute; top: -100vh;\" id=\"iosKeyboardClearInput\"></select>\r");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/reader-body.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div id=\"reading-area\" role=\"main\" tabindex=\"0\" aria-label=\"reading area\">  ");t.b("\n" + i);t.b("  <div id=\"epub-reader-container\">");t.b("\n" + i);t.b("    <div id=\"epub-reader-frame\">");t.b("\n" + i);t.b("    </div>");t.b("\n" + i);t.b("  </div>");t.b("\n" + i);t.b("  ");t.b("\n" + i);t.b("  <div id=\"readium-page-btns\" role=\"navigation\">");t.b("\n" + i);t.b("    <!-- page left/right buttons inserted here when EPUB is loaded (page progression direction) -->");t.b("\n" + i);t.b("  </div>");t.b("\n");t.b("\n" + i);t.b("  <div id=\"readium-slider\" title=\"Book Slider\" role=\"slider\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"0\" aria-orientation=\"horizontal\"></div>");t.b("\n" + i);t.b("  ");t.b("\n" + i);t.b("</div>");t.b("\n");t.b("\n" + i);t.b("<div id=\"readium-toc-body\" class=\"sidebar-body\" aria-label=\"");t.b(t.v(t.d("strings.toc",c,p,0)));t.b("\" role=\"nav\" tabindex=\"-1\"></div>");t.b("\n");t.b("\n" + i);t.b("<div id=\"annotations-body\" class=\"sidebar-body\" role=\"complementary\" aria-labelledby=\"annotationsLabel\" tabindex=\"-1\">");t.b("\n" + i);t.b("  <h2 id=\"annotationsLabel\">Highlights and Annotations</h2>");t.b("\n" + i);t.b("	<h3><img src=\"images/pebl-icons-wip_highlight-list.svg\" aria-hidden=\"true\" height=\"18px\"> My Private Annotations</h3>");t.b("\n" + i);t.b("  <button id=\"downloadAnnotationsButton\">Download notes and annotations</button>");t.b("\n" + i);t.b("	<div id=\"my-annotations\"></div>");t.b("\n" + i);if(!t.s(t.d("disabledFeatures.sharedAnnotations",c,p,1),c,p,1,0,0,"")){t.b("	<h3><img src=\"images/pebl-icons-wip_highlight-list.svg\" aria-hidden=\"true\" height=\"18px\"> My Shared Annotations</h3>");t.b("\n" + i);t.b("	<div id=\"my-shared-annotations\"></div>");t.b("\n" + i);t.b("	<h3><img src=\"images/pebl-icons-wip_highlight-list.svg\" aria-hidden=\"true\" height=\"18px\"> Shared with Me</h3>");t.b("\n" + i);t.b("  <button id=\"hideSharedAnnotationsButton\">Hide shared annotations</button>");t.b("\n" + i);t.b("	<div id=\"general-shared-annotations\"></div>");t.b("\n" + i);};t.b("</div>");t.b("\n");t.b("\n" + i);t.b("<div id=\"bookmarks-body\"class=\"sidebar-body\" aria-label=\"");t.b(t.v(t.d("strings.bookmarks",c,p,0)));t.b("\" role=\"complementary\" tabindex=\"-1\"></div>");t.b("\n");t.b("\n" + i);t.b("<div id=\"search-body\" class=\"sidebar-body\" aria-label=\"");t.b(t.v(t.d("strings.search",c,p,0)));t.b("\" role=\"complementary\" tabindex=\"-1\"></div>");t.b("\n");t.b("\n");t.b("\n");t.b("\n" + i);t.b("<select aria-label=\"IOS Keyboard Clear Input\" aria-hidden=\"true\" style=\"display: none; position: absolute; top: -100vh;\" id=\"iosKeyboardClearInput\"></select>");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/reader-body-page-btns.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<!-- Left page -->\r");t.b("\n" + i);t.b("<button tabindex=\"0\" id=\"left-page-btn\" class=\"page-switch-overlay-icon\" type=\"button\"\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);if(t.s(t.f("pageProgressionDirectionIsRTL",c,p,1),c,p,0,144,244,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("\r");t.b("\n" + i);t.b("aria-label=\"");t.b(t.v(t.d("strings.i18n_page_next",c,p,0)));t.b("\"\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.PagePreviousAlt",c,p,0)));t.b("\"\r");t.b("\n" + i);});c.pop();}t.b("\r");t.b("\n" + i);if(!t.s(t.f("pageProgressionDirectionIsRTL",c,p,1),c,p,1,0,0,"")){t.b("\r");t.b("\n" + i);t.b("aria-label=\"");t.b(t.v(t.d("strings.i18n_page_previous",c,p,0)));t.b("\"\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.PagePreviousAlt",c,p,0)));t.b("\"\r");t.b("\n" + i);};t.b("\r");t.b("\n" + i);t.b("onclick=\"skipToMainContent(event);\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("<!-- img aria-hidden=\"true\" src=\"images/pagination1.svg\" -->\r");t.b("\n" + i);t.b("<span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("</button>\r");t.b("\n" + i);t.b("  \r");t.b("\n" + i);t.b("<!-- Right page -->\r");t.b("\n" + i);t.b("<button tabindex=\"0\" id=\"right-page-btn\" class=\"page-switch-overlay-icon\" type=\"button\"\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);if(t.s(t.f("pageProgressionDirectionIsRTL",c,p,1),c,p,0,796,896,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("\r");t.b("\n" + i);t.b("aria-label=\"");t.b(t.v(t.d("strings.i18n_page_previous",c,p,0)));t.b("\"\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.PageNextAlt",c,p,0)));t.b("\"\r");t.b("\n" + i);});c.pop();}t.b("\r");t.b("\n" + i);if(!t.s(t.f("pageProgressionDirectionIsRTL",c,p,1),c,p,1,0,0,"")){t.b("\r");t.b("\n" + i);t.b("aria-label=\"");t.b(t.v(t.d("strings.i18n_page_next",c,p,0)));t.b("\"\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.PageNextAlt",c,p,0)));t.b("\"\r");t.b("\n" + i);};t.b("\r");t.b("\n" + i);t.b("onclick=\"skipToMainContent(event);\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("<!-- img aria-hidden=\"true\" src=\"images/pagination1.svg\" -->\r");t.b("\n" + i);t.b("<span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span>\r");t.b("\n" + i);t.b("</button>\r");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/reader-body-page-btns.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<!-- Left page -->");t.b("\n" + i);t.b("<button tabindex=\"0\" id=\"left-page-btn\" class=\"page-switch-overlay-icon\" type=\"button\"");t.b("\n");t.b("\n" + i);if(t.s(t.f("pageProgressionDirectionIsRTL",c,p,1),c,p,0,141,236,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("\n" + i);t.b("aria-label=\"");t.b(t.v(t.d("strings.i18n_page_next",c,p,0)));t.b("\"");t.b("\n");t.b("\n" + i);t.b("accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.PagePreviousAlt",c,p,0)));t.b("\"");t.b("\n" + i);});c.pop();}t.b("\n" + i);if(!t.s(t.f("pageProgressionDirectionIsRTL",c,p,1),c,p,1,0,0,"")){t.b("\n" + i);t.b("aria-label=\"");t.b(t.v(t.d("strings.i18n_page_previous",c,p,0)));t.b("\"");t.b("\n");t.b("\n" + i);t.b("accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.PagePreviousAlt",c,p,0)));t.b("\"");t.b("\n" + i);};t.b("\n" + i);t.b("onclick=\"skipToMainContent(event);\">");t.b("\n");t.b("\n" + i);t.b("<!-- img aria-hidden=\"true\" src=\"images/pagination1.svg\" -->");t.b("\n" + i);t.b("<span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("</button>");t.b("\n" + i);t.b("  ");t.b("\n" + i);t.b("<!-- Right page -->");t.b("\n" + i);t.b("<button tabindex=\"0\" id=\"right-page-btn\" class=\"page-switch-overlay-icon\" type=\"button\"");t.b("\n");t.b("\n" + i);if(t.s(t.f("pageProgressionDirectionIsRTL",c,p,1),c,p,0,770,865,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("\n" + i);t.b("aria-label=\"");t.b(t.v(t.d("strings.i18n_page_previous",c,p,0)));t.b("\"");t.b("\n");t.b("\n" + i);t.b("accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.PageNextAlt",c,p,0)));t.b("\"");t.b("\n" + i);});c.pop();}t.b("\n" + i);if(!t.s(t.f("pageProgressionDirectionIsRTL",c,p,1),c,p,1,0,0,"")){t.b("\n" + i);t.b("aria-label=\"");t.b(t.v(t.d("strings.i18n_page_next",c,p,0)));t.b("\"");t.b("\n");t.b("\n" + i);t.b("accesskey=\"");t.b(t.v(t.d("keyboard.accesskeys.PageNextAlt",c,p,0)));t.b("\"");t.b("\n" + i);};t.b("\n" + i);t.b("onclick=\"skipToMainContent(event);\">");t.b("\n");t.b("\n" + i);t.b("<!-- img aria-hidden=\"true\" src=\"images/pagination1.svg\" -->");t.b("\n" + i);t.b("<span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span>");t.b("\n" + i);t.b("</button>");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/add-bookmark-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"add-bookmark-dialog\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"add-bookmark-label\">\r");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">\r");t.b("\n" + i);t.b("        <div class=\"modal-content\">\r");t.b("\n" + i);t.b("            <div class=\"modal-header\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <button id=\"closeAddBookmarkCross\" type=\"button\" class=\"close\" data-dismiss=\"modal\" tabindex=\"0\" title=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_add_bookmark",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_add_bookmark",c,p,0)));t.b("\"><span aria-hidden=\"true\">&times;</span></button>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"add-bookmark-label\" tabindex=\"0\">New Bookmark</h2>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("            <div class=\"modal-body\">\r");t.b("\n" + i);t.b("                <div class=\"bookmarkInputContainer\">\r");t.b("\n" + i);t.b("                    <input type=\"text\" placeholder=\"Bookmark name...\" id=\"bookmarkInput\" aria-label=\"bookmark name\">\r");t.b("\n" + i);t.b("                </div>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("            <div class=\"modal-footer\">\r");t.b("\n" + i);t.b("                <button id=\"add-bookmark-submit\" tabindex=\"0\" type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\">Add Bookmark</button>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("        </div>\r");t.b("\n" + i);t.b("        <!-- /.modal-content --> \r");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/add-bookmark-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"add-bookmark-dialog\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"add-bookmark-label\">");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">");t.b("\n" + i);t.b("        <div class=\"modal-content\">");t.b("\n" + i);t.b("            <div class=\"modal-header\">");t.b("\n");t.b("\n" + i);t.b("                <button id=\"closeAddBookmarkCross\" type=\"button\" class=\"close\" data-dismiss=\"modal\" tabindex=\"0\" title=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_add_bookmark",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_add_bookmark",c,p,0)));t.b("\"><span aria-hidden=\"true\">&times;</span></button>");t.b("\n");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"add-bookmark-label\" tabindex=\"0\">New Bookmark</h2>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("            <div class=\"modal-body\">");t.b("\n" + i);t.b("                <div class=\"bookmarkInputContainer\">");t.b("\n" + i);t.b("                    <input type=\"text\" placeholder=\"Bookmark name...\" id=\"bookmarkInput\" aria-label=\"bookmark name\">");t.b("\n" + i);t.b("                </div>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("            <div class=\"modal-footer\">");t.b("\n" + i);t.b("                <button id=\"add-bookmark-submit\" tabindex=\"0\" type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\">Add Bookmark</button>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <!-- /.modal-content --> ");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->");t.b("\n" + i);t.b("</div>");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/add-note-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"add-note-dialog\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"add-note-label\">\r");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">\r");t.b("\n" + i);t.b("        <div class=\"modal-content\">\r");t.b("\n" + i);t.b("            <div class=\"modal-header\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <button id=\"clodeAddNoteCross\" type=\"button\" class=\"close\" data-dismiss=\"modal\" tabindex=\"0\" title=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_add_note",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_add_note",c,p,0)));t.b("\"><span aria-hidden=\"true\">&times;</span></button>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"add-note-label\">");t.b(t.v(t.d("strings.i18n_add_note",c,p,0)));t.b("</h2>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("            <div class=\"modal-body\">\r");t.b("\n" + i);t.b("                <div class=\"annotationInputContainer\">\r");t.b("\n" + i);t.b("                    <label for=\"annotationInput\">");t.b(t.v(t.d("strings.i18n_add_note",c,p,0)));t.b("</label>\r");t.b("\n" + i);t.b("                    <textarea type=\"text\" placeholder=\"Add a note for this highlight\" id=\"annotationInput\" tabindex=\"0\"></textarea>\r");t.b("\n" + i);t.b("                </div>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("            <div class=\"modal-footer\">\r");t.b("\n" + i);t.b("                <button id=\"add-note-submit\" tabindex=\"0\" type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\">Add Note</button>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("        </div>\r");t.b("\n" + i);t.b("        <!-- /.modal-content --> \r");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/add-note-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"add-note-dialog\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"add-note-label\">");t.b("\n" + i);t.b("    <div class=\"modal-dialog\">");t.b("\n" + i);t.b("        <div class=\"modal-content\">");t.b("\n" + i);t.b("            <div class=\"modal-header\">");t.b("\n");t.b("\n" + i);t.b("                <button id=\"clodeAddNoteCross\" type=\"button\" class=\"close\" data-dismiss=\"modal\" tabindex=\"0\" title=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_add_note",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_add_note",c,p,0)));t.b("\"><span aria-hidden=\"true\">&times;</span></button>");t.b("\n");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"add-note-label\">");t.b(t.v(t.d("strings.i18n_add_note",c,p,0)));t.b("</h2>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("            <div class=\"modal-body\">");t.b("\n" + i);t.b("                <div class=\"annotationInputContainer\">");t.b("\n" + i);t.b("                    <label for=\"annotationInput\">");t.b(t.v(t.d("strings.i18n_add_note",c,p,0)));t.b("</label>");t.b("\n" + i);t.b("                    <textarea type=\"text\" placeholder=\"Add a note for this highlight\" id=\"annotationInput\" tabindex=\"0\"></textarea>");t.b("\n" + i);t.b("                </div>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("            <div class=\"modal-footer\">");t.b("\n" + i);t.b("                <button id=\"add-note-submit\" tabindex=\"0\" type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\">Add Note</button>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <!-- /.modal-content --> ");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->");t.b("\n" + i);t.b("</div>");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 
-define("hgn!readium_js_viewer_html_templates/fullscreen-image-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"fullscreen-image-dialog\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"fullscreen-image-label\">\r");t.b("\n" + i);t.b("    <div class=\"modal-dialog\" style=\"width: 99% !important;\">\r");t.b("\n" + i);t.b("        <div class=\"modal-content\">\r");t.b("\n" + i);t.b("            <div class=\"modal-header\">\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <button id=\"closeFullscreenImageCross\" type=\"button\" class=\"close\" data-dismiss=\"modal\" tabindex=\"0\" title=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_fullscreen_image",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_fullscreen_image",c,p,0)));t.b("\"><span aria-hidden=\"true\">&times;</span></button>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"fullscreen-image-label\">");t.b(t.v(t.d("strings.i18n_fullscreen_image",c,p,0)));t.b("</h2>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("            <div class=\"modal-body\">\r");t.b("\n" + i);t.b("                <div class=\"fullscreenImageContainer\">\r");t.b("\n" + i);t.b("                    <img style=\"width: 100%;\" id=\"fullscreenImage\" src=\"\" alt=\"No Image Selected\">\r");t.b("\n" + i);t.b("                </div>\r");t.b("\n" + i);t.b("            </div>\r");t.b("\n" + i);t.b("<!--             <div class=\"modal-footer\">\r");t.b("\n" + i);t.b("                <button id=\"add-bookmark-submit\" tabindex=\"1000\" type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\">Add Bookmark</button>\r");t.b("\n" + i);t.b("            </div> -->\r");t.b("\n" + i);t.b("        </div>\r");t.b("\n" + i);t.b("        <!-- /.modal-content --> \r");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
+define("hgn!readium_js_viewer_html_templates/fullscreen-image-dialog.html", ["hogan"], function(hogan){  var tmpl = new hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal fade\" id=\"fullscreen-image-dialog\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"fullscreen-image-label\">");t.b("\n" + i);t.b("    <div class=\"modal-dialog\" style=\"width: 99% !important;\">");t.b("\n" + i);t.b("        <div class=\"modal-content\">");t.b("\n" + i);t.b("            <div class=\"modal-header\">");t.b("\n");t.b("\n" + i);t.b("                <button id=\"closeFullscreenImageCross\" type=\"button\" class=\"close\" data-dismiss=\"modal\" tabindex=\"0\" title=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_fullscreen_image",c,p,0)));t.b("\" aria-label=\"");t.b(t.v(t.d("strings.i18n_close",c,p,0)));t.b(" ");t.b(t.v(t.d("strings.i18n_fullscreen_image",c,p,0)));t.b("\"><span aria-hidden=\"true\">&times;</span></button>");t.b("\n");t.b("\n" + i);t.b("                <h2 class=\"modal-title\" id=\"fullscreen-image-label\">");t.b(t.v(t.d("strings.i18n_fullscreen_image",c,p,0)));t.b("</h2>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("            <div class=\"modal-body\">");t.b("\n" + i);t.b("                <div class=\"fullscreenImageContainer\">");t.b("\n" + i);t.b("                    <img style=\"width: 100%;\" id=\"fullscreenImage\" src=\"\" alt=\"No Image Selected\">");t.b("\n" + i);t.b("                </div>");t.b("\n" + i);t.b("            </div>");t.b("\n" + i);t.b("<!--             <div class=\"modal-footer\">");t.b("\n" + i);t.b("                <button id=\"add-bookmark-submit\" tabindex=\"1000\" type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\">Add Bookmark</button>");t.b("\n" + i);t.b("            </div> -->");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <!-- /.modal-content --> ");t.b("\n" + i);t.b("    </div><!-- /.modal-dialog -->");t.b("\n" + i);t.b("</div>");t.b("\n" + i);t.b("<!-- /.modal -->");return t.fl(); },partials: {}, subs: {  }}, "", hogan);  function render(){ return tmpl.render.apply(tmpl, arguments); } render.template = tmpl; return render;});
 
 /*!
 * screenfull
@@ -69586,13 +68695,10 @@ define('readium_js_viewer/EpubReader',[
                            elementId = undefined;
                        }
 
+                       var spineItem = readium.reader.spine().getItemByHref(hrefPart);
+
                        if (currentChapterTitle == null)
                            currentChapterTitle = this.text;
-                           
-                       var spineItem = readium.reader.spine().getItemByHref(hrefPart);
-                       if (spineItem == undefined)
-                            return; 
-
                        if (currentIdref == null)
                            currentIdref = spineItem.idref;
 
@@ -71166,14 +70272,12 @@ define('readium_js_viewer/EpubReader',[
                    updateUI(pageChangeData);
 
                    spin(false);
-                   
-                   if (readium.reader.plugins.highlights) {
-                        readium.reader.plugins.highlights.redrawAnnotations();
-    
-                        readium.reader.plugins.highlights.removeHighlightsByType('user-highlight');
-                        readium.reader.plugins.highlights.removeHighlightsByType('shared-highlight');
-                        readium.reader.plugins.highlights.removeHighlightsByType('shared-my-highlight');
-                   }
+
+                   readium.reader.plugins.highlights.redrawAnnotations();
+
+                   readium.reader.plugins.highlights.removeHighlightsByType('user-highlight');
+                   readium.reader.plugins.highlights.removeHighlightsByType('shared-highlight');
+                   readium.reader.plugins.highlights.removeHighlightsByType('shared-my-highlight');
 
                    createNavigationSlider();
 
@@ -73069,6 +72173,6 @@ define('readium_js_viewer/ReadiumViewer',['./EpubLibrary', './EpubReader', 'read
 define('readium_js_viewer', ['readium_js_viewer/ReadiumViewer'], function (main) { return main; });
 
 
-require(["readium_plugin_highlights", "readium_plugin_hypothesis", "readium_shared_js/globalsSetup", "readium_js_viewer/ReadiumViewer"]);
+require(["readium_plugin_highlights", "readium_shared_js/globalsSetup", "readium_js_viewer/ReadiumViewer"]);
 
 //# sourceMappingURL=readium-js-viewer_all.js.map
