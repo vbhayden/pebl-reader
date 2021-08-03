@@ -17,6 +17,9 @@ echo "Handling the Git Submodule alignment ... "
 git submodule update --init --recursive
 git submodule foreach --recursive "git checkout tags/0.31.1"
 
+echo "Copying plugin overrides ... "
+cp plugins/plugins-override.cson readium-js/readium-shared-js/plugins/plugins-override.cson
+
 echo "Building Libraries ... "
 npm run prepare:all
 
