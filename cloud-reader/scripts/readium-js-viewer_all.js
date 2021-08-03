@@ -53679,7 +53679,7 @@ define('text',['module'], function (module) {
 });
 
 
-define('text!version.json',[],function () { return '{"readiumJsViewer":{"sha":"f0b87b85ac75a3d0979c1bb5fe875e955b693eb5","clean":false,"version":"0.31.1","chromeVersion":"2.31.1","tag":"1.6.25-242-gf0b87b85","branch":"master","release":false,"timestamp":1628006382734},"readiumJs":{"sha":"999d7c32bcdd1184bcc248312267c6e744d737b9","clean":false,"version":"0.31.1","tag":"0.31.1-0-g999d7c3","branch":"999d7c32bcdd1184bcc248312267c6e744d737b9","release":false,"timestamp":1628006382833},"readiumSharedJs":{"sha":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","clean":false,"version":"0.31.1","tag":"0.31.1-0-g7f245be","branch":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","release":false,"timestamp":1628006382919}}';});
+define('text!version.json',[],function () { return '{"readiumJsViewer":{"sha":"0176ef63b1bfa9f5136bb7d3e7827aa58a8d7ea4","clean":false,"version":"0.31.1","chromeVersion":"2.31.1","tag":"1.6.25-247-g0176ef63","branch":"master","release":false,"timestamp":1628007458164},"readiumJs":{"sha":"999d7c32bcdd1184bcc248312267c6e744d737b9","clean":false,"version":"0.31.1","tag":"0.31.1-0-g999d7c3","branch":"999d7c32bcdd1184bcc248312267c6e744d737b9","release":false,"timestamp":1628007458262},"readiumSharedJs":{"sha":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","clean":false,"version":"0.31.1","tag":"0.31.1-0-g7f245be","branch":"7f245beba1ed97eaabce0aa5e9cf2f3b23e8f8f6","release":false,"timestamp":1628007458345}}';});
 
 //  Copyright (c) 2014 Readium Foundation and/or its licensees. All rights reserved.
 //  
@@ -63071,8 +63071,6 @@ define('readium_js_viewer/EpubLibraryManager',['./ModuleConfig', './PackageParse
                     for (var i = 0; i < data.length; i++) {
                         data[i].coverHref = adjustEpubLibraryPath(data[i].coverHref);
                         data[i].rootUrl = adjustEpubLibraryPath(data[i].rootUrl);
-                        data[i].contentPath = adjustEpubLibraryPath(data[i].contentPath);
-                        data[i].packageFile = adjustEpubLibraryPath(data[i].packageFile);
                     }
                 }
 
@@ -66644,7 +66642,7 @@ define('readium_js_viewer/EpubLibrary',[
                        if (epubs.length < 1)
                            callback();
                        else {
-                           for (let epub of epubs) {
+                           for (var epub of epubs) {
                                if (epub.rootUrl === rootUrl) {
                                    if (rootUrl.endsWith(".epub")) {
                                        var request = new XMLHttpRequest();
@@ -66661,8 +66659,7 @@ define('readium_js_viewer/EpubLibrary',[
                                    } else {
                                        var request = new XMLHttpRequest();
                                        let root = location.origin + "/" + rootUrl + (rootUrl.endsWith("/")?"":"/")
-                                    // let adjRoot = root + "OEBPS/";
-                                       let adjRoot = root + epub.contentPath + "/";
+                                       let adjRoot = root + "OEBPS/";
                                        request.onload = function() {
                                            let xml = new DOMParser().parseFromString(this.response, "text/xml");
                                            let package = PackageParser.parsePackageDom(xml);
@@ -66675,8 +66672,7 @@ define('readium_js_viewer/EpubLibrary',[
                                            }
                                            StorageManager.saveTemporaryBookshelf({
                                                id: package.id,
-                                            // packagePath: "OEBPS/content.opf",
-                                               packagePath: epub.contentPath + "/" + epub.packageFile,
+                                               packagePath: "OEBPS/content.opf",
                                                title: package.title,
                                                author: package.author,
                                                isLocal: true,

@@ -768,7 +768,7 @@ define([
                        if (epubs.length < 1)
                            callback();
                        else {
-                           for (let epub of epubs) {
+                           for (var epub of epubs) {
                                if (epub.rootUrl === rootUrl) {
                                    if (rootUrl.endsWith(".epub")) {
                                        var request = new XMLHttpRequest();
@@ -785,8 +785,7 @@ define([
                                    } else {
                                        var request = new XMLHttpRequest();
                                        let root = location.origin + "/" + rootUrl + (rootUrl.endsWith("/")?"":"/")
-                                    // let adjRoot = root + "OEBPS/";
-                                       let adjRoot = root + epub.contentPath + "/";
+                                       let adjRoot = root + "OEBPS/";
                                        request.onload = function() {
                                            let xml = new DOMParser().parseFromString(this.response, "text/xml");
                                            let package = PackageParser.parsePackageDom(xml);
@@ -799,8 +798,7 @@ define([
                                            }
                                            StorageManager.saveTemporaryBookshelf({
                                                id: package.id,
-                                            // packagePath: "OEBPS/content.opf",
-                                               packagePath: epub.contentPath + "/" + epub.packageFile,
+                                               packagePath: "OEBPS/content.opf",
                                                title: package.title,
                                                author: package.author,
                                                isLocal: true,
