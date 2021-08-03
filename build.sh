@@ -15,7 +15,7 @@ EOF
 
 echo "Handling the Git Submodule alignment ... "
 git submodule update --init --recursive
-git submodule foreach --recursive "git checkout tags/0.31.1"
+git submodule foreach --recursive "git checkout master"
 
 echo "Copying plugin overrides ... "
 cp plugins/plugins-override.cson readium-js/readium-shared-js/plugins/plugins-override.cson
