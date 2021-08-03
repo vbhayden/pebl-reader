@@ -1,0 +1,38 @@
+[
+    {
+        "title" : "Accessible EPUB 3",
+        "author" : "Matt Garrish",
+        "coverHref" : "epub_content/accessible_epub_3/OEBPS/covers/9781449328030_lrg.jpg",
+        
+        "rootUrl" : "epub_content/accessible_epub_3",
+        "contentPath" : "OEBPS",
+        "packageFile" : "package.opf"
+    },
+    {
+        "title" : "Alice in Wonderland",
+        "author" : "Lewis Carroll",
+        "coverHref" : "epub_content/alice3/OEBPS/images/alice02a.gif",
+        
+        "rootUrl" : "epub_content/alice3",
+        "contentPath" : "OEBPS",
+        "packageFile" : "package.opf"
+    },
+    {
+        "title" : "The Emerald City of Oz",
+        "author" : "Lyman Frank Baum",
+        "coverHref" : "epub_content/emerald-city-oz/OEBPS/images/cover.png",
+
+        "rootUrl" : "epub_content/emerald-city-oz",
+        "contentPath" : "OEBPS",
+        "packageFile" : "package.opf"
+    },
+    {
+        "title" : "Cyclones",
+        "author" : "Wikipedia contributors",
+        "coverHref" : "epub_content/cyclones/OEBPS/Thumbnails/thumbnail.png",
+
+        "rootUrl" : "epub_content/cyclones",
+        "contentPath" : "OEBPS",
+        "packageFile" : "package.opf"
+    }
+]
