@@ -10,7 +10,7 @@ A pre-built version of the cloud-reader site has been included in the repository
 
 **Configurable EPUB File Structures** ✔ 
 
-EPUBs can now be included in the library folder and configured based on their layout.  The original PeBL project has a strict expectation of how the EPUB library is arranged, namely that the `OEDPS` folder be the actual EPUB contents and a `package.opf` file contained therein defining the structure.  
+EPUBs can now be included in the library folder and configured based on their layout.  The original PeBL project has a strict expectation of how the EPUB library is arranged, namely that the `OEDPS` folder be the actual EPUB contents and a `content.opf` file contained therein defining the structure.  
 
 These are handled through the `contentPath` and `packageFile` properties:
 ```
