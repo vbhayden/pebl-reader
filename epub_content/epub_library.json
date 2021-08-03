@@ -6,7 +6,7 @@
         
         "rootUrl" : "epub_content/accessible_epub_3",
         "contentPath" : "OEBPS",
-        "packageFile" : "package.opf"
+        "packageFile" : "content.opf"
     },
     {
         "title" : "Alice in Wonderland",
@@ -15,7 +15,7 @@
         
         "rootUrl" : "epub_content/alice3",
         "contentPath" : "OEBPS",
-        "packageFile" : "package.opf"
+        "packageFile" : "content.opf"
     },
     {
         "title" : "The Emerald City of Oz",
@@ -24,7 +24,7 @@
 
         "rootUrl" : "epub_content/emerald-city-oz",
         "contentPath" : "OEBPS",
-        "packageFile" : "package.opf"
+        "packageFile" : "content.opf"
     },
     {
         "title" : "Cyclones",
@@ -33,6 +33,6 @@
 
         "rootUrl" : "epub_content/cyclones",
         "contentPath" : "OEBPS",
-        "packageFile" : "package.opf"
+        "packageFile" : "content.opf"
     }
 ]
